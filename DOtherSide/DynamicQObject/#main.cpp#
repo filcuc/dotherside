@@ -1,0 +1,8 @@
+#include <iostream>
+#include "DynamicQObject.h"
+
+int main(int argc, char *argv[])
+{
+  DynamicQObject object;
+  return 0;
+}
