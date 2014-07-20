@@ -71,15 +71,16 @@ public class DSlot(T) : ISlot
     
     _parameterMetaTypes[0] = GetMetaType!SlotReturnType();
     foreach (i, arg; Arguments)
-      _parameterMetaTypes[i+1] = GetMetaType!Arguments[i];
+      _parameterMetaTypes[i+1] = GetMetaType!arg();
   }
   
   override void Execute(void*[]  arguments)
   {
     Arguments argumentsTuple;
     
-    foreach (i, arg; argumentsTuple)
+    foreach (i, arg; argumentsTuple) {
       argumentsTuple[i] = *cast(Arguments[i]*)arguments[i + 1];
+    }
     
     static if (is(SlotReturnType == void))
     {
@@ -87,10 +88,9 @@ public class DSlot(T) : ISlot
     }
     else
     {
-      SlotReturnType result = opCall(argumentsTuple);
-      auto temp = new SlotReturnType;
-      *temp = result;
-      arguments[0] = temp;
+      auto result = new SlotReturnType;
+      *result = opCall(argumentsTuple);
+      arguments[0] = result;
     }
   }
   
@@ -117,10 +117,11 @@ unittest
   char b = 'a';
   string c = "prova";
   
-  void*[] arguments = new void*[3];
+  void*[] arguments = new void*[4];
   arguments[0] = cast(void*)&a;
-  arguments[1] = cast(void*)&b;
-  arguments[2] = cast(void*)&c;
+  arguments[1] = cast(void*)&a;
+  arguments[2] = cast(void*)&b;
+  arguments[3] = cast(void*)&c;
   
   // Testing with a function
   auto testFunction = (int a, char b, string c) {

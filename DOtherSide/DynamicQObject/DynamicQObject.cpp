@@ -138,28 +138,20 @@ int DynamicQObject::qt_metacall(QMetaObject::Call callType, int index, void**  a
 
         int slotIndex = m_metaObject->indexOfSlot(QMetaObject::normalizedSignature(slot.signature()));
 
+        int size = method.parameterCount() + 1; // Add return type
+
         // Create the parameter types vector and allocate it on the stack
-        std::vector<QMetaType::Type> parameterTypes;
-        parameterTypes.push_back(static_cast<QMetaType::Type>(method.returnType()));
+        std::vector<int> parameterTypes;
+        parameterTypes.push_back(method.returnType());
 
-        for (int i = 0; i < method.parameterCount(); ++i)
-            parameterTypes.push_back(static_cast<QMetaType::Type>(method.parameterType(i)));
+        for (int i = 0; i < size; ++i)
+            parameterTypes.push_back(method.parameterType(i));
 
-        // Create the vector of both parameter types and values
-        //std::vector<void*> parameterVector;
-        void** parameterVector = new void*[parameterTypes.size() * 2];
+        qDebug() << "C++: " << __func__ << parameterTypes[0];
 
-        for (size_t i = 0; i < parameterTypes.size(); ++i)
-        {
-            parameterVector[i * 2] = &(parameterTypes[i]);
-            parameterVector[(i*2) + 1] = args[i];
-        }
-
-        // Forward the vector to D
-        int size = parameterTypes.size() * 2;
-
+        // Forward  values and types to D
         if (m_dObjectCallback && m_dObjectPointer)
-            m_dObjectCallback(m_dObjectPointer, slotIndex, size, &parameterVector);
+            m_dObjectCallback(m_dObjectPointer, slotIndex, size, &parameterTypes[0], size, &args);
 
         return 1;
     }

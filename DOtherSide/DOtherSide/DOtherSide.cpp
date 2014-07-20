@@ -159,7 +159,7 @@ void dos_qvariant_toString(void* vptr, CharPtr& ptr, int& size)
     convert_to_cstring(variant->toString(), ptr, size);
 }
 
-void dos_qobject_create(void** vptr, void* dObjectPointer, void (*dObjectCallback)(void*, int slotIndex, int numParameters, void*** parameters))
+void dos_qobject_create(void** vptr, void* dObjectPointer, void (*dObjectCallback)(void*, int slotIndex, int numMetaTypes, int* metaTypes, int numParameters, void*** parameters))
 {
     auto dynamicQObject = new DynamicQObject();
     dynamicQObject->setDObjectPointer(dObjectPointer);

@@ -30,7 +30,7 @@ void dos_qvariant_toString(void*, ref char*, ref int);
 void dos_qvariant_isnull(void*, ref bool result);
 void dos_qvariant_delete(void*);
 
-void dos_qobject_create(ref void*, void* dobject, void function (void*, int, int , ref void**));
+void dos_qobject_create(ref void*, void* dobject, void function (void*, int, int, int*, int , ref void**));
 void dos_qobject_slot_create(void*, immutable (char)* name, int, int*, ref int);
 void dos_qobject_delete(void*);
 

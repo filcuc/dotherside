@@ -14,7 +14,7 @@ Rectangle
   
   Component.onCompleted: {
     //myObject.foo()
-    var result = myObject.bar();
+    var result = myObject.bar(1345);
     console.log("From qml received value:", result)
   }
 }

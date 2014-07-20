@@ -16,16 +16,16 @@ class MyObject : DObject
     bar = registerSlot("bar", &_bar);
   }
   
-  DSlot!(void delegate()) foo;
-  void _foo()
+  DSlot!(void delegate(int)) foo;
+  void _foo(int fooValue)
   {
-    writeln("Called foo slot!!");
+    writeln("D: Called foo slot with argument ", fooValue , "!!");
   }
   
-  DSlot!(int delegate()) bar;
-  int _bar()
+  DSlot!(int delegate(int)) bar;
+  int _bar(int barValue)
   {
-    writeln("Called bar slot!!");
+    writeln("D: Called bar slot with argument " , barValue, "!!");
     return 666;
   }
 }

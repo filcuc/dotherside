@@ -37,7 +37,7 @@ void dos_qvariant_toString(void* vptr, CharPtr& ptr, int& size);
 void dos_qvariant_isnull(void *vptr, bool& isNull);
 void dos_qvariant_delete(void *vptr);
 
-void dos_qobject_create(void **vptr, void *dObjectPointer, void (*dObjectCallback)(void*, int slotIndex, int numParameters, void*** parameters));
+void dos_qobject_create(void **vptr, void *dObjectPointer, void (*dObjectCallback)(void*, int slotIndex, int numMetaTypes, int* metaTypes, int numParameters, void*** parameters));
 void dos_qobject_slot_create(void* vptr, const char* name, int parametersCount, int* parametersMetaTypes, int* slotIndex);
 void dos_qobject_delete(void *vptr);
 

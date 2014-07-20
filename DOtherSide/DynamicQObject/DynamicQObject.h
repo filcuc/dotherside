@@ -11,7 +11,7 @@ class QMetaObject;
 
 class DynamicQObject : public QObject
 {
-    typedef void (*Callback)(void*, int, int, void ***);
+    typedef void (*Callback)(void*, int, int, int*, int, void ***);
 
 public:
     DynamicQObject(QObject* parent = 0);
