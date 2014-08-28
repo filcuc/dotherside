@@ -149,6 +149,21 @@ int DynamicQObject::qt_metacall(QMetaObject::Call callType, int index, void**  a
 
         qDebug() << "C++: " << __func__ << parameterTypes[0];
 
+
+        /*
+         * TODO: ALLOCATE ON THE STACK AN ARRAY OF VOID* EACH ONE IS
+         * A POINTER TO A QVARIANT INITIALIZED WITH THE VALUE RECEIVED IN THIS METACALL.
+         * THEN FORWARD IT TO D.
+         * D THEN CAN SIMPLY CREATE SOME QVARIANT FOR THE VOID POINTERS AND USE
+         * THE API FOR QVARIANTS.
+         * THIS SOLUTION ALLOW ALSO THE D TO SET THE RETURN VALUE TO THE FIRST QVARIANT
+         * AND THEN WE CAN SAFELY COPY ITS VALUE THE FIRST ARGS HERE.
+         *
+         * CHANGE ALSO THE CALLBACK OF D. INFACT WE DON'T NEED ANYMORE THE METATYPES.
+         * BECAUSE THIS INFORMATION CAN BE DISCOVERED FROM THE QVARIANT API
+         */
+
+
         // Forward  values and types to D
         if (m_dObjectCallback && m_dObjectPointer)
             m_dObjectCallback(m_dObjectPointer, slotIndex, size, &parameterTypes[0], size, &args);
