@@ -1,0 +1,26 @@
+***********************************
+THIS IS UNSTABLE AND ALPHA SOFTWARE
+***********************************
+
+-----------------------------------
+Requirements:
+You need the following software:
+- Qt 5.3
+- dmd 2.065
+- gcc 4.8 or later (c++11 support)
+
+-----------------------------------
+Build Instructions:
+
+1) Open a shell terminal inside the cloned repo
+2) mkdir build && cd build
+3) qmake ../DOtherSide 
+4) make -j8
+5) cd ../D 
+6) export LD_LIBRARY_PATH=../build/DOtherSide
+7) ./build.sh && ./dotherside
+
+-----------------------------------
+Supported features:
+- Creation of custom QObject and inject in a qml QtQuick view
+- Slot and Signal creation for the following types int, bool, string
