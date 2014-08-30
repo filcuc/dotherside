@@ -13,8 +13,10 @@ Rectangle
   }
   
   Component.onCompleted: {
-    var result = myObject.tor("sfsdk");
-    console.log("From qml received value:", result)
+    var result1 = myObject.bar(1);
+    var result2 = myObject.foo(2);
+    var result3 = myObject.tor("3")
+    console.log("From qml received values:", result1, result2, result3)
   }
 
   Connections

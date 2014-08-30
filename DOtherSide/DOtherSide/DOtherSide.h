@@ -8,7 +8,7 @@ extern "C"
 
 typedef char* CharPtr;
 typedef void(*Function)(void*);
-typedef void(*DObjectCallback)(void*, int, int, void**);
+typedef void(*DObjectCallback)(void*, void*, int, void**);
 
 void dos_guiapplication_create();
 void dos_guiapplication_exec();

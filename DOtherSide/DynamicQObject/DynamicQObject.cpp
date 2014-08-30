@@ -134,54 +134,40 @@ int DynamicQObject::qt_metacall(QMetaObject::Call callType, int index, void**  a
     {
         QMetaMethod method = m_metaObject->method(index);
 
-        if (!method.isValid()) return -1;
+        if (!method.isValid())
+            return -1;
 
         DynamicSlot slot = m_slotsBySignature[method.methodSignature()];
 
-        qDebug() << "Slot" << slot.name();
-
-        if (!slot.isValid()) return -1;
-
-        int slotIndex = m_metaObject->indexOfSlot(QMetaObject::normalizedSignature(slot.signature()));
+        if (!slot.isValid())
+            return -1;
 
         int numParametersPlusReturn = method.parameterCount() + 1;
 
-        /*
-         * TODO: ALLOCATE ON THE STACK AN ARRAY OF VOID* EACH ONE IS
-         * A POINTER TO A QVARIANT INITIALIZED WITH THE VALUE RECEIVED IN THIS METACALL.
-         * THEN FORWARD IT TO D.
-         * D THEN CAN SIMPLY CREATE SOME QVARIANT FOR THE VOID POINTERS AND USE
-         * THE API FOR QVARIANTS.
-         * THIS SOLUTION ALLOW ALSO THE D TO SET THE RETURN VALUE TO THE FIRST QVARIANT
-         * AND THEN WE CAN SAFELY COPY ITS VALUE THE FIRST ARGS HERE.
-         *
-         * CHANGE ALSO THE CALLBACK OF D. INFACT WE DON'T NEED ANYMORE THE METATYPES.
-         * BECAUSE THIS INFORMATION CAN BE DISCOVERED FROM THE QVARIANT API
-         */
+        // Pack the slot name
+        QVariant slotName(slot.name());
 
+        // Pack the arguments to QVariants
         std::vector<QVariant> argumentsAsVariants(numParametersPlusReturn);
         std::vector<void*> argumentsAsVoidPointers(numParametersPlusReturn);
 
         for (int i = 0; i < numParametersPlusReturn; ++i) {
             int parameterType = i == 0 ? method.returnType() : method.parameterType(i - 1);
-            qDebug() << "C++: parameter metatype " << parameterType;
-            QVariant variant(parameterType, args[i]);
-            qDebug() << "C++ parameter value as variant " << variant.toString();
-            argumentsAsVariants[i] = variant;
+            argumentsAsVariants[i] =  parameterType != QMetaType::Void ? QVariant(parameterType, args[i]) : QVariant();
             argumentsAsVoidPointers[i] = &argumentsAsVariants[i];
         }
 
         // Forward  values and types to D
         if (m_dObjectCallback && m_dObjectPointer)
-            m_dObjectCallback(m_dObjectPointer, slotIndex, numParametersPlusReturn, &argumentsAsVoidPointers[0]);
+            m_dObjectCallback(m_dObjectPointer, &slotName, numParametersPlusReturn, &argumentsAsVoidPointers[0]);
 
-        const void* temp = argumentsAsVariants.front().constData();
-        QVariant temp2(method.returnType(), temp);
-
-        qDebug() << "C++: " << temp << temp2.toString();
-
-        QMetaType metatype(method.returnType());
-        metatype.construct(args[0], temp);
+        // Update the return value
+        if (method.returnType() != QMetaType::Void)
+        {
+            const void* returnValue = argumentsAsVariants.front().constData();
+            QMetaType metatype(method.returnType());
+            metatype.construct(args[0], returnValue);
+        }
 
         return 1;
     }

@@ -17,7 +17,6 @@ class MyObject : DObject
     foo = registerSlot("foo", &_foo);
     bar = registerSlot("bar", &_bar);
     tor = registerSlot("tor", &_tor);
-    //complexChanged = registerSignal!(string, int, bool)("complexChanged");
   }
   
   DSlot!(void delegate(int)) foo;

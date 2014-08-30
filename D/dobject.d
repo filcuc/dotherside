@@ -20,13 +20,14 @@ public class DObject
     dos_qobject_delete(this.data);
   }
   
-  private extern (C) static void staticSlotCallback(void* dobject, int slotIndex, int numParameters, void** parameters)
+  private extern (C) static void staticSlotCallback(void* dobject, void* slotName, int numParameters, void** parameters)
   {
     QVariant[] arguments = new QVariant[numParameters];
     for (int i = 0; i < numParameters; ++i)
       arguments[i] = new QVariant(parameters[i]);
     DObject dObject = cast(DObject) dobject;
-    ISlot slot = dObject._slotsByIndex[slotIndex];
+    QVariant name = new QVariant(slotName);
+    ISlot slot = dObject._slotsByName[name.toString()];
     slot.Execute(arguments);
   }
 
@@ -40,7 +41,6 @@ public class DObject
     dos_qobject_slot_create(data, rawName, numArgs, parameterMetaTypes.ptr, slotIndex);
     debug writefln("D: Registered Slot has index %d", slotIndex);
     _slotsByName[name] = slot;
-    _slotsByIndex[slotIndex] = slot;
     return slot;
   }
   
@@ -53,15 +53,12 @@ public class DObject
     int numArgs = cast(int)parameterMetaTypes.length;
     dos_qobject_signal_create(data, rawName, numArgs, parameterMetaTypes.ptr, index);
     _signalsByName[name] = signal;
-    _signalsByIndex[index] = signal;
     return signal;
   }
   
   public void* data;
   private ISlot[string] _slotsByName;
-  private ISlot[int] _slotsByIndex;
   private ISignal[string] _signalsByName;
-  private ISignal[int] _signalsByIndex;
 }
 
 unittest

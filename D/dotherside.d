@@ -72,8 +72,6 @@ class GuiApplication
 
 class QuickView
 { 
-  void* data;
-  
   this()
   {
     dos_quickview_create(data);
@@ -108,12 +106,12 @@ class QuickView
     immutable(char)* filenameAsCString = filename.toStringz();
     dos_quickview_set_source(data, filenameAsCString);
   }
+
+  private void* data;
 }
 
 class QQmlContext
 {
-  void* data;
-  
   string baseUrl()
   {
     auto array = new CharArray();
@@ -125,13 +123,12 @@ class QQmlContext
   {
     dos_qmlcontext_setcontextproperty(data, name.ptr, value.data);
   }
+
+  private void* data;
 }
 
 class QVariant
 {
-  private void* data;
-  private bool deleteLater = true;
-  
   this()
   {
     dos_qvariant_create(this.data);
@@ -231,13 +228,13 @@ class QVariant
     dos_qvariant_toString(this.data, array.dataRef(), array.sizeRef());
     return to!(string)(array.data());
   }
+
+  private void* data;
+  private bool deleteLater = true;
 }
 
 class CharArray
-{
-  char* _data;
-  int _size;
-  
+{  
   this()
   {
     _size = 0;
@@ -280,95 +277,7 @@ class CharArray
   {
     return _size;
   }
+
+  private char* _data;
+  private int _size;
 }
-
-/*
-class QSlot
-{
-  alias Callback = void function();
-  
-  void* data;
-  Callback callback;
-  
-  extern (C) static void staticCallback(void* dobject)
-  {
-    QSlot slot = cast(QSlot) dobject;
-    Callback callback = slot.getCallback();
-    callback();
-  }
-
-  this()
-  {
-    dos_qslot_create(this.data);
-  }
-
-  ~this()
-  {
-    dos_qslot_delete(this.data);
-  }
-  
-  Callback getCallback()
-  {
-    return this.callback;
-  }
-  
-  void setCallback(Callback callback)
-  {
-    this.callback = callback;
-    dos_qslot_setcallback(this.data, cast (void*) this, &staticCallback);
-  }
-}
-
-class QSlot2(T)
-{
-  void* data;
-  int numberOfArguments;
-  T* callback;
-  alias ReturnType!T SlotReturnType;
-  alias ParameterTypeTuple!T SlotArgumentsType;
-  
-  extern (C) static void staticCallback(void* dobject, int numArgs, ...)
-  {
-    auto arguments = Tuple!SlotArgumentsType();
-    
-    va_list ap;
-    version (X86_64)
-      va_start(ap, __va_argsave);
-    else version (X86)
-      va_start(ap, numArgs);
-    
-    foreach (i, argument; arguments) {
-        writefln("%s: %s", i, arguments);
-        va_arg(ap, arguments[i]);
-    }
-    va_end(ap);
-    
-    QSlot2 slot = cast(QSlot2) dobject;
-    T* callback = slot.getCallback();
-    callback(arguments.expand);
-  }
-  
-  this(T* t)
-  {
-    this.numberOfArguments = arity!t;
-    this.callback = t;
-    dos_qslot_create(this.data);
-    dos_qslot_setcallback2(this.data, cast (void*) this, &staticCallback);
-  }
-  
-  ~this()
-  {
-    dos_qslot_delete(this.data);
-  }
-  
-  T* getCallback()
-  {
-    return this.callback;
-  }
- 
-  int getNumberOfArguments()
-  {
-    return this.numberOfArguments;
-  }
-}
-*/

@@ -33,7 +33,7 @@ void dos_qvariant_setString(void*, immutable(char)*);
 void dos_qvariant_isnull(void*, ref bool result);
 void dos_qvariant_delete(void*);
 
-void dos_qobject_create(ref void*, void* dobject, void function (void*, int, int , void**));
+void dos_qobject_create(ref void*, void* dobject, void function (void*, void*, int , void**));
 void dos_qobject_slot_create(void*, immutable (char)* name, int, int*, ref int);
 void dos_qobject_signal_create(void*, immutable(char)* name, int, int*, ref int);
 void dos_qobject_signal_emit(void*, immutable(char)* name, int, void**);
