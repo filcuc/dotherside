@@ -2,8 +2,8 @@ import std.stdio;
 import std.string;
 import std.traits;
 import std.conv;
-import core.memory;
 import std.functional;
+import core.memory;
 import dotherside;
 import dobject;
 import dslot;
@@ -13,9 +13,9 @@ class MyObject : DObject
 {
   this()
   {
-    nameChanged = registerSignal!(string)("nameChanged");
     foo = registerSlot("foo", &_foo);
     bar = registerSlot("bar", &_bar);
+    nameChanged = registerSignal!(string)("nameChanged");
     tor = registerSlot("tor", &_tor);
   }
   

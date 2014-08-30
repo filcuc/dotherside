@@ -32,11 +32,34 @@ bool DynamicQObject::registerSlot(const QString& name,
     m_slotsByName.insertMulti(slot.name(), slot);
     m_slotsBySignature[slot.signature()] = slot;
 
-    QMetaObjectBuilder builder(m_metaObject.data());
-    QMetaMethodBuilder methodBuilder = builder.addSlot(slot.signature());
+    // Collect the current methods and signals
+    QList<QMetaMethod> signalsList;
+    QList<QMetaMethod> methodsList;
+
+    for (int i = m_metaObject->methodOffset(); i < m_metaObject->methodCount(); ++i)
+    {
+        auto method = m_metaObject->method(i);
+        if (method.methodType() == QMetaMethod::Signal)
+            signalsList.append(method);
+        else
+            methodsList.append(method);
+    }
+
+    QMetaObjectBuilder newMetaObjectBuilder;
+    newMetaObjectBuilder.setFlags(QMetaObjectBuilder::DynamicMetaObject);
+    newMetaObjectBuilder.setClassName("DynamicObject");
+    newMetaObjectBuilder.setSuperClass(&QObject::staticMetaObject);
+
+    foreach(auto method, signalsList)
+        newMetaObjectBuilder.addMethod(method);
+
+    foreach (auto method, methodsList)
+        newMetaObjectBuilder.addMethod(method);
+
+    QMetaMethodBuilder methodBuilder = newMetaObjectBuilder.addSlot(slot.signature());
     methodBuilder.setReturnType(QMetaType::typeName(returnType));
     methodBuilder.setAttributes(QMetaMethod::Scriptable);
-    m_metaObject.reset(builder.toMetaObject());
+    m_metaObject.reset(newMetaObjectBuilder.toMetaObject());
 
     slotIndex = m_metaObject->indexOfSlot(QMetaObject::normalizedSignature(slot.signature()));
 
@@ -53,11 +76,35 @@ bool DynamicQObject::registerSignal(const QString& name, const QList<QMetaType::
     m_signalsByName.insertMulti(signal.name(), signal);
     m_signalsBySignature[signal.signature()] = signal;
 
-    QMetaObjectBuilder builder(m_metaObject.data());
-    QMetaMethodBuilder methodBuilder = builder.addSignal(signal.signature());
+    // Collect the current methods and signals
+    QList<QMetaMethod> signalsList;
+    QList<QMetaMethod> methodsList;
+
+    for (int i = m_metaObject->methodOffset(); i < m_metaObject->methodCount(); ++i)
+    {
+        auto method = m_metaObject->method(i);
+        if (method.methodType() == QMetaMethod::Signal)
+            signalsList.append(method);
+        else
+            methodsList.append(method);
+    }
+
+    QMetaObjectBuilder newMetaObjectBuilder;
+    newMetaObjectBuilder.setFlags(QMetaObjectBuilder::DynamicMetaObject);
+    newMetaObjectBuilder.setClassName("DynamicObject");
+    newMetaObjectBuilder.setSuperClass(&QObject::staticMetaObject);
+
+    foreach(auto method, signalsList)
+        newMetaObjectBuilder.addMethod(method);
+
+    QMetaMethodBuilder methodBuilder = newMetaObjectBuilder.addSignal(signal.signature());
     methodBuilder.setReturnType(QMetaType::typeName(QMetaType::Void));
     methodBuilder.setAccess(QMetaMethod::Public);
-    m_metaObject.reset(builder.toMetaObject());
+
+    foreach (auto method, methodsList)
+        newMetaObjectBuilder.addMethod(method);
+
+    m_metaObject.reset(newMetaObjectBuilder.toMetaObject());
 
     signalIndex = m_metaObject->indexOfSignal(QMetaObject::normalizedSignature(signal.signature()));
 
