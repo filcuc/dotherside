@@ -5,5 +5,4 @@ CONFIG += ordered
 SUBDIRS += \
     DynamicQObject \
     DOtherSide \
-    DynamicObjectTest \
     IntegrationTest
