@@ -7,13 +7,17 @@ import std.functional;
 import dotherside;
 import dobject;
 import dslot;
+import dsignal;
 
 class MyObject : DObject 
 {
   this()
   {
-    //foo = registerSlot("foo", &_foo);
+    nameChanged = registerSignal!(string)("nameChanged");
+    foo = registerSlot("foo", &_foo);
     bar = registerSlot("bar", &_bar);
+    tor = registerSlot("tor", &_tor);
+    //complexChanged = registerSignal!(string, int, bool)("complexChanged");
   }
   
   DSlot!(void delegate(int)) foo;
@@ -28,6 +32,16 @@ class MyObject : DObject
     writeln("D: Called bar slot with argument " , barValue, "!!");
     return 666;
   }
+
+  DSlot!(string delegate(string)) tor;
+  string _tor (string torValue)
+  {
+    writeln("D: Called tor slot with argument ", torValue, "!!");
+    return "2343";
+  }
+
+  DSignal!(string) nameChanged;
+  //DSignal!(string, int, bool) complexChanged;
 }
 
 void main()
@@ -36,6 +50,7 @@ void main()
   {
     auto app = new GuiApplication;
     scope(exit) clear(app);
+
     auto view = new QuickView;
     scope(exit) clear(view);
     
@@ -46,6 +61,9 @@ void main()
     
     view.setSource("Test.qml");
     view.show();
+
+    myObject.nameChanged("prova");
+
     app.exec();
   }
   catch 

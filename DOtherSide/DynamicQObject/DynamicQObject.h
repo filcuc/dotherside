@@ -11,7 +11,7 @@ class QMetaObject;
 
 class DynamicQObject : public QObject
 {
-    typedef void (*Callback)(void*, int, int, int*, int, void ***);
+    typedef void (*Callback)(void*, int, int, void **);
 
 public:
     DynamicQObject(QObject* parent = 0);
@@ -21,7 +21,7 @@ public:
     void setDObjectCallback(Callback callback) { m_dObjectCallback = callback; }
     void setDObjectPointer(void* dObjectPointer)  { m_dObjectPointer = dObjectPointer; }
 
-    bool registerSignal(const QString& name, const QList<QMetaType::Type>& argumentsTypes);
+    bool registerSignal(const QString& name, const QList<QMetaType::Type>& argumentsTypes, int& signalIndex);
     bool emitSignal(const QString& name, const QList<QVariant>& argumentsValues);
 
     bool registerSlot(const QString& name,

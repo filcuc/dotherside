@@ -97,7 +97,7 @@ void dos_qmlcontext_baseUrl(void* vptr, CharPtr& result, int& length)
 void dos_qmlcontext_setcontextproperty(void* vptr, const char* name, void* value)
 {
     QQmlContext* context = reinterpret_cast<QQmlContext*>(vptr);
-    QVariant* variant = reinterpret_cast<QVariant*>(value);
+    auto variant = reinterpret_cast<QVariant*>(value);
     context->setContextProperty(QString::fromUtf8(name), *variant);
 }
 
@@ -123,43 +123,61 @@ void dos_qvariant_create_string(void** vptr, const char* value)
 
 void dos_qvariant_create_qobject(void **vptr, void* value)
 {
-    QObject* qobject = reinterpret_cast<QObject*>(value);
-    QVariant* variant = new QVariant();
+    auto qobject = reinterpret_cast<QObject*>(value);
+    auto variant = new QVariant();
     variant->setValue<QObject*>(qobject);
     *vptr = variant;
 }
 
 void dos_qvariant_isnull(void* vptr, bool& isNull)
 {
-    QVariant* variant = reinterpret_cast<QVariant*>(vptr);
+    auto variant = reinterpret_cast<QVariant*>(vptr);
     isNull = variant->isNull();
 }
 
 void dos_qvariant_delete(void *vptr)
 {
-    QVariant* variant = reinterpret_cast<QVariant*>(vptr);
+    auto variant = reinterpret_cast<QVariant*>(vptr);
     delete variant;
 }
 
 void dos_qvariant_toInt(void* vptr, int& value)
 {
-    QVariant* variant = reinterpret_cast<QVariant*>(vptr);
+    auto variant = reinterpret_cast<QVariant*>(vptr);
     value = variant->toInt();
 }
 
 void dos_qvariant_toBool(void* vptr, bool& value)
 {
-    QVariant* variant = reinterpret_cast<QVariant*>(vptr);
+    auto variant = reinterpret_cast<QVariant*>(vptr);
     value = variant->toBool();
 }
 
 void dos_qvariant_toString(void* vptr, CharPtr& ptr, int& size)
 {
-    QVariant* variant = reinterpret_cast<QVariant*>(vptr);
+    auto variant = reinterpret_cast<QVariant*>(vptr);
     convert_to_cstring(variant->toString(), ptr, size);
 }
 
-void dos_qobject_create(void** vptr, void* dObjectPointer, void (*dObjectCallback)(void*, int slotIndex, int numMetaTypes, int* metaTypes, int numParameters, void*** parameters))
+void dos_qvariant_setInt(void* vptr, int value)
+{
+    auto variant = reinterpret_cast<QVariant*>(vptr);
+    *variant = value;
+}
+
+void dos_qvariant_setBool(void* vptr, bool value)
+{
+    auto variant = reinterpret_cast<QVariant*>(vptr);
+    *variant = value;
+}
+
+void dos_qvariant_setString(void* vptr, const char* value)
+{
+    auto variant = reinterpret_cast<QVariant*>(vptr);
+    *variant = value;
+}
+
+void dos_qobject_create(void** vptr, void* dObjectPointer, DObjectCallback dObjectCallback)
 {
     auto dynamicQObject = new DynamicQObject();
     dynamicQObject->setDObjectPointer(dObjectPointer);
@@ -188,3 +206,27 @@ void dos_qobject_slot_create(void* vptr, const char* name, int parametersCount, 
     dynamicQObject->registerSlot(QString::fromStdString(name), returnType, argumentsTypes, *slotIndex);
 }
 
+void dos_qobject_signal_create(void* vptr, const char* name, int parametersCount, int* parametersMetaTypes, int* signalIndex)
+{
+    if (parametersCount <= 0)
+        return;
+
+    auto dynamicQObject = reinterpret_cast<DynamicQObject*>(vptr);
+
+    QList<QMetaType::Type> argumentsTypes;
+    for (int i = 0; i < parametersCount; ++i)
+        argumentsTypes << static_cast<QMetaType::Type>(parametersMetaTypes[i]);
+
+    dynamicQObject->registerSignal(QString::fromStdString(name), argumentsTypes, *signalIndex);
+
+    qDebug() << "C++: registered the" << name << "signal";
+}
+
+void dos_qobject_signal_emit(void* vptr, const char* name, int parametersCount, void** parameters)
+{
+    auto dynamicQObject = reinterpret_cast<DynamicQObject*>(vptr);
+    QVariantList arguments;
+    for (int i = 0; i < parametersCount; ++i)
+        arguments << *(reinterpret_cast<QVariant*>(parameters[i]));
+    dynamicQObject->emitSignal(QString::fromStdString(name), arguments);
+}

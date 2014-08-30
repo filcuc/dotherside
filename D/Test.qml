@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.3
 
 Rectangle
 {
@@ -13,8 +13,13 @@ Rectangle
   }
   
   Component.onCompleted: {
-    //myObject.foo()
-    var result = myObject.bar(1345);
+    var result = myObject.tor("sfsdk");
     console.log("From qml received value:", result)
+  }
+
+  Connections
+  {
+    target: myObject
+    onNameChanged: console.log("name changed in qml ")
   }
 }

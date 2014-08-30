@@ -8,6 +8,7 @@ extern "C"
 
 typedef char* CharPtr;
 typedef void(*Function)(void*);
+typedef void(*DObjectCallback)(void*, int, int, void**);
 
 void dos_guiapplication_create();
 void dos_guiapplication_exec();
@@ -32,13 +33,18 @@ void dos_qvariant_create_bool(void **vptr, bool value);
 void dos_qvariant_create_string(void **vptr, const char* value);
 void dos_qvariant_create_qobject(void **vptr, void* value);
 void dos_qvariant_toInt(void* vptr, int& value);
+void dos_qvariant_setInt(void* vptr, int value);
 void dos_qvariant_toBool(void* vptr, bool& value);
+void dos_qvariant_setBool(void* vptr, bool value);
 void dos_qvariant_toString(void* vptr, CharPtr& ptr, int& size);
+void dos_qvariant_setString(void* vptr, const char* value);
 void dos_qvariant_isnull(void *vptr, bool& isNull);
 void dos_qvariant_delete(void *vptr);
 
-void dos_qobject_create(void **vptr, void *dObjectPointer, void (*dObjectCallback)(void*, int slotIndex, int numMetaTypes, int* metaTypes, int numParameters, void*** parameters));
+void dos_qobject_create(void **vptr, void *dObjectPointer, DObjectCallback dObjectCallback);
 void dos_qobject_slot_create(void* vptr, const char* name, int parametersCount, int* parametersMetaTypes, int* slotIndex);
+void dos_qobject_signal_create(void* vptr, const char* name, int parametersCount, int* parametersMetaTypes, int* signalIndex);
+void dos_qobject_signal_emit(void* vptr, const char* name, int parametersCount, void** parameters);
 void dos_qobject_delete(void *vptr);
 
 #ifdef __cplusplus

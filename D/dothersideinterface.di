@@ -25,13 +25,18 @@ void dos_qvariant_create_bool(ref void*, bool value);
 void dos_qvariant_create_string(ref void*, immutable(char)* value);
 void dos_qvariant_create_qobject(ref void*, void*);
 void dos_qvariant_toInt(void*, ref int);
+void dos_qvariant_setInt(void*, int);
 void dos_qvariant_toBool(void*, ref bool);
+void dos_qvariant_setBool(void*, bool);
 void dos_qvariant_toString(void*, ref char*, ref int);
+void dos_qvariant_setString(void*, immutable(char)*);
 void dos_qvariant_isnull(void*, ref bool result);
 void dos_qvariant_delete(void*);
 
-void dos_qobject_create(ref void*, void* dobject, void function (void*, int, int, int*, int , ref void**));
+void dos_qobject_create(ref void*, void* dobject, void function (void*, int, int , void**));
 void dos_qobject_slot_create(void*, immutable (char)* name, int, int*, ref int);
+void dos_qobject_signal_create(void*, immutable(char)* name, int, int*, ref int);
+void dos_qobject_signal_emit(void*, immutable(char)* name, int, void**);
 void dos_qobject_delete(void*);
 
 }

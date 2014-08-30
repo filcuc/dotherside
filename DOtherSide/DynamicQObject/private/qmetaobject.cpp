@@ -598,6 +598,7 @@ static inline int indexOfMethodRelative(const QMetaObject **baseObject,
                         ? (priv(m->d.data)->signalCount) : 0;
 
         for (; i >= end; --i) {
+            int temp = priv(m->d.data)->methodData;
             int handle = priv(m->d.data)->methodData + 5*i;
             if (methodMatch(m, handle, name, argc, types)) {
                 *baseObject = m;

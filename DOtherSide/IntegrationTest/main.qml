@@ -26,4 +26,11 @@ Window {
         result = dynamicQObject.bar(10);
         console.log("Result:", result)
     }
+
+
+    Connections
+    {
+        target: dynamicQObject
+        onNameChanged: console.log("Name Changed");
+    }
 }

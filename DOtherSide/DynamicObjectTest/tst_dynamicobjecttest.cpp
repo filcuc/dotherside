@@ -24,7 +24,8 @@ DynamicObjectTest::DynamicObjectTest()
 void DynamicObjectTest::dynamicSignalToRealSlotConnectTest()
 {
     DynamicQObject dynamicQObject;
-    dynamicQObject.registerSignal("message", {QMetaType::QVariant});
+    int index;
+    dynamicQObject.registerSignal("message", {QMetaType::QVariant}, index);
 
     MockPrinter printer;
     QObject::connect(&dynamicQObject, SIGNAL(message(QVariant)), &printer, SLOT(print(QVariant)));

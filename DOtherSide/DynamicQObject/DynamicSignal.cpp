@@ -4,8 +4,8 @@
 struct SignalData
 {
     QString name;
+    QList<QMetaType::Type> argumentsTypes;
     QByteArray signature;
-    QList<QMetaType::Type> arguments;
 };
 
 DynamicSignal::DynamicSignal()
@@ -18,18 +18,19 @@ DynamicSignal::DynamicSignal(const QString& name, const QList<QMetaType::Type>& 
 {
     d->name = name;
     d->signature = QByteArray();
-    d->arguments = arguments;
+    d->argumentsTypes = arguments;
     _initSignature();
 }
 
 DynamicSignal::DynamicSignal(const DynamicSignal& signal)
-    : d(nullptr)
 {
     if (signal.isValid())
     {
         d.reset(new SignalData());
         *d = *signal.d;
     }
+    else
+        d.reset(nullptr);
 }
 
 DynamicSignal& DynamicSignal::operator=(const DynamicSignal& signal)
@@ -67,26 +68,11 @@ QByteArray DynamicSignal::signature()
 
 bool DynamicSignal::validate(const QVariantList& arguments)
 {
-    if (!isValid())
-        return false;
-    return validate(d->arguments, arguments);
+    return true;
 }
 
 bool DynamicSignal::validate(const QList<QMetaType::Type>& argumentsTypes, const QVariantList& argumentsValues)
 {
-    if (argumentsTypes.size() != argumentsValues.size())
-        return false;
-
-    for (int i = 0; i < argumentsTypes.size(); ++i)
-    {
-        QMetaType::Type expected = argumentsTypes[i];
-        if (expected == QMetaType::QVariant)
-            continue;
-        QMetaType::Type actual = static_cast<QMetaType::Type>(argumentsValues[i].type());
-        if (expected != actual)
-            return false;
-    }
-
     return true;
 }
 
@@ -94,11 +80,11 @@ void DynamicSignal::_initSignature()
 {
     QString signature("%1(%2)");
     QString arguments;
-    for (int i = 0; i < d->arguments.size(); ++i)
+    for (int i = 0; i < d->argumentsTypes.size(); ++i)
     {
         if (i != 0)
             arguments += ',';
-        arguments += QMetaType::typeName(d->arguments[i]);
+        arguments += QMetaType::typeName(d->argumentsTypes[i]);
     }
 
     d->signature = signature.arg(d->name, arguments).toUtf8();

@@ -11,7 +11,7 @@ DynamicQObject::DynamicQObject(QObject* parent)
     QMetaObjectBuilder builder;
     builder.setFlags(QMetaObjectBuilder::DynamicMetaObject);
     builder.setClassName("DynamicQObject");
-    builder.setSuperClass(QObject::metaObject());
+    builder.setSuperClass(&QObject::staticMetaObject);
     m_metaObject.reset(builder.toMetaObject());
 }
 
@@ -43,6 +43,27 @@ bool DynamicQObject::registerSlot(const QString& name,
     return slotIndex != -1;
 }
 
+bool DynamicQObject::registerSignal(const QString& name, const QList<QMetaType::Type>& arguments, int& signalIndex)
+{
+    DynamicSignal signal(name, arguments);
+
+    if (m_signalsBySignature.contains(signal.signature()))
+        return false;
+
+    m_signalsByName.insertMulti(signal.name(), signal);
+    m_signalsBySignature[signal.signature()] = signal;
+
+    QMetaObjectBuilder builder(m_metaObject.data());
+    QMetaMethodBuilder methodBuilder = builder.addSignal(signal.signature());
+    methodBuilder.setReturnType(QMetaType::typeName(QMetaType::Void));
+    methodBuilder.setAccess(QMetaMethod::Public);
+    m_metaObject.reset(builder.toMetaObject());
+
+    signalIndex = m_metaObject->indexOfSignal(QMetaObject::normalizedSignature(signal.signature()));
+
+    return signalIndex != -1;
+}
+
 bool DynamicQObject::executeSlot(const QString& name, const QList<QVariant>& argumentsValues)
 {
     DynamicSlot slot;
@@ -66,23 +87,6 @@ bool DynamicQObject::executeSlot(const QString& name, const QList<QVariant>& arg
     auto method = m_metaObject->method(index);
 
     method.invoke(this, Q_ARG(QVariant, argumentsValues[0]));
-
-    return true;
-}
-
-bool DynamicQObject::registerSignal(const QString& name, const QList<QMetaType::Type>& arguments)
-{
-    DynamicSignal signal(name, arguments);
-
-    if (m_signalsBySignature.contains(signal.signature()))
-        return false;
-
-    m_signalsByName.insertMulti(signal.name(), signal);
-    m_signalsBySignature[signal.signature()] = signal;
-
-    QMetaObjectBuilder builder(m_metaObject.data());
-    builder.addSignal(signal.signature());
-    m_metaObject.reset(builder.toMetaObject());
 
     return true;
 }
@@ -134,21 +138,13 @@ int DynamicQObject::qt_metacall(QMetaObject::Call callType, int index, void**  a
 
         DynamicSlot slot = m_slotsBySignature[method.methodSignature()];
 
+        qDebug() << "Slot" << slot.name();
+
         if (!slot.isValid()) return -1;
 
         int slotIndex = m_metaObject->indexOfSlot(QMetaObject::normalizedSignature(slot.signature()));
 
-        int size = method.parameterCount() + 1; // Add return type
-
-        // Create the parameter types vector and allocate it on the stack
-        std::vector<int> parameterTypes;
-        parameterTypes.push_back(method.returnType());
-
-        for (int i = 0; i < size; ++i)
-            parameterTypes.push_back(method.parameterType(i));
-
-        qDebug() << "C++: " << __func__ << parameterTypes[0];
-
+        int numParametersPlusReturn = method.parameterCount() + 1;
 
         /*
          * TODO: ALLOCATE ON THE STACK AN ARRAY OF VOID* EACH ONE IS
@@ -163,10 +159,29 @@ int DynamicQObject::qt_metacall(QMetaObject::Call callType, int index, void**  a
          * BECAUSE THIS INFORMATION CAN BE DISCOVERED FROM THE QVARIANT API
          */
 
+        std::vector<QVariant> argumentsAsVariants(numParametersPlusReturn);
+        std::vector<void*> argumentsAsVoidPointers(numParametersPlusReturn);
+
+        for (int i = 0; i < numParametersPlusReturn; ++i) {
+            int parameterType = i == 0 ? method.returnType() : method.parameterType(i - 1);
+            qDebug() << "C++: parameter metatype " << parameterType;
+            QVariant variant(parameterType, args[i]);
+            qDebug() << "C++ parameter value as variant " << variant.toString();
+            argumentsAsVariants[i] = variant;
+            argumentsAsVoidPointers[i] = &argumentsAsVariants[i];
+        }
 
         // Forward  values and types to D
         if (m_dObjectCallback && m_dObjectPointer)
-            m_dObjectCallback(m_dObjectPointer, slotIndex, size, &parameterTypes[0], size, &args);
+            m_dObjectCallback(m_dObjectPointer, slotIndex, numParametersPlusReturn, &argumentsAsVoidPointers[0]);
+
+        const void* temp = argumentsAsVariants.front().constData();
+        QVariant temp2(method.returnType(), temp);
+
+        qDebug() << "C++: " << temp << temp2.toString();
+
+        QMetaType metatype(method.returnType());
+        metatype.construct(args[0], temp);
 
         return 1;
     }

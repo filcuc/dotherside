@@ -51,6 +51,7 @@ DynamicSlot& DynamicSlot::operator=(const DynamicSlot& slot)
     }
     else
         d.reset(nullptr);
+
     return *this;
 }
 
@@ -78,11 +79,6 @@ bool DynamicSlot::validate(const QVariantList& argumentsValues)
     return true;
 }
 
-void DynamicSlot::execute(void** args)
-{
-
-}
-
 void DynamicSlot::_initSignature()
 {
     QString signature("%1(%2)");
@@ -95,4 +91,6 @@ void DynamicSlot::_initSignature()
     }
 
     d->signature = signature.arg(d->name, arguments).toUtf8();
+
+    qDebug() << "C++ slot signature is " << d->signature;
 }

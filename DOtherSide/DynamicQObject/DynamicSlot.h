@@ -25,7 +25,6 @@ public:
     bool isValid() const;
     QByteArray signature() const;
     bool validate(const QVariantList& argumentsValues);
-    void execute(void** args);
 
 private:
     void _initSignature();
