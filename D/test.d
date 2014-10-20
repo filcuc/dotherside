@@ -40,7 +40,6 @@ class MyObject : DObject
   }
 
   DSignal!(string) nameChanged;
-  //DSignal!(string, int, bool) complexChanged;
 }
 
 void main()

@@ -5,13 +5,7 @@ Rectangle
   width: 100
   height: 100
   color: "red"
-  
-  Text
-  {
-    anchors.fill: parent
-    text: model
-  }
-  
+    
   Component.onCompleted: {
     var result1 = myObject.bar(1);
     var result2 = myObject.foo(2);
