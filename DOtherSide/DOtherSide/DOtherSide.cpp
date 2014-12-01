@@ -5,6 +5,7 @@
 #include <QtQml/QQmlContext>
 #include <QtCore/QDir>
 #include <QtCore/QDebug>
+#include <QtQml/QQmlApplicationEngine>
 
 #include "DynamicQObject.h"
 
@@ -31,6 +32,23 @@ void dos_guiapplication_delete()
 void dos_guiapplication_exec()
 {
     qApp->exec();
+}
+
+void dos_qqmlapplicationengine_create(void **vptr)
+{
+    *vptr = new QQmlApplicationEngine();
+}
+
+void dos_qqmlapplicationengine_load(void *vptr, const char *filename)
+{
+    QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
+    engine->load(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + QDir::separator() + QString(filename)));
+}
+
+void dos_qqmlapplicationengine_delete(void* vptr)
+{
+    QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
+    delete engine;
 }
 
 void dos_quickview_create(void** vptr)
@@ -176,6 +194,7 @@ void dos_qvariant_setString(void* vptr, const char* value)
     auto variant = reinterpret_cast<QVariant*>(vptr);
     *variant = value;
 }
+
 
 void dos_qobject_create(void** vptr, void* dObjectPointer, DObjectCallback dObjectCallback)
 {

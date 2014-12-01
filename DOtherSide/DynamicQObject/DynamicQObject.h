@@ -1,13 +1,10 @@
 #pragma once
 
-class QMetaObject;
-
-#include <QScopedPointer>
 #include <QObject>
+#include <QScopedPointer>
 
 #include "DynamicSignal.h"
 #include "DynamicSlot.h"
-
 
 class DynamicQObject : public QObject
 {
@@ -15,8 +12,8 @@ class DynamicQObject : public QObject
 
 public:
     DynamicQObject(QObject* parent = 0);
-    virtual ~DynamicQObject();
 
+    virtual ~DynamicQObject();
 
     void setDObjectCallback(Callback callback) { m_dObjectCallback = callback; }
     void setDObjectPointer(void* dObjectPointer)  { m_dObjectPointer = dObjectPointer; }

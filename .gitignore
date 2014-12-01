@@ -3,3 +3,4 @@ build
 *.pro.*
 *.o
 .directory
+nimcache

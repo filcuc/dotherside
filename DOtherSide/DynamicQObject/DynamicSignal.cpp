@@ -48,7 +48,6 @@ DynamicSignal& DynamicSignal::operator=(const DynamicSignal& signal)
 
 DynamicSignal::~DynamicSignal()
 {
-
 }
 
 bool DynamicSignal::isValid() const
@@ -89,4 +88,3 @@ void DynamicSignal::_initSignature()
 
     d->signature = signature.arg(d->name, arguments).toUtf8();
 }
-

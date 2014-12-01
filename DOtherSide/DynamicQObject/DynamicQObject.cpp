@@ -221,6 +221,3 @@ int DynamicQObject::qt_metacall(QMetaObject::Call callType, int index, void**  a
 
     return -1;
 }
-
-
-

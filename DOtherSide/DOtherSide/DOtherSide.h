@@ -14,6 +14,10 @@ void dos_guiapplication_create();
 void dos_guiapplication_exec();
 void dos_guiapplication_delete();
 
+void dos_qqmlapplicationengine_create(void** vptr);
+void dos_qqmlapplicationengine_load(void* vptr, const char* filename);
+void dos_qqmlapplicationengine_delete(void* vptr);
+
 void dos_quickview_create(void** vptr);
 void dos_quickview_show(void* vptr);
 void dos_quickview_source(void* vptr, CharPtr& result, int& length);
@@ -40,6 +44,7 @@ void dos_qvariant_toString(void* vptr, CharPtr& ptr, int& size);
 void dos_qvariant_setString(void* vptr, const char* value);
 void dos_qvariant_isnull(void *vptr, bool& isNull);
 void dos_qvariant_delete(void *vptr);
+
 
 void dos_qobject_create(void **vptr, void *dObjectPointer, DObjectCallback dObjectCallback);
 void dos_qobject_slot_create(void* vptr, const char* name, int parametersCount, int* parametersMetaTypes, int* slotIndex);

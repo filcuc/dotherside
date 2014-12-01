@@ -11,22 +11,16 @@ INCLUDEPATH += private
 CONFIG += c++11
 CONFIG += staticlib
 
+QMAKE_CXXFLAGS += "-fpic"
+
 # Input
 HEADERS += DynamicQObject.h \
     private/qmetaobjectbuilder_p.h \
     private/qmetaobject_p.h \
     private/qobject_p.h \
-    private/qmetaobject_moc_p.h \
-    private/qmetaobject.h \
-    private/qmetatype_p.h \
-    private/qmetatype.h \
-    private/qmetatypeswitcher_p.h \
     DynamicSignal.h \
     DynamicSlot.h
 SOURCES += DynamicQObject.cpp \
-    private/qmetaobjectbuilder.cpp \
-    private/qmetaobject.cpp \
-    private/qmetatype.cpp \
     DynamicSignal.cpp \
     DynamicSlot.cpp
 

@@ -8,7 +8,7 @@ QT       += quick
 
 CONFIG += c++11
 
-QMAKE_CXXFLAGS += "-O1 -fpic"
+QMAKE_CXXFLAGS += "-fpic"
 
 TARGET = DOtherSide
 TEMPLATE = lib
