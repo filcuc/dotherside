@@ -52,61 +52,82 @@ public int GetMetaType(T)()
     return 0;
 }
 
-class GuiApplication
+class QGuiApplication
 { 
   this()
   {
-    dos_guiapplication_create();
+    dos_qguiapplication_create();
   }
   
   ~this()
   {
-    dos_guiapplication_delete();
+    dos_qguiapplication_delete();
   }
   
   void exec()
   {
-    dos_guiapplication_exec();
+    dos_qguiapplication_exec();
   }
 }
 
-class QuickView
+class QQuickView
 { 
   this()
   {
-    dos_quickview_create(data);
+    dos_qquickview_create(data);
   }
   
   ~this()
   {
-    dos_quickview_delete(data);
+    dos_qquickview_delete(data);
   }
   
   void show()
   {
-    dos_quickview_show(data);
+    dos_qquickview_show(data);
   }
   
   QQmlContext rootContext()
   {
     auto context = new QQmlContext();
-    dos_quickview_rootContext(data, context.data);
+    dos_qquickview_rootContext(data, context.data);
     return context;
   }
   
   string source()
   {
     auto array = new CharArray();
-    dos_quickview_source(data, array.dataRef(), array.sizeRef());
+    dos_qquickview_source(data, array.dataRef(), array.sizeRef());
     return to!(string)(array.data());
   }
   
   void setSource(string filename)
   {
     immutable(char)* filenameAsCString = filename.toStringz();
-    dos_quickview_set_source(data, filenameAsCString);
+    dos_qquickview_set_source(data, filenameAsCString);
   }
 
+  private void* data;
+}
+
+class QQmlApplicationEngine
+{
+  this()
+  {
+    dos_qqmlapplicationengine_create(data);
+  }
+  
+  ~this()
+  {
+    dos_qqmlapplicationengine_delete(data);
+  }
+  
+  void load(string filename)
+  {
+    immutable(char)* filenameAsCString = filename.toStringz();
+    dos_qqmlapplicationengine_load(data, filenameAsCString);
+  }
+  
   private void* data;
 }
 
@@ -115,13 +136,13 @@ class QQmlContext
   string baseUrl()
   {
     auto array = new CharArray();
-    dos_qmlcontext_baseUrl(data, array.dataRef(), array.sizeRef());
+    dos_qqmlcontext_baseUrl(data, array.dataRef(), array.sizeRef());
     return to!(string)(array.data());
   }
   
   void setContextProperty(string name, QVariant value)
   {
-    dos_qmlcontext_setcontextproperty(data, name.ptr, value.data);
+    dos_qqmlcontext_setcontextproperty(data, name.ptr, value.data);
   }
 
   private void* data;

@@ -16,7 +16,7 @@ void convert_to_cstring(const QString& source, CharPtr& destination, int& length
     length = qstrlen(array.data());
 }
 
-void dos_guiapplication_create()
+void dos_qguiapplication_create()
 {
     static int argc = 1;
     static char empty[1] = {0};
@@ -24,12 +24,12 @@ void dos_guiapplication_create()
     new QGuiApplication(argc, argv);
 }
 
-void dos_guiapplication_delete()
+void dos_qguiapplication_delete()
 {
     delete qApp;
 }
 
-void dos_guiapplication_exec()
+void dos_qguiapplication_exec()
 {
     qApp->exec();
 }
@@ -51,37 +51,37 @@ void dos_qqmlapplicationengine_delete(void* vptr)
     delete engine;
 }
 
-void dos_quickview_create(void** vptr)
+void dos_qquickview_create(void** vptr)
 {
     *vptr = new QQuickView();
 }
 
-void dos_quickview_show(void* vptr)
+void dos_qquickview_show(void* vptr)
 {
     QQuickView* view = reinterpret_cast<QQuickView*>(vptr);
     view->show();
 }
 
-void dos_quickview_delete(void* vptr)
+void dos_qquickview_delete(void* vptr)
 {
     QQuickView* view = reinterpret_cast<QQuickView*>(vptr);
     delete view;
 }
 
-void dos_quickview_source(void *vptr, CharPtr& result, int& length)
+void dos_qquickview_source(void *vptr, CharPtr& result, int& length)
 {
     QQuickView* view = reinterpret_cast<QQuickView*>(vptr);
     QUrl url = view->source();
     convert_to_cstring(url.toString(), result, length);
 }
 
-void dos_quickview_set_source(void* vptr, const char* filename)
+void dos_qquickview_set_source(void* vptr, const char* filename)
 {
     QQuickView* view = reinterpret_cast<QQuickView*>(vptr);
     view->setSource(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + QDir::separator() + QString(filename)));
 }
 
-void dos_quickview_rootContext(void* vptr, void** context)
+void dos_qquickview_rootContext(void* vptr, void** context)
 {
     QQuickView* view = reinterpret_cast<QQuickView*>(vptr);
     *context = view->rootContext();
@@ -105,14 +105,14 @@ void dos_chararray_delete(CharPtr &ptr)
     if (ptr) delete[] ptr;
 }
 
-void dos_qmlcontext_baseUrl(void* vptr, CharPtr& result, int& length)
+void dos_qqmlcontext_baseUrl(void* vptr, CharPtr& result, int& length)
 {
     QQmlContext* context = reinterpret_cast<QQmlContext*>(vptr);
     QUrl url = context->baseUrl();
     convert_to_cstring(url.toString(), result, length);
 }
 
-void dos_qmlcontext_setcontextproperty(void* vptr, const char* name, void* value)
+void dos_qqmlcontext_setcontextproperty(void* vptr, const char* name, void* value)
 {
     QQmlContext* context = reinterpret_cast<QQmlContext*>(vptr);
     auto variant = reinterpret_cast<QVariant*>(value);

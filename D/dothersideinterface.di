@@ -1,23 +1,27 @@
 extern(C)
 {
 
-void dos_guiapplication_create();
-void dos_guiapplication_exec();
-void dos_guiapplication_delete();
+void dos_qguiapplication_create();
+void dos_qguiapplication_exec();
+void dos_qguiapplication_delete();
 
-void dos_quickview_create(ref void*);
-void dos_quickview_show(void*);
-void dos_quickview_source(void*, ref char *, ref int);
-void dos_quickview_set_source(void*, immutable (char)* filename);
-void dos_quickview_rootContext(void*, ref void*);
-void dos_quickview_delete(void*);
+void dos_qqmlapplicationengine_create(ref void*);
+void dos_qqmlapplicationengine_load(void*, immutable (char)* filename);
+void dos_qqmlapplicationengine_delete(void*);
+
+void dos_qquickview_create(ref void*);
+void dos_qquickview_show(void*);
+void dos_qquickview_source(void*, ref char *, ref int);
+void dos_qquickview_set_source(void*, immutable (char)* filename);
+void dos_qquickview_rootContext(void*, ref void*);
+void dos_qquickview_delete(void*);
 
 void dos_chararray_create(ref char*);
 void dos_chararray_create(ref char*, int size);
 void dos_chararray_delete(ref char*);
 
-void dos_qmlcontext_baseUrl(void*, ref char*, ref int);
-void dos_qmlcontext_setcontextproperty(void*, immutable (char)*, void*);
+void dos_qqmlcontext_baseUrl(void*, ref char*, ref int);
+void dos_qqmlcontext_setcontextproperty(void*, immutable (char)*, void*);
 
 void dos_qvariant_create(ref void*);
 void dos_qvariant_create_int(ref void*, int value);

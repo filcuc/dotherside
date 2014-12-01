@@ -1,21 +1,21 @@
 # QApplication
-proc dos_guiapplication_create() {.cdecl, dynlib: "libDOtherSide.so", importc.}
-proc dos_guiapplication_exec() {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_guiapplication_delete() {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qguiapplication_create() {.cdecl, dynlib: "libDOtherSide.so", importc.}
+proc dos_qguiapplication_exec() {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qguiapplication_delete() {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
 type QApplication = distinct pointer
 
 proc create(application: QApplication) = 
   echo "QApplication: create"
-  dos_guiapplication_create()
+  dos_qguiapplication_create()
 
 proc exec(application: QApplication) =
   echo "QApplication: exec"
-  dos_guiapplication_exec()
+  dos_qguiapplication_exec()
 
 proc delete(application: QApplication) = 
   echo "QApplication: delete"
-  dos_guiapplication_delete()
+  dos_qguiapplication_delete()
 
 # QQmlApplicationEngine
 proc dos_qqmlapplicationengine_create(engine: var pointer) {.cdecl, dynlib:"libDOtherSide.so", importc.}
@@ -36,36 +36,36 @@ proc delete(engine: QQmlApplicationEngine) =
   dos_qqmlapplicationengine_delete(pointer(engine))
 
 # QQuickView
-proc dos_quickview_create(view: var pointer) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_quickview_delete(view: pointer) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_quickview_show(view: pointer) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_quickview_source(view: pointer, filename: var cstring, length: var int) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_quickview_set_source(view: pointer, filename: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qquickview_create(view: var pointer) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qquickview_delete(view: pointer) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qquickview_show(view: pointer) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qquickview_source(view: pointer, filename: var cstring, length: var int) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qquickview_set_source(view: pointer, filename: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
 type QQuickView = distinct pointer
 
 proc create(view: var QQuickView) = 
   echo "QQuickView: create"
   var temp: pointer
-  dos_quickview_create(temp)
+  dos_qquickview_create(temp)
   view = QQuickView(temp)
 
 proc source(view: QQuickView): cstring = 
     var length: int
-    dos_quickview_source(pointer(view), result, length)
+    dos_qquickview_source(pointer(view), result, length)
     return 
 
 proc `source=`(view: QQuickView, filename: cstring) =
   echo "QQuickView: source="
-  dos_quickview_set_source(pointer(view), filename)
+  dos_qquickview_set_source(pointer(view), filename)
 
 proc show(view: QQuickView) = 
   echo "QQuickView: show"
-  dos_quickview_show(pointer(view))
+  dos_qquickview_show(pointer(view))
 
 proc delete(view: QQuickView) = 
   echo "QQuickView: delete"
-  dos_quickview_delete(pointer(view))
+  dos_qquickview_delete(pointer(view))
 
 # QVariant
 proc dos_qvariant_create(variant: var pointer) {.cdecl, dynlib:"libDOtherSide.so", importc.}

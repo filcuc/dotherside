@@ -46,10 +46,10 @@ void main()
 {
   try
   {
-    auto app = new GuiApplication;
+    auto app = new QGuiApplication;
     scope(exit) clear(app);
 
-    auto view = new QuickView;
+    auto view = new QQuickView;
     scope(exit) clear(view);
     
     auto myObject = new MyObject();
