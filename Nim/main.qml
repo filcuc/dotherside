@@ -6,7 +6,10 @@ ApplicationWindow
 {
 	width: 400
 	height: 300
-	Component.onCompleted: visible = true
+	Component.onCompleted: {
+	    visible = true 
+	    myObject.myVoidSlot(10)
+	}
 
 	Button
 	{

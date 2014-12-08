@@ -45,6 +45,13 @@ void dos_qqmlapplicationengine_load(void *vptr, const char *filename)
     engine->load(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + QDir::separator() + QString(filename)));
 }
 
+void dos_qqmlapplicationengine_context(void* vptr, void** context)
+{
+    QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
+    engine->rootContext();
+    *context = engine->rootContext();
+}
+
 void dos_qqmlapplicationengine_delete(void* vptr)
 {
     QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
@@ -100,7 +107,7 @@ void dos_chararray_create(CharPtr& ptr, int size)
         ptr = 0;
 }
 
-void dos_chararray_delete(CharPtr &ptr)
+void dos_chararray_delete(CharPtr ptr)
 {
     if (ptr) delete[] ptr;
 }
@@ -195,10 +202,10 @@ void dos_qvariant_setString(void* vptr, const char* value)
     *variant = value;
 }
 
-
 void dos_qobject_create(void** vptr, void* dObjectPointer, DObjectCallback dObjectCallback)
 {
     auto dynamicQObject = new DynamicQObject();
+    QQmlEngine::setObjectOwnership(dynamicQObject, QQmlEngine::CppOwnership);
     dynamicQObject->setDObjectPointer(dObjectPointer);
     dynamicQObject->setDObjectCallback(dObjectCallback);
     *vptr = dynamicQObject;
@@ -207,6 +214,7 @@ void dos_qobject_create(void** vptr, void* dObjectPointer, DObjectCallback dObje
 void dos_qobject_delete(void *vptr)
 {
     auto dynamicQObject = reinterpret_cast<DynamicQObject*>(vptr);
+    dynamicQObject->disconnect();
     delete dynamicQObject;
 }
 
@@ -237,8 +245,6 @@ void dos_qobject_signal_create(void* vptr, const char* name, int parametersCount
         argumentsTypes << static_cast<QMetaType::Type>(parametersMetaTypes[i]);
 
     dynamicQObject->registerSignal(QString::fromStdString(name), argumentsTypes, *signalIndex);
-
-    qDebug() << "C++: registered the" << name << "signal";
 }
 
 void dos_qobject_signal_emit(void* vptr, const char* name, int parametersCount, void** parameters)

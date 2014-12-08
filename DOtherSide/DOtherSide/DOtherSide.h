@@ -16,6 +16,7 @@ void dos_qguiapplication_delete();
 
 void dos_qqmlapplicationengine_create(void** vptr);
 void dos_qqmlapplicationengine_load(void* vptr, const char* filename);
+void dos_qqmlapplicationengine_context(void* vptr, void** context);
 void dos_qqmlapplicationengine_delete(void* vptr);
 
 void dos_qquickview_create(void** vptr);
@@ -29,7 +30,7 @@ void dos_qqmlcontext_baseUrl(void* vptr, CharPtr& result, int& length);
 void dos_qqmlcontext_setcontextproperty(void* vptr, const char* name, void* value);
 
 void dos_chararray_create(CharPtr& ptr, int size);
-void dos_chararray_delete(CharPtr& ptr);
+void dos_chararray_delete(CharPtr ptr);
 
 void dos_qvariant_create(void **vptr);
 void dos_qvariant_create_int(void **vptr, int value);
