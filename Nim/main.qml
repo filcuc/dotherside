@@ -8,12 +8,22 @@ ApplicationWindow
 	height: 300
 	Component.onCompleted: {
 	    visible = true 
-	    myObject.myVoidSlot(10)
+	    myQObject.myVoidSlot()
+	    myQObject.myIntSlot(10)
+	    var result = myQObject.myIntSlot2(20)
+	    console.log("QML: result ", result)
+        myQObject.intValueChanged.connect(temp)
+	}
+
+	function temp()
+	{
+	    console.log("temp called")
 	}
 
 	Button
 	{
 	    anchors.centerIn: parent
 	    text: "Click Me"
+	    onClicked: myQObject.myVoidSlot()
 	}
 }

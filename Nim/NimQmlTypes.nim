@@ -6,6 +6,8 @@ type
   QQmlContext* = distinct pointer
   QApplication* = distinct pointer
   QObject* {.inheritable.} = ref object of RootObj
+    name*: string
     data*: pointer
     slots*: Table[string, cint]
+    signals*: Table[string, cint]
   QQuickView* = distinct pointer
