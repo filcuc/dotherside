@@ -2,27 +2,24 @@ import NimQml
 import macros
 import typeinfo
 
-type MyQObject = ref object of QObject
+type MyQObject = ref object of QObject 
+  m_name: string
 
-method myVoidSlot(myQObject: MyQObject) = 
-  echo "MyQObject: myVoidSlot called"
-  myQObject.emit("intValueChanged", [])
+method name(myQObject: MyQObject): string =
+  result = myQObject.m_name
 
-method myIntSlot(myQObject: MyQObject, value: int) =
-  echo "MyQObject: myIntSlot called with arg ", $value
-
-method myIntSlot2(myQObject: MyQObject, value: int): int =
-  echo "MyQObject: myIntSlot called with arg ", $value
-  return -10
+method `name=`(myQObject: MyQObject, name: string) =
+  if myQObject.m_name != name:
+    myQObject.m_name = name
+    myQObject.emit("nameChanged")
 
 method onSlotCalled(myQObject: MyQObject, slotName: string, args: openarray[QVariant]) = 
   case slotName:
-    of "myVoidSlot": 
-      myQObject.myVoidSlot()
-    of "myIntSlot": 
-      myQObject.myIntSlot(args[1].intVal)
-    of "myIntSlot2": 
-      args[0].intVal = myQObject.myIntSlot2(args[1].intVal)
+    of "name":
+      args[0].stringVal = myQObject.m_name
+    of "`name=`":
+      myQObject.m_name = args[1].stringVal
+      myQObject.emit("nameChanged")
     else:
       discard()
 
@@ -33,11 +30,12 @@ proc mainProc() =
    
   var myQObject = MyQObject()
   myQObject.create()
+  myQObject.m_name = "InitialName"
   finally: myQObject.delete() 
-  myQObject.registerSlot("myVoidSlot", [QMetaType.Void])
-  myQObject.registerSlot("myIntSlot", [QMetaType.Void, QMetaType.Int])
-  myQObject.registerSlot("myIntSlot2", [QMetaType.Int, QMetaType.Int])
-  myQObject.registerSignal("intValueChanged", [QMetaType.Void])
+  myQObject.registerSlot("name", [QMetaType.QString])
+  myQObject.registerSlot("`name=`", [QMetaType.Void, QMetaType.QString])
+  myQObject.registerSignal("nameChanged", [QMetaType.Void])
+  myQObject.registerProperty("name", QMetaType.QString, "name", "`name=`", "nameChanged")
 
   var engine: QQmlApplicationEngine
   engine.create()

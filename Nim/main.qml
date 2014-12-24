@@ -1,29 +1,41 @@
 import QtQuick 2.2
 import QtQuick.Controls 1.2
+import QtQuick.Layouts 1.1
 import QtQuick.Window 2.1
 
 ApplicationWindow
 {
 	width: 400
 	height: 300
-	Component.onCompleted: {
-	    visible = true 
-	    myQObject.myVoidSlot()
-	    myQObject.myIntSlot(10)
-	    var result = myQObject.myIntSlot2(20)
-	    console.log("QML: result ", result)
-        myQObject.intValueChanged.connect(temp)
-	}
+
+	Component.onCompleted: visible = true
 
 	function temp()
 	{
 	    console.log("temp called")
 	}
 
-	Button
+	ColumnLayout
 	{
-	    anchors.centerIn: parent
-	    text: "Click Me"
-	    onClicked: myQObject.myVoidSlot()
+	    anchors.fill: parent
+
+	    Label
+	    {
+	        text: "Current name is:" + myQObject.name
+	    }
+
+	    TextField
+	    {
+	        id: textField
+	    }
+
+	    Button
+	    {
+	        text: "Change Name"
+	        onClicked: {
+	            console.log("QML:", textField.text)
+	            myQObject.name = textField.text 
+	        }
+	    }
 	}
 }

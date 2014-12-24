@@ -50,6 +50,12 @@ void dos_qobject_create(void **vptr, void *dObjectPointer, DObjectCallback dObje
 void dos_qobject_slot_create(void* vptr, const char* name, int parametersCount, int* parametersMetaTypes, int* slotIndex);
 void dos_qobject_signal_create(void* vptr, const char* name, int parametersCount, int* parametersMetaTypes, int* signalIndex);
 void dos_qobject_signal_emit(void* vptr, const char* name, int parametersCount, void** parameters);
+void dos_qobject_property_create(void* vptr,
+                                 const char* name,
+                                 int type,
+                                 const char* readSlot,
+                                 const char* writeSlot,
+                                 const char* notifySignal);
 void dos_qobject_delete(void *vptr);
 
 #ifdef __cplusplus

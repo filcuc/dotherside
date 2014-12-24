@@ -255,3 +255,19 @@ void dos_qobject_signal_emit(void* vptr, const char* name, int parametersCount, 
         arguments << *(reinterpret_cast<QVariant*>(parameters[i]));
     dynamicQObject->emitSignal(QString::fromStdString(name), arguments);
 }
+
+
+void dos_qobject_property_create(void* vptr,
+                                 const char* name,
+                                 int type,
+                                 const char* readSlot,
+                                 const char* writeSlot,
+                                 const char* notifySignal)
+{
+    auto dynamicQObject = reinterpret_cast<DynamicQObject*>(vptr);
+    dynamicQObject->registerProperty(QString(name),
+                                     QMetaType::Type(type),
+                                     QString(readSlot),
+                                     QString(writeSlot),
+                                     QString(notifySignal));
+}

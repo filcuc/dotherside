@@ -162,6 +162,7 @@ proc dos_qobject_delete(qobject: pointer) {.cdecl, dynlib:"libDOtherSide.so", im
 proc dos_qobject_slot_create(qobject: pointer, slotName: cstring, argumentsCount: cint, argumentsMetaTypes: ptr cint, slotIndex: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qobject_signal_create(qobject: pointer, signalName: cstring, argumentsCount: cint, argumentsMetaTypes: ptr cint, signalIndex: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qobject_signal_emit(qobject: pointer, signalName: cstring, argumentsCount: cint, arguments: pointer) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qobject_property_create(qobject: pointer, propertyName: cstring, propertyType: cint, readSlot: cstring, writeSlot: cstring, notifySignal: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
 method onSlotCalled*(nimobject: QObject, slotName: string, args: openarray[QVariant]) = 
   debugMsg("QObject", "onSlotCalled", "begin")
@@ -194,14 +195,18 @@ proc delete*(qobject: QObject) =
   debugMsg("QObject", "delete")
   dos_qobject_delete(qobject.data)
 
-proc registerSlot*(qobject: var QObject, slotName: string, metaTypes: openarray[QMetaType]) =
+proc registerSlot*(qobject: var QObject, 
+                   slotName: string, 
+                   metaTypes: openarray[QMetaType]) =
   # Copy the metatypes array
   var copy = toCIntSeq(metatypes)
   var index: cint 
   dos_qobject_slot_create(qobject.data, slotName, cint(copy.len), cast[ptr cint](addr(copy[0])), index)
   qobject.slots[slotName] = index
 
-proc registerSignal*(qobject: var QObject, signalName: string, metatypes: openarray[QMetaType]) =
+proc registerSignal*(qobject: var QObject, 
+                     signalName: string, 
+                     metatypes: openarray[QMetaType]) =
   var index: cint 
   if metatypes.len > 0:
     var copy = toCIntSeq(metatypes)
@@ -210,7 +215,15 @@ proc registerSignal*(qobject: var QObject, signalName: string, metatypes: openar
     dos_qobject_signal_create(qobject.data, signalName, 0, cast[ptr cint](0), index)
   qobject.signals[signalName] = index
 
-proc emit*(qobject: QObject, signalName: string, args: openarray[QVariant]) =
+proc registerProperty*(qobject: var QObject, 
+                       propertyName: string, 
+                       propertyType: QMetaType, 
+                       readSlot: string, 
+                       writeSlot: string, 
+                       notifySignal: string) = 
+  dos_qobject_property_create(qobject.data, propertyName, cast[cint](propertyType), readSlot, writeSlot, notifySignal)
+
+proc emit*(qobject: QObject, signalName: string, args: openarray[QVariant] = []) =
   if args.len > 0: 
     var copy: seq[QVariant]
     for i in 0..args.len-1:

@@ -18,7 +18,7 @@ public:
     bool isValid() const;
 
     QString name() const;
-    QByteArray signature();
+    QByteArray signature() const;
 
     bool validate(const QVariantList& arguments);
     static bool validate(const QList<QMetaType::Type>& argumentsTypes, const QVariantList& argumentsValues);

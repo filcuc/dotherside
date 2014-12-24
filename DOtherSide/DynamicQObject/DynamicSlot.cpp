@@ -79,6 +79,21 @@ bool DynamicSlot::validate(const QVariantList& argumentsValues)
     return true;
 }
 
+QMetaType::Type DynamicSlot::returnType() const
+{
+    return isValid() ? d->returnType : QMetaType::UnknownType;
+}
+
+QList<QMetaType::Type> DynamicSlot::argumentsTypes() const
+{
+    return isValid() ? d->argumentsTypes : QList<QMetaType::Type>();
+}
+
+QMetaType::Type DynamicSlot::argumentTypeAt(int i) const
+{
+    return isValid() ? d->argumentsTypes.at(i) : QMetaType::UnknownType;
+}
+
 void DynamicSlot::_initSignature()
 {
     QString signature("%1(%2)");

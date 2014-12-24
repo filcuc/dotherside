@@ -25,6 +25,9 @@ public:
     bool isValid() const;
     QByteArray signature() const;
     bool validate(const QVariantList& argumentsValues);
+    QMetaType::Type returnType() const;
+    QList<QMetaType::Type> argumentsTypes() const;
+    QMetaType::Type argumentTypeAt(int i) const;
 
 private:
     void _initSignature();

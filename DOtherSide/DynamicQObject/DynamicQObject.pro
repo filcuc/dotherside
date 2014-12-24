@@ -19,10 +19,12 @@ HEADERS += DynamicQObject.h \
     private/qmetaobject_p.h \
     private/qobject_p.h \
     DynamicSignal.h \
-    DynamicSlot.h
+    DynamicSlot.h \
+    DynamicProperty.h
 SOURCES += DynamicQObject.cpp \
     DynamicSignal.cpp \
-    DynamicSlot.cpp
+    DynamicSlot.cpp \
+    DynamicProperty.cpp
 
 
 

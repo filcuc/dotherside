@@ -10,4 +10,5 @@ type
     data*: pointer
     slots*: Table[string, cint]
     signals*: Table[string, cint]
+    properties*: Table[string, cint]
   QQuickView* = distinct pointer

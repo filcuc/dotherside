@@ -60,7 +60,7 @@ QString DynamicSignal::name() const
     return isValid() ? d->name : QString();
 }
 
-QByteArray DynamicSignal::signature()
+QByteArray DynamicSignal::signature() const
 {
     return isValid() ? d->signature : QByteArray();
 }

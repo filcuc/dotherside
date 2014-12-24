@@ -8,9 +8,7 @@ Window {
 
     MouseArea {
         anchors.fill: parent
-        onClicked: {
-            Qt.quit();
-        }
+        onClicked: Qt.quit();
     }
 
     Text {
@@ -25,6 +23,8 @@ Window {
         console.log("Result:", result)
         result = dynamicQObject.bar(10);
         console.log("Result:", result)
+        console.log("Name:", dynamicQObject.name)
+        dynamicQObject.name = "HelloWorld"
     }
 
 
