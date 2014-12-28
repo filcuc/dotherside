@@ -5,21 +5,20 @@ import typeinfo
 type MyQObject = ref object of QObject 
   m_name: string
 
-method name(myQObject: MyQObject): string =
+method getName(myQObject: MyQObject): string =
   result = myQObject.m_name
 
-method `name=`(myQObject: MyQObject, name: string) =
+method setName(myQObject: MyQObject, name: string) =
   if myQObject.m_name != name:
     myQObject.m_name = name
     myQObject.emit("nameChanged")
 
 method onSlotCalled(myQObject: MyQObject, slotName: string, args: openarray[QVariant]) = 
   case slotName:
-    of "name":
-      args[0].stringVal = myQObject.m_name
-    of "`name=`":
-      myQObject.m_name = args[1].stringVal
-      myQObject.emit("nameChanged")
+    of "getName":
+      args[0].stringVal = myQObject.getName()
+    of "setName":
+      myQObject.setName(args[1].stringVal)
     else:
       discard()
 
@@ -32,10 +31,10 @@ proc mainProc() =
   myQObject.create()
   myQObject.m_name = "InitialName"
   finally: myQObject.delete() 
-  myQObject.registerSlot("name", [QMetaType.QString])
-  myQObject.registerSlot("`name=`", [QMetaType.Void, QMetaType.QString])
+  myQObject.registerSlot("getName", [QMetaType.QString])
+  myQObject.registerSlot("setName", [QMetaType.Void, QMetaType.QString])
   myQObject.registerSignal("nameChanged", [QMetaType.Void])
-  myQObject.registerProperty("name", QMetaType.QString, "name", "`name=`", "nameChanged")
+  myQObject.registerProperty("name", QMetaType.QString, "getName", "setName", "nameChanged")
 
   var engine: QQmlApplicationEngine
   engine.create()
