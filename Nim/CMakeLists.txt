@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.0)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Nim)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Nim/UseNim.cmake)
+find_package(Nim)
+add_nim_executable(TARGET Main SOURCES main.nim)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/main.qml DESTINATION ${CMAKE_CURRENT_BINARY_DIR}) 

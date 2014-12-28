@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     engine.load(QUrl(QStringLiteral("qrc:///main.qml")));
 
     QVariantList list;
-    list << "Prova";
+    list << "NewName";
     dynamicQObject.emitSignal("nameChanged", list);
 
     return app.exec();

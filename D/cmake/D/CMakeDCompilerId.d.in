@@ -1,0 +1,39 @@
+version(DigitalMars)
+{
+    const string COMPILER_ID = "DigitalMars";
+}
+else version(GNU)
+{
+    const string COMPILER_ID = "GNU";
+}
+else version(LDC)
+{
+    const string COMPILER_ID = "LDC";
+}
+else version(SDC)
+{
+    const string COMPILER_ID = "SDC";
+}
+else
+{
+    const string COMPILER_ID = "";
+}
+
+/* Construct the string literal in pieces to prevent the source from
+   getting matched.  Store it in a pointer rather than an array
+   because some compilers will just produce instructions to fill the
+   array rather than assigning a pointer to a static array.  */
+string info_compiler = "INFO" ":" "compiler[" ~ COMPILER_ID ~ "]";
+
+@CMAKE_D_COMPILER_ID_PLATFORM_CONTENT@
+
+/*--------------------------------------------------------------------------*/
+
+int main(string[] args)
+{
+    int require = 0;
+    require += info_compiler[args.length];
+    require += info_platform[args.length];
+    require += info_arch[args.length];
+    return require;
+}
