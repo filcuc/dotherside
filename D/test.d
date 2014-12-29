@@ -47,12 +47,13 @@ void main()
   try
   {
     auto app = new QGuiApplication;
-    scope(exit) clear(app);
+    scope(exit) destroy(app);
 
     auto view = new QQuickView;
-    scope(exit) clear(view);
+    scope(exit) destroy(view);
     
     auto myObject = new MyObject();
+    scope(exit) destroy(myObject);
     
     auto context = view.rootContext();
     context.setContextProperty("myObject", new QVariant(myObject));

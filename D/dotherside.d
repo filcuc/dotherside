@@ -97,8 +97,9 @@ class QQuickView
   string source()
   {
     auto array = new CharArray();
+    scope(exit) destroy(array);
     dos_qquickview_source(data, array.dataRef(), array.sizeRef());
-    return to!(string)(array.data());
+    return array.toString();
   }
   
   void setSource(string filename)
@@ -136,8 +137,9 @@ class QQmlContext
   string baseUrl()
   {
     auto array = new CharArray();
+    scope(exit) destroy(array);
     dos_qqmlcontext_baseUrl(data, array.dataRef(), array.sizeRef());
-    return to!(string)(array.data());
+    return array.toString();
   }
   
   void setContextProperty(string name, QVariant value)
@@ -245,9 +247,10 @@ class QVariant
   
   override string toString()
   {
-    auto array = new CharArray();
-    dos_qvariant_toString(this.data, array.dataRef(), array.sizeRef());
-    return to!(string)(array.data());
+    auto result = new CharArray();
+    scope(exit) destroy(result);
+    dos_qvariant_toString(this.data, result.dataRef(), result.sizeRef());
+    return result.toString();
   }
 
   private void* data;
@@ -297,6 +300,11 @@ class CharArray
   ref int sizeRef()
   {
     return _size;
+  }
+
+  override string toString()
+  {
+    return fromStringz(_data).dup;
   }
 
   private char* _data;

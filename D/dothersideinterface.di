@@ -18,7 +18,7 @@ void dos_qquickview_delete(void*);
 
 void dos_chararray_create(ref char*);
 void dos_chararray_create(ref char*, int size);
-void dos_chararray_delete(ref char*);
+void dos_chararray_delete(char*);
 
 void dos_qqmlcontext_baseUrl(void*, ref char*, ref int);
 void dos_qqmlcontext_setcontextproperty(void*, immutable (char)*, void*);
