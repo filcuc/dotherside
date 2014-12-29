@@ -25,12 +25,12 @@ method onSlotCalled(myQObject: MyQObject, slotName: string, args: openarray[QVar
 proc mainProc() =
   var app: QApplication
   app.create()
-  finally: app.delete()
+  defer: app.delete()
    
   var myQObject = MyQObject()
   myQObject.create()
+  defer: myQObject.delete() 
   myQObject.m_name = "InitialName"
-  finally: myQObject.delete() 
   myQObject.registerSlot("getName", [QMetaType.QString])
   myQObject.registerSlot("setName", [QMetaType.Void, QMetaType.QString])
   myQObject.registerSignal("nameChanged", [QMetaType.Void])
@@ -38,11 +38,11 @@ proc mainProc() =
 
   var engine: QQmlApplicationEngine
   engine.create()
-  finally: engine.delete()
+  defer: engine.delete()
 
   var variant: QVariant
   variant.create(myQObject)
-  finally: variant.delete()
+  defer: variant.delete()
 
   var rootContext: QQmlContext = engine.rootContext()
   rootContext.setContextProperty("myQObject", variant)
