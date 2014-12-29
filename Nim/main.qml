@@ -10,11 +10,6 @@ ApplicationWindow
 
 	Component.onCompleted: visible = true
 
-	function temp()
-	{
-	    console.log("temp called")
-	}
-
 	ColumnLayout
 	{
 	    anchors.fill: parent
