@@ -8,7 +8,7 @@ You need the following software:
 - Qt 5.3
 - dmd 2.065
 - gcc 4.8 or later with c++11 support
-- nim 0.10.1 
+- nim 0.10.2
 
 -----------------------------------
 Build Instructions:
