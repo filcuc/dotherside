@@ -3,19 +3,20 @@ import std.container;
 import std.conv;
 import std.typecons;
 import std.traits;
-import dotherside;
+import qvariant;
+import qmetatype;
 
 public class ISlot
 {
   void Execute(QVariant[]  arguments) {}
 }
 
-public DSlot!(T) CreateDSlot(T)(T t) if (isCallable!(T))
+public QSlot!(T) CreateQSlot(T)(T t) if (isCallable!(T))
 {
-  return new DSlot!(T)(t);
+  return new QSlot!(T)(t);
 }
 
-public class DSlot(T) : ISlot
+public class QSlot(T) : ISlot
 { 
   alias ReturnType!T SlotReturnType;
   alias ParameterTypeTuple!T Arguments;
@@ -25,8 +26,9 @@ public class DSlot(T) : ISlot
     _callable = callable;
     
     _parameterMetaTypes[0] = GetMetaType!SlotReturnType();
-    foreach (i, arg; Arguments)
+    foreach (i, arg; Arguments) {
       _parameterMetaTypes[i+1] = GetMetaType!arg();
+    }
   }
   
   public override void Execute(QVariant[]  arguments)

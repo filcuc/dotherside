@@ -4,11 +4,11 @@ import std.container;
 import std.traits;
 import std.string;
 import dothersideinterface;
-import dslot;
-import dsignal;
-import dotherside;
+import qvariant;
+import qslot;
+import qsignal;
 
-public class DObject
+public class QObject
 {
   this()
   {
@@ -20,50 +20,53 @@ public class DObject
     dos_qobject_delete(this.data);
   }
   
-  private extern (C) static void staticSlotCallback(void* dobject, void* slotName, int numParameters, void** parameters)
+  private extern (C) static void staticSlotCallback(void* qObjectPtr,
+						    void* slotName,
+						    int numParameters,
+						    void** parametersArray)
   {
-    QVariant[] arguments = new QVariant[numParameters];
+    QVariant[] parameters = new QVariant[numParameters];
     for (int i = 0; i < numParameters; ++i)
-      arguments[i] = new QVariant(parameters[i]);
-    DObject dObject = cast(DObject) dobject;
+      parameters[i] = new QVariant(parametersArray[i]);
+    QObject qObject = cast(QObject) qObjectPtr;
     QVariant name = new QVariant(slotName);
-    ISlot slot = dObject._slotsByName[name.toString()];
-    slot.Execute(arguments);
+    ISlot slot = qObject.slotsByName[name.toString()];
+    slot.Execute(parameters);
   }
 
   protected auto registerSlot(T)(string name, T t) {
     debug writefln("D: Registering Slot %s of type %s", name, T.stringof);
-    auto slot = CreateDSlot(t);
+    auto slot = CreateQSlot(t);
     auto rawName = name.toStringz();
     int slotIndex = -1;
     int[] parameterMetaTypes = slot.GetParameterMetaTypes();
     int numArgs = cast(int)parameterMetaTypes.length;
     dos_qobject_slot_create(data, rawName, numArgs, parameterMetaTypes.ptr, slotIndex);
     debug writefln("D: Registered Slot has index %d", slotIndex);
-    _slotsByName[name] = slot;
+    slotsByName[name] = slot;
     return slot;
   }
   
   protected auto registerSignal(Args...)(string name) {
     debug writefln("D: Registering Signal %s of type %s ", name, Args.stringof);
-    auto signal = CreateDSignal!(Args)(this, name);
+    auto signal = CreateQSignal!(Args)(this, name);
     auto rawName = name.toStringz();
     int index = -1;
     int[] parameterMetaTypes = signal.GetParameterMetaTypes();
     int numArgs = cast(int)parameterMetaTypes.length;
     dos_qobject_signal_create(data, rawName, numArgs, parameterMetaTypes.ptr, index);
-    _signalsByName[name] = signal;
+    signalsByName[name] = signal;
     return signal;
   }
   
   public void* data;
-  private ISlot[string] _slotsByName;
-  private ISignal[string] _signalsByName;
+  private ISlot[string] slotsByName;
+  private ISignal[string] signalsByName;
 }
 
 unittest
 {
-  auto test = new class DObject {
+  auto test = new class QObject {
     this()
     {
       fooSignal = registerSignal!()("fooSignal");
@@ -72,14 +75,14 @@ unittest
       bar = registerSlot("bar", &_bar);
     }
     
-    DSlot!(void delegate()) foo;
+    QSlot!(void delegate()) foo;
     void _foo() { writeln("D: Called slot \"foo\"");}
   
-    DSlot!(void delegate(int)) bar;
+    QSlot!(void delegate(int)) bar;
     void _bar(int arg) { writeln("D: Calling slot \"_bar\" with arg \"", arg, "\""); }
     
-    DSignal!() fooSignal;
-    DSignal!int barSignal;
+    QSignal!() fooSignal;
+    QSignal!int barSignal;
   };
   
   test.foo();
