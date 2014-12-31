@@ -31,7 +31,7 @@ For NimQml use the Nimble package manager:
 ## Supported features:
 * Creation of custom QObject and inject in a qml QtQuick view (both Nim and D)
 * Slot and Signal creation for the following types int, bool, string (both Nim and D)
-* Creation of properties for databinding (Nim only. D implementation is ongoing)
+* Creation of properties for databinding (both Nim and D)
 
 
 
