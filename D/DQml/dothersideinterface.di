@@ -8,6 +8,7 @@ extern(C)
   // QQmlApplicationEngine
   void dos_qqmlapplicationengine_create(ref void*);
   void dos_qqmlapplicationengine_load(void*, immutable (char)* filename);
+  void dos_qqmlapplicationengine_context(void*, ref void*);
   void dos_qqmlapplicationengine_delete(void*);
 
   // QQuickView

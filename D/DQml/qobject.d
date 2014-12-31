@@ -4,6 +4,7 @@ import std.container;
 import std.traits;
 import std.string;
 import dothersideinterface;
+import qmetatype;
 import qvariant;
 import qslot;
 import qsignal;
@@ -35,20 +36,17 @@ public class QObject
   }
 
   protected auto registerSlot(T)(string name, T t) {
-    debug writefln("D: Registering Slot %s of type %s", name, T.stringof);
     auto slot = CreateQSlot(t);
     auto rawName = name.toStringz();
     int slotIndex = -1;
     int[] parameterMetaTypes = slot.GetParameterMetaTypes();
     int numArgs = cast(int)parameterMetaTypes.length;
     dos_qobject_slot_create(data, rawName, numArgs, parameterMetaTypes.ptr, slotIndex);
-    debug writefln("D: Registered Slot has index %d", slotIndex);
     slotsByName[name] = slot;
     return slot;
   }
   
   protected auto registerSignal(Args...)(string name) {
-    debug writefln("D: Registering Signal %s of type %s ", name, Args.stringof);
     auto signal = CreateQSignal!(Args)(this, name);
     auto rawName = name.toStringz();
     int index = -1;
@@ -57,6 +55,20 @@ public class QObject
     dos_qobject_signal_create(data, rawName, numArgs, parameterMetaTypes.ptr, index);
     signalsByName[name] = signal;
     return signal;
+  }
+
+  protected void registerProperty(T)(string name,
+				     string readSlotName,
+				     string writeSlotName,
+				     string notifySignalName)
+  {
+    int propertyMetaType = GetMetaType!(T)();
+    dos_qobject_property_create(data,
+				name.toStringz(),
+				propertyMetaType,
+				readSlotName.toStringz(),
+				writeSlotName.toStringz(),
+				notifySignalName.toStringz());
   }
   
   public void* data;

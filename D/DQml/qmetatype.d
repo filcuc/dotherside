@@ -30,7 +30,7 @@ public int GetMetaType(T)()
     || is (T == string) 
     || is (T == void))
 {
-  if (is (T == bool))
+  static if (is (T == bool))
     return 1;
   else if (is (T == int))
     return 2;
