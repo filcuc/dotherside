@@ -5,14 +5,18 @@ import strutils
 import typetraits
 import tables
 
-static:
-  let nimFromQtVariant = {
+# these are defined in a template to work around a compiler bug
+# with {.compileTime.}/static variables not being "computable at
+# compile time" when a macro using them is imported into another
+# module
+template defineMappings =
+  let nimFromQtVariant {.inject.} = {
     "int" : "intVal",
     "string" : "stringVal",
     "bool" : "boolVal" ,
   }.toTable
  
-  let nim2QtMeta = {
+  let nim2QtMeta {.inject.} = {
       "bool": "Bool",
       "int " : "Int",
       "string" : "QString", 
@@ -198,6 +202,7 @@ proc templateBody*(a: PNimrodNode): PNimrodNode {.compileTime.} =
   result = a[6]
   
 proc genArgTypeArray(params: PNimrodNode): PNimrodNode {.compileTime.} =
+  defineMappings
   expectKind params, nnkFormalParams
   result = newNimNode(nnkBracket)
   for i in 0 .. <params.len:
@@ -221,6 +226,7 @@ proc getIdentDefName*(a: PNimrodNode): PNimrodNode {.compileTime.} =
     return a[0][1]
 
 macro QtType*(qtDecl: stmt): stmt {.immediate.} =
+  defineMappings
   expectKind(qtDecl, nnkStmtList)
   #echo treeRepr qtDecl
   result = newStmtList()
