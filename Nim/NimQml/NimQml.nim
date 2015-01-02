@@ -1,11 +1,13 @@
 import NimQmlTypes
 import tables
+from NimQmlMacros import QtType
 
 export QObject
 export QApplication
 export QVariant
 export QQmlApplicationEngine
 export QQmlContext
+export QtType
 
 type QMetaType* {.pure.} = enum
   UnknownType = cint(0), 
