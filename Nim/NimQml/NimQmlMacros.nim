@@ -5,6 +5,14 @@ import strutils
 import typetraits
 import tables
 
+template debug(body: stmt): stmt =
+  {.push warning[user]: off.}
+  when defined(debug):
+    {.pop.}
+    body
+  else:
+    {.pop.}
+
 # these are defined in a template to work around a compiler bug
 # with {.compileTime.}/static variables not being "computable at
 # compile time" when a macro using them is imported into another
@@ -30,7 +38,7 @@ proc getNodeOf*(tree: PNimrodNode, kind: TNimrodNodeKind): PNimrodNode {.compile
   ## Returnsthe first node that satisfies this condition 
   for i in 0.. <tree.len:
     var child = tree[i]
-    if child of PNimrodNode and child.kind == kind:
+    if child.kind == kind:
       return child
     var candidate = getNodeOf(child, kind)
     if not candidate.isNil:
@@ -237,10 +245,12 @@ macro QtType*(qtDecl: stmt): stmt {.immediate.} =
   var typ: PNimrodNode
   for it in qtDecl.children():
     if it.kind == nnkTypeSection:
-      # add the typesection unchanged
       let typeDecl = it.findChild(it.kind == nnkTypeDef)
       let superType = typeDecl.getSuperType()
-      if superType.kind != nnkEmpty:
+      if superType.kind == nnkEmpty:
+        # allow simple types and type aliases
+        result.add it
+      else:
         let superName = if superType.kind == nnkIdent: superType else: superType.getNodeOf(nnkIdent)
         if $superName != "QtProperty":
           if typ != nil:
@@ -263,6 +273,9 @@ macro QtType*(qtDecl: stmt): stmt {.immediate.} =
         it.body = addSignalBody(it)
         result.add it
         signals.add it
+    else:
+      # everything else should pass through unchanged
+      result.add it
   
   ## define onSlotCalled
   var slotProto = (getAst declareOnSlotCalled(typ))[0]
@@ -276,7 +289,6 @@ macro QtType*(qtDecl: stmt): stmt {.immediate.} =
     let params = slot.params
     let hasReturn = not (params[0].kind == nnkEmpty)
     var branchStmts = newStmtList()
-    let paramCount = params.len -1 # don't include ret (arg 0)
     var args = newSeq[PNimrodNode]()
     # first params always the object
     args.add ident "myQObject"
@@ -362,5 +374,5 @@ macro QtType*(qtDecl: stmt): stmt {.immediate.} =
 
   #echo repr createProto
   result.add createProto
-  when not defined(release):
+  debug:
     echo repr result
