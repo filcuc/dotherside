@@ -13,25 +13,21 @@ template debug(body: stmt): stmt =
   else:
     {.pop.}
 
-# these are defined in a template to work around a compiler bug
-# with {.compileTime.}/static variables not being "computable at
-# compile time" when a macro using them is imported into another
-# module
-template defineMappings =
-  let nimFromQtVariant {.inject.} = {
-    "int" : "intVal",
-    "string" : "stringVal",
-    "bool" : "boolVal" ,
-  }.toTable
- 
-  let nim2QtMeta {.inject.} = {
-      "bool": "Bool",
-      "int " : "Int",
-      "string" : "QString", 
-      "pointer" : "VoidStar",
-      "QVariant": "QVariant",
-      "" : "Void", # no return, which is represented by an nnkEmpty node
-  }.toTable
+
+let nimFromQtVariant {.compileTime.} = {
+  "int" : "intVal",
+  "string" : "stringVal",
+  "bool" : "boolVal",
+}.toTable
+
+let nim2QtMeta {.compileTime.} = {
+    "bool": "Bool",
+    "int " : "Int",
+    "string" : "QString",
+    "pointer" : "VoidStar",
+    "QVariant": "QVariant",
+    "" : "Void", # no return, which is represented by an nnkEmpty node
+}.toTable
 
 proc getNodeOf*(tree: PNimrodNode, kind: TNimrodNodeKind): PNimrodNode {.compileTime.} =
   ## recursively looks for a node of kind, ``kind``, in the tree provided as ``tree``
@@ -210,7 +206,6 @@ proc templateBody*(a: PNimrodNode): PNimrodNode {.compileTime.} =
   result = a[6]
   
 proc genArgTypeArray(params: PNimrodNode): PNimrodNode {.compileTime.} =
-  defineMappings
   expectKind params, nnkFormalParams
   result = newNimNode(nnkBracket)
   for i in 0 .. <params.len:
@@ -234,7 +229,6 @@ proc getIdentDefName*(a: PNimrodNode): PNimrodNode {.compileTime.} =
     return a[0][1]
 
 macro QtType*(qtDecl: stmt): stmt {.immediate.} =
-  defineMappings
   expectKind(qtDecl, nnkStmtList)
   #echo treeRepr qtDecl
   result = newStmtList()
