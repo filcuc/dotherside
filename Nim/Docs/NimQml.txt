@@ -1,0 +1,87 @@
+:Authors:
+	Filippo Cucchetto <filippocucchetto@gmail.com>
+:Version: 0.1.0
+:Date: 2015/01/02
+
+Introduction
+-----------
+The NimQml module add Qt Qml bindings to the Nim programming language
+allowing you to create new modern UI by mixing the Qml declarative syntax
+and the Nim imperative language.
+
+The NimQml is made by two components:
+* The DOtherSide C++ shared library
+* The NimQml Nim module
+
+This first component implements the glue code necessary for
+communicating with the Qt C++ library, the latter module wraps
+the libDOtherSide exported symbols in Nim
+
+Building
+--------
+At the time of writing the DOtherSide C++ library must be compiled
+installed manually from source.
+
+First clone the DOtherSide git repo
+::
+  git clone https://github.com/filcuc/DOtherSide
+
+than you can proceed with the common CMake build steps
+
+::
+  mkdir build
+  cd build
+  cmake ..
+  make
+
+If everything goes correctly you'll have build both
+the DOtherSide C++ library and the Nim examples
+
+Installation
+----------
+The installation is not mandatory, in fact you could try
+the built Nim example in the following way
+::
+  cd path/to/build/dir
+  cd Nim/Examples/HelloWorld
+  export LD_LIBRARY_PATH=path/to/libDOtherSide.so
+  ./HelloWorld
+
+Given this, you can procede with the installation of the C++ library
+in the following way
+::
+  cd to/build/dir
+  make install
+or by manually copying the library in your system lib directory
+::
+  sudo cp build/dir/path/DOtherSide/libDOtherSide.so /usr/lib
+
+First example: HelloWorld
+----------
+As usual lets start with theHelloWorld example.
+Most of the NimQml projects are made by one or more nim and qml
+files. Usually the .nim files contains your app logic and data
+layer. The qml files contains the presentation layer and expose
+the data in your nim files.
+
+Here's the ``main.nim`` file
+
+.. code-block:: nim
+   :file: ../Examples/HelloWorld/main.nim
+
+and here the ``main.qml`` file
+
+.. code-block:: qml
+   :file: ../Examples/HelloWorld/main.qml
+
+The following examples show the basic steps of each NimQml app
+1. Create the QApplication for initializing the Qt runtime
+2. Create the QQmlApplicationEngine and load your main .qml file
+3. Call the ``exec`` proc of the QApplication instance for starting
+the Qt event loop
+
+Second example: exposing data to Qml
+------------------------------------
+
+Third example: databinding
+--------------------------

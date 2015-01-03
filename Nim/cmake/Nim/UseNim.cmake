@@ -23,7 +23,7 @@ function(add_nim_executable )
 
   # add target to trigger the nimrod compiler
   add_custom_target(
-      nim ALL
+      ${ARGS_TARGET} ALL
       COMMAND
 	      ${NIM_EXECUTABLE} "c" ${in_paths} "--nimcache:" ${DIRECTORY} "--out:" ${nim_target} ${in_files} 
       DEPENDS
