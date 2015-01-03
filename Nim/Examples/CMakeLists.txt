@@ -1,2 +1,3 @@
 add_subdirectory(HelloWorld)
+add_subdirectory(SimpleData)
 add_subdirectory(Simple)

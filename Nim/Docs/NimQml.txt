@@ -1,5 +1,6 @@
 :Authors:
 	Filippo Cucchetto <filippocucchetto@gmail.com>
+	Will Szumski <will@cowboycoders.org>
 :Version: 0.1.0
 :Date: 2015/01/02
 
@@ -58,23 +59,23 @@ or by manually copying the library in your system lib directory
 
 First example: HelloWorld
 ----------
-As usual lets start with theHelloWorld example.
+As usual lets start with an HelloWorld example.
 Most of the NimQml projects are made by one or more nim and qml
 files. Usually the .nim files contains your app logic and data
 layer. The qml files contains the presentation layer and expose
 the data in your nim files.
 
-Here's the ``main.nim`` file
+``Examples/HelloWorld/main.nim``
 
 .. code-block:: nim
    :file: ../Examples/HelloWorld/main.nim
 
-and here the ``main.qml`` file
+``Examples/HelloWorld/main.qml``
 
 .. code-block:: qml
    :file: ../Examples/HelloWorld/main.qml
 
-The following examples show the basic steps of each NimQml app
+The following example shows the basic steps of each NimQml app
 1. Create the QApplication for initializing the Qt runtime
 2. Create the QQmlApplicationEngine and load your main .qml file
 3. Call the ``exec`` proc of the QApplication instance for starting
@@ -82,6 +83,46 @@ the Qt event loop
 
 Second example: exposing data to Qml
 ------------------------------------
+The previous example shown you how to create a simple application
+window and how to startup the Qt event loop.
 
-Third example: databinding
---------------------------
+Is time to explore how to pass to to Qml, but first lets see the
+example code:
+
+``Examples/SimpleData/main.nim``
+
+.. code-block:: nim
+   :file: ../Examples/SimpleData/main.nim
+
+``Examples/SimpleData/main.qml``
+
+.. code-block:: qml
+   :file: ../Examples/SimpleData/main.qml
+   
+The following example shows how to expose simple data to Qml:
+1. Create a QVariant and sets the its internal value. 
+2. Create a property in the Qml root context with a given name.
+
+Once a a property is set through the ``setContextProperty`` proc its available
+globally in all the Qml script loaded by the current engine (see the Qt doc
+for more details about engine and context)
+
+At the time of writing the QVariant class support the following types:
+* int
+* string
+* bool
+* QObject derived classes
+
+Third example: exposing complex data and procedures to Qml
+----------------------------------------------------------
+As seen by the second example simple data is fine. However most
+applications need to expose complex data, functions and
+update the view when something change in the data layer.
+This is achieved by creating object that derives from QObject.
+
+A QObject is made of :
+1. ``Slots``: slots are function callable from the Qml engine
+2. ``Signals``: signals allow the sending of events
+3. ``Properties``: properties allows the passing of data to
+   the Qml view and make it aware of changes in the data layer
+
