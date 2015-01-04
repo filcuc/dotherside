@@ -364,7 +364,6 @@ macro QtObject*(qtDecl: stmt): stmt {.immediate.} =
     #     Ident !"read"
     #     Ident !"getName
     for asgn in stmtList.children:
-      echo treerepr asgn
       let name = asgn[0]
       case $name
       of "read":
