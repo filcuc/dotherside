@@ -13,7 +13,6 @@ template debug(body: stmt): stmt =
   else:
     {.pop.}
 
-
 let nimFromQtVariant {.compileTime.} = {
   "int" : "intVal",
   "string" : "stringVal",
@@ -235,6 +234,8 @@ macro QtType*(qtDecl: stmt): stmt {.immediate.} =
   var slots = newSeq[PNimrodNode]()
   var properties = newSeq[PNimrodNode]()
   var signals = newSeq[PNimrodNode]()
+  # holds all user defined procedures so we can add them after create
+  var userDefined = newSeq[PNimrodNode]()
   # assume only one type per section for now
   var typ: PNimrodNode
   for it in qtDecl.children():
@@ -267,6 +268,10 @@ macro QtType*(qtDecl: stmt): stmt {.immediate.} =
         it.body = addSignalBody(it)
         result.add it
         signals.add it
+      else:
+        userDefined.add it
+    elif it.kind == nnkProcDef:
+      userDefined.add it
     else:
       # everything else should pass through unchanged
       result.add it
@@ -368,5 +373,9 @@ macro QtType*(qtDecl: stmt): stmt {.immediate.} =
 
   #echo repr createProto
   result.add createProto
+
+  for fn in userDefined:
+    result.add fn
+
   debug:
     echo repr result
