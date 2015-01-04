@@ -227,7 +227,7 @@ proc getIdentDefName*(a: PNimrodNode): PNimrodNode {.compileTime.} =
   elif a[0].kind == nnkPostFix:
     return a[0][1]
 
-macro QtType*(qtDecl: stmt): stmt {.immediate.} =
+macro QtObject*(qtDecl: stmt): stmt {.immediate.} =
   expectKind(qtDecl, nnkStmtList)
   #echo treeRepr qtDecl
   result = newStmtList()
