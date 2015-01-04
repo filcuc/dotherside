@@ -50,8 +50,9 @@ proc hookOnNode*[T](context: T, code: PNimrodNode, hook: NodeModifier,
     recursive: bool = false): PNimrodNode {.compileTime.} =
   ## Iterates over the tree, ``code``, calling ``hook`` on each ``PNimrodNode``
   ## encountered. If ``recursive`` is true, it will recurse over the tree, otherwise
-  ## it will only visit ``code``s children. ``hook`` should return a replacement for 
-  ## the node that was passed in via it's return value.
+  ## it will only visit ``code``'s children. ``hook`` should return a replacement for 
+  ## the node that was passed in via it's return value. `hook` may return nil to remove
+  ## the node from the tree.
   if code.len == 0:
     return code
   var newCode = newNimNode(code.kind)
@@ -64,16 +65,18 @@ proc hookOnNode*[T](context: T, code: PNimrodNode, hook: NodeModifier,
       newCode.add child
   return newCode
   
-proc removeOpenSym*(context: NullContext, a: var PNimrodNode): PNimrodNode {.compileTime.} =
-  ## replaces: ``nnkOpenSymChoice`` and ``nnkSym`` nodes with idents corresponding to the
-  ## symbols string representation. 
+proc removeOpenSym*(context: NullContext, 
+  a: var PNimrodNode): PNimrodNode {.compileTime.} =
+  ## replaces: ``nnkOpenSymChoice`` and ``nnkSym`` nodes with idents 
+  ## corresponding to the symbols string representation. 
   if a.kind == nnkOpenSymChoice: 
     return ident($a[0].symbol)
   elif a.kind == nnkSym:
     return ident($a.symbol)  
   return a
   
-proc newTemplate*(name = newEmptyNode(); params: openArray[PNimrodNode] = [newEmptyNode()];  
+proc newTemplate*(name = newEmptyNode(); 
+    params: openArray[PNimrodNode] = [newEmptyNode()];  
     body: PNimrodNode = newStmtList()): PNimrodNode {.compileTime.} =
   ## shortcut for creating a new template
   ##
@@ -114,7 +117,8 @@ proc genSuperTemplate*(typeDecl: PNimrodNode): PNimrodNode {.compileTime.} =
   let typeName = getTypeName(typeDecl)
   if inheritStmt == nil: error("you must declare a super type for " & $typeName)
   # ident of superType (have to deal with generics)
-  let superType = if inheritStmt[0].kind == nnkIdent: inheritStmt[0] else: inheritStmt[0].getNodeOf(nnkIdent)
+  let superType = if inheritStmt[0].kind == nnkIdent: inheritStmt[0] 
+    else: inheritStmt[0].getNodeOf(nnkIdent)
   let superTemplate = getAst declareSuperTemplate(superType, typeName) 
   return superTemplate[0]
 
@@ -228,6 +232,21 @@ proc getIdentDefName*(a: PNimrodNode): PNimrodNode {.compileTime.} =
     return a[0][1]
 
 macro QtObject*(qtDecl: stmt): stmt {.immediate.} =
+  ## Generates boiler plate code for registering signals, slots 
+  ## and properties. 
+  ##
+  ## Currently generates:
+  ## - create: a method to register signal, slots and properties
+  ## - superType: a template that returns the super type of the
+  ##   object defined within the macro body
+  ## - onSlotCalled: a method to dispatch an on slot call to the
+  ##   appropiate method.
+  ##
+  ## Current limitations:
+  ## - only one type can be defined within the body of code sent to the 
+  ##   the macro. It is assumed, but not checked, that somewhere in the
+  ##   inheritance hierarchy this object derives from ``QObject``.
+  ## - generics are not currently supported
   expectKind(qtDecl, nnkStmtList)
   #echo treeRepr qtDecl
   result = newStmtList()
@@ -247,7 +266,8 @@ macro QtObject*(qtDecl: stmt): stmt {.immediate.} =
         result.add it
       else:
         # may come in useful if we want to check objects inherit from QObject
-        #let superName = if superType.kind == nnkIdent: superType else: superType.getNodeOf(nnkIdent)
+        #let superName = if superType.kind == nnkIdent: superType 
+        #  else: superType.getNodeOf(nnkIdent)
         if typ != nil:
           error("only support one type declaration")
         else: # without this else, it fails to compile
