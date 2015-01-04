@@ -246,16 +246,14 @@ macro QtType*(qtDecl: stmt): stmt {.immediate.} =
         # allow simple types and type aliases
         result.add it
       else:
-        let superName = if superType.kind == nnkIdent: superType else: superType.getNodeOf(nnkIdent)
-        if $superName != "QtProperty":
-          if typ != nil:
-            error("only support one type declaration")
+        # may come in useful if we want to check objects inherit from QObject
+        #let superName = if superType.kind == nnkIdent: superType else: superType.getNodeOf(nnkIdent)
+        if typ != nil:
+          error("only support one type declaration")
+        else: # without this else, it fails to compile
           typ = typeDecl.getTypeName
           result.add it
           result.add genSuperTemplate(typeDecl)
-        else:
-          # process later
-          properties.add(it)
     elif it.kind == nnkMethodDef:
       if it.hasPragma("slot"):
         let pragma = it.pragma()
@@ -272,6 +270,12 @@ macro QtType*(qtDecl: stmt): stmt {.immediate.} =
         userDefined.add it
     elif it.kind == nnkProcDef:
       userDefined.add it
+    elif it.kind == nnkCommand:
+      let cmdIdent = it[0]
+      if cmdIdent == nil or cmdIdent.kind != nnkIdent or
+          ($cmdIdent).toLower() != "qtproperty":
+        error("do not know how to handle: \n" & repr(it))
+      properties.add it
     else:
       # everything else should pass through unchanged
       result.add it
@@ -339,36 +343,43 @@ macro QtType*(qtDecl: stmt): stmt {.immediate.} =
     let call = newCall(regSigDot, newLit name, argTypesArray)
     createBody.add call
   for property in properties:
-    let inherit = property.getNodeOf(nnkOfInherit)
-    # OfInherit
-    #   BracketExpr
-    #     Ident !"QtProperty"
-    #     Ident !"string"
-    let nimPropType = inherit[0][1]
+    #echo treeRepr property
+    let infix = property[1]
+    expectKind infix, nnkInfix
+    # Infix
+    #   Ident !"of"
+    #   Ident !"name"
+    #   Ident !"string"
+
+    let nimPropType = infix[2]
     let qtPropMeta = nim2QtMeta[$nimPropType]
     if qtPropMeta == nil: error($nimPropType & " not supported")
     let metaDot = newDotExpr(ident "QMetaType", ident qtPropMeta) 
-    let typeDef = property.getNodeOf(nnkTypeDef)
-    let typeName = typeDef.getTypeName()
+    let propertyName = infix[1]
     var read, write, notify: PNimrodNode
+    let stmtList = property[2]
     # fields
-    let recList = typeDef.getNodeof(nnkRecList)
-    for identDef in recList.children:
-      let name = identDef.getIdentDefName()
+    #  StmtList
+    #   Asgn
+    #     Ident !"read"
+    #     Ident !"getName
+    for asgn in stmtList.children:
+      echo treerepr asgn
+      let name = asgn[0]
       case $name
       of "read":
-        read = identDef[2]
+        read = asgn[1]
       of "write":
-        write = identDef[2]
+        write = asgn[1]
       of "notify":
-        notify = identDef[2]
+        notify = asgn[1]
       else:
-        error("unknown property field: " & $name) 
+        error("unknown property field: " & $name)
     let regPropDot = newDotExpr(ident "myQObject", ident "registerProperty")
     let readArg = if read == nil: newNilLit() else: newLit($read)
     let writeArg = if write == nil: newNilLit() else: newLit($write)
     let notifyArg = if notify == nil: newNilLit() else: newLit($notify)
-    let call = newCall(regPropDot, newLit($typeName), metaDot, readArg, writeArg, notifyArg)
+    let call = newCall(regPropDot, newLit($propertyName), metaDot, readArg, writeArg, notifyArg)
     createBody.add call
 
   #echo repr createProto
