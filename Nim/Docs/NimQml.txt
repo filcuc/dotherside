@@ -167,7 +167,6 @@ The magic is in the Contact.nim file
 .. code-block:: nim
    :file: ../Examples/SlotsAndProperties/Contact.nim
 
-
 What First we declare a QObject subclass and provide a simple
 new method where:
 1. invoke the ``create()`` procedure. This invoke the C++ bridge and allocate
@@ -192,4 +191,44 @@ If the invoked slot has a return value this is always in the index position
 
 
 Example 4: QtObject macro
+-------------------------
+The previous example shows how to create simple QObject however writing
+all those ``register`` procs and writing the ``onSlotCalled`` method
+become boring pretty soon.
+
+Furthermore all this information can be automatically generated.
+For this purpose you can import the NimQmlMacros module that provide
+the QtObject macro.
+
+Let's begin as usual with both the main.nim and main.qml files
+
+``Examples/QtObjectMacro/main.nim``
+
+.. code-block:: nim
+   :file: ../Examples/QtObjectMacro/main.nim
+
+
+``Examples/QtObjectMacro/main.qml``
+
+.. code-block:: qml
+   :file: ../Examples/QtObjectMacro/main.qml
+
+Nothing new in both the ``main.nim`` and ``main.qml`` in respect to
+the previous example. What changed is the Contact object
+
+``Examples/QtObjectMacro/Contact.nim``
+
+.. code-block:: nim
+   :file: ../Examples/QtObjectMacro/Contact.nim
+
+In details:
+1. Each QObject is defined inside the QtObject macro
+2. Each slot is annotated with the ``{.slot.}`` macro
+3. Each signal is annotated with the ``{.signal.}`` macro
+4. Each property is created with the ``QtProperty`` macro
+
+The ``QtProperty`` macro has the following syntax
+
+.. code-block:: nim
+  QtProperty nameOfProperty of typeOfProperty
 

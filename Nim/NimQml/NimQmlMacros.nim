@@ -197,7 +197,7 @@ template declareOnSlotCalled(typ: typedesc): stmt =
     discard
 
 template prototypeCreate(typ: typedesc): stmt =
-  template create(myQObject: var typ) =
+  template create*(myQObject: var typ) =
     var super = (typ.superType())(myQObject)
     procCall create(super)
 

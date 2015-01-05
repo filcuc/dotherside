@@ -1,3 +1,5 @@
+## Please note we are using templates where ordinarily we would like to use procedures
+## due to bug: https://github.com/Araq/Nim/issues/1821
 import NimQml
 
 type Contact = ref object of QObject 
