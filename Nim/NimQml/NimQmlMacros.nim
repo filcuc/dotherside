@@ -21,7 +21,7 @@ let nimFromQtVariant {.compileTime.} = {
 
 let nim2QtMeta {.compileTime.} = {
     "bool": "Bool",
-    "int " : "Int",
+    "int" : "Int",
     "string" : "QString",
     "pointer" : "VoidStar",
     "QVariant": "QVariant",
