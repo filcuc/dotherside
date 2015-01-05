@@ -1,0 +1,234 @@
+:Authors:
+	Filippo Cucchetto <filippocucchetto@gmail.com>
+	
+	Will Szumski <will@cowboycoders.org>
+:Version: 0.1.0
+:Date: 2015/01/02
+
+Introduction
+-----------
+The NimQml module add Qt Qml bindings to the Nim programming language
+allowing you to create new modern UI by mixing the Qml declarative syntax
+and the Nim imperative language.
+
+The NimQml is made by two components:
+* The DOtherSide C++ shared library
+* The NimQml Nim module
+
+This first component implements the glue code necessary for
+communicating with the Qt C++ library, the latter module wraps
+the libDOtherSide exported symbols in Nim
+
+Building
+--------
+At the time of writing the DOtherSide C++ library must be compiled
+installed manually from source.
+
+First clone the DOtherSide git repo
+::
+  git clone https://github.com/filcuc/DOtherSide
+
+than you can proceed with the common CMake build steps
+
+::
+  mkdir build
+  cd build
+  cmake ..
+  make
+
+If everything goes correctly you'll have build both
+the DOtherSide C++ library and the Nim examples
+
+Installation
+----------
+The installation is not mandatory, in fact you could try
+the built Nim example in the following way
+::
+  cd path/to/build/dir
+  cd Nim/Examples/HelloWorld
+  export LD_LIBRARY_PATH=path/to/libDOtherSide.so
+  ./HelloWorld
+
+Given this, you can procede with the installation of the C++ library
+in the following way
+::
+  cd to/build/dir
+  make install
+or by manually copying the library in your system lib directory
+::
+  sudo cp build/dir/path/DOtherSide/libDOtherSide.so /usr/lib
+
+Example 1: HelloWorld
+----------
+As usual lets start with an HelloWorld example.
+Most of the NimQml projects are made by one or more nim and qml
+files. Usually the .nim files contains your app logic and data
+layer. The qml files contains the presentation layer and expose
+the data in your nim files.
+
+``Examples/HelloWorld/main.nim``
+
+.. code-block:: nim
+   :file: ../Examples/HelloWorld/main.nim
+
+``Examples/HelloWorld/main.qml``
+
+.. code-block:: qml
+   :file: ../Examples/HelloWorld/main.qml
+
+The following example shows the basic steps of each NimQml app
+1. Create the QApplication for initializing the Qt runtime
+2. Create the QQmlApplicationEngine and load your main .qml file
+3. Call the ``exec`` proc of the QApplication instance for starting
+the Qt event loop
+
+Example 2: exposing data to Qml
+------------------------------------
+The previous example shown you how to create a simple application
+window and how to startup the Qt event loop.
+
+Is time to explore how to pass to to Qml, but first lets see the
+example code:
+
+``Examples/SimpleData/main.nim``
+
+.. code-block:: nim
+   :file: ../Examples/SimpleData/main.nim
+
+``Examples/SimpleData/main.qml``
+
+.. code-block:: qml
+   :file: ../Examples/SimpleData/main.qml
+   
+The following example shows how to expose simple data to Qml:
+1. Create a QVariant and sets the its internal value. 
+2. Create a property in the Qml root context with a given name.
+
+Once a a property is set through the ``setContextProperty`` proc its available
+globally in all the Qml script loaded by the current engine (see the Qt doc
+for more details about engine and context)
+
+At the time of writing the QVariant class support the following types:
+* int
+* string
+* bool
+* QObject derived classes
+
+Example 3: exposing complex data and procedures to Qml
+----------------------------------------------------------
+As seen by the second example simple data is fine. However most
+applications need to expose complex data, functions and
+update the view when something change in the data layer.
+This is achieved by creating an object that derives from QObject.
+
+A QObject is made of :
+1. ``Slots``: slots are function that could both be called from the qml engine and connected to Qt signals
+2. ``Signals``: signals allow the sending of events and be connected to slots
+3. ``Properties``: properties allows the passing of data to
+   the Qml view and make it aware of changes in the data layer
+
+A QObject property is made of three things:
+* a read slot, a method that return the current value of the property
+* a write slot, a method that set the value of the property
+* a notify signal for telling that the current value of the property has been changed
+
+We'll start by looking at the main.nim file
+
+``Examples/SlotsAndProperties/main.nim``
+
+.. code-block:: nim
+   :file: ../Examples/SlotsAndProperties/main.nim
+
+Here's nothing special happen except:
+1. The creation of Contact object
+2. The injection of the Contact object to the Qml root context
+   using the ``setContextProperty`` as seen in the previous
+   example
+
+The Qml file is as follow:
+
+``Examples/SlotsAndProperties/main.qml``
+
+.. code-block:: qml
+   :file: ../Examples/SlotsAndProperties/main.qml
+
+The qml is made by a Label, a TextInput and a button.
+The label display the contact name and automatically udpates when
+the concat name changes.
+
+The button update the contact name with the TextInput text when clicked.
+
+So where's the magic?
+
+The magic is in the Contact.nim file
+
+``Examples/SlotsAndProperties/Contact.nim``
+
+.. code-block:: nim
+   :file: ../Examples/SlotsAndProperties/Contact.nim
+
+What First we declare a QObject subclass and provide a simple
+new method where:
+1. invoke the ``create()`` procedure. This invoke the C++ bridge and allocate
+a QObject instance
+2. register a slot ``getName`` for reading the Contact name field
+3. register a slot `` setName`` for writing the Contact name
+4. register a signal ``nameChanged`` for notify the contact name changes
+5. register a property called ``name`` of type ``QString`` with the given
+   read, write slots and notify signal
+
+The two slots method implementation are trivial and consist in standard
+nim methods. However ``setName`` slot method shows how to emit a signal
+by using the ``emit`` method.
+
+The last thing to condider is the override of the ``onSlotCalled`` method.
+This method is called by the NimQml library when an invokation occur from
+the Qml side for one of the QObject slot.
+The usual implementation for the onSlotCalled method consists in a
+switch statement that forward the arguments to the correct slot.
+If the invoked slot has a return value this is always in the index position
+0 of the args array.
+
+
+Example 4: QtObject macro
+-------------------------
+The previous example shows how to create simple QObject however writing
+all those ``register`` procs and writing the ``onSlotCalled`` method
+become boring pretty soon.
+
+Furthermore all this information can be automatically generated.
+For this purpose you can import the NimQmlMacros module that provide
+the QtObject macro.
+
+Let's begin as usual with both the main.nim and main.qml files
+
+``Examples/QtObjectMacro/main.nim``
+
+.. code-block:: nim
+   :file: ../Examples/QtObjectMacro/main.nim
+
+
+``Examples/QtObjectMacro/main.qml``
+
+.. code-block:: qml
+   :file: ../Examples/QtObjectMacro/main.qml
+
+Nothing new in both the ``main.nim`` and ``main.qml`` in respect to
+the previous example. What changed is the Contact object
+
+``Examples/QtObjectMacro/Contact.nim``
+
+.. code-block:: nim
+   :file: ../Examples/QtObjectMacro/Contact.nim
+
+In details:
+1. Each QObject is defined inside the QtObject macro
+2. Each slot is annotated with the ``{.slot.}`` macro
+3. Each signal is annotated with the ``{.signal.}`` macro
+4. Each property is created with the ``QtProperty`` macro
+
+The ``QtProperty`` macro has the following syntax
+
+.. code-block:: nim
+  QtProperty nameOfProperty of typeOfProperty
+

@@ -16,7 +16,7 @@ ApplicationWindow
 
 	    Label
 	    {
-	        text: "Current name is:" + myQObject.name
+	        text: "Current name is:" + contact.name
 	    }
 
 	    TextField
@@ -27,10 +27,7 @@ ApplicationWindow
 	    Button
 	    {
 	        text: "Change Name"
-	        onClicked: {
-	            console.log("QML:", textField.text)
-	            myQObject.name = textField.text 
-	        }
+	        onClicked: contact.name = textField.text 
 	    }
 	}
 }
