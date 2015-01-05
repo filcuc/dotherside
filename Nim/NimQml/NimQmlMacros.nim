@@ -90,8 +90,9 @@ proc newTemplate*(name = newEmptyNode();
     newEmptyNode(),  ## pragmas
     newEmptyNode(),
     body)
-    
-template declareSuperTemplate*(parent: typedesc, typ: typedesc): typedesc =
+
+#FIXME: changed parent, typ from typedesc to expr to workaround Nim issue #1874    
+template declareSuperTemplate*(parent: expr, typ: expr): stmt =
   template superType*(ofType: typedesc[typ]): typedesc[parent] =
     parent
 
@@ -192,11 +193,13 @@ proc addSignalBody(signal: PNimrodNode): PNimrodNode {.compileTime.} =
       args.add getArgName params[i]
   result.add newCall("emit", args)
 
-template declareOnSlotCalled(typ: typedesc): stmt =
+#FIXME: changed typ from typedesc to expr to workaround Nim issue #1874 
+template declareOnSlotCalled(typ: expr): stmt =
   method onSlotCalled(myQObject: typ, slotName: string, args: openarray[QVariant]) =
     discard
 
-template prototypeCreate(typ: typedesc): stmt =
+#FIXME: changed parent, typ from typedesc to expr to workaround Nim issue #1874 
+template prototypeCreate(typ: expr): stmt =
   template create*(myQObject: var typ) =
     var super = (typ.superType())(myQObject)
     procCall create(super)
