@@ -3,7 +3,7 @@
 import NimQml, NimQmlMacros
 
 QtObject:
-  type Contact = ref object of QObject
+  type Contact* = ref object of QObject
     m_name: string
 
   template newContact*(): Contact =
