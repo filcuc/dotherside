@@ -1,5 +1,6 @@
 :Authors:
 	Filippo Cucchetto <filippocucchetto@gmail.com>
+	
 	Will Szumski <will@cowboycoders.org>
 :Version: 0.1.0
 :Date: 2015/01/02
@@ -57,7 +58,7 @@ or by manually copying the library in your system lib directory
 ::
   sudo cp build/dir/path/DOtherSide/libDOtherSide.so /usr/lib
 
-First example: HelloWorld
+Example 1: HelloWorld
 ----------
 As usual lets start with an HelloWorld example.
 Most of the NimQml projects are made by one or more nim and qml
@@ -81,7 +82,7 @@ The following example shows the basic steps of each NimQml app
 3. Call the ``exec`` proc of the QApplication instance for starting
 the Qt event loop
 
-Second example: exposing data to Qml
+Example 2: exposing data to Qml
 ------------------------------------
 The previous example shown you how to create a simple application
 window and how to startup the Qt event loop.
@@ -113,16 +114,82 @@ At the time of writing the QVariant class support the following types:
 * bool
 * QObject derived classes
 
-Third example: exposing complex data and procedures to Qml
+Example 3: exposing complex data and procedures to Qml
 ----------------------------------------------------------
 As seen by the second example simple data is fine. However most
 applications need to expose complex data, functions and
 update the view when something change in the data layer.
-This is achieved by creating object that derives from QObject.
+This is achieved by creating an object that derives from QObject.
 
 A QObject is made of :
-1. ``Slots``: slots are function callable from the Qml engine
-2. ``Signals``: signals allow the sending of events
+1. ``Slots``: slots are function that could both be called from the qml engine and connected to Qt signals
+2. ``Signals``: signals allow the sending of events and be connected to slots
 3. ``Properties``: properties allows the passing of data to
    the Qml view and make it aware of changes in the data layer
+
+A QObject property is made of three things:
+* a read slot, a method that return the current value of the property
+* a write slot, a method that set the value of the property
+* a notify signal for telling that the current value of the property has been changed
+
+We'll start by looking at the main.nim file
+
+``Examples/SlotsAndProperties/main.nim``
+
+.. code-block:: nim
+   :file: ../Examples/SlotsAndProperties/main.nim
+
+Here's nothing special happen except:
+1. The creation of Contact object
+2. The injection of the Contact object to the Qml root context
+   using the ``setContextProperty`` as seen in the previous
+   example
+
+The Qml file is as follow:
+
+``Examples/SlotsAndProperties/main.qml``
+
+.. code-block:: qml
+   :file: ../Examples/SlotsAndProperties/main.qml
+
+The qml is made by a Label, a TextInput and a button.
+The label display the contact name and automatically udpates when
+the concat name changes.
+
+The button update the contact name with the TextInput text when clicked.
+
+So where's the magic?
+
+The magic is in the Contact.nim file
+
+``Examples/SlotsAndProperties/Contact.nim``
+
+.. code-block:: nim
+   :file: ../Examples/SlotsAndProperties/Contact.nim
+
+
+What First we declare a QObject subclass and provide a simple
+new method where:
+1. invoke the ``create()`` procedure. This invoke the C++ bridge and allocate
+a QObject instance
+2. register a slot ``getName`` for reading the Contact name field
+3. register a slot `` setName`` for writing the Contact name
+4. register a signal ``nameChanged`` for notify the contact name changes
+5. register a property called ``name`` of type ``QString`` with the given
+   read, write slots and notify signal
+
+The two slots method implementation are trivial and consist in standard
+nim methods. However ``setName`` slot method shows how to emit a signal
+by using the ``emit`` method.
+
+The last thing to condider is the override of the ``onSlotCalled`` method.
+This method is called by the NimQml library when an invokation occur from
+the Qml side for one of the QObject slot.
+The usual implementation for the onSlotCalled method consists in a
+switch statement that forward the arguments to the correct slot.
+If the invoked slot has a return value this is always in the index position
+0 of the args array.
+
+
+Example 4: QtObject macro
 
