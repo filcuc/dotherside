@@ -3,7 +3,7 @@
 import NimQml, NimQmlMacros
 
 QtObject:
-  type Contact = ref object of QObject
+  type Contact* = ref object of QObject
     m_name: string
 
   template newContact*(): Contact =
@@ -21,7 +21,7 @@ QtObject:
       contact.m_name = name
       contact.nameChanged()
   
-  QtProperty name of string:
+  QtProperty[string] name:
     read = getName
     write = setName
     notify = nameChanged

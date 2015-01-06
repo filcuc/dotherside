@@ -1,7 +1,7 @@
 [Package]
 name          = "NimQml"
-version       = "0.01"
-author        = "Filippo Cucchetto"
+version       = "0.2.0"
+author        = "Filippo Cucchetto, Will Szumski"
 description   = "QML bindings for Nimrod"
 license       = "GPLv3"
 

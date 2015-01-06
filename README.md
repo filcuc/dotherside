@@ -4,6 +4,13 @@ THIS IS UNSTABLE AND ALPHA SOFTWARE
 ## Description
 Qml bindings for both D and Nim programming languages
 
+## Documentation
+The documentation for the Nim programming language can be
+read [here](http://filcuc.github.io/DOtherSide/ "").
+
+For the D programming language is an on going project
+and pull request are accepted.
+
 ## Requirements
 You need the following software:
 * Qt 5.3

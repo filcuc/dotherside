@@ -21,7 +21,7 @@ let nimFromQtVariant {.compileTime.} = {
 
 let nim2QtMeta {.compileTime.} = {
     "bool": "Bool",
-    "int " : "Int",
+    "int" : "Int",
     "string" : "QString",
     "pointer" : "VoidStar",
     "QVariant": "QVariant",
@@ -90,8 +90,9 @@ proc newTemplate*(name = newEmptyNode();
     newEmptyNode(),  ## pragmas
     newEmptyNode(),
     body)
-    
-template declareSuperTemplate*(parent: typedesc, typ: typedesc): typedesc =
+
+#FIXME: changed parent, typ from typedesc to expr to workaround Nim issue #1874    
+template declareSuperTemplate*(parent: expr, typ: expr): stmt =
   template superType*(ofType: typedesc[typ]): typedesc[parent] =
     parent
 
@@ -108,6 +109,34 @@ proc getTypeName*(a: PNimrodNode): PNimrodNode {.compileTime.} =
   elif testee[0].kind in {nnkPostfix}:
     return testee[0][1]
 
+proc isExported(def: PNimrodNode): bool {.compileTime.} =
+  ## given a type definition, ``typedef``, determines whether or
+  ## not the type is exported with a '*'
+  assert def.kind in {nnkTypeDef, nnkProcDef, nnkMethodDef, nnkTemplateDef},
+    "unsupported type: " & $def.kind
+  if def[0].kind == nnkPostfix:
+    return true
+
+proc exportDef(def: PNimrodNode) {.compileTime.} =
+  ## Exports exportable definitions. Currently only supports
+  ## templates, methods and procedures and types.
+  if def.kind in {nnkProcDef, nnkMethodDef, nnkTemplateDef, nnkTypeDef}:
+    if def.isExported:
+      return
+    def[0] = postfix(def[0], "*")
+  else:
+    error("node: " & $def.kind & " not supported")
+
+proc unexportDef(def: PNimrodNode) {.compileTime.} =
+  ## unexports exportable definitions. Currently only supports
+  ## templates, methods and procedures and types.
+  if def.kind in {nnkProcDef, nnkMethodDef, nnkTemplateDef, nnkTypeDef}:
+    if not def.isExported:
+      return
+    def[0] = ident unpackPostfix(def[0])[1]
+  else:
+    error("node: " & $def.kind & " not supported")
+
 proc genSuperTemplate*(typeDecl: PNimrodNode): PNimrodNode {.compileTime.} =
   ## generates a template, with name: superType, that returns the super type
   ## of the object defined in the type defintion, ``typeDecl``. ``typeDecl``
@@ -119,8 +148,12 @@ proc genSuperTemplate*(typeDecl: PNimrodNode): PNimrodNode {.compileTime.} =
   # ident of superType (have to deal with generics)
   let superType = if inheritStmt[0].kind == nnkIdent: inheritStmt[0] 
     else: inheritStmt[0].getNodeOf(nnkIdent)
-  let superTemplate = getAst declareSuperTemplate(superType, typeName) 
-  return superTemplate[0]
+  let superTemplate = getAst declareSuperTemplate(superType, typeName)
+  result = superTemplate[0]
+  if typeDecl.isExported():
+    result.exportDef()
+  else:
+    result.unexportDef()
 
 proc getSuperType*(typeDecl: PNimrodNode): PNimrodNode {.compileTime.} =
   ## returns ast containing superType info, may not be an ident if generic
@@ -192,11 +225,13 @@ proc addSignalBody(signal: PNimrodNode): PNimrodNode {.compileTime.} =
       args.add getArgName params[i]
   result.add newCall("emit", args)
 
-template declareOnSlotCalled(typ: typedesc): stmt =
+#FIXME: changed typ from typedesc to expr to workaround Nim issue #1874 
+template declareOnSlotCalled(typ: expr): stmt =
   method onSlotCalled(myQObject: typ, slotName: string, args: openarray[QVariant]) =
     discard
 
-template prototypeCreate(typ: typedesc): stmt =
+#FIXME: changed parent, typ from typedesc to expr to workaround Nim issue #1874
+template prototypeCreate(typ: expr): stmt =
   template create*(myQObject: var typ) =
     var super = (typ.superType())(myQObject)
     procCall create(super)
@@ -269,9 +304,10 @@ macro QtObject*(qtDecl: stmt): stmt {.immediate.} =
         #let superName = if superType.kind == nnkIdent: superType 
         #  else: superType.getNodeOf(nnkIdent)
         if typ != nil:
-          error("only support one type declaration")
+          error("you may not define more than one type " &
+                "within the code block passed to this macro")
         else: # without this else, it fails to compile
-          typ = typeDecl.getTypeName
+          typ = typeDecl
           result.add it
           result.add genSuperTemplate(typeDecl)
     elif it.kind == nnkMethodDef:
@@ -291,7 +327,13 @@ macro QtObject*(qtDecl: stmt): stmt {.immediate.} =
     elif it.kind == nnkProcDef:
       userDefined.add it
     elif it.kind == nnkCommand:
-      let cmdIdent = it[0]
+      let bracket = it[0]
+      if bracket.kind != nnkBracketExpr:
+        error("do not know how to handle: \n" & repr(it))
+      # BracketExpr
+      #   Ident !"QtProperty"
+      #   Ident !"string"
+      let cmdIdent = bracket[0]
       if cmdIdent == nil or cmdIdent.kind != nnkIdent or
           ($cmdIdent).toLower() != "qtproperty":
         error("do not know how to handle: \n" & repr(it))
@@ -299,9 +341,12 @@ macro QtObject*(qtDecl: stmt): stmt {.immediate.} =
     else:
       # everything else should pass through unchanged
       result.add it
-  
+  if typ == nil:
+    error("you must declare an object that inherits from QObject")
+  let typeName = typ.getTypeName()
+
   ## define onSlotCalled
-  var slotProto = (getAst declareOnSlotCalled(typ))[0]
+  var slotProto = (getAst declareOnSlotCalled(typeName))[0]
   var caseStmt = newNimNode(nnkCaseStmt)
   caseStmt.add ident("slotName")
   for slot in slots:
@@ -344,9 +389,13 @@ macro QtObject*(qtDecl: stmt): stmt {.immediate.} =
   result.add slotProto
 
   # generate create method
-  var createProto = (getAst prototypeCreate(typ))[0]
+  var createProto = (getAst prototypeCreate(typeName))[0]
   # the template creates loads of openSyms - replace these with idents
-  createProto = doRemoveOpenSym(createProto) 
+  createProto = doRemoveOpenSym(createProto)
+  if typ.isExported:
+    createProto.exportDef()
+  else:
+    createProto.unexportDef()
   var createBody = createProto.templateBody
   for slot in slots:
     let params = slot.params
@@ -363,19 +412,19 @@ macro QtObject*(qtDecl: stmt): stmt {.immediate.} =
     let call = newCall(regSigDot, newLit name, argTypesArray)
     createBody.add call
   for property in properties:
-    #echo treeRepr property
-    let infix = property[1]
-    expectKind infix, nnkInfix
-    # Infix
-    #   Ident !"of"
-    #   Ident !"name"
-    #   Ident !"string"
-
-    let nimPropType = infix[2]
+    let bracket = property[0]
+    expectKind bracket, nnkBracketExpr
+    #Command
+    #  BracketExpr
+    #    Ident !"QtProperty"
+    #    Ident !"string"
+    #  Ident !"name"
+    #  StmtList
+    let nimPropType = bracket[1]
     let qtPropMeta = nim2QtMeta[$nimPropType]
     if qtPropMeta == nil: error($nimPropType & " not supported")
     let metaDot = newDotExpr(ident "QMetaType", ident qtPropMeta) 
-    let propertyName = infix[1]
+    let propertyName = property[1]
     var read, write, notify: PNimrodNode
     let stmtList = property[2]
     # fields
