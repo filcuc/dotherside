@@ -21,7 +21,7 @@ QtObject:
       contact.m_name = name
       contact.nameChanged()
   
-  QtProperty name of string:
+  QtProperty[string] name:
     read = getName
     write = setName
     notify = nameChanged

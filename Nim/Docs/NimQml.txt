@@ -231,5 +231,5 @@ In details:
 The ``QtProperty`` macro has the following syntax
 
 .. code-block:: nim
-  QtProperty nameOfProperty of typeOfProperty
+  QtProperty[typeOfProperty] nameOfProperty
 

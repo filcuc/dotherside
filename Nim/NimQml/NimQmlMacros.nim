@@ -327,7 +327,13 @@ macro QtObject*(qtDecl: stmt): stmt {.immediate.} =
     elif it.kind == nnkProcDef:
       userDefined.add it
     elif it.kind == nnkCommand:
-      let cmdIdent = it[0]
+      let bracket = it[0]
+      if bracket.kind != nnkBracketExpr:
+        error("do not know how to handle: \n" & repr(it))
+      # BracketExpr
+      #   Ident !"QtProperty"
+      #   Ident !"string"
+      let cmdIdent = bracket[0]
       if cmdIdent == nil or cmdIdent.kind != nnkIdent or
           ($cmdIdent).toLower() != "qtproperty":
         error("do not know how to handle: \n" & repr(it))
@@ -406,19 +412,19 @@ macro QtObject*(qtDecl: stmt): stmt {.immediate.} =
     let call = newCall(regSigDot, newLit name, argTypesArray)
     createBody.add call
   for property in properties:
-    #echo treeRepr property
-    let infix = property[1]
-    expectKind infix, nnkInfix
-    # Infix
-    #   Ident !"of"
-    #   Ident !"name"
-    #   Ident !"string"
-
-    let nimPropType = infix[2]
+    let bracket = property[0]
+    expectKind bracket, nnkBracketExpr
+    #Command
+    #  BracketExpr
+    #    Ident !"QtProperty"
+    #    Ident !"string"
+    #  Ident !"name"
+    #  StmtList
+    let nimPropType = bracket[1]
     let qtPropMeta = nim2QtMeta[$nimPropType]
     if qtPropMeta == nil: error($nimPropType & " not supported")
     let metaDot = newDotExpr(ident "QMetaType", ident qtPropMeta) 
-    let propertyName = infix[1]
+    let propertyName = property[1]
     var read, write, notify: PNimrodNode
     let stmtList = property[2]
     # fields
