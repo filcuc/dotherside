@@ -44,7 +44,7 @@ proc dos_qvariant_create(variant: var QVariant) {.cdecl, dynlib:"libDOtherSide.s
 proc dos_qvariant_create_int(variant: var QVariant, value: cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_create_bool(variant: var QVariant, value: bool) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_create_string(variant: var QVariant, value: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_create_qobject(variant: var QVariant, value: pointer) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qvariant_create_qobject(variant: var QVariant, value: DynamicQObject) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_delete(variant: QVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_isnull(variant: QVariant, isNull: var bool) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_toInt(variant: QVariant, value: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
@@ -176,23 +176,24 @@ proc toCIntSeq(metaTypes: openarray[QMetaType]): seq[cint] =
   result = @[]
   for metaType in metaTypes:
     result.add(cint(metaType))
+
+type QObjectCallBack = proc(nimobject: ptr QObject, slotName: QVariant, numArguments: cint, arguments: QVariantArrayPtr) {.cdecl.}
     
-proc dos_qobject_create(qobject: var pointer, nimobject: pointer, qobjectCallback: pointer) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qobject_delete(qobject: pointer) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qobject_slot_create(qobject: pointer, slotName: cstring, argumentsCount: cint, argumentsMetaTypes: ptr cint, slotIndex: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qobject_signal_create(qobject: pointer, signalName: cstring, argumentsCount: cint, argumentsMetaTypes: ptr cint, signalIndex: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qobject_signal_emit(qobject: pointer, signalName: cstring, argumentsCount: cint, arguments: pointer) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qobject_property_create(qobject: pointer, propertyName: cstring, propertyType: cint, readSlot: cstring, writeSlot: cstring, notifySignal: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qobject_create(qobject: var DynamicQObject, nimobject: ptr QObject, qobjectCallback: QObjectCallBack) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qobject_delete(qobject: DynamicQObject) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qobject_slot_create(qobject: DynamicQObject, slotName: cstring, argumentsCount: cint, argumentsMetaTypes: ptr cint, slotIndex: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qobject_signal_create(qobject: DynamicQObject, signalName: cstring, argumentsCount: cint, argumentsMetaTypes: ptr cint, signalIndex: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qobject_signal_emit(qobject: DynamicQObject, signalName: cstring, argumentsCount: cint, arguments: ptr QVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qobject_property_create(qobject: DynamicQObject, propertyName: cstring, propertyType: cint, readSlot: cstring, writeSlot: cstring, notifySignal: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
 method onSlotCalled*(nimobject: QObject, slotName: string, args: openarray[QVariant]) =
   ## Called from the NimQml bridge when a slot is called from Qml.
   ## Subclasses can override the given method for handling the slot call
   discard()
 
-proc qobjectCallback(nimobject: pointer, slotName: QVariant, numArguments: cint, arguments: QVariantArrayPtr) {.exportc.} =
-  var nimQObjectCasted = cast[ptr QObject](nimobject)
+proc qobjectCallback(nimobject: ptr QObject, slotName: QVariant, numArguments: cint, arguments: QVariantArrayPtr) {.cdecl, exportc.} =
   # forward to the QObject subtype instance
-  nimQObjectCasted[].onSlotCalled(slotName.stringVal, arguments.toVariantSeq(numArguments))
+  nimobject[].onSlotCalled(slotName.stringVal, arguments.toVariantSeq(numArguments))
 
 proc create*(qobject: var QObject) =
   ## Create a new QObject
@@ -242,9 +243,9 @@ proc emit*(qobject: QObject, signalName: string, args: openarray[QVariant] = [])
     var copy: seq[QVariant]
     for i in 0..args.len-1:
       copy.add(args[i])
-    dos_qobject_signal_emit(qobject.data, signalName, cast[cint](args.len), cast[pointer](addr(copy[0]))) 
+    dos_qobject_signal_emit(qobject.data, signalName, args.len.cint, addr(copy[0]))
   else:
-    dos_qobject_signal_emit(qobject.data, signalName, 0, cast[pointer](0))
+    dos_qobject_signal_emit(qobject.data, signalName, 0, nil)
 
 # QQuickView
 proc dos_qquickview_create(view: var QQuickView) {.cdecl, dynlib:"libDOtherSide.so", importc.}
