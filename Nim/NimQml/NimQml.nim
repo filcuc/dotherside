@@ -249,9 +249,7 @@ proc registerProperty*(qobject: var QObject,
 proc emit*(qobject: QObject, signalName: string, args: openarray[QVariant] = []) =
   ## Emit the signal with the given name and values
   if args.len > 0: 
-    var copy: seq[QVariant]
-    for i in 0..args.len-1:
-      copy.add(args[i])
+    var copy = @args
     dos_qobject_signal_emit(qobject.data, signalName, args.len.cint, addr(copy[0]))
   else:
     dos_qobject_signal_emit(qobject.data, signalName, 0, nil)
