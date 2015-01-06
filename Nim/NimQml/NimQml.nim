@@ -90,11 +90,11 @@ proc intVal*(variant: QVariant): int =
   ## Return the QVariant value as int
   var rawValue: cint
   dos_qvariant_toInt(variant, rawValue)
-  result = cast[int](rawValue)
+  result = rawValue.cint
 
 proc `intVal=`*(variant: QVariant, value: int) = 
   ## Sets the QVariant value int value
-  var rawValue = cast[cint](value)
+  var rawValue = value.cint
   dos_qvariant_setInt(variant, rawValue)
 
 proc boolVal*(variant: QVariant): bool = 
@@ -215,36 +215,36 @@ proc delete*(qobject: QObject) =
   qobjectRegistry.del qobjectPtr
   dos_qobject_delete(qobject.data)
 
-proc registerSlot*(qobject: var QObject, 
+proc registerSlot*(qobject: QObject,
                    slotName: string, 
                    metaTypes: openarray[QMetaType]) =
   ## Register a slot in the QObject with the given name and signature
   # Copy the metatypes array
   var copy = toCIntSeq(metatypes)
   var index: cint 
-  dos_qobject_slot_create(qobject.data, slotName, cint(copy.len), cast[ptr cint](addr(copy[0])), index)
+  dos_qobject_slot_create(qobject.data, slotName, cint(copy.len), addr(copy[0].cint), index)
   qobject.slots[slotName] = index
 
-proc registerSignal*(qobject: var QObject, 
+proc registerSignal*(qobject: QObject,
                      signalName: string, 
                      metatypes: openarray[QMetaType]) =
   ## Register a signal in the QObject with the given name and signature
   var index: cint 
   if metatypes.len > 0:
     var copy = toCIntSeq(metatypes)
-    dos_qobject_signal_create(qobject.data, signalName, cast[cint](copy.len), cast[ptr cint](addr(copy[0])), index)
+    dos_qobject_signal_create(qobject.data, signalName, copy.len.cint, addr(copy[0].cint), index)
   else:
-    dos_qobject_signal_create(qobject.data, signalName, 0, cast[ptr cint](0), index)
+    dos_qobject_signal_create(qobject.data, signalName, 0, nil, index)
   qobject.signals[signalName] = index
 
-proc registerProperty*(qobject: var QObject, 
+proc registerProperty*(qobject: QObject,
                        propertyName: string, 
                        propertyType: QMetaType, 
                        readSlot: string, 
                        writeSlot: string, 
                        notifySignal: string) =
   ## Register a property in the QObject with the given name and type.
-  dos_qobject_property_create(qobject.data, propertyName, cast[cint](propertyType), readSlot, writeSlot, notifySignal)
+  dos_qobject_property_create(qobject.data, propertyName, propertyType.cint, readSlot, writeSlot, notifySignal)
 
 proc emit*(qobject: QObject, signalName: string, args: openarray[QVariant] = []) =
   ## Emit the signal with the given name and values
