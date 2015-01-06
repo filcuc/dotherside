@@ -1173,11 +1173,20 @@ make</pre>
 cd Nim/Examples/HelloWorld
 export LD_LIBRARY_PATH=path/to/libDOtherSide.so
 ./HelloWorld</pre>
-<p>Given this, you can procede with the installation of the C++ library in the following way</p>
+<p>The DOtherSide project is made of two components</p>
+<ol class="simple"><li>The DOtherSide C++ lib</li>
+<li>The NimQml module</li>
+</ol>
+<p>You can procede with the installation of the C++ library in the following way</p>
 <pre>cd to/build/dir
 make install</pre>
 <p>or by manually copying the library in your system lib directory</p>
 <pre>sudo cp build/dir/path/DOtherSide/libDOtherSide.so /usr/lib</pre>
+<p>For the NimQml module you can use the <tt class="docutils literal"><span class="pre">nimble</span></tt> package manager</p>
+<pre>nimble install NimQml</pre>
+<p>or</p>
+<pre>cd to/build/dir/Nim/NimQml
+nimble install</pre>
 
 <h1 id="example-1-helloworld">Example 1: HelloWorld</h1><p>As usual lets start with an HelloWorld example. Most of the NimQml projects are made by one or more nim and qml files. Usually the .nim files contains your app logic and data layer. The qml files contain the presentation layer and expose the data in your nim files.</p>
 <p><tt class="docutils literal"><span class="pre">Examples/HelloWorld/main.nim</span></tt></p>
@@ -1528,7 +1537,7 @@ ApplicationWindow
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small>Made with Nim. Generated: 2015-01-06 12:49:34 UTC</small>
+        <small>Made with Nim. Generated: 2015-01-06 13:11:40 UTC</small>
       </div>
     </div>
   </div>
