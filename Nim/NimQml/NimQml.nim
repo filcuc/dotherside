@@ -22,6 +22,8 @@ type QMetaType* {.pure.} = enum ## \
   QVariant = cint(41), 
   Void = cint(43)
 
+var qobjectRegistry = initTable[ptr QObjectObj, QObject]()
+
 proc debugMsg(message: string) = 
   echo "NimQml: ", message
 
@@ -177,9 +179,9 @@ proc toCIntSeq(metaTypes: openarray[QMetaType]): seq[cint] =
   for metaType in metaTypes:
     result.add(cint(metaType))
 
-type QObjectCallBack = proc(nimobject: ptr QObject, slotName: QVariant, numArguments: cint, arguments: QVariantArrayPtr) {.cdecl.}
+type QObjectCallBack = proc(nimobject: ptr QObjectObj, slotName: QVariant, numArguments: cint, arguments: QVariantArrayPtr) {.cdecl.}
     
-proc dos_qobject_create(qobject: var DynamicQObject, nimobject: ptr QObject, qobjectCallback: QObjectCallBack) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qobject_create(qobject: var DynamicQObject, nimobject: ptr QObjectObj, qobjectCallback: QObjectCallBack) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qobject_delete(qobject: DynamicQObject) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qobject_slot_create(qobject: DynamicQObject, slotName: cstring, argumentsCount: cint, argumentsMetaTypes: ptr cint, slotIndex: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qobject_signal_create(qobject: DynamicQObject, signalName: cstring, argumentsCount: cint, argumentsMetaTypes: ptr cint, signalIndex: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
@@ -191,19 +193,26 @@ method onSlotCalled*(nimobject: QObject, slotName: string, args: openarray[QVari
   ## Subclasses can override the given method for handling the slot call
   discard()
 
-proc qobjectCallback(nimobject: ptr QObject, slotName: QVariant, numArguments: cint, arguments: QVariantArrayPtr) {.cdecl, exportc.} =
+proc qobjectCallback(nimobject: ptr QObjectObj, slotName: QVariant, numArguments: cint, arguments: QVariantArrayPtr) {.cdecl, exportc.} =
+  let qobject = qobjectRegistry[nimobject]
+  assert qobject != nil, "expecting valid QObject"
   # forward to the QObject subtype instance
-  nimobject[].onSlotCalled(slotName.stringVal, arguments.toVariantSeq(numArguments))
+  qobject.onSlotCalled(slotName.stringVal, arguments.toVariantSeq(numArguments))
 
-proc create*(qobject: var QObject) =
+proc create*(qobject: QObject) =
   ## Create a new QObject
+  let internalRef = qobject
+  let qobjectPtr = addr(qobject[])
+  qobjectRegistry[qobjectPtr] = internalRef
   qobject.name = "QObject"
   qobject.slots = initTable[string,cint]()
   qobject.signals = initTable[string, cint]()
-  dos_qobject_create(qobject.data, addr(qobject), qobjectCallback)
+  dos_qobject_create(qobject.data, qobjectPtr, qobjectCallback)
 
 proc delete*(qobject: QObject) = 
   ## Delete the given QObject
+  let qobjectPtr = addr(qobject[])
+  qobjectRegistry.del qobjectPtr
   dos_qobject_delete(qobject.data)
 
 proc registerSlot*(qobject: var QObject, 
@@ -274,6 +283,4 @@ proc show(view: QQuickView) =
 proc delete(view: QQuickView) =
   ## Delete the given QQuickView
   dos_qquickview_delete(view)
-
-
 
