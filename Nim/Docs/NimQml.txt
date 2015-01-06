@@ -49,7 +49,11 @@ the built Nim example in the following way
   export LD_LIBRARY_PATH=path/to/libDOtherSide.so
   ./HelloWorld
 
-Given this, you can procede with the installation of the C++ library
+The DOtherSide project is made of two components
+1. The DOtherSide C++ lib
+2. The NimQml module
+
+You can procede with the installation of the C++ library
 in the following way
 ::
   cd to/build/dir
@@ -57,6 +61,16 @@ in the following way
 or by manually copying the library in your system lib directory
 ::
   sudo cp build/dir/path/DOtherSide/libDOtherSide.so /usr/lib
+
+For the NimQml module you can use the ``nimble`` package manager
+::
+  nimble install NimQml
+
+or
+::
+  cd to/build/dir/Nim/NimQml
+  nimble install
+  
 
 Example 1: HelloWorld
 ----------
