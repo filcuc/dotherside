@@ -1,19 +1,16 @@
-## Please note we are using templates where ordinarily we would like to use procedures
-## due to bug: https://github.com/Araq/Nim/issues/1821
 import NimQml
 
 type Contact = ref object of QObject 
   m_name: string
   
-template newContact*(): Contact = 
-  var result = Contact(m_name: "initialName")
+proc newContact*(): Contact =
+  result = Contact(m_name: "initialName")
   result.create()
   result.m_name = "InitialName"
   result.registerSlot("getName", [QMetaType.QString])
   result.registerSlot("setName", [QMetaType.Void, QMetaType.QString])
   result.registerSignal("nameChanged", [QMetaType.Void])
   result.registerProperty("name", QMetaType.QString, "getName", "setName", "nameChanged")
-  result
 
 method getName*(self: Contact): string =
   result = self.m_name

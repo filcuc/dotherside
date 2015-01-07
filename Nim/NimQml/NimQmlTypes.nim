@@ -7,10 +7,11 @@ type
   QApplication* = distinct pointer ## A QApplication
   DynamicQObject* = distinct pointer
     ## internal representation of a QObject, as recognised by DOtherSide
-  QObject* {.inheritable.} = ref object of RootObj ## A QObject
+  QObjectObj* = object of RootObj ## A QObject
     name*: string
     data*: DynamicQObject
     slots*: Table[string, cint]
     signals*: Table[string, cint]
     properties*: Table[string, cint]
+  QObject* = ref QObjectObj
   QQuickView* = distinct pointer ## A QQuickView
