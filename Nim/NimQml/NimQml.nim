@@ -57,6 +57,7 @@ proc dos_qvariant_setBool(variant: QVariant, value: bool) {.cdecl, dynlib:"libDO
 proc dos_qvariant_setString(variant: QVariant, value: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_chararray_delete(rawCString: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
+
 proc create*(variant: var QVariant) =
   ## Create a new QVariant
   dos_qvariant_create(variant)
@@ -117,6 +118,22 @@ proc `stringVal=`*(variant: QVariant, value: string) =
   ## Sets the QVariant string value
   dos_qvariant_setString(variant, value)
 
+proc newQVariant*(stringVal: string): QVariant =
+  ## Create a new QVariant given a string value
+  result.create(stringVal)
+
+proc newQVariant*(boolVal: bool): QVariant =
+  ## Create a new QVariant given a bool value
+  result.create(boolVal)
+
+proc newQVariant*(intVal: int): QVariant =
+  ## Create a new QVariant given a cint value
+  result.create(intval.cint)
+
+proc newQVariant*(qobject: QObject): QVariant =
+  ## Create a new QVariant given a QObject
+  result.create(qobject)
+
 
 # QQmlApplicationEngine
 proc dos_qqmlapplicationengine_create(engine: var QQmlApplicationEngine) {.cdecl, dynlib:"libDOtherSide.so", importc.}
@@ -141,6 +158,10 @@ proc delete*(engine: QQmlApplicationEngine) =
   debugMsg("QQmlApplicationEngine", "delete")
   dos_qqmlapplicationengine_delete(engine)
 
+proc newQQmlApplicationEngine*(): QQmlApplicationEngine =
+  ## Create an new QQmlApplicationEngine
+  result.create
+
 # QQmlContext
 proc dos_qqmlcontext_setcontextproperty(context: QQmlContext, propertyName: cstring, propertyValue: QVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
@@ -164,6 +185,10 @@ proc exec*(application: QApplication) =
 proc delete*(application: QApplication) = 
   ## Delete the given QApplication
   dos_qguiapplication_delete()
+
+proc newQApplication*(): QApplication =
+  ## Create a new QApplication
+  result.create
 
 # QObject
 type QVariantArray {.unchecked.} = array[0..0, QVariant]
@@ -191,7 +216,7 @@ proc dos_qobject_property_create(qobject: DynamicQObject, propertyName: cstring,
 method onSlotCalled*(nimobject: QObject, slotName: string, args: openarray[QVariant]) =
   ## Called from the NimQml bridge when a slot is called from Qml.
   ## Subclasses can override the given method for handling the slot call
-  discard()
+  discard
 
 proc qobjectCallback(nimobject: ptr QObjectObj, slotName: QVariant, numArguments: cint, arguments: QVariantArrayPtr) {.cdecl, exportc.} =
   let qobject = qobjectRegistry[nimobject]
@@ -282,3 +307,6 @@ proc delete(view: QQuickView) =
   ## Delete the given QQuickView
   dos_qquickview_delete(view)
 
+proc newQQuickView*(): QQuickView =
+  # constructs a new QQuickView
+  result.create
