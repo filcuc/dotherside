@@ -3,32 +3,24 @@ import macros
 import typeinfo
 
 proc mainProc() =
-  var app: QApplication
-  app.create()
+  let app = newQApplication()
   defer: app.delete()
    
-  var engine: QQmlApplicationEngine
-  engine.create()
+  let engine = newQQmlApplicationEngine()
   defer: engine.delete()
 
-  var qVar1: QVariant
-  qVar1.create()
+  let qVar1 = newQVariant(10)
   defer: qVar1.delete()
-  qVar1.intVal = 10
 
-  var qVar2: QVariant
-  qVar2.create()
+  let qVar2 = newQVariant("Hello World")
   defer: qVar2.delete()
-  qVar2.stringVal = "Hello World"
 
-  var qVar3: QVariant
-  qVar3.create()
+  let qVar3 = newQVariant(false)
   defer: qVar3.delete()
-  qVar3.boolVal = false
   
   engine.rootContext.setContextProperty("qVar1", qVar1) 
   engine.rootContext.setContextProperty("qVar2", qVar2)
-  engine.rootContext.setContextProperty("qVar3", qVar2)
+  engine.rootContext.setContextProperty("qVar3", qVar3)
   
   engine.load("main.qml")
   app.exec()
