@@ -13,8 +13,7 @@ proc mainProc() =
   engine.create()
   defer: engine.delete()
 
-  var variant: QVariant
-  variant.create(contact)
+  var variant = newQVariant(contact)
   defer: variant.delete()
 
   var rootContext: QQmlContext = engine.rootContext()

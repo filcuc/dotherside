@@ -4,17 +4,24 @@ import NimQml
 
 type Contact = ref object of QObject 
   m_name: string
-  
-template newContact*(): Contact = 
-  var result = Contact(m_name: "initialName")
-  result.create()
-  result.m_name = "InitialName"
-  result.registerSlot("getName", [QMetaType.QString])
-  result.registerSlot("setName", [QMetaType.Void, QMetaType.QString])
-  result.registerSignal("nameChanged", [QMetaType.Void])
-  result.registerProperty("name", QMetaType.QString, "getName", "setName", "nameChanged")
-  result
 
+proc delete(self: Contact) = 
+  var qobject = self.QObject
+  qobject.delete()
+
+proc create(self: Contact) =
+  var qobject = self.QObject
+  qobject.create()
+  self.m_name = "InitialName"
+  self.registerSlot("getName", [QMetaType.QString])
+  self.registerSlot("setName", [QMetaType.Void, QMetaType.QString])
+  self.registerSignal("nameChanged", [QMetaType.Void])
+  self.registerProperty("name", QMetaType.QString, "getName", "setName", "nameChanged")
+  
+proc newContact*(): Contact = 
+  new(result, delete)
+  result.create()
+  
 method getName*(self: Contact): string =
   result = self.m_name
 
