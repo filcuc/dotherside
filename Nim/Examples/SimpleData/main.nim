@@ -11,20 +11,14 @@ proc mainProc() =
   engine.create()
   defer: engine.delete()
 
-  var qVar1: QVariant
-  qVar1.create()
+  var qVar1 = newQVariant(10)
   defer: qVar1.delete()
-  qVar1.intVal = 10
 
-  var qVar2: QVariant
-  qVar2.create()
+  var qVar2 = newQVariant("Hello World")
   defer: qVar2.delete()
-  qVar2.stringVal = "Hello World"
 
-  var qVar3: QVariant
-  qVar3.create()
+  var qVar3 = newQVariant(false)
   defer: qVar3.delete()
-  qVar3.boolVal = false
   
   engine.rootContext.setContextProperty("qVar1", qVar1) 
   engine.rootContext.setContextProperty("qVar2", qVar2)
