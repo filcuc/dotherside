@@ -96,22 +96,27 @@ proc newQVariant*(): QVariant =
   result.create()
 
 proc newQVariant*(value: cint): QVariant =
+  ## Return a new QVariant given a cint
   new(result, delete)
   result.create(value)
 
 proc newQVariant*(value: bool): QVariant  =
+  ## Return a new QVariant given a bool
   new(result, delete)
   result.create(value)
 
 proc newQVariant*(value: string): QVariant  =
+  ## Return a new QVariant given a string
   new(result, delete)
   result.create(value)
 
 proc newQVariant*(value: QObject): QVariant  =
+  ## Return a new QVariant given a QObject
   new(result, delete)
   result.create(value)
 
 proc newQVariant*(value: RawQVariant, takeOwnership: bool = false): QVariant =
+  ## Return a new QVariant given a raw QVariant pointer
   if takeOwnership:  
     new(result, delete)
     result.deleted = false
@@ -261,6 +266,7 @@ proc delete*(qobject: QObject) =
   qobject.deleted = true
   
 proc newQObject*(): QObject =
+  ## Return a new QObject
   new(result, delete)
   result.create()
 
