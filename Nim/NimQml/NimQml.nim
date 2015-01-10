@@ -1,5 +1,4 @@
 include NimQmlTypes
-import tables
 
 ## NimQml aims to provide binding to the QML for the Nim programming language
 
@@ -46,7 +45,7 @@ proc dos_qvariant_create(variant: var RawQVariant) {.cdecl, dynlib:"libDOtherSid
 proc dos_qvariant_create_int(variant: var RawQVariant, value: cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_create_bool(variant: var RawQVariant, value: bool) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_create_string(variant: var RawQVariant, value: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_create_qobject(variant: var RawQVariant, value: DynamicQObject) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qvariant_create_qobject(variant: var RawQVariant, value: RawQObject) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_create_qvariant(variant: var RawQVariant, value: RawQVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_delete(variant: RawQVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_isnull(variant: RawQVariant, isNull: var bool) {.cdecl, dynlib:"libDOtherSide.so", importc.}
@@ -175,27 +174,36 @@ proc assign*(leftValue: QVariant, rightValue: QVariant): QVariant =
   dos_qvariant_assign(leftValue.data, rightValue.data)  
 
 # QQmlApplicationEngine
-proc dos_qqmlapplicationengine_create(engine: var QQmlApplicationEngine) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qqmlapplicationengine_load(engine: QQmlApplicationEngine, filename: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qqmlapplicationengine_context(engine: QQmlApplicationEngine, context: var QQmlContext) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qqmlapplicationengine_delete(engine: QQmlApplicationEngine) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qqmlapplicationengine_create(engine: var RawQQmlApplicationEngine) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qqmlapplicationengine_load(engine: RawQQmlApplicationEngine, filename: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qqmlapplicationengine_context(engine: RawQQmlApplicationEngine, context: var QQmlContext) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qqmlapplicationengine_delete(engine: RawQQmlApplicationEngine) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
-proc create*(engine: var QQmlApplicationEngine) = 
+proc create*(engine: QQmlApplicationEngine) = 
   ## Create an new QQmlApplicationEngine
-  dos_qqmlapplicationengine_create(engine)
-
+  dos_qqmlapplicationengine_create(engine.data)
+  engine.deleted = false
+  
 proc load*(engine: QQmlApplicationEngine, filename: cstring) = 
   ## Load the given Qml file 
-  dos_qqmlapplicationengine_load(engine, filename)
+  dos_qqmlapplicationengine_load(engine.data, filename)
 
 proc rootContext*(engine: QQmlApplicationEngine): QQmlContext =
   ## Return the engine root context
-  dos_qqmlapplicationengine_context(engine, result)
+  dos_qqmlapplicationengine_context(engine.data, result)
 
 proc delete*(engine: QQmlApplicationEngine) = 
   ## Delete the given QQmlApplicationEngine
-  debugMsg("QQmlApplicationEngine", "delete")
-  dos_qqmlapplicationengine_delete(engine)
+  if not engine.deleted:
+    debugMsg("QQmlApplicationEngine", "delete")
+    dos_qqmlapplicationengine_delete(engine.data)
+    engine.data = nil.RawQQmlApplicationEngine
+    engine.deleted = true
+
+proc newQQmlApplicationEngine*(): QQmlApplicationEngine =
+  ## Return a new QQmlApplicationEngine    
+  new(result, delete)
+  result.create()
 
 # QQmlContext
 proc dos_qqmlcontext_setcontextproperty(context: QQmlContext, propertyName: cstring, propertyValue: RawQVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
@@ -212,6 +220,7 @@ proc dos_qguiapplication_delete() {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc create*(application: QApplication) = 
   ## Create a new QApplication
   dos_qguiapplication_create()
+  application.deleted = false
 
 proc exec*(application: QApplication) =
   ## Start the Qt event loop
@@ -219,7 +228,15 @@ proc exec*(application: QApplication) =
 
 proc delete*(application: QApplication) = 
   ## Delete the given QApplication
-  dos_qguiapplication_delete()
+  if not application.deleted:
+    debugMsg("QApplication", "delete")
+    dos_qguiapplication_delete()
+    application.deleted = true
+
+proc newQApplication*(): QApplication =
+  ## Return a new QApplication  
+  new(result, delete)
+  result.create()
 
 # QObject
 type RawQVariantArray {.unchecked.} = array[0..0, RawQVariant]
@@ -241,12 +258,12 @@ proc toCIntSeq(metaTypes: openarray[QMetaType]): seq[cint] =
 
 type QObjectCallBack = proc(nimobject: ptr QObjectObj, slotName: RawQVariant, numArguments: cint, arguments: RawQVariantArrayPtr) {.cdecl.}
     
-proc dos_qobject_create(qobject: var DynamicQObject, nimobject: ptr QObjectObj, qobjectCallback: QObjectCallBack) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qobject_delete(qobject: DynamicQObject) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qobject_slot_create(qobject: DynamicQObject, slotName: cstring, argumentsCount: cint, argumentsMetaTypes: ptr cint, slotIndex: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qobject_signal_create(qobject: DynamicQObject, signalName: cstring, argumentsCount: cint, argumentsMetaTypes: ptr cint, signalIndex: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qobject_signal_emit(qobject: DynamicQObject, signalName: cstring, argumentsCount: cint, arguments: ptr QVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qobject_property_create(qobject: DynamicQObject, propertyName: cstring, propertyType: cint, readSlot: cstring, writeSlot: cstring, notifySignal: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qobject_create(qobject: var RawQObject, nimobject: ptr QObjectObj, qobjectCallback: QObjectCallBack) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qobject_delete(qobject: RawQObject) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qobject_slot_create(qobject: RawQObject, slotName: cstring, argumentsCount: cint, argumentsMetaTypes: ptr cint, slotIndex: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qobject_signal_create(qobject: RawQObject, signalName: cstring, argumentsCount: cint, argumentsMetaTypes: ptr cint, signalIndex: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qobject_signal_emit(qobject: RawQObject, signalName: cstring, argumentsCount: cint, arguments: ptr QVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qobject_property_create(qobject: RawQObject, propertyName: cstring, propertyType: cint, readSlot: cstring, writeSlot: cstring, notifySignal: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
 method onSlotCalled*(nimobject: QObject, slotName: string, args: openarray[QVariant]) =
   ## Called from the NimQml bridge when a slot is called from Qml.
@@ -285,7 +302,7 @@ proc delete*(qobject: QObject) =
     let qobjectPtr = addr(qobject[])
     qobjectRegistry.del qobjectPtr
     dos_qobject_delete(qobject.data)
-    qobject.data = nil.DynamicQObject
+    qobject.data = nil.RawQObject
     qobject.deleted = true
   
 proc newQObject*(): QObject =
@@ -333,30 +350,39 @@ proc emit*(qobject: QObject, signalName: string, args: openarray[QVariant] = [])
     dos_qobject_signal_emit(qobject.data, signalName, 0, nil)
 
 # QQuickView
-proc dos_qquickview_create(view: var QQuickView) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qquickview_delete(view: QQuickView) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qquickview_show(view: QQuickView) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qquickview_source(view: QQuickView, filename: var cstring, length: var int) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qquickview_set_source(view: QQuickView, filename: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qquickview_create(view: var RawQQuickView) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qquickview_delete(view: RawQQuickView) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qquickview_show(view: RawQQuickView) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qquickview_source(view: RawQQuickView, filename: var cstring, length: var int) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qquickview_set_source(view: RawQQuickView, filename: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
 proc create(view: var QQuickView) =
   ## Create a new QQuickView
-  dos_qquickview_create(view)
+  dos_qquickview_create(view.data)
+  view.deleted = false
 
 proc source(view: QQuickView): cstring = 
   ## Return the source Qml file loaded by the view
   var length: int
-  dos_qquickview_source(view, result, length)
+  dos_qquickview_source(view.data, result, length)
 
 proc `source=`(view: QQuickView, filename: cstring) =
   ## Sets the source Qml file laoded by the view
-  dos_qquickview_set_source(view, filename)
+  dos_qquickview_set_source(view.data, filename)
 
 proc show(view: QQuickView) = 
   ## Sets the view visible 
-  dos_qquickview_show(view)
+  dos_qquickview_show(view.data)
 
 proc delete(view: QQuickView) =
   ## Delete the given QQuickView
-  dos_qquickview_delete(view)
+  if not view.deleted:
+    debugMsg("QQuickView", "delete")
+    dos_qquickview_delete(view.data)
+    view.data = nil.RawQQuickView
+    view.deleted = true
 
+proc newQQuickView*(): QQuickView =
+  ## Return a new QQuickView  
+  new(result, delete)
+  result.create()

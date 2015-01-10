@@ -1,22 +1,32 @@
 import tables
 
 type 
-  RawQVariant = distinct pointer ## A QVariant
-  QVariant* = ref object of RootObj
+  RawQVariant = distinct pointer 
+  QVariant* = ref object of RootObj ## A QVariant
     data: RawQVariant
     deleted: bool
-    
-  QQmlApplicationEngine* = distinct pointer ## A QQmlApplicationEngine
-  QQmlContext* = distinct pointer ## A QQmlContext
-  QApplication* = distinct pointer ## A QApplication
 
-  DynamicQObject = distinct pointer
-  QObjectObj = object of RootObj ## A QObject
-    data: DynamicQObject
+  RawQQmlApplicationEngine = distinct pointer
+  QQmlApplicationEngine* = ref object of RootObj ## A QQmlApplicationEngine
+    data: RawQQmlApplicationEngine
+    deleted: bool
+  
+  QApplication* = ref object of RootObj ## A QApplication 
+    deleted: bool
+    
+  RawQObject = distinct pointer
+  QObjectObj = object of RootObj
+    data: RawQObject
     slots: Table[string, cint]
     signals: Table[string, cint]
     properties: Table[string, cint]
     deleted: bool
-  QObject* = ref QObjectObj
+  QObject* = ref QObjectObj ## A QObject
 
-  QQuickView* = distinct pointer ## A QQuickView
+  RawQQuickView = distinct pointer 
+  QQuickView = ref object of RootObj ## A QQuickView
+    data: RawQQuickView
+    deleted: bool
+
+  QQmlContext* = distinct pointer ## A QQmlContext
+
