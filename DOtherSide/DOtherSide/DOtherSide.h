@@ -43,6 +43,7 @@ extern "C"
   void dos_qvariant_create_bool(void **vptr, bool value);
   void dos_qvariant_create_string(void **vptr, const char* value);
   void dos_qvariant_create_qobject(void **vptr, void* value);
+  void dos_qvariant_create_qvariant(void **vptr, void* value);
   void dos_qvariant_toInt(void* vptr, int& value);
   void dos_qvariant_setInt(void* vptr, int value);
   void dos_qvariant_toBool(void* vptr, bool& value);
@@ -51,6 +52,7 @@ extern "C"
   void dos_qvariant_setString(void* vptr, const char* value);
   void dos_qvariant_isnull(void *vptr, bool& isNull);
   void dos_qvariant_delete(void *vptr);
+  void dos_qvariant_assign(void* vptr, void* other);
 
   // QObject
   void dos_qobject_create(void **vptr,

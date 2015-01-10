@@ -146,6 +146,14 @@ void dos_qvariant_create_string(void** vptr, const char* value)
     *vptr = new QVariant(value);
 }
 
+void dos_qvariant_create_qvariant(void** vptr, void* other)
+{
+  auto newQVariant = new QVariant();
+  auto otherQVariant = reinterpret_cast<QVariant*>(other);
+  *newQVariant = *otherQVariant;
+  *vptr = newQVariant;
+}
+
 void dos_qvariant_create_qobject(void **vptr, void* value)
 {
     auto qobject = reinterpret_cast<QObject*>(value);
@@ -164,6 +172,13 @@ void dos_qvariant_delete(void *vptr)
 {
     auto variant = reinterpret_cast<QVariant*>(vptr);
     delete variant;
+}
+
+void dos_qvariant_assign(void* vptr, void* other)
+{
+  auto leftQVariant = reinterpret_cast<QVariant*>(vptr);
+  auto rightQVariant = reinterpret_cast<QVariant*>(other);
+  *leftQVariant = *rightQVariant;
 }
 
 void dos_qvariant_toInt(void* vptr, int& value)
