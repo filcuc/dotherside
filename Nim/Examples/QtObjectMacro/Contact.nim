@@ -6,20 +6,24 @@ QtObject:
   type Contact* = ref object of QObject
     m_name: string
 
-  template newContact*(): Contact =
-    var result = Contact(m_name: "initialName")
-    result.create
-    result
-  
-  method getName*(contact: Contact): string {.slot.} =
-    result = contact.m_name
+  proc delete(self: Contact) = 
+    var qobject = self.QObject
+    qobject.delete()
 
-  method nameChanged*(contact: Contact) {.signal.}
+  proc newContact*(): Contact =
+    new(result, delete)
+    result.m_name = "InitialName"
+    result.create
   
-  method setName*(contact: Contact, name: string) {.slot.} =
-    if contact.m_name != name:
-      contact.m_name = name
-      contact.nameChanged()
+  method getName*(self: Contact): string {.slot.} =
+    result = self.m_name
+
+  method nameChanged*(self: Contact) {.signal.}
+  
+  method setName*(self: Contact, name: string) {.slot.} =
+    if self.m_name != name:
+      self.m_name = name
+      self.nameChanged()
   
   QtProperty[string] name:
     read = getName

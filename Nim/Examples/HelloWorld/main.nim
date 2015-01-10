@@ -3,12 +3,10 @@ import macros
 import typeinfo
 
 proc mainProc() =
-  var app: QApplication
-  app.create()
+  var app = newQApplication()
   defer: app.delete()
    
-  var engine: QQmlApplicationEngine
-  engine.create()
+  var engine = newQQmlApplicationEngine()
   defer: engine.delete()
 
   engine.load("main.qml")
@@ -17,3 +15,4 @@ proc mainProc() =
 when isMainModule:
   mainProc()
 
+GC_fullcollect()

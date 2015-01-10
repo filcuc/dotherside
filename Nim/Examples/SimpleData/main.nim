@@ -3,12 +3,10 @@ import macros
 import typeinfo
 
 proc mainProc() =
-  var app: QApplication
-  app.create()
+  var app = newQApplication()
   defer: app.delete()
    
-  var engine: QQmlApplicationEngine
-  engine.create()
+  var engine = newQQmlApplicationEngine()
   defer: engine.delete()
 
   var qVar1 = newQVariant(10)
@@ -23,10 +21,10 @@ proc mainProc() =
   engine.rootContext.setContextProperty("qVar1", qVar1) 
   engine.rootContext.setContextProperty("qVar2", qVar2)
   engine.rootContext.setContextProperty("qVar3", qVar2)
-  
   engine.load("main.qml")
   app.exec()
 
 when isMainModule:
   mainProc()
 
+GC_fullcollect()
