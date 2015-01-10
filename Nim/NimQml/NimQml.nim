@@ -1,4 +1,4 @@
-import NimQmlTypes
+include NimQmlTypes
 import tables
 
 ## NimQml aims to provide binding to the QML for the Nim programming language
@@ -47,6 +47,7 @@ proc dos_qvariant_create_int(variant: var RawQVariant, value: cint) {.cdecl, dyn
 proc dos_qvariant_create_bool(variant: var RawQVariant, value: bool) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_create_string(variant: var RawQVariant, value: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_create_qobject(variant: var RawQVariant, value: DynamicQObject) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qvariant_create_qvariant(variant: var RawQVariant, value: RawQVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_delete(variant: RawQVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_isnull(variant: RawQVariant, isNull: var bool) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_toInt(variant: RawQVariant, value: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
@@ -55,6 +56,7 @@ proc dos_qvariant_toString(variant: RawQVariant, value: var cstring, length: var
 proc dos_qvariant_setInt(variant: RawQVariant, value: cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_setBool(variant: RawQVariant, value: bool) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_setString(variant: RawQVariant, value: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qvariant_assign(leftValue: RawQVariant, rightValue: RawQVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_chararray_delete(rawCString: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
 proc create*(variant: QVariant) =
@@ -81,14 +83,22 @@ proc create*(variant: QVariant, value: QObject) =
   ## Create a new QVariant given a QObject
   dos_qvariant_create_qobject(variant.data, value.data)
   variant.deleted = false
+
+proc create*(variant: QVariant, value: RawQVariant) =
+  ## Create a new QVariant givan another QVariant
+  dos_qvariant_create_qvariant(variant.data, value)
+  variant.deleted = false
+
+proc create*(variant: QVariant, value: QVariant) =
+  create(variant, value.data)
   
 proc delete*(variant: QVariant) = 
   ## Delete a QVariant
-  if variant.deleted:
-    return
-  debugMsg("QVariant", "delete")
-  dos_qvariant_delete(variant.data)
-  variant.deleted = true
+  if not variant.deleted:
+    debugMsg("QVariant", "delete")
+    dos_qvariant_delete(variant.data)
+    variant.data = nil.RawQVariant
+    variant.deleted = true
 
 proc newQVariant*(): QVariant =
   ## Return a new QVariant  
@@ -115,15 +125,15 @@ proc newQVariant*(value: QObject): QVariant  =
   new(result, delete)
   result.create(value)
 
-proc newQVariant*(value: RawQVariant, takeOwnership: bool = false): QVariant =
+proc newQVariant*(value: RawQVariant): QVariant =
   ## Return a new QVariant given a raw QVariant pointer
-  if takeOwnership:  
-    new(result, delete)
-    result.deleted = false
-  else:
-    new(result)
-    result.deleted = true # Disable explicit delete
-  result.data = value
+  new(result, delete)
+  result.create(value)
+
+proc newQVariant*(value: QVariant): QVariant =
+  ## Return a new QVariant given another QVariant
+  new(result, delete)
+  result.create(value)
   
 proc isNull*(variant: QVariant): bool = 
   ## Return true if the QVariant value is null, false otherwise
@@ -160,6 +170,9 @@ proc `stringVal=`*(variant: QVariant, value: string) =
   ## Sets the QVariant string value
   dos_qvariant_setString(variant.data, value)
 
+proc assign*(leftValue: QVariant, rightValue: QVariant): QVariant =
+  ## Assign a QVariant with another. The inner value of the QVariant is copied
+  dos_qvariant_assign(leftValue.data, rightValue.data)  
 
 # QQmlApplicationEngine
 proc dos_qqmlapplicationengine_create(engine: var QQmlApplicationEngine) {.cdecl, dynlib:"libDOtherSide.so", importc.}
@@ -217,6 +230,10 @@ proc toVariantSeq(args: RawQVariantArrayPtr, numArgs: cint): seq[QVariant] =
   for i in 0..numArgs-1:
     result.add(newQVariant(args[i]))
 
+proc delete(sequence: seq[QVariant]) =
+  for variant in sequence:
+    variant.delete
+
 proc toCIntSeq(metaTypes: openarray[QMetaType]): seq[cint] =
   result = @[]
   for metaType in metaTypes:
@@ -237,33 +254,39 @@ method onSlotCalled*(nimobject: QObject, slotName: string, args: openarray[QVari
   discard()
 
 proc qobjectCallback(nimObject: ptr QObjectObj, slotName: RawQVariant, numArguments: cint, arguments: RawQVariantArrayPtr) {.cdecl, exportc.} =
-  if not qobjectRegistry[nimObject]:
-    return 
-  let qobject = cast[QObject](nimObject)
-  GC_ref(qobject)
-  qobject.onSlotCalled(newQVariant(slotName).stringVal, arguments.toVariantSeq(numArguments))
-  GC_unref(qobject)
+  if qobjectRegistry[nimObject]:
+    let qobject = cast[QObject](nimObject)
+    GC_ref(qobject)
+    let slotNameAsQVariant = newQVariant(slotName)
+    defer: slotNameAsQVariant.delete
+    let argumentsAsQVariant = arguments.toVariantSeq(numArguments)
+    defer: argumentsAsQVariant.delete
+    # Forward to args to the slot
+    qobject.onSlotCalled(slotNameAsQVariant.stringVal, argumentsAsQVariant)
+    # Update the slot return value
+    dos_qvariant_assign(arguments[0], argumentsAsQVariant[0].data)
+    GC_unref(qobject)
 
 proc create*(qobject: QObject) =
   ## Create a new QObject
   debugMsg("QObject", "create")
-  let qobjectPtr = addr(qobject[])
-  qobjectRegistry[qobjectPtr] = true
-  qobject.name = "QObject"
   qobject.deleted = false
   qobject.slots = initTable[string,cint]()
   qobject.signals = initTable[string, cint]()
+  qobject.properties = initTable[string, cint]()
+  let qobjectPtr = addr(qobject[])
   dos_qobject_create(qobject.data, qobjectPtr, qobjectCallback)
+  qobjectRegistry[qobjectPtr] = true
   
 proc delete*(qobject: QObject) = 
   ## Delete the given QObject
-  if qobject.deleted:
-    return
-  debugMsg("QObject", "delete")
-  let qobjectPtr = addr(qobject[])
-  qobjectRegistry.del qobjectPtr
-  dos_qobject_delete(qobject.data)
-  qobject.deleted = true
+  if not qobject.deleted:
+    debugMsg("QObject", "delete")
+    let qobjectPtr = addr(qobject[])
+    qobjectRegistry.del qobjectPtr
+    dos_qobject_delete(qobject.data)
+    qobject.data = nil.DynamicQObject
+    qobject.deleted = true
   
 proc newQObject*(): QObject =
   ## Return a new QObject
