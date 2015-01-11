@@ -16,6 +16,12 @@ extern "C"
   void dos_qguiapplication_quit();
   void dos_qguiapplication_delete();
 
+  // QApplication
+  void dos_qapplication_create();
+  void dos_qapplication_exec();
+  void dos_qapplication_quit();
+  void dos_qapplication_delete();
+  
   // QQmlApplicationEngine
   void dos_qqmlapplicationengine_create(void** vptr);
   void dos_qqmlapplicationengine_load(void* vptr, const char* filename);

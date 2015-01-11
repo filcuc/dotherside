@@ -1,5 +1,6 @@
 #include "DOtherSide.h"
 
+#include <QtWidgets/QApplication>
 #include <QtGui/QGuiApplication>
 #include <QtQuick/QQuickView>
 #include <QtQml/QQmlContext>
@@ -35,6 +36,29 @@ void dos_qguiapplication_exec()
 }
 
 void dos_qguiapplication_quit()
+{
+    qApp->quit();
+}
+
+void dos_qapplication_create()
+{
+    static int argc = 1;
+    static char empty[1] = {0};
+    static char* argv[] = {empty};
+    new QApplication(argc, argv);
+}
+
+void dos_qapplication_delete()
+{
+    delete qApp;
+}
+
+void dos_qapplication_exec()
+{
+    qApp->exec();
+}
+
+void dos_qapplication_quit()
 {
     qApp->quit();
 }

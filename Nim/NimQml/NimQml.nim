@@ -243,29 +243,29 @@ proc setContextProperty*(context: QQmlContext, propertyName: string, propertyVal
   dos_qqmlcontext_setcontextproperty(context, propertyName, propertyValue.data)
 
 # QApplication
-proc dos_qguiapplication_create() {.cdecl, dynlib: "libDOtherSide.so", importc.}
-proc dos_qguiapplication_exec() {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qguiapplication_quit() {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qguiapplication_delete() {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qapplication_create() {.cdecl, dynlib: "libDOtherSide.so", importc.}
+proc dos_qapplication_exec() {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qapplication_quit() {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qapplication_delete() {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
 proc create*(application: QApplication) = 
   ## Create a new QApplication
-  dos_qguiapplication_create()
+  dos_qapplication_create()
   application.deleted = false
 
 proc exec*(application: QApplication) =
   ## Start the Qt event loop
-  dos_qguiapplication_exec()
+  dos_qapplication_exec()
 
 proc quit*(application: QApplication) =
   ## Quit the Qt event loop  
-  dos_qguiapplication_quit()
+  dos_qapplication_quit()
   
 proc delete*(application: QApplication) = 
   ## Delete the given QApplication
   if not application.deleted:
     debugMsg("QApplication", "delete")
-    dos_qguiapplication_delete()
+    dos_qapplication_delete()
     application.deleted = true
 
 proc newQApplication*(): QApplication =
@@ -273,6 +273,37 @@ proc newQApplication*(): QApplication =
   new(result, delete)
   result.create()
 
+# QGuiApplication
+proc dos_qguiapplication_create() {.cdecl, dynlib: "libDOtherSide.so", importc.}
+proc dos_qguiapplication_exec() {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qguiapplication_quit() {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qguiapplication_delete() {.cdecl, dynlib:"libDOtherSide.so", importc.}
+
+proc create*(application: QGuiApplication) = 
+  ## Create a new QApplication
+  dos_qguiapplication_create()
+  application.deleted = false
+
+proc exec*(application: QGuiApplication) =
+  ## Start the Qt event loop
+  dos_qguiapplication_exec()
+
+proc quit*(application: QGuiApplication) =
+  ## Quit the Qt event loop  
+  dos_qguiapplication_quit()
+  
+proc delete*(application: QGuiApplication) = 
+  ## Delete the given QApplication
+  if not application.deleted:
+    debugMsg("QApplication", "delete")
+    dos_qguiapplication_delete()
+    application.deleted = true
+
+proc newQGuiApplication*(): QGuiApplication =
+  ## Return a new QApplication  
+  new(result, delete)
+  result.create()
+  
 # QObject
 type RawQVariantArray {.unchecked.} = array[0..0, RawQVariant]
 type RawQVariantArrayPtr = ptr RawQVariantArray

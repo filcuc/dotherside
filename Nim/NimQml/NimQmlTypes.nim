@@ -13,6 +13,9 @@ type
   
   QApplication* = ref object of RootObj ## A QApplication 
     deleted: bool
+
+  QGuiApplication* = ref object of RootObj ## A QGuiApplication
+    deleted: bool  
     
   RawQObject = distinct pointer
   QObjectObj = object of RootObj
