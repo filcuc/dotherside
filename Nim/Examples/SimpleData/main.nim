@@ -17,10 +17,14 @@ proc mainProc() =
 
   var qVar3 = newQVariant(false)
   defer: qVar3.delete()
+
+  var qVar4 = newQVariant(3.5.float)
+  defer: qVar4.delete()
   
   engine.rootContext.setContextProperty("qVar1", qVar1) 
   engine.rootContext.setContextProperty("qVar2", qVar2)
   engine.rootContext.setContextProperty("qVar3", qVar3)
+  engine.rootContext.setContextProperty("qVar4", qVar4)
   engine.load("main.qml")
   app.exec()
 
