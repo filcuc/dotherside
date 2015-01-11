@@ -2,12 +2,6 @@ include NimQmlTypes
 
 ## NimQml aims to provide binding to the QML for the Nim programming language
 
-export QObject
-export QApplication
-export QVariant
-export QQmlApplicationEngine
-export QQmlContext
-
 type QMetaType* {.pure.} = enum ## \
   ## Qt metatypes values used for specifing the 
   ## signals and slots argument and return types.
