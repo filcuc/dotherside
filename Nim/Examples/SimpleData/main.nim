@@ -20,7 +20,7 @@ proc mainProc() =
   
   engine.rootContext.setContextProperty("qVar1", qVar1) 
   engine.rootContext.setContextProperty("qVar2", qVar2)
-  engine.rootContext.setContextProperty("qVar3", qVar2)
+  engine.rootContext.setContextProperty("qVar3", qVar3)
   engine.load("main.qml")
   app.exec()
 
