@@ -26,5 +26,5 @@ proc mainProc() =
 
 when isMainModule:
   mainProc()
+  GC_fullcollect()
 
-GC_fullcollect()

@@ -20,4 +20,4 @@ proc mainProc() =
 
 when isMainModule:
   mainProc()
-
+  GC_fullcollect()
