@@ -41,6 +41,8 @@ proc dos_qvariant_create_bool(variant: var RawQVariant, value: bool) {.cdecl, dy
 proc dos_qvariant_create_string(variant: var RawQVariant, value: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_create_qobject(variant: var RawQVariant, value: RawQObject) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_create_qvariant(variant: var RawQVariant, value: RawQVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qvariant_create_float(variant: var RawQVariant, value: cfloat) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qvariant_create_double(variant: var RawQVariant, value: cdouble) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_delete(variant: RawQVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_isnull(variant: RawQVariant, isNull: var bool) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_toInt(variant: RawQVariant, value: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
@@ -50,6 +52,10 @@ proc dos_qvariant_setInt(variant: RawQVariant, value: cint) {.cdecl, dynlib:"lib
 proc dos_qvariant_setBool(variant: RawQVariant, value: bool) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_setString(variant: RawQVariant, value: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_assign(leftValue: RawQVariant, rightValue: RawQVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qvariant_toFloat(variant: QVariant, value: var cfloat) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qvariant_setFloat(variant: QVariant, value: float)  {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qvariant_toDouble(variant: QVariant, value: var cdouble) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qvariant_setDouble(variant: QVariant, value: cdouble) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_chararray_delete(rawCString: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
 proc create*(variant: QVariant) =
@@ -80,6 +86,11 @@ proc create*(variant: QVariant, value: QObject) =
 proc create*(variant: QVariant, value: RawQVariant) =
   ## Create a new QVariant givan another QVariant
   dos_qvariant_create_qvariant(variant.data, value)
+  variant.deleted = false
+  
+proc create*(variant: QVariant, value: cfloat) =
+  ## Create a new QVariant givan another QVariant
+  dos_qvariant_create_float(variant.data, value)
   variant.deleted = false
 
 proc create*(variant: QVariant, value: QVariant) =
@@ -127,6 +138,11 @@ proc newQVariant*(value: QVariant): QVariant =
   ## Return a new QVariant given another QVariant
   new(result, delete)
   result.create(value)
+
+proc newQVariant*(value: float): QVariant =
+  ## Return a new QVariant given a float
+  new(result, delete)
+  result.create(value)
   
 proc isNull*(variant: QVariant): bool = 
   ## Return true if the QVariant value is null, false otherwise
@@ -151,6 +167,26 @@ proc `boolVal=`*(variant: QVariant, value: bool) =
   ## Sets the QVariant bool value
   dos_qvariant_setBool(variant.data, value)
 
+proc floatVal*(variant: QVariant): float =
+  ## Return the QVariant value as float
+  var rawValue: cfloat
+  dos_qvariant_toFloat(variant, rawValue)
+  result = rawValue.cfloat
+
+proc `floatVal=`*(variant: QVariant, value: float) =
+  ## Sets the QVariant float value
+  dos_qvariant_setFloat(variant, value.cfloat)  
+
+proc doubleVal*(variant: QVariant): cdouble =
+  ## Return the QVariant value as double
+  var rawValue: cdouble
+  dos_qvariant_toDouble(variant, rawValue)
+  result = rawValue
+
+proc `doubleVal=`*(variant: QVariant, value: cdouble) =
+  ## Sets the QVariant double value
+  dos_qvariant_setDouble(variant, value)  
+  
 proc stringVal*(variant: QVariant): string = 
   ## Return the QVariant value as string
   var rawCString: cstring
@@ -163,7 +199,7 @@ proc `stringVal=`*(variant: QVariant, value: string) =
   ## Sets the QVariant string value
   dos_qvariant_setString(variant.data, value)
 
-proc assign*(leftValue: QVariant, rightValue: QVariant): QVariant =
+proc assign*(leftValue: QVariant, rightValue: QVariant) =
   ## Assign a QVariant with another. The inner value of the QVariant is copied
   dos_qvariant_assign(leftValue.data, rightValue.data)  
 
@@ -209,6 +245,7 @@ proc setContextProperty*(context: QQmlContext, propertyName: string, propertyVal
 # QApplication
 proc dos_qguiapplication_create() {.cdecl, dynlib: "libDOtherSide.so", importc.}
 proc dos_qguiapplication_exec() {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qguiapplication_quit() {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qguiapplication_delete() {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
 proc create*(application: QApplication) = 
@@ -220,6 +257,10 @@ proc exec*(application: QApplication) =
   ## Start the Qt event loop
   dos_qguiapplication_exec()
 
+proc quit*(application: QApplication) =
+  ## Quit the Qt event loop  
+  dos_qguiapplication_quit()
+  
 proc delete*(application: QApplication) = 
   ## Delete the given QApplication
   if not application.deleted:

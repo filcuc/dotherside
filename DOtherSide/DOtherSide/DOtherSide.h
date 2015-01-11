@@ -13,9 +13,10 @@ extern "C"
   // QGuiApplication
   void dos_qguiapplication_create();
   void dos_qguiapplication_exec();
+  void dos_qguiapplication_quit();
   void dos_qguiapplication_delete();
 
-  /// QQmlApplicationEngine
+  // QQmlApplicationEngine
   void dos_qqmlapplicationengine_create(void** vptr);
   void dos_qqmlapplicationengine_load(void* vptr, const char* filename);
   void dos_qqmlapplicationengine_context(void* vptr, void** context);
@@ -44,10 +45,16 @@ extern "C"
   void dos_qvariant_create_string(void **vptr, const char* value);
   void dos_qvariant_create_qobject(void **vptr, void* value);
   void dos_qvariant_create_qvariant(void **vptr, void* value);
+  void dos_qvariant_create_float(void **vptr, float value);
+  void dos_qvariant_create_double(void **vptr, double value);
   void dos_qvariant_toInt(void* vptr, int& value);
   void dos_qvariant_setInt(void* vptr, int value);
   void dos_qvariant_toBool(void* vptr, bool& value);
   void dos_qvariant_setBool(void* vptr, bool value);
+  void dos_qvariant_toFloat(void* vptr, float& value);
+  void dos_qvariant_setFloat(void* vptr, float value);
+  void dos_qvariant_toDouble(void* vptr, double& value);
+  void dos_qvariant_setDouble(void* vptr, double value);
   void dos_qvariant_toString(void* vptr, CharPtr& ptr, int& size);
   void dos_qvariant_setString(void* vptr, const char* value);
   void dos_qvariant_isnull(void *vptr, bool& isNull);

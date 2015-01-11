@@ -17,6 +17,7 @@ let nimFromQtVariant {.compileTime.} = {
   "int" : "intVal",
   "string" : "stringVal",
   "bool" : "boolVal",
+  "float" : "floatVal",                                      
 }.toTable
 
 let nim2QtMeta {.compileTime.} = {
@@ -362,23 +363,31 @@ macro QtObject*(qtDecl: stmt): stmt {.immediate.} =
     args.add ident "myQObject"
     for i in 2.. <params.len:
       let pType = getArgType params[i]
-      # function that maps Qvariant type to nim type
-      let mapper = nimFromQtVariant[$pType]
       let argAccess = newNimNode(nnkBracketExpr)
-        .add (ident "args")
-        .add newIntLitNode(i-1)
-      let dot = newDotExpr(argAccess, ident mapper)
-      args.add dot
+          .add (ident "args")
+          .add newIntLitNode(i-1)
+      if $pType == "QVariant":
+        args.add argAccess
+      else:
+        # function that maps QVariant type to nim type
+        let mapper = nimFromQtVariant[$pType]
+        let dot = newDotExpr(argAccess, ident mapper)
+        args.add dot
     var call = newCall(ident slotName, args)
     if hasReturn:
-      # eg: args[0].strVal = getName(myQObject)
       let retType = params[0]
-      let mapper = nimFromQtVariant[$retType]
       let argAccess = newNimNode(nnkBracketExpr)
         .add (ident "args")
         .add newIntLitNode(0)
-      let dot = newDotExpr(argAccess, ident mapper)
-      call = newAssignment(dot, call)
+      if $retType == "QVariant":
+      # eg: args[0].assign(getName(myQObject))
+        let dot = newDotExpr(argAccess, ident "assign")
+        call = newCall(dot, call)
+      else:
+      # eg: args[0].strVal = getName(myQObject)
+        let mapper = nimFromQtVariant[$retType]
+        let dot = newDotExpr(argAccess, ident mapper)
+        call = newAssignment(dot, call)
     branchStmts.add call     
     ofBranch.add branchStmts
     caseStmt.add ofBranch
