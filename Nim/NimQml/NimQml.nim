@@ -235,11 +235,17 @@ proc newQApplication*(): QApplication =
 # QObject
 type RawQVariantArray {.unchecked.} = array[0..0, RawQVariant]
 type RawQVariantArrayPtr = ptr RawQVariantArray
+type RawQVariantSeq = seq[RawQVariant]
 
 proc toVariantSeq(args: RawQVariantArrayPtr, numArgs: cint): seq[QVariant] =
   result = @[]
   for i in 0..numArgs-1:
     result.add(newQVariant(args[i]))
+
+proc toRawVariantSeq(args: openarray[QVariant]): RawQVariantSeq =
+  result = @[]
+  for variant in args:
+    result.add(variant.data)
 
 proc delete(sequence: seq[QVariant]) =
   for variant in sequence:
@@ -256,7 +262,7 @@ proc dos_qobject_create(qobject: var RawQObject, nimobject: ptr QObjectObj, qobj
 proc dos_qobject_delete(qobject: RawQObject) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qobject_slot_create(qobject: RawQObject, slotName: cstring, argumentsCount: cint, argumentsMetaTypes: ptr cint, slotIndex: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qobject_signal_create(qobject: RawQObject, signalName: cstring, argumentsCount: cint, argumentsMetaTypes: ptr cint, signalIndex: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qobject_signal_emit(qobject: RawQObject, signalName: cstring, argumentsCount: cint, arguments: ptr QVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qobject_signal_emit(qobject: RawQObject, signalName: cstring, argumentsCount: cint, arguments: ptr RawQVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qobject_property_create(qobject: RawQObject, propertyName: cstring, propertyType: cint, readSlot: cstring, writeSlot: cstring, notifySignal: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
 method onSlotCalled*(nimobject: QObject, slotName: string, args: openarray[QVariant]) =
@@ -338,8 +344,8 @@ proc registerProperty*(qobject: QObject,
 proc emit*(qobject: QObject, signalName: string, args: openarray[QVariant] = []) =
   ## Emit the signal with the given name and values
   if args.len > 0: 
-    var copy = @args
-    dos_qobject_signal_emit(qobject.data, signalName, args.len.cint, addr(copy[0]))
+    var copy = args.toRawVariantSeq
+    dos_qobject_signal_emit(qobject.data, signalName, copy.len.cint, addr(copy[0]))
   else:
     dos_qobject_signal_emit(qobject.data, signalName, 0, nil)
 
