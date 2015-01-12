@@ -6,7 +6,7 @@ QtObject:
   type Contact* = ref object of QObject
     m_name: string
 
-  proc delete(self: Contact) = 
+  proc delete*(self: Contact) = 
     var qobject = self.QObject
     qobject.delete()
 

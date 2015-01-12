@@ -5,11 +5,11 @@ import NimQml
 type Contact = ref object of QObject 
   m_name: string
 
-proc delete(self: Contact) = 
+proc delete*(self: Contact) = 
   var qobject = self.QObject
   qobject.delete()
 
-proc create(self: Contact) =
+proc create*(self: Contact) =
   var qobject = self.QObject
   qobject.create()
   self.m_name = "InitialName"
