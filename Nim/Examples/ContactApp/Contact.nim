@@ -16,22 +16,22 @@ QtObject:
     result.name = ""
     result.create
   
-  method name*(self: Contact): string {.slot.} =
+  method firstName*(self: Contact): string {.slot.} =
     result = self.name
 
-  method nameChanged*(self: Contact) {.signal.}
+  method firstNameChanged*(self: Contact) {.signal.}
     
-  method setName(self: Contact, name: string) {.slot.} =
+  method setFirstName(self: Contact, name: string) {.slot.} =
     if self.name != name:
       self.name = name
-      self.nameChanged()
+      self.firstNameChanged()
 
-  proc `name=`*(self: Contact, name: string) = self.setName(name)    
+  proc `firstName=`*(self: Contact, name: string) = self.setFirstName(name)
       
-  QtProperty[string] name:
-    read = name
-    write = setName
-    notify = nameChanged
+  QtProperty[string] firstName:
+    read = firstName
+    write = setFirstName
+    notify = firstNameChanged
 
   method surname*(self: Contact): string {.slot.} =
     result = self.surname

@@ -33,7 +33,7 @@ ApplicationWindow
             delegate: RowLayout {
                 width: ListView.view.width
                 property QtObject contact: logic.contactList.get(index)
-                TextField { Layout.fillWidth: true; text: contact.name }
+                TextField { Layout.fillWidth: true; text: contact.firstName }
                 TextField { Layout.fillWidth: true; text: contact.surname }
                 Button { text: "Save" }
                 Button { text: "Delete"; onClicked: logic.contactList.del(index) }
