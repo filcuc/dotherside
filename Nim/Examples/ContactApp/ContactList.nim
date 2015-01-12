@@ -22,7 +22,7 @@ QtObject:
     
   method add*(self: ContactList, name: string, surname: string) {.slot.} =
     let contact = newContact()
-    contact.name = name
+    contact.firstName = name
     contact.surname = surname
     self.contacts.add(contact)
     self.countChanged()

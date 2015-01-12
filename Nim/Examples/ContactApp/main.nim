@@ -7,7 +7,9 @@ proc mainProc() =
   defer: logic.delete
   let engine = newQQmlApplicationEngine()
   defer: engine.delete
-  engine.rootContext.setContextProperty("logic", newQVariant(logic))
+  let logicVariant = newQVariant(logic)
+  defer: logicVariant.delete
+  engine.rootContext.setContextProperty("logic", logicVariant)
   engine.load("main.qml")
   app.exec()
 
