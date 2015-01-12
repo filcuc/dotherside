@@ -430,7 +430,12 @@ proc registerProperty*(qobject: QObject,
                        writeSlot: string, 
                        notifySignal: string) =
   ## Register a property in the QObject with the given name and type.
-  dos_qobject_property_create(qobject.data, propertyName, propertyType.cint, readSlot, writeSlot, notifySignal)
+  assert propertyName != nil, "property name cannot be nil"
+  # don't convert a nil string, else we get a strange memory address
+  let cReadSlot: cstring = if readSlot == nil: cast[cstring](nil) else: readSlot
+  let cWriteSlot: cstring = if writeSlot == nil: cast[cstring](nil) else: writeSlot
+  let cNotifySignal: cstring = if notifySignal == nil: cast[cstring](nil) else: notifySignal
+  dos_qobject_property_create(qobject.data, propertyName, propertyType.cint, cReadSlot, cWriteSlot, cNotifySignal)
 
 proc emit*(qobject: QObject, signalName: string, args: openarray[QVariant] = []) =
   ## Emit the signal with the given name and values
