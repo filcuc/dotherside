@@ -1,6 +1,14 @@
 include NimQmlTypes
 
 ## NimQml aims to provide binding to the QML for the Nim programming language
+##
+## Optional finalizers
+## -------------------
+## To enable finalizers you must define ``nimqml_use_finalizers`` by passing
+## the option, ``-d:nimqml_use_finalizers``, to the Nim compiler. The relevant
+## delete method will then be called automatically by the garbage collector.
+## Care should be taken when using this approach as there are no guarantees
+## when a finalzier will be run, or if, indeed, it will run at all.
 
 type QMetaType* {.pure.} = enum ## \
   ## Qt metatypes values used for specifing the 
@@ -33,6 +41,17 @@ proc debugMsg(typeName: string, procName: string, userMessage: string) =
   message &= " "
   message &= userMessage
   debugMsg(message)
+
+template newWithCondFinalizer(variable: expr, finalizer: expr) =
+  ## calls ``new`` but only setting a finalizer when ``nimqml_use_finalizers``
+  ## is defined
+  {.push warning[user]: off.} # workaround to remove warnings; this won't be needed soon
+  when defined(nimqml_use_finalizers):
+    {.pop.}
+    new(variable, finalizer)
+  else:
+    {.pop.}
+    new(variable)
 
 # QVariant
 proc dos_qvariant_create(variant: var RawQVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
@@ -106,42 +125,42 @@ proc delete*(variant: QVariant) =
 
 proc newQVariant*(): QVariant =
   ## Return a new QVariant  
-  new(result, delete)
+  newWithCondFinalizer(result, delete)
   result.create()
 
 proc newQVariant*(value: cint): QVariant =
   ## Return a new QVariant given a cint
-  new(result, delete)
+  newWithCondFinalizer(result, delete)
   result.create(value)
 
 proc newQVariant*(value: bool): QVariant  =
   ## Return a new QVariant given a bool
-  new(result, delete)
+  newWithCondFinalizer(result, delete)
   result.create(value)
 
 proc newQVariant*(value: string): QVariant  =
   ## Return a new QVariant given a string
-  new(result, delete)
+  newWithCondFinalizer(result, delete)
   result.create(value)
 
 proc newQVariant*(value: QObject): QVariant  =
   ## Return a new QVariant given a QObject
-  new(result, delete)
+  newWithCondFinalizer(result, delete)
   result.create(value)
 
 proc newQVariant*(value: RawQVariant): QVariant =
   ## Return a new QVariant given a raw QVariant pointer
-  new(result, delete)
+  newWithCondFinalizer(result, delete)
   result.create(value)
 
 proc newQVariant*(value: QVariant): QVariant =
   ## Return a new QVariant given another QVariant
-  new(result, delete)
+  newWithCondFinalizer(result, delete)
   result.create(value)
 
 proc newQVariant*(value: float): QVariant =
   ## Return a new QVariant given a float
-  new(result, delete)
+  newWithCondFinalizer(result, delete)
   result.create(value)
   
 proc isNull*(variant: QVariant): bool = 
@@ -232,7 +251,7 @@ proc delete*(engine: QQmlApplicationEngine) =
 
 proc newQQmlApplicationEngine*(): QQmlApplicationEngine =
   ## Return a new QQmlApplicationEngine    
-  new(result, delete)
+  newWithCondFinalizer(result, delete)
   result.create()
 
 # QQmlContext
@@ -270,7 +289,7 @@ proc delete*(application: QApplication) =
 
 proc newQApplication*(): QApplication =
   ## Return a new QApplication  
-  new(result, delete)
+  newWithCondFinalizer(result, delete)
   result.create()
 
 # QGuiApplication
@@ -301,7 +320,7 @@ proc delete*(application: QGuiApplication) =
 
 proc newQGuiApplication*(): QGuiApplication =
   ## Return a new QApplication  
-  new(result, delete)
+  newWithCondFinalizer(result, delete)
   result.create()
   
 # QObject
@@ -379,7 +398,7 @@ proc delete*(qobject: QObject) =
   
 proc newQObject*(): QObject =
   ## Return a new QObject
-  new(result, delete)
+  newWithCondFinalizer(result, delete)
   result.create()
 
 proc registerSlot*(qobject: QObject,
@@ -456,5 +475,5 @@ proc delete(view: QQuickView) =
 
 proc newQQuickView*(): QQuickView =
   ## Return a new QQuickView  
-  new(result, delete)
+  newWithCondFinalizer(result, delete)
   result.create()
