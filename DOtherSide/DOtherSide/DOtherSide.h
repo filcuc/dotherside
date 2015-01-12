@@ -63,6 +63,7 @@ extern "C"
   void dos_qvariant_setDouble(void* vptr, double value);
   void dos_qvariant_toString(void* vptr, CharPtr& ptr, int& size);
   void dos_qvariant_setString(void* vptr, const char* value);
+  void dos_qvariant_setQObject(void* vptr, void* value);
   void dos_qvariant_isnull(void *vptr, bool& isNull);
   void dos_qvariant_delete(void *vptr);
   void dos_qvariant_assign(void* vptr, void* other);

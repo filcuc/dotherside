@@ -1,4 +1,4 @@
-import NimQml, NimQmlMacros, Contact, ContactList
+import NimQml, NimQmlMacros, ContactList
 
 QtObject:
   type ApplicationLogic* = ref object of QObject
@@ -7,10 +7,11 @@ QtObject:
 
   proc delete*(self: ApplicationLogic) =
     let qobject = self.QObject
-    qobject.delete()
+    qobject.delete
+    self.contactList.delete
 
   proc newApplicationLogic*(app: QApplication): ApplicationLogic =
-    new(result, delete)
+    new(result)
     result.contactList = newContactList()
     result.app = app
     result.create()
@@ -26,9 +27,7 @@ QtObject:
     echo "Save Triggered"  
     
   method onExitTriggered(self: ApplicationLogic) {.slot.} =
-    self.app.quit()
+    self.app.quit
 
   QtProperty[QVariant] contactList:
     read = getContactList
-    write = ""
-    notify = ""

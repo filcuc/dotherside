@@ -8,10 +8,13 @@ QtObject:
 
   proc delete*(self: ContactList) =
     let qobject = self.QObject
-    qobject.delete()
+    qobject.delete
+    for contact in self.contacts:
+      contact.delete
+    self.contacts = @[]
     
   proc newContactList*(): ContactList =
-    new(result, delete)
+    new(result)
     result.contacts = @[]
     result.create()
     
@@ -27,17 +30,15 @@ QtObject:
     self.contacts.add(contact)
     self.countChanged()
     
-  method get*(self: ContactList, index: int): QVariant {.slot.} =
+  method get*(self: ContactList, index: int): QObject {.slot.} =
     if index < 0 or index >= self.contacts.len:
-      return newQVariant()
-    let contact = self.contacts[index]
-    result = newQVariant(newQVariant(contact))
-
+      return nil
+    result = self.contacts[index].QObject
+    
   method del*(self: ContactList, index: int) {.slot.} =
     self.contacts.del(index)
     self.countChanged()
     
   QtProperty[int] count:
     read = getCount
-    write = ""
     notify = countChanged

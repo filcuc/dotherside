@@ -17,7 +17,8 @@ let nimFromQtVariant {.compileTime.} = {
   "int" : "intVal",
   "string" : "stringVal",
   "bool" : "boolVal",
-  "float" : "floatVal",                                      
+  "float" : "floatVal",
+  "QObject" : "qobjectVal",                                      
 }.toTable
 
 let nim2QtMeta {.compileTime.} = {
@@ -25,6 +26,7 @@ let nim2QtMeta {.compileTime.} = {
     "int" : "Int",
     "string" : "QString",
     "pointer" : "VoidStar",
+    "QObject" : "QObjectStar",                              
     "QVariant": "QVariant",
     "" : "Void", # no return, which is represented by an nnkEmpty node
 }.toTable

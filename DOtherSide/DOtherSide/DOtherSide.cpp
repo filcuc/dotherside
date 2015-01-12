@@ -280,6 +280,13 @@ void dos_qvariant_setString(void* vptr, const char* value)
     *variant = value;
 }
 
+void dos_qvariant_setQObject(void* vptr, void* value)
+{
+  auto variant = reinterpret_cast<QVariant*>(vptr);
+  auto qobject = reinterpret_cast<QObject*>(value);
+  variant->setValue<QObject*>(qobject);
+}
+
 void dos_qobject_create(void** vptr, void* dObjectPointer, DObjectCallback dObjectCallback)
 {
     auto dynamicQObject = new DynamicQObject();

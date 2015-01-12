@@ -7,12 +7,12 @@ QtObject:
     name: string
     surname: string
 
-  proc delete(self: Contact) =
+  proc delete*(self: Contact) =
     let qobject = self.QObject
-    qobject.delete()
+    qobject.delete
     
   proc newContact*(): Contact =
-    new(result, delete)
+    new(result)
     result.name = ""
     result.create
   

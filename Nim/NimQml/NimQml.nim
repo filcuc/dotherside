@@ -20,8 +20,9 @@ type QMetaType* {.pure.} = enum ## \
   Int = cint(2), 
   QString = cint(10), 
   VoidStar = cint(31),
+  QObjectStar = cint(39),
   QVariant = cint(41), 
-  Void = cint(43)
+  Void = cint(43),
 
 var qobjectRegistry = initTable[ptr QObjectObj, bool]()
 
@@ -71,10 +72,11 @@ proc dos_qvariant_setInt(variant: RawQVariant, value: cint) {.cdecl, dynlib:"lib
 proc dos_qvariant_setBool(variant: RawQVariant, value: bool) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_setString(variant: RawQVariant, value: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_assign(leftValue: RawQVariant, rightValue: RawQVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_toFloat(variant: QVariant, value: var cfloat) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_setFloat(variant: QVariant, value: float)  {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_toDouble(variant: QVariant, value: var cdouble) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_setDouble(variant: QVariant, value: cdouble) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qvariant_toFloat(variant: RawQVariant, value: var cfloat) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qvariant_setFloat(variant: RawQVariant, value: float)  {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qvariant_toDouble(variant: RawQVariant, value: var cdouble) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qvariant_setDouble(variant: RawQVariant, value: cdouble) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qvariant_setQObject(variant: RawQVariant, value: RawQObject) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_chararray_delete(rawCString: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
 proc create*(variant: QVariant) =
@@ -103,16 +105,19 @@ proc create*(variant: QVariant, value: QObject) =
   variant.deleted = false
 
 proc create*(variant: QVariant, value: RawQVariant) =
-  ## Create a new QVariant givan another QVariant
+  ## Create a new QVariant given another QVariant.
+  ## The inner value of the QVariant is copied
   dos_qvariant_create_qvariant(variant.data, value)
   variant.deleted = false
   
 proc create*(variant: QVariant, value: cfloat) =
-  ## Create a new QVariant givan another QVariant
+  ## Create a new QVariant given a cfloat value
   dos_qvariant_create_float(variant.data, value)
   variant.deleted = false
 
 proc create*(variant: QVariant, value: QVariant) =
+  ## Create a new QVariant given another QVariant.
+  ## The inner value of the QVariant is copied
   create(variant, value.data)
   
 proc delete*(variant: QVariant) = 
@@ -189,22 +194,22 @@ proc `boolVal=`*(variant: QVariant, value: bool) =
 proc floatVal*(variant: QVariant): float =
   ## Return the QVariant value as float
   var rawValue: cfloat
-  dos_qvariant_toFloat(variant, rawValue)
+  dos_qvariant_toFloat(variant.data, rawValue)
   result = rawValue.cfloat
 
 proc `floatVal=`*(variant: QVariant, value: float) =
   ## Sets the QVariant float value
-  dos_qvariant_setFloat(variant, value.cfloat)  
+  dos_qvariant_setFloat(variant.data, value.cfloat)  
 
 proc doubleVal*(variant: QVariant): cdouble =
   ## Return the QVariant value as double
   var rawValue: cdouble
-  dos_qvariant_toDouble(variant, rawValue)
+  dos_qvariant_toDouble(variant.data, rawValue)
   result = rawValue
 
 proc `doubleVal=`*(variant: QVariant, value: cdouble) =
   ## Sets the QVariant double value
-  dos_qvariant_setDouble(variant, value)  
+  dos_qvariant_setDouble(variant.data, value)  
   
 proc stringVal*(variant: QVariant): string = 
   ## Return the QVariant value as string
@@ -217,6 +222,10 @@ proc stringVal*(variant: QVariant): string =
 proc `stringVal=`*(variant: QVariant, value: string) = 
   ## Sets the QVariant string value
   dos_qvariant_setString(variant.data, value)
+
+proc `qobjectVal=`*(variant: QVariant, value: QObject) =
+  ## Sets the QVariant qobject value
+  dos_qvariant_setQObject(variant.data, value.data)
 
 proc assign*(leftValue: QVariant, rightValue: QVariant) =
   ## Assign a QVariant with another. The inner value of the QVariant is copied
