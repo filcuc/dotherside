@@ -1,5 +1,6 @@
 #include "DOtherSide.h"
 
+#include <QtWidgets/QApplication>
 #include <QtGui/QGuiApplication>
 #include <QtQuick/QQuickView>
 #include <QtQml/QQmlContext>
@@ -32,6 +33,34 @@ void dos_qguiapplication_delete()
 void dos_qguiapplication_exec()
 {
     qApp->exec();
+}
+
+void dos_qguiapplication_quit()
+{
+    qApp->quit();
+}
+
+void dos_qapplication_create()
+{
+    static int argc = 1;
+    static char empty[1] = {0};
+    static char* argv[] = {empty};
+    new QApplication(argc, argv);
+}
+
+void dos_qapplication_delete()
+{
+    delete qApp;
+}
+
+void dos_qapplication_exec()
+{
+    qApp->exec();
+}
+
+void dos_qapplication_quit()
+{
+    qApp->quit();
 }
 
 void dos_qqmlapplicationengine_create(void **vptr)
@@ -146,12 +175,30 @@ void dos_qvariant_create_string(void** vptr, const char* value)
     *vptr = new QVariant(value);
 }
 
+void dos_qvariant_create_qvariant(void** vptr, void* other)
+{
+  auto newQVariant = new QVariant();
+  auto otherQVariant = reinterpret_cast<QVariant*>(other);
+  *newQVariant = *otherQVariant;
+  *vptr = newQVariant;
+}
+
 void dos_qvariant_create_qobject(void **vptr, void* value)
 {
     auto qobject = reinterpret_cast<QObject*>(value);
     auto variant = new QVariant();
     variant->setValue<QObject*>(qobject);
     *vptr = variant;
+}
+
+void dos_qvariant_create_float(void** vptr, float value)
+{
+    *vptr = new QVariant(value);
+}
+
+void dos_qvariant_create_double(void** vptr, double value)
+{
+    *vptr = new QVariant(value);
 }
 
 void dos_qvariant_isnull(void* vptr, bool& isNull)
@@ -166,6 +213,13 @@ void dos_qvariant_delete(void *vptr)
     delete variant;
 }
 
+void dos_qvariant_assign(void* vptr, void* other)
+{
+  auto leftQVariant = reinterpret_cast<QVariant*>(vptr);
+  auto rightQVariant = reinterpret_cast<QVariant*>(other);
+  *leftQVariant = *rightQVariant;
+}
+
 void dos_qvariant_toInt(void* vptr, int& value)
 {
     auto variant = reinterpret_cast<QVariant*>(vptr);
@@ -176,6 +230,18 @@ void dos_qvariant_toBool(void* vptr, bool& value)
 {
     auto variant = reinterpret_cast<QVariant*>(vptr);
     value = variant->toBool();
+}
+
+void dos_qvariant_toFloat(void* vptr, float& value)
+{
+  auto variant = reinterpret_cast<QVariant*>(vptr);
+  value = variant->toFloat();
+}
+
+void dos_qvariant_toDouble(void* vptr, double& value)
+{
+  auto variant = reinterpret_cast<QVariant*>(vptr);
+  value = variant->toDouble();
 }
 
 void dos_qvariant_toString(void* vptr, CharPtr& ptr, int& size)
@@ -196,10 +262,29 @@ void dos_qvariant_setBool(void* vptr, bool value)
     *variant = value;
 }
 
+void dos_qvariant_setFloat(void* vptr, float value)
+{
+    auto variant = reinterpret_cast<QVariant*>(vptr);
+    *variant = value;
+}
+
+void dos_qvariant_setDouble(void* vptr, double value)
+{
+    auto variant = reinterpret_cast<QVariant*>(vptr);
+    *variant = value;
+}
+
 void dos_qvariant_setString(void* vptr, const char* value)
 {
     auto variant = reinterpret_cast<QVariant*>(vptr);
     *variant = value;
+}
+
+void dos_qvariant_setQObject(void* vptr, void* value)
+{
+  auto variant = reinterpret_cast<QVariant*>(vptr);
+  auto qobject = reinterpret_cast<QObject*>(value);
+  variant->setValue<QObject*>(qobject);
 }
 
 void dos_qobject_create(void** vptr, void* dObjectPointer, DObjectCallback dObjectCallback)

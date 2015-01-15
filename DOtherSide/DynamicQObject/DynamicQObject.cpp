@@ -127,6 +127,8 @@ bool DynamicQObject::registerProperty(const QString& name,
         auto builder = metaObjectBuilder.addProperty(name.toUtf8(),
                                                      QMetaObject::normalizedType(typeName),
                                                      signalIndex);
+        if (signalIndex == -1)
+            builder.setConstant(true);
     };
 
     auto newMetaObject = recreateMetaObjectBuilder(m_metaObject.data()

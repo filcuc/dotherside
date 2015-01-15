@@ -16,5 +16,6 @@ ApplicationWindow
         SpinBox { value: qVar1}
         TextField { text: qVar2}
         CheckBox { checked: qVar3}
+        SpinBox { value: qVar4; decimals: 1 }
     }
 }
