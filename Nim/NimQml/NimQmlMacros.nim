@@ -232,7 +232,7 @@ proc addSignalBody(signal: PNimrodNode): PNimrodNode {.compileTime.} =
 # This is declared dirty so that identifers are not bound to symbols. 
 # The alternative is to use `removeOpenSym` as we did for `prototypeCreate`.
 # We should decide which method is preferable.
-template declareOnSlotCalled(typ: expr): stmt {.dirty.} =
+template prototypeOnSlotCalled(typ: expr): stmt {.dirty.} =
   method onSlotCalled(myQObject: typ, slotName: string, args: openarray[QVariant]) =
     var super = (typ.superType())(myQObject)
     procCall onSlotCalled(super, slotName, args)
@@ -353,7 +353,7 @@ macro QtObject*(qtDecl: stmt): stmt {.immediate.} =
   let typeName = typ.getTypeName()
 
   ## define onSlotCalled
-  var slotProto = (getAst declareOnSlotCalled(typeName))[0]
+  var slotProto = (getAst prototypeOnSlotCalled(typeName))[0]
   var caseStmt = newNimNode(nnkCaseStmt)
   caseStmt.add ident("slotName")
   for slot in slots:
