@@ -228,10 +228,14 @@ proc addSignalBody(signal: PNimrodNode): PNimrodNode {.compileTime.} =
       args.add getArgName params[i]
   result.add newCall("emit", args)
 
-#FIXME: changed typ from typedesc to expr to workaround Nim issue #1874 
-template declareOnSlotCalled(typ: expr): stmt =
+#FIXME: changed typ from typedesc to expr to workaround Nim issue #1874
+# This is declared dirty so that identifers are not bound to symbols. 
+# The alternative is to use `removeOpenSym` as we did for `prototypeCreate`.
+# We should decide which method is preferable.
+template declareOnSlotCalled(typ: expr): stmt {.dirty.} =
   method onSlotCalled(myQObject: typ, slotName: string, args: openarray[QVariant]) =
-    discard
+    var super = (typ.superType())(myQObject)
+    procCall onSlotCalled(super, slotName, args)
 
 #FIXME: changed parent, typ from typedesc to expr to workaround Nim issue #1874
 template prototypeCreate(typ: expr): stmt =
@@ -396,7 +400,7 @@ macro QtObject*(qtDecl: stmt): stmt {.immediate.} =
   # add else: discard
   caseStmt.add newNimNode(nnkElse)
     .add newStmtList().add newNimNode(nnkDiscardStmt).add newNimNode(nnkEmpty)
-  slotProto.body = newStmtList().add caseStmt
+  slotProto.body.add caseStmt
   result.add slotProto
 
   # generate create method
