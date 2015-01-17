@@ -213,7 +213,7 @@ proc getArgName*(arg: PNimrodNode): PNimrodNode  {.compileTime.} =
 
 proc addSignalBody(signal: PNimrodNode): PNimrodNode {.compileTime.} =
   # e.g: produces: emit(MyQObject, "nameChanged")
-  expectKind signal, nnkMethodDef
+  assert signal.kind in {nnkMethodDef, nnkProcDef}
   result = newStmtList()
   # if exported, will use postfix
   let name = if signal.name.kind == nnkIdent: signal.name else: signal.name[1]
@@ -269,6 +269,32 @@ proc getIdentDefName*(a: PNimrodNode): PNimrodNode {.compileTime.} =
   elif a[0].kind == nnkPostFix:
     return a[0][1]
 
+proc tryHandleSigSlot(def: PNimrodNode, signals: var seq[PNimrodNode], slots: var seq[PNimrodNode],
+    generatedCode: var PNimrodNode): bool {.compileTime.} =
+  ## Checks a method/proc definition for signals and slots. On finding a method/proc with
+  ## a {.signal.} or {.slot.} pragma, it will strip the pragma, add the definition to the
+  ## appropriate seq, append the stripped version to the generated code block and return true
+  ## indicating the definition was a signal or a slot. If the method/proc is not a slot
+  ## or a slot it will return false.
+  expectKind generatedCode, nnkStmtList
+  assert (not signals.isNil)
+  assert (not slots.isNil)
+  assert def.kind in {nnkMethodDef, nnkProcDef}
+  result = false
+  if def.hasPragma("slot"):
+    let pragma = def.pragma()
+    def.pragma = pragma.removePragma("slot")
+    slots.add def # we need to gensome code later
+    generatedCode.add def
+    result = true
+  elif def.hasPragma("signal"):
+    let pragma = def.pragma()
+    def.pragma = pragma.removePragma("signal")
+    def.body = addSignalBody(def)
+    generatedCode.add def
+    signals.add def
+    result = true
+
 macro QtObject*(qtDecl: stmt): stmt {.immediate.} =
   ## Generates boiler plate code for registering signals, slots 
   ## and properties. 
@@ -314,20 +340,10 @@ macro QtObject*(qtDecl: stmt): stmt {.immediate.} =
           result.add it
           result.add genSuperTemplate(typeDecl)
     elif it.kind == nnkMethodDef:
-      if it.hasPragma("slot"):
-        let pragma = it.pragma()
-        it.pragma = pragma.removePragma("slot")
-        slots.add it # we need to gensome code later
-        result.add it
-      elif it.hasPragma("signal"):
-        let pragma = it.pragma()
-        it.pragma = pragma.removePragma("signal")
-        it.body = addSignalBody(it)
-        result.add it
-        signals.add it
-      else:
-        userDefined.add it
+      if tryHandleSigSlot(it, signals, slots, result): continue
+      userDefined.add it
     elif it.kind == nnkProcDef:
+      if tryHandleSigSlot(it, signals, slots, result): continue
       userDefined.add it
     elif it.kind == nnkCommand:
       let bracket = it[0]
