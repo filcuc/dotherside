@@ -98,6 +98,17 @@ extern "C"
 				   const char* notifySignal);
   void dos_qobject_delete(void *vptr);
 
+  // QModelIndex
+  void dos_qmodelindex_create(void** vptr);
+  void dos_qmodelindex_delete(void* vptr);
+  void dos_qmodelindex_row(void* vptr, int& row);
+  void dos_qmodelindex_column(void* vptr, int& column);
+  void dos_qmodelindex_isValid(void* vptr, bool& isValid);
+  void dos_qmodelindex_data(void* vptr, int role, void* data);
+  void dos_qmodelindex_parent(void* vptr, void* parent);
+  void dos_qmodelindex_child(void* vptr, int row, int column, void* child);
+  void dos_qmodelindex_sibling(void* vptr, int row, int column, void* sibling);
+  
 #ifdef __cplusplus
 }
 #endif

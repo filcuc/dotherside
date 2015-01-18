@@ -7,6 +7,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QDebug>
 #include <QtQml/QQmlApplicationEngine>
+#include <QtCore/QModelIndex>
 
 #include "DynamicQObject.h"
 
@@ -355,4 +356,62 @@ void dos_qobject_property_create(void* vptr,
                                      QString(readSlot),
                                      QString(writeSlot),
                                      QString(notifySignal));
+}
+
+void dos_qmodelindex_create(void** vptr)
+{
+  auto index = new QModelIndex();
+  *vptr = index;
+}
+
+void dos_qmodelindex_delete(void* vptr)
+{
+  auto index = reinterpret_cast<QModelIndex*>(vptr);
+  delete index;
+}
+
+void dos_qmodelindex_row(void* vptr, int& row)
+{
+  auto index = reinterpret_cast<QModelIndex*>(vptr);
+  row = index->row();
+}
+
+void dos_qmodelindex_column(void* vptr, int& column)
+{
+  auto index = reinterpret_cast<QModelIndex*>(vptr);
+  column = index->column();
+}
+
+void dos_qmodelindex_isValid(void* vptr, bool& isValid)
+{
+  auto index = reinterpret_cast<QModelIndex*>(vptr);
+  isValid = index->isValid();
+}
+
+void dos_qmodelindex_data(void* vptr, int role, void* data)
+{
+  auto index = reinterpret_cast<QModelIndex*>(vptr);
+  auto result = reinterpret_cast<QVariant*>(data);
+  *result = index->data(role);
+}
+
+void dos_qmodelindex_parent(void* vptr, void* parent)
+{
+  auto index = reinterpret_cast<QModelIndex*>(vptr);
+  auto parentIndex = reinterpret_cast<QModelIndex*>(parent);
+  *parentIndex = index->parent();
+}
+
+void dos_qmodelindex_child(void* vptr, int row, int column, void* child)
+{
+  auto index = reinterpret_cast<QModelIndex*>(vptr);
+  auto childIndex = reinterpret_cast<QModelIndex*>(child);
+  *childIndex = index->child(row, column);
+}
+
+void dos_qmodelindex_sibling(void* vptr, int row, int column, void* sibling)
+{
+  auto index = reinterpret_cast<QModelIndex*>(vptr);
+  auto siblingIndex = reinterpret_cast<QModelIndex*>(sibling);
+  *siblingIndex = index->sibling(row, column);
 }

@@ -33,3 +33,7 @@ type
 
   QQmlContext* = distinct pointer ## A QQmlContext
 
+  RawQModelIndex = distinct pointer
+  QModelIndex = ref object of RootObj ## A QModelIndex
+    data: RawQModelIndex
+    deleted: bool
