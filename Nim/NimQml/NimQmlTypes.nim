@@ -37,3 +37,8 @@ type
   QModelIndex = ref object of RootObj ## A QModelIndex
     data: RawQModelIndex
     deleted: bool
+
+  RawQAbstractListModel = distinct pointer
+  QAbstractListModel = ref object of RootObj ## A QAbstactListModel
+    data: RawQAbstractListModel
+    deleted: bool

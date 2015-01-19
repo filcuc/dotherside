@@ -12,10 +12,12 @@ find_package(Qt5Widgets)
 
 set(HEADERS_LIST
   DOtherSide.h
+  BaseQAbstractListModel.h
 )
 
 set(SRC_LIST 
   DOtherSide.cpp
+  BaseQAbstractListModel.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${SRC_LIST} ${HEADERS_LIST})

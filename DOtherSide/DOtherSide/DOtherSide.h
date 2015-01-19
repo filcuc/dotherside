@@ -109,6 +109,10 @@ extern "C"
   void dos_qmodelindex_child(void* vptr, int row, int column, void* child);
   void dos_qmodelindex_sibling(void* vptr, int row, int column, void* sibling);
   
+  // QAbstractListModel
+  void dos_qabstractlistmodel_create(void** vptr);
+  void dos_qabstractlistmodel_delete(void* vptr);
+
 #ifdef __cplusplus
 }
 #endif

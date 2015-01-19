@@ -10,6 +10,7 @@
 #include <QtCore/QModelIndex>
 
 #include "DynamicQObject.h"
+#include "BaseQAbstractListModel.h"
 
 void convert_to_cstring(const QString& source, CharPtr& destination, int& length)
 {
@@ -414,4 +415,16 @@ void dos_qmodelindex_sibling(void* vptr, int row, int column, void* sibling)
   auto index = reinterpret_cast<QModelIndex*>(vptr);
   auto siblingIndex = reinterpret_cast<QModelIndex*>(sibling);
   *siblingIndex = index->sibling(row, column);
+}
+
+void dos_qabstractlistmodel_create(void** vptr)
+{
+  auto model = new BaseQAbstractListModel();
+  *vptr = model;
+}
+
+void dos_qabstractlistmodel_delete(void* vptr)
+{
+  auto model = reinterpret_cast<BaseQAbstractListModel*>(vptr);
+  delete model;
 }

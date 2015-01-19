@@ -503,12 +503,12 @@ proc dos_qmodelindex_parent(modelIndex: RawQModelIndex, parent: RawQModelIndex) 
 proc dos_qmodelindex_child(modelIndex: RawQModelIndex, row: cint, column: cint, parent: RawQModelIndex) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qmodelindex_sibling(modelIndex: RawQModelIndex, row: cint, column: cint, sibling: RawQModelIndex) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
-proc create(modelIndex: var QModelIndex) =
+proc create*(modelIndex: var QModelIndex) =
   ## Create a new QModelIndex
   dos_qmodelindex_create(modelIndex.data)
   modelIndex.deleted = false
 
-proc delete(modelIndex: QModelIndex) =
+proc delete*(modelIndex: QModelIndex) =
   ## Delete the given QModelIndex
   if not modelIndex.deleted:
     debugMsg("QModelIndex", "delete")
@@ -521,34 +521,58 @@ proc newQModelIndex*(): QModelIndex =
   newWithCondFinalizer(result, delete)
   result.create()
 
-proc row(modelIndex: QModelIndex): cint =
+proc row*(modelIndex: QModelIndex): cint =
   ## Return the index row
   dos_qmodelindex_row(modelIndex.data, result)
 
-proc column(modelIndex: QModelIndex): cint =
+proc column*(modelIndex: QModelIndex): cint =
   ## Return the index column
   dos_qmodelindex_column(modelIndex.data, result)
 
-proc isValid(modelIndex: QModelIndex): bool =
+proc isValid*(modelIndex: QModelIndex): bool =
   ## Return true if the index is valid, false otherwise
   dos_qmodelindex_isValid(modelIndex.data, result)
 
-proc data(modelIndex: QModelIndex, role: cint): QVariant =
+proc data*(modelIndex: QModelIndex, role: cint): QVariant =
   ## Return the model data associated to the given role  
   result = newQVariant()
   dos_qmodelindex_data(modelIndex.data, role, result.data)
 
-proc parent(modelIndex: QModelIndex): QModelIndex =
+proc parent*(modelIndex: QModelIndex): QModelIndex =
   ## Return the parent index
   result = newQModelIndex()
   dos_qmodelindex_parent(modelIndex.data, result.data)
 
-proc child(modelIndex: QModelIndex, row: cint, column: cint): QModelIndex =
+proc child*(modelIndex: QModelIndex, row: cint, column: cint): QModelIndex =
   ## Return the child index associated to the given row and column
   result = newQModelIndex()
   dos_qmodelindex_child(modelIndex.data, row, column, result.data)
 
-proc sibling(modelIndex: QModelIndex, row: cint, column: cint): QModelIndex =
+proc sibling*(modelIndex: QModelIndex, row: cint, column: cint): QModelIndex =
   ## Return the sibling index associated to the given row and column
   result = newQModelIndex()
   dos_qmodelindex_sibling(modelIndex.data, row, column, result.data)
+
+
+# QAbstractListModel  
+proc dos_qabstractlistmodel_create(modelIndex: var RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qabstractlistmodel_delete(modelIndex: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+
+proc create*(model: var QAbstractListModel) =
+  ## Create a new QAbstractListModel
+  debugMsg("QAbstractListModel", "create")
+  dos_qabstractlistmodel_create(model.data)
+  model.deleted = false
+
+proc delete*(model: QAbstractListModel) =
+  ## Delete the given QAbstractListModel
+  if not model.deleted:
+    debugMsg("QAbstractListModel", "delete")
+    dos_qabstractlistmodel_delete(model.data)
+    model.data = nil.RawQAbstractListModel
+    model.deleted = true
+
+proc newQAbstractListModel*(): QAbstractListModel =
+  ## Return a new QAbstractListModel
+  newWithCondFinalizer(result, delete)
+  result.create()
