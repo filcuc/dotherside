@@ -69,8 +69,8 @@ extern "C"
   void dos_qvariant_assign(void* vptr, void* other);
 
   // QObject
-  void dos_qobject_create(void **vptr,
-			  void *dObjectPointer,
+  void dos_qobject_create(void** vptr,
+			  void* dObjectPointer,
 			  DObjectCallback dObjectCallback);
 
   void dos_qobject_slot_create(void* vptr,
@@ -110,7 +110,11 @@ extern "C"
   void dos_qmodelindex_sibling(void* vptr, int row, int column, void* sibling);
   
   // QAbstractListModel
-  void dos_qabstractlistmodel_create(void** vptr);
+  typedef int(*RowCountCallback)(void*);
+  
+  void dos_qabstractlistmodel_create(void** vptr,
+				     void* callbackObject,
+				     RowCountCallback rowCountCallback);
   void dos_qabstractlistmodel_delete(void* vptr);
 
 #ifdef __cplusplus

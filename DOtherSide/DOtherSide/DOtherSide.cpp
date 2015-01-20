@@ -417,9 +417,11 @@ void dos_qmodelindex_sibling(void* vptr, int row, int column, void* sibling)
   *siblingIndex = index->sibling(row, column);
 }
 
-void dos_qabstractlistmodel_create(void** vptr)
+void dos_qabstractlistmodel_create(void** vptr,
+				   void* modelObject,
+				   RowCountCallback rowCountCallback)
 {
-  auto model = new BaseQAbstractListModel();
+  auto model = new BaseQAbstractListModel(modelObject, rowCountCallback);
   *vptr = model;
 }
 

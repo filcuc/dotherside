@@ -39,6 +39,7 @@ type
     deleted: bool
 
   RawQAbstractListModel = distinct pointer
-  QAbstractListModel = ref object of RootObj ## A QAbstactListModel
+  QAbstractListModelObj = object of RootObj  
     data: RawQAbstractListModel
     deleted: bool
+  QAbstractListModel = ref QAbstractListModelObj ## A QAbstractListModel
