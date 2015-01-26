@@ -42,4 +42,4 @@ type
   QAbstractListModelObj = object of RootObj  
     data: RawQAbstractListModel
     deleted: bool
-  QAbstractListModel = ref QAbstractListModelObj ## A QAbstractListModel
+  QAbstractListModel* = ref QAbstractListModelObj ## A QAbstractListModel
