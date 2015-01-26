@@ -1,6 +1,8 @@
 #ifndef DOTHERSIDE_H
 #define DOTHERSIDE_H
 
+#include "DOtherSideTypes.h"
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -111,12 +113,11 @@ extern "C"
   void dos_qmodelindex_child(void* vptr, int row, int column, void* child);
   void dos_qmodelindex_sibling(void* vptr, int row, int column, void* sibling);
   
-  // QAbstractListModel
-  typedef int(*RowCountCallback)(void* model, void* index);
-  
+  // QAbstractListModel  
   void dos_qabstractlistmodel_create(void** vptr,
-				     void* callbackObject,
-				     RowCountCallback rowCountCallback);
+                                     void* callbackObject,
+                                     RowCountCallback rowCountCallback,
+                                     DataCallback dataCallback);
   void dos_qabstractlistmodel_delete(void* vptr);
 
 #ifdef __cplusplus

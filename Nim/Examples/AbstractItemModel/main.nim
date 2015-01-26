@@ -20,6 +20,9 @@ proc newMyQAbstractListModel(): MyQAbstractListModel =
 method rowCount(self: MyQAbstractListModel, index: QModelIndex): cint =
   echo "index valid: " & $index.isValid & " row: " & $index.row & " column: " & $index.column  
   return 3
+
+method data(self: MyQAbstractListModel, index: QModelIndex, role: cint): QVariant =
+  return nil  
   
 proc mainProc() =
   var app = newQApplication()

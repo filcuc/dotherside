@@ -1,25 +1,33 @@
 #include "BaseQAbstractListModel.h"
 
 BaseQAbstractListModel::BaseQAbstractListModel(void* modelObject,
-					       RowCountCallback rowCountCallback)
-  : m_modelObject(modelObject)
-  , m_rowCountCallback(rowCountCallback)
+        RowCountCallback rowCountCallback,
+        DataCallback dataCallback)
+    : m_modelObject(modelObject)
+    , m_rowCountCallback(rowCountCallback)
+    , m_dataCallback(dataCallback)
 {
 }
 
-int BaseQAbstractListModel::rowCount(const QModelIndex& index) const 
+int BaseQAbstractListModel::rowCount(const QModelIndex& index) const
 {
-  auto newIndex = new QModelIndex();
-  *newIndex = index;
-  return m_rowCountCallback(m_modelObject, newIndex);
+    auto newIndex = new QModelIndex();
+    *newIndex = index;
+    int result;
+    m_rowCountCallback(m_modelObject, newIndex, &result);
+    return result;
 }
 
 QVariant BaseQAbstractListModel::data(const QModelIndex& index, int role) const
 {
-  return QVariant();
+    auto newIndex = new QModelIndex();
+    *newIndex = index;
+    QVariant result;
+    m_dataCallback(m_modelObject, newIndex, role, &result);
+    return result;
 }
 
 void* BaseQAbstractListModel::modelObject()
 {
-  return m_modelObject;
+    return m_modelObject;
 }

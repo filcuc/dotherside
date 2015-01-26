@@ -581,27 +581,41 @@ proc sibling*(modelIndex: QModelIndex, row: cint, column: cint): QModelIndex =
 
 
 # QAbstractListModel
-type RowCountCallback = proc(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex): cint {.cdecl.}
-  
+type RowCountCallback = proc(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, result: var cint) {.cdecl.}
+type DataCallback = proc(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, role: cint, result: RawQVariant) {.cdecl.}
+
 proc dos_qabstractlistmodel_create(model: var RawQAbstractListModel,
                                    modelPtr: ptr QAbstractListModelObj,
-                                   rowCountCallback: RowCountCallback) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+                                   rowCountCallback: RowCountCallback,
+                                   dataCallback: DataCallback) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qabstractlistmodel_delete(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
 method rowCount*(model: QAbstractListModel, index: QModelIndex): cint =
   ## Return the model's row count
   return 0
 
-proc rowCountCallback(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex): cint {.cdecl, exportc.} =
+proc rowCountCallback(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, result: var cint) {.cdecl, exportc.} =
   let model = cast[QAbstractListModel](modelObject)
   let index = newQModelIndex(rawIndex)
-  return model.rowCount(index)
+  result = model.rowCount(index)
+
+method data*(model: QAbstractListModel, index: QModelIndex, role: cint): QVariant =
+  ## Return the data at the given model index and role  
+  return nil  
+  
+proc dataCallback(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, role: cint, result: RawQVariant) {.cdecl, exportc.} =
+  let model = cast[QAbstractListModel](modelObject)
+  let index = newQModelIndex(rawIndex)
+  let variant = data(model, index, role)
+  if variant != nil:
+    dos_qvariant_assign(result, variant.data)
+    variant.delete
   
 proc create*(model: var QAbstractListModel) =
   ## Create a new QAbstractListModel
   debugMsg("QAbstractListModel", "create")
   let modelPtr = addr(model[])
-  dos_qabstractlistmodel_create(model.data, modelPtr, rowCountCallback)
+  dos_qabstractlistmodel_create(model.data, modelPtr, rowCountCallback, dataCallback)
   model.deleted = false
 
 proc delete*(model: QAbstractListModel) =

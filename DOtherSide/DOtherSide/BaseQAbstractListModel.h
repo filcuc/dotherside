@@ -1,15 +1,16 @@
 #pragma once
 
+#include "DOtherSideTypes.h"
 #include <QAbstractListModel>
 
 /// This class act as a base class for D and Nim QAbstractListModel
 class BaseQAbstractListModel : public QAbstractListModel
 {
-  typedef int (*RowCountCallback) (void* model, void* index);
-  
  public:
   /// Constructor
-  BaseQAbstractListModel(void* modelObject, RowCountCallback rowCountCallback);
+  BaseQAbstractListModel(void* modelObject, 
+                         RowCountCallback rowCountCallback,
+                         DataCallback dataCallback);
 
   /// Return the model's row count
   virtual int rowCount(const QModelIndex& index = QModelIndex()) const override;
@@ -23,4 +24,5 @@ class BaseQAbstractListModel : public QAbstractListModel
  private:
   void* m_modelObject;
   RowCountCallback m_rowCountCallback;
+  DataCallback m_dataCallback;
 };
