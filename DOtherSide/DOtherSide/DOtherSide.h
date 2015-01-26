@@ -112,7 +112,7 @@ extern "C"
   void dos_qmodelindex_sibling(void* vptr, int row, int column, void* sibling);
   
   // QAbstractListModel
-  typedef int(*RowCountCallback)(void*);
+  typedef int(*RowCountCallback)(void* model, void* index);
   
   void dos_qabstractlistmodel_create(void** vptr,
 				     void* callbackObject,

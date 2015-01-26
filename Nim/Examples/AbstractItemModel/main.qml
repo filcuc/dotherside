@@ -17,7 +17,7 @@ ApplicationWindow
         {
             width: 10
             height: 10
-            color: "red"
+            color: index % 2 == 0 ? "red" : "black"
         }
     }
     

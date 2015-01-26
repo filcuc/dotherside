@@ -524,6 +524,11 @@ proc create*(modelIndex: var QModelIndex) =
   dos_qmodelindex_create(modelIndex.data)
   modelIndex.deleted = false
 
+proc create*(modelIndex: var QModelIndex, rawQModelIndex: RawQModelIndex) =
+  ## Create a new QModelIndex
+  modelIndex.data = rawQModelIndex
+  modelIndex.deleted = false
+  
 proc delete*(modelIndex: QModelIndex) =
   ## Delete the given QModelIndex
   if not modelIndex.deleted:
@@ -536,6 +541,11 @@ proc newQModelIndex*(): QModelIndex =
   ## Return a new QModelIndex
   newWithCondFinalizer(result, delete)
   result.create()
+
+proc newQModelIndex*(rawQModelIndex: RawQModelIndex): QModelIndex =
+  ## Return a new QModelIndex given a raw index
+  newWithCondFinalizer(result, delete)
+  result.create(rawQModelIndex)
 
 proc row*(modelIndex: QModelIndex): cint =
   ## Return the index row
@@ -571,20 +581,21 @@ proc sibling*(modelIndex: QModelIndex, row: cint, column: cint): QModelIndex =
 
 
 # QAbstractListModel
-type RowCountCallback = proc(modelObject: ptr QAbstractListModelObj): cint {.cdecl.}
+type RowCountCallback = proc(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex): cint {.cdecl.}
   
 proc dos_qabstractlistmodel_create(model: var RawQAbstractListModel,
                                    modelPtr: ptr QAbstractListModelObj,
                                    rowCountCallback: RowCountCallback) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qabstractlistmodel_delete(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
-method rowCount*(model: QAbstractListModel): cint =
+method rowCount*(model: QAbstractListModel, index: QModelIndex): cint =
   ## Return the model's row count
   return 0
 
-proc rowCountCallback(modelObject: ptr QAbstractListModelObj): cint {.cdecl, exportc.} =
+proc rowCountCallback(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex): cint {.cdecl, exportc.} =
   let model = cast[QAbstractListModel](modelObject)
-  return model.rowCount
+  let index = newQModelIndex(rawIndex)
+  return model.rowCount(index)
   
 proc create*(model: var QAbstractListModel) =
   ## Create a new QAbstractListModel

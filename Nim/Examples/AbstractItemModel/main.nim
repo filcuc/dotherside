@@ -7,25 +7,37 @@ type MyQAbstractListModel = ref object of QAbstractListModel
 
 proc create(self: MyQAbstractListModel) = 
   var qAbstractListModel = self.QAbstractListModel
-  qAbstractListModel.create()
+  qAbstractListModel.create
 
 proc delete(self: MyQAbstractListModel) = 
   var qAbstractListModel = self.QAbstractListModel
-  qAbstractListModel.delete()
+  qAbstractListModel.delete
 
 proc newMyQAbstractListModel(): MyQAbstractListModel =
   new(result, delete)
-  result.create()
+  result.create
   
-method rowCount(self: MyQAbstractListModel): cint =
-  return 103
+method rowCount(self: MyQAbstractListModel, index: QModelIndex): cint =
+  echo "index valid: " & $index.isValid & " row: " & $index.row & " column: " & $index.column  
+  return 3
   
 proc mainProc() =
-  var myListModel = newMyQAbstractListModel()
-  defer: myListModel.delete()
-  let rows = myListModel.rowCount
-  echo rows
+  var app = newQApplication()
+  defer: app.delete
   
+  var myListModel = newMyQAbstractListModel()
+  defer: myListModel.delete
+
+  var engine = newQQmlApplicationEngine()
+  defer: engine.delete
+
+  var variant = newQVariant(myListModel)
+  defer: variant.delete
+
+  engine.rootContext.setContextProperty("myListModel", variant)
+  engine.load("main.qml")
+  
+  app.exec()
   
 when isMainModule:
   mainProc()

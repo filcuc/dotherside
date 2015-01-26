@@ -5,7 +5,7 @@
 /// This class act as a base class for D and Nim QAbstractListModel
 class BaseQAbstractListModel : public QAbstractListModel
 {
-  typedef int (*RowCountCallback) (void*);
+  typedef int (*RowCountCallback) (void* model, void* index);
   
  public:
   /// Constructor

@@ -9,7 +9,9 @@ BaseQAbstractListModel::BaseQAbstractListModel(void* modelObject,
 
 int BaseQAbstractListModel::rowCount(const QModelIndex& index) const 
 {
-  return m_rowCountCallback(m_modelObject);
+  auto newIndex = new QModelIndex();
+  *newIndex = index;
+  return m_rowCountCallback(m_modelObject, newIndex);
 }
 
 QVariant BaseQAbstractListModel::data(const QModelIndex& index, int role) const
