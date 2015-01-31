@@ -12,7 +12,7 @@ class QMetaObjectBuilder;
 /// This class implements a QObject to which signals, slots and properties can be added dynamically
 class DynamicQObject : public QObject
 {
-    typedef void (*Callback)(void*, void*, int, void **);
+    typedef void (*Callback)(void*, void*, int, void**);
 
 public:
     /// Constructor
@@ -22,10 +22,14 @@ public:
     virtual ~DynamicQObject();
 
     /// Sets the function to be called from C++ to D or Nimrod
-    void setDObjectCallback(Callback callback) { m_dObjectCallback = callback; }
+    void setDObjectCallback(Callback callback) {
+        m_dObjectCallback = callback;
+    }
 
     /// Sets the D or Nimrod object that owns this DynamicQObject
-    void setDObjectPointer(void* dObjectPointer)  { m_dObjectPointer = dObjectPointer; }
+    void setDObjectPointer(void* dObjectPointer)  {
+        m_dObjectPointer = dObjectPointer;
+    }
 
     /// Register a new signal
     bool registerSignal(const QString& name,
@@ -49,10 +53,10 @@ public:
     bool emitSignal(const QString& name, const QList<QVariant>& argumentsValues);
 
     /// Return the QMetaObject for this DynamicQObject
-    virtual const QMetaObject *metaObject() const;
+    virtual const QMetaObject* metaObject() const;
 
     /// The qt metacall. Called from Qt when a signals, slot or property is invoked
-    int qt_metacall(QMetaObject::Call, int, void **);
+    int qt_metacall(QMetaObject::Call, int, void**);
 
 private:
     bool executeSlot(const DynamicSlot& slot, void**  args);
@@ -67,9 +71,9 @@ private:
     /// The creation is customizable by injecting custom code after signals and slots have
     /// been added
     static QMetaObject* recreateMetaObjectBuilder(QMetaObject* currentMetaObject,
-                                                  const std::function<void(QMetaObjectBuilder&)>& afterSignalAdded,
-                                                  const std::function<void(QMetaObjectBuilder&)>& afterSlotAdded,
-                                                  const std::function<void(QMetaObjectBuilder&)>& afterPropertyAdded);
+            const std::function<void(QMetaObjectBuilder&)>& afterSignalAdded,
+            const std::function<void(QMetaObjectBuilder&)>& afterSlotAdded,
+            const std::function<void(QMetaObjectBuilder&)>& afterPropertyAdded);
 
     QHash<QString, DynamicSignal> m_signalsByName;
     QHash<QByteArray, DynamicSignal> m_signalsBySignature;

@@ -6,6 +6,7 @@ import tables
 type
   Roles {.pure.} = enum
     Name = cint(0)
+
   MyQAbstractListModel = ref object of QAbstractListModel
     m_roleNames: Table[int, cstring]
     m_names: seq[string]

@@ -56,20 +56,14 @@ DynamicProperty::DynamicProperty(const DynamicProperty& other)
         d.reset(new PropertyData(*other.d));
 }
 
-DynamicProperty&DynamicProperty::operator=(const DynamicProperty& other)
+DynamicProperty& DynamicProperty::operator=(const DynamicProperty& other)
 {
     if (!other.d && d)
-    {
         d.reset();
-    }
     else if (other.d && !d)
-    {
         d.reset(new PropertyData(*other.d));
-    }
     else if (other.d && d)
-    {
         *d = *other.d;
-    }
 
     return *this;
 }

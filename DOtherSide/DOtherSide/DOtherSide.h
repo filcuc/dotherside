@@ -47,15 +47,15 @@ void dos_chararray_create(char** ptr, int size);
 void dos_chararray_delete(char* ptr);
 
 // QVariant
-void dos_qvariant_create(void **vptr);
-void dos_qvariant_create_int(void **vptr, int value);
-void dos_qvariant_create_bool(void **vptr, bool value);
-void dos_qvariant_create_string(void **vptr, const char* value);
-void dos_qvariant_create_qobject(void **vptr, void* value);
-void dos_qvariant_create_qvariant(void **vptr, void* value);
-void dos_qvariant_create_float(void **vptr, float value);
-void dos_qvariant_create_double(void **vptr, double value);
-void dos_qvariant_create_qabstractlistmodel(void **vptr, void* value);
+void dos_qvariant_create(void** vptr);
+void dos_qvariant_create_int(void** vptr, int value);
+void dos_qvariant_create_bool(void** vptr, bool value);
+void dos_qvariant_create_string(void** vptr, const char* value);
+void dos_qvariant_create_qobject(void** vptr, void* value);
+void dos_qvariant_create_qvariant(void** vptr, void* value);
+void dos_qvariant_create_float(void** vptr, float value);
+void dos_qvariant_create_double(void** vptr, double value);
+void dos_qvariant_create_qabstractlistmodel(void** vptr, void* value);
 void dos_qvariant_toInt(void* vptr, int* value);
 void dos_qvariant_setInt(void* vptr, int value);
 void dos_qvariant_toBool(void* vptr, bool* value);
@@ -68,8 +68,8 @@ void dos_qvariant_toString(void* vptr, char** ptr, int* size);
 void dos_qvariant_setString(void* vptr, const char* value);
 void dos_qvariant_setQObject(void* vptr, void* value);
 void dos_qvariant_setQAbstractListModel(void* vptr, void* value);
-void dos_qvariant_isnull(void *vptr, bool* isNull);
-void dos_qvariant_delete(void *vptr);
+void dos_qvariant_isnull(void* vptr, bool* isNull);
+void dos_qvariant_delete(void* vptr);
 void dos_qvariant_assign(void* vptr, void* other);
 
 // QObject
@@ -100,7 +100,7 @@ void dos_qobject_property_create(void* vptr,
                                  const char* readSlot,
                                  const char* writeSlot,
                                  const char* notifySignal);
-void dos_qobject_delete(void *vptr);
+void dos_qobject_delete(void* vptr);
 
 // QModelIndex
 void dos_qmodelindex_create(void** vptr);

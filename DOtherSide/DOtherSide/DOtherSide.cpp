@@ -66,12 +66,12 @@ void dos_qapplication_quit()
     qApp->quit();
 }
 
-void dos_qqmlapplicationengine_create(void **vptr)
+void dos_qqmlapplicationengine_create(void** vptr)
 {
     *vptr = new QQmlApplicationEngine();
 }
 
-void dos_qqmlapplicationengine_load(void *vptr, const char *filename)
+void dos_qqmlapplicationengine_load(void* vptr, const char* filename)
 {
     QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
     engine->load(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + QDir::separator() + QString(filename)));
@@ -107,7 +107,7 @@ void dos_qquickview_delete(void* vptr)
     delete view;
 }
 
-void dos_qquickview_source(void *vptr, char** result, int* length)
+void dos_qquickview_source(void* vptr, char** result, int* length)
 {
     QQuickView* view = reinterpret_cast<QQuickView*>(vptr);
     QUrl url = view->source();
@@ -158,17 +158,17 @@ void dos_qqmlcontext_setcontextproperty(void* vptr, const char* name, void* valu
     context->setContextProperty(QString::fromUtf8(name), *variant);
 }
 
-void dos_qvariant_create(void **vptr)
+void dos_qvariant_create(void** vptr)
 {
     *vptr = new QVariant();
 }
 
-void dos_qvariant_create_int(void **vptr, int value)
+void dos_qvariant_create_int(void** vptr, int value)
 {
     *vptr = new QVariant(value);
 }
 
-void dos_qvariant_create_bool(void **vptr, bool value)
+void dos_qvariant_create_bool(void** vptr, bool value)
 {
     *vptr = new QVariant(value);
 }
@@ -186,7 +186,7 @@ void dos_qvariant_create_qvariant(void** vptr, void* other)
     *vptr = newQVariant;
 }
 
-void dos_qvariant_create_qobject(void **vptr, void* value)
+void dos_qvariant_create_qobject(void** vptr, void* value)
 {
     auto qobject = reinterpret_cast<QObject*>(value);
     auto variant = new QVariant();
@@ -218,7 +218,7 @@ void dos_qvariant_isnull(void* vptr, bool* isNull)
     *isNull = variant->isNull();
 }
 
-void dos_qvariant_delete(void *vptr)
+void dos_qvariant_delete(void* vptr)
 {
     auto variant = reinterpret_cast<QVariant*>(vptr);
     delete variant;
@@ -314,7 +314,7 @@ void dos_qobject_create(void** vptr, void* dObjectPointer, DObjectCallback dObje
     *vptr = dynamicQObject;
 }
 
-void dos_qobject_delete(void *vptr)
+void dos_qobject_delete(void* vptr)
 {
     auto dynamicQObject = reinterpret_cast<DynamicQObject*>(vptr);
     dynamicQObject->disconnect();
@@ -438,9 +438,9 @@ void dos_qabstractlistmodel_create(void** vptr,
                                    DataCallback dataCallback,
                                    RoleNamesCallback roleNamesCallaback)
 {
-    auto model = new BaseQAbstractListModel(modelObject, 
-                                            rowCountCallback, 
-                                            dataCallback, 
+    auto model = new BaseQAbstractListModel(modelObject,
+                                            rowCountCallback,
+                                            dataCallback,
                                             roleNamesCallaback);
     *vptr = model;
 }
@@ -458,7 +458,7 @@ void dos_qhash_int_qbytearray_create(QHashIntQByteArrayVoidPtr* vptr)
 
 void dos_qhash_int_qbytearray_delete(QHashIntQByteArrayVoidPtr vptr)
 {
-    auto qHash = reinterpret_cast<QHash<int,QByteArray>*>(vptr);
+    auto qHash = reinterpret_cast<QHash<int, QByteArray>*>(vptr);
     delete qHash;
 }
 

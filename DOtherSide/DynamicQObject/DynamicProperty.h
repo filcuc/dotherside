@@ -23,7 +23,9 @@ public:
     QString name() const;
     QMetaType::Type type() const;
 
-    bool isValid() const { return d != nullptr; }
+    bool isValid() const {
+        return d != nullptr;
+    }
 
     bool isReadable() const;
     bool isWriteable() const;

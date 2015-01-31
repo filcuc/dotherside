@@ -21,8 +21,8 @@ bool DynamicQObject::registerSlot(const QString& name,
                                   const QMetaType::Type returnType,
                                   const QList<QMetaType::Type>& argumentsTypes,
                                   int& slotIndex)
-{   
-    DynamicSlot slot (name, returnType, argumentsTypes);
+{
+    DynamicSlot slot(name, returnType, argumentsTypes);
 
     if (m_slotsBySignature.contains(slot.signature()))
         return false;
@@ -33,16 +33,16 @@ bool DynamicQObject::registerSlot(const QString& name,
     auto afterSignalAdded = [](QMetaObjectBuilder&) {};
     auto afterPropertyAdded = afterSignalAdded;
 
-    auto afterSlotAdded = [&slot, returnType](QMetaObjectBuilder& metaObjectBuilder) {
+    auto afterSlotAdded = [&slot, returnType](QMetaObjectBuilder & metaObjectBuilder) {
         QMetaMethodBuilder methodBuilder = metaObjectBuilder.addSlot(slot.signature());
         methodBuilder.setReturnType(QMetaType::typeName(returnType));
         methodBuilder.setAttributes(QMetaMethod::Scriptable);
     };
 
     auto newMetaObject = recreateMetaObjectBuilder(m_metaObject.data()
-                                                  , afterSignalAdded
-                                                  , afterSlotAdded
-                                                  , afterPropertyAdded);
+                         , afterSignalAdded
+                         , afterSlotAdded
+                         , afterPropertyAdded);
 
     m_metaObject.reset(newMetaObject);
 
@@ -61,7 +61,7 @@ bool DynamicQObject::registerSignal(const QString& name, const QList<QMetaType::
     m_signalsByName.insertMulti(signal.name(), signal);
     m_signalsBySignature[signal.signature()] = signal;
 
-    auto afterSignalAdded = [&signal](QMetaObjectBuilder& metaObjectBuilder) {
+    auto afterSignalAdded = [&signal](QMetaObjectBuilder & metaObjectBuilder) {
         QMetaMethodBuilder methodBuilder = metaObjectBuilder.addSignal(signal.signature());
         methodBuilder.setReturnType(QMetaType::typeName(QMetaType::Void));
         methodBuilder.setAccess(QMetaMethod::Public);
@@ -71,9 +71,9 @@ bool DynamicQObject::registerSignal(const QString& name, const QList<QMetaType::
     auto afterPropertyAdded = afterSlotAdded;
 
     auto newMetaObject = recreateMetaObjectBuilder(m_metaObject.data()
-                                                   , afterSignalAdded
-                                                   , afterSlotAdded
-                                                   , afterPropertyAdded);
+                         , afterSignalAdded
+                         , afterSlotAdded
+                         , afterPropertyAdded);
 
     m_metaObject.reset(newMetaObject);
 
@@ -101,9 +101,9 @@ bool DynamicQObject::registerProperty(const QString& name,
 
     m_propertiesByName.insert(name.toUtf8(), property);
 
-    auto afterSignalAdded = [](QMetaObjectBuilder& metaObjectBuilder) {};
-    auto afterSlotAdded = [](QMetaObjectBuilder& metaObjectBuilder) {};
-    auto afterPropertyAdded = [name, type, notifySignal](QMetaObjectBuilder& metaObjectBuilder)
+    auto afterSignalAdded = [](QMetaObjectBuilder & metaObjectBuilder) {};
+    auto afterSlotAdded = [](QMetaObjectBuilder & metaObjectBuilder) {};
+    auto afterPropertyAdded = [name, type, notifySignal](QMetaObjectBuilder & metaObjectBuilder)
     {
         int signalIndex = -1;
         if (notifySignal.isValid())
@@ -125,16 +125,16 @@ bool DynamicQObject::registerProperty(const QString& name,
 
         auto typeName = QMetaType::typeName(type);
         auto builder = metaObjectBuilder.addProperty(name.toUtf8(),
-                                                     QMetaObject::normalizedType(typeName),
-                                                     signalIndex);
+                       QMetaObject::normalizedType(typeName),
+                       signalIndex);
         if (signalIndex == -1)
             builder.setConstant(true);
     };
 
     auto newMetaObject = recreateMetaObjectBuilder(m_metaObject.data()
-                                                   , afterSignalAdded
-                                                   , afterSlotAdded
-                                                   , afterPropertyAdded);
+                         , afterSignalAdded
+                         , afterSlotAdded
+                         , afterPropertyAdded);
     m_metaObject.reset(newMetaObject);
     return true;
 }
@@ -161,7 +161,7 @@ bool DynamicQObject::emitSignal(const QString& name, const QList<QVariant>& args
 
     QVariantList argsCopy = args;
 
-    QVector<void*> arguments(argsCopy.size() + 1 ,0);
+    QVector<void*> arguments(argsCopy.size() + 1 , 0);
     arguments[0] = 0;
     for (int i = 0; i < argsCopy.size(); ++i)
         arguments[i + 1] = &argsCopy[i];
@@ -183,7 +183,7 @@ bool DynamicQObject::executeSlot(const DynamicSlot& slot, void**  args)
 
     QList<QVariant> arguments;
     for (int i = 0; i < slot.argumentsTypes().count(); ++i)
-        arguments << QVariant(slot.argumentTypeAt(i), args[i+1]);
+        arguments << QVariant(slot.argumentTypeAt(i), args[i + 1]);
 
     QVariant result = executeSlot(slot, arguments);
 
@@ -205,7 +205,7 @@ QVariant DynamicQObject::executeSlot(const DynamicSlot& slot, const QList<QVaria
     std::vector<void*> argumentsAsVoidPointers(numParametersPlusReturn);
 
     for (int i = 0; i < numParametersPlusReturn; ++i) {
-        argumentsAsVariants[i] =  i == 0 ? QVariant() : args[i-1];
+        argumentsAsVariants[i] =  i == 0 ? QVariant() : args[i - 1];
         argumentsAsVoidPointers[i] = &argumentsAsVariants[i];
     }
 
@@ -256,7 +256,7 @@ bool DynamicQObject::writeProperty(const DynamicProperty& property, void** args)
     if (writeSlot.returnType() != QMetaType::Void)
         return false;
 
-    QVariant newValue (writeSlot.argumentTypeAt(0), args[0]);
+    QVariant newValue(writeSlot.argumentTypeAt(0), args[0]);
     executeSlot(writeSlot, {newValue});
 }
 
@@ -297,9 +297,9 @@ int DynamicQObject::qt_metacall(QMetaObject::Call callType, int index, void**  a
 }
 
 QMetaObject* DynamicQObject::recreateMetaObjectBuilder(QMetaObject* currentMetaObject,
-                                                       const std::function<void(QMetaObjectBuilder&)>& afterSignalAdded,
-                                                       const std::function<void(QMetaObjectBuilder&)>& afterSlotAdded,
-                                                       const std::function<void(QMetaObjectBuilder&)>& afterPropertyAdded)
+        const std::function<void(QMetaObjectBuilder&)>& afterSignalAdded,
+        const std::function<void(QMetaObjectBuilder&)>& afterSlotAdded,
+        const std::function<void(QMetaObjectBuilder&)>& afterPropertyAdded)
 {
     // Collect the current methods and signals
     QList<QMetaMethod> signalsList;
@@ -326,7 +326,7 @@ QMetaObject* DynamicQObject::recreateMetaObjectBuilder(QMetaObject* currentMetaO
     metaObjectBuilder.setClassName(currentMetaObject->className());
     metaObjectBuilder.setSuperClass(currentMetaObject->superClass());
 
-    foreach(auto& method, signalsList)
+    foreach (auto& method, signalsList)
         metaObjectBuilder.addMethod(method);
 
     // Call custom code to be executed after signal have been added
