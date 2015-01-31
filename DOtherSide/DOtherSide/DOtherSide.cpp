@@ -1,13 +1,13 @@
 #include "DOtherSide.h"
 
-#include <QtWidgets/QApplication>
-#include <QtGui/QGuiApplication>
-#include <QtQuick/QQuickView>
-#include <QtQml/QQmlContext>
 #include <QtCore/QDir>
 #include <QtCore/QDebug>
-#include <QtQml/QQmlApplicationEngine>
 #include <QtCore/QModelIndex>
+#include <QtGui/QGuiApplication>
+#include <QtQml/QQmlContext>
+#include <QtQml/QQmlApplicationEngine>
+#include <QtQuick/QQuickView>
+#include <QtWidgets/QApplication>
 
 #include "DynamicQObject.h"
 #include "BaseQAbstractListModel.h"
@@ -446,3 +446,21 @@ void dos_qabstractlistmodel_delete(void* vptr)
   auto model = reinterpret_cast<BaseQAbstractListModel*>(vptr);
   delete model;
 }
+
+void dos_qhash_int_qbytearray_create(QHashIntQByteArrayVoidPtr* vptr)
+{
+    *vptr = new QHash<int, QByteArray>();
+}
+
+void dos_qhash_int_qbytearray_delete(QHashIntQByteArrayVoidPtr vptr)
+{
+    auto qHash = reinterpret_cast<QHash<int,QByteArray>*>(vptr);
+    delete qHash;
+}
+
+void dos_qhash_int_qbytearray_insert(QHashIntQByteArrayVoidPtr vptr, int key, ConstCharPtr value)
+{
+    auto qHash = reinterpret_cast<QHash<int, QByteArray>*>(vptr);
+    qHash->insert(key, QByteArray(value));
+}
+

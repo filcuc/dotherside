@@ -31,3 +31,10 @@ void* BaseQAbstractListModel::modelObject()
 {
     return m_modelObject;
 }
+
+QHash<int,QByteArray> BaseQAbstractListModel::roleNames() const
+{
+    QHash<int, QByteArray> result;
+    return result;
+}
+

@@ -630,3 +630,24 @@ proc newQAbstractListModel*(): QAbstractListModel =
   ## Return a new QAbstractListModel
   newWithCondFinalizer(result, delete)
   result.create()
+
+# RoleNames QHash
+proc dos_qhash_int_qbytearray_create(qHash: RawQHashIntByteArray) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qhash_int_qbytearray_delete(qHash: RawQHashIntByteArray) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qhash_int_qbytearray_insert(qHash: RawQHashIntByteArray, key: int, value: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+
+proc create(qHash: var QHashIntByteArray) =
+  debugMsg("QHashIntByteArray", "create")
+  dos_qhash_int_qbytearray_create(qHash.data)
+  qHash.deleted = false
+
+proc delete(qHash: QHashIntByteArray) =
+  dos_qhash_int_qbytearray_delete(qHash.data)
+  qHash.deleted = true
+
+proc insert(qHash: QHashIntByteArray, key: int, value: cstring) =
+  dos_qhash_int_qbytearray_insert(qHash.data, key, value)
+
+proc newQHashIntQByteArray(): QHashIntByteArray =
+  newWithCondFinalizer(result, delete)
+  result.create()

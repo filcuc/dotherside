@@ -43,3 +43,9 @@ type
     data: RawQAbstractListModel
     deleted: bool
   QAbstractListModel* = ref QAbstractListModelObj ## A QAbstractListModel
+
+  RawQHashIntByteArray = distinct pointer
+  QHashIntByteArrayObj = object of RootObj
+    data: RawQHashIntByteArray
+    deleted: bool
+  QHashIntByteArray = ref QHashIntByteArrayObj ## A QHash<int,QByteArray>

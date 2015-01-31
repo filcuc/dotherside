@@ -3,7 +3,6 @@ import macros
 import typeinfo
 
 type MyQAbstractListModel = ref object of QAbstractListModel
-  m_name: string
 
 proc create(self: MyQAbstractListModel) = 
   var qAbstractListModel = self.QAbstractListModel
@@ -22,6 +21,7 @@ method rowCount(self: MyQAbstractListModel, index: QModelIndex): cint =
   return 3
 
 method data(self: MyQAbstractListModel, index: QModelIndex, role: cint): QVariant =
+  echo "index valid: " & $index.isValid & " row: " & $index.row & " column: " & $index.column  
   return nil  
   
 proc mainProc() =

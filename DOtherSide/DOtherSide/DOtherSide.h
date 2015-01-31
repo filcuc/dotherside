@@ -113,6 +113,11 @@ extern "C"
   void dos_qmodelindex_child(void* vptr, int row, int column, void* child);
   void dos_qmodelindex_sibling(void* vptr, int row, int column, void* sibling);
   
+  // QHash<int, QByteArray>
+  void dos_qhash_int_qbytearray_create(QHashIntQByteArrayVoidPtr* vptr);
+  void dos_qhash_int_qbytearray_delete(QHashIntQByteArrayVoidPtr vptr);
+  void dos_qhash_int_qbytearray_insert(QHashIntQByteArrayVoidPtr vptr, int key, ConstCharPtr value);
+  
   // QAbstractListModel  
   void dos_qabstractlistmodel_create(void** vptr,
                                      void* callbackObject,

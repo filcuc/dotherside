@@ -21,6 +21,9 @@ class BaseQAbstractListModel : public QAbstractListModel
   /// Return the dModelPointer
   void* modelObject();
   
+  /// Return the roleNames
+  virtual QHash<int, QByteArray> roleNames() const override;
+  
  private:
   void* m_modelObject;
   RowCountCallback m_rowCountCallback;
