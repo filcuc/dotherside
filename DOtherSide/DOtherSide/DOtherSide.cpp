@@ -451,6 +451,19 @@ void dos_qabstractlistmodel_delete(void* vptr)
     delete model;
 }
 
+void dos_qabstractlistmodel_beginInsertRows(void* vptr, QModelIndexVoidPtr parentIndex, int first, int last)
+{
+    auto model = reinterpret_cast<BaseQAbstractListModel*>(vptr);
+    auto index = reinterpret_cast<QModelIndex*>(parentIndex);
+    model->publicBeginInsertRows(*index, first, last);
+}
+
+void dos_qabstractlistmodel_endInsertRows(void* vptr)
+{
+    auto model = reinterpret_cast<BaseQAbstractListModel*>(vptr);
+    model->publicEndInsertRows();
+}
+
 void dos_qhash_int_qbytearray_create(QHashIntQByteArrayVoidPtr* vptr)
 {
     *vptr = new QHash<int, QByteArray>();

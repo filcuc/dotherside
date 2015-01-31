@@ -31,12 +31,12 @@ method rowCount(self: MyQAbstractListModel, index: QModelIndex): cint =
 
 method data(self: MyQAbstractListModel, index: QModelIndex, role: cint): QVariant =
   if not index.isValid:
-    return
+    return 
   if index.row < 0 or index.row >= self.m_names.len:
-    return  
+    return 
   if role == Roles.Name.cint:
     return newQVariant(self.m_names[index.row])
-
+    
 method roleNames(self: MyQAbstractListModel): Table[int, cstring] =
   return self.m_roleNames  
   

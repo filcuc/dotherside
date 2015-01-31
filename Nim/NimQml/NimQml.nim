@@ -640,6 +640,11 @@ proc dos_qabstractlistmodel_create(model: var RawQAbstractListModel,
                                    dataCallback: DataCallback,
                                    roleNamesCallback: RoleNamesCallback) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qabstractlistmodel_delete(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qabstractlistmodel_beginInsertRows(model: RawQAbstractListModel,
+                                            parentIndex: RawQModelIndex,
+                                            first: cint,
+                                            last: cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qabstractlistmodel_endInsertRows(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
 method rowCount*(model: QAbstractListModel, index: QModelIndex): cint =
   ## Return the model's row count
@@ -691,3 +696,8 @@ proc newQAbstractListModel*(): QAbstractListModel =
   newWithCondFinalizer(result, delete)
   result.create()
 
+proc beginInsertRows(model: QAbstractListModel, parentIndex: QModelIndex, first: int, last: int) =
+  dos_qabstractlistmodel_beginInsertRows(model.data, parentIndex.data, first.cint, last.cint)
+
+proc endInsertRows(model: QAbstractListModel) =
+  dos_qabstractlistmodel_endInsertRows(model.data)

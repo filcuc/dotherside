@@ -41,3 +41,13 @@ QHash<int, QByteArray> BaseQAbstractListModel::roleNames() const
     return result;
 }
 
+void BaseQAbstractListModel::publicBeginInsertRows(const QModelIndex& index, int first, int last)
+{
+    beginInsertRows(index, first, last);
+}
+
+void BaseQAbstractListModel::publicEndInsertRows()
+{
+    return endInsertRows();
+}
+

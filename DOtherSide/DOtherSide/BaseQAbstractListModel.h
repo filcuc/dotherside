@@ -25,6 +25,12 @@ public:
     /// Return the roleNames
     virtual QHash<int, QByteArray> roleNames() const override;
 
+    /// Expose beginInsertRows
+    void publicBeginInsertRows(const QModelIndex& index, int first, int last);
+    
+    /// Expose endInsertRows
+    void publicEndInsertRows();
+    
 private:
     void* m_modelObject;
     RowCountCallback m_rowCountCallback;
