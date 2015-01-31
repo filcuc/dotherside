@@ -41,8 +41,16 @@ proc mainProc() =
   engine.load("main.qml")
   
   app.exec()
+
+proc mainProc2() =
+  var qhash = newQHashIntQByteArray()
+  defer: qHash.delete
+  qhash.insert(0,"Name")
+  qhash.insert(1, "Surname")
+  echo qhash.value(0)
+  echo qhash.value(1)
   
 when isMainModule:
-  mainProc()
+  mainProc2()
   GC_fullcollect()
 

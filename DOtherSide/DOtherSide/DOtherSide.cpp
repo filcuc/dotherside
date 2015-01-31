@@ -8,15 +8,16 @@
 #include <QtQml/QQmlApplicationEngine>
 #include <QtQuick/QQuickView>
 #include <QtWidgets/QApplication>
+#include <iostream>
 
 #include "DynamicQObject.h"
 #include "BaseQAbstractListModel.h"
 
-void convert_to_cstring(const QString& source, CharPtr& destination, int& length)
+void convert_to_cstring(const QString& source, char** destination, int* length)
 {
     QByteArray array = source.toUtf8();
-    destination = qstrdup(array.data());
-    length = qstrlen(array.data());
+    *destination = qstrdup(array.data());
+    *length = qstrlen(array.data());
 }
 
 void dos_qguiapplication_create()
@@ -106,7 +107,7 @@ void dos_qquickview_delete(void* vptr)
     delete view;
 }
 
-void dos_qquickview_source(void *vptr, CharPtr& result, int& length)
+void dos_qquickview_source(void *vptr, char** result, int* length)
 {
     QQuickView* view = reinterpret_cast<QQuickView*>(vptr);
     QUrl url = view->source();
@@ -125,25 +126,25 @@ void dos_qquickview_rootContext(void* vptr, void** context)
     *context = view->rootContext();
 }
 
-void dos_chararray_create(CharPtr& ptr)
+void dos_chararray_create(char** ptr)
 {
-    ptr = 0;
+    *ptr = 0;
 }
 
-void dos_chararray_create(CharPtr& ptr, int size)
+void dos_chararray_create(char** ptr, int size)
 {
     if (size > 0)
-        ptr = new char[size];
+        *ptr = new char[size];
     else
-        ptr = 0;
+        *ptr = 0;
 }
 
-void dos_chararray_delete(CharPtr ptr)
+void dos_chararray_delete(char* ptr)
 {
     if (ptr) delete[] ptr;
 }
 
-void dos_qqmlcontext_baseUrl(void* vptr, CharPtr& result, int& length)
+void dos_qqmlcontext_baseUrl(void* vptr, char** result, int* length)
 {
     QQmlContext* context = reinterpret_cast<QQmlContext*>(vptr);
     QUrl url = context->baseUrl();
@@ -179,10 +180,10 @@ void dos_qvariant_create_string(void** vptr, const char* value)
 
 void dos_qvariant_create_qvariant(void** vptr, void* other)
 {
-  auto newQVariant = new QVariant();
-  auto otherQVariant = reinterpret_cast<QVariant*>(other);
-  *newQVariant = *otherQVariant;
-  *vptr = newQVariant;
+    auto newQVariant = new QVariant();
+    auto otherQVariant = reinterpret_cast<QVariant*>(other);
+    *newQVariant = *otherQVariant;
+    *vptr = newQVariant;
 }
 
 void dos_qvariant_create_qobject(void **vptr, void* value)
@@ -211,10 +212,10 @@ void dos_qvariant_create_qabstractlistmodel(void** vptr, void* value)
     *vptr = variant;
 }
 
-void dos_qvariant_isnull(void* vptr, bool& isNull)
+void dos_qvariant_isnull(void* vptr, bool* isNull)
 {
     auto variant = reinterpret_cast<QVariant*>(vptr);
-    isNull = variant->isNull();
+    *isNull = variant->isNull();
 }
 
 void dos_qvariant_delete(void *vptr)
@@ -225,36 +226,36 @@ void dos_qvariant_delete(void *vptr)
 
 void dos_qvariant_assign(void* vptr, void* other)
 {
-  auto leftQVariant = reinterpret_cast<QVariant*>(vptr);
-  auto rightQVariant = reinterpret_cast<QVariant*>(other);
-  *leftQVariant = *rightQVariant;
+    auto leftQVariant = reinterpret_cast<QVariant*>(vptr);
+    auto rightQVariant = reinterpret_cast<QVariant*>(other);
+    *leftQVariant = *rightQVariant;
 }
 
-void dos_qvariant_toInt(void* vptr, int& value)
+void dos_qvariant_toInt(void* vptr, int* value)
 {
     auto variant = reinterpret_cast<QVariant*>(vptr);
-    value = variant->toInt();
+    *value = variant->toInt();
 }
 
-void dos_qvariant_toBool(void* vptr, bool& value)
+void dos_qvariant_toBool(void* vptr, bool* value)
 {
     auto variant = reinterpret_cast<QVariant*>(vptr);
-    value = variant->toBool();
+    *value = variant->toBool();
 }
 
-void dos_qvariant_toFloat(void* vptr, float& value)
+void dos_qvariant_toFloat(void* vptr, float* value)
 {
-  auto variant = reinterpret_cast<QVariant*>(vptr);
-  value = variant->toFloat();
+    auto variant = reinterpret_cast<QVariant*>(vptr);
+    *value = variant->toFloat();
 }
 
-void dos_qvariant_toDouble(void* vptr, double& value)
+void dos_qvariant_toDouble(void* vptr, double* value)
 {
-  auto variant = reinterpret_cast<QVariant*>(vptr);
-  value = variant->toDouble();
+    auto variant = reinterpret_cast<QVariant*>(vptr);
+    *value = variant->toDouble();
 }
 
-void dos_qvariant_toString(void* vptr, CharPtr& ptr, int& size)
+void dos_qvariant_toString(void* vptr, char** ptr, int* size)
 {
     auto variant = reinterpret_cast<QVariant*>(vptr);
     convert_to_cstring(variant->toString(), ptr, size);
@@ -292,9 +293,9 @@ void dos_qvariant_setString(void* vptr, const char* value)
 
 void dos_qvariant_setQObject(void* vptr, void* value)
 {
-  auto variant = reinterpret_cast<QVariant*>(vptr);
-  auto qobject = reinterpret_cast<QObject*>(value);
-  variant->setValue<QObject*>(qobject);
+    auto variant = reinterpret_cast<QVariant*>(vptr);
+    auto qobject = reinterpret_cast<QObject*>(value);
+    variant->setValue<QObject*>(qobject);
 }
 
 void dos_qvariant_setQAbstractListModel(void* vptr, void* value)
@@ -376,60 +377,60 @@ void dos_qobject_property_create(void* vptr,
 
 void dos_qmodelindex_create(void** vptr)
 {
-  auto index = new QModelIndex();
-  *vptr = index;
+    auto index = new QModelIndex();
+    *vptr = index;
 }
 
 void dos_qmodelindex_delete(void* vptr)
 {
-  auto index = reinterpret_cast<QModelIndex*>(vptr);
-  delete index;
+    auto index = reinterpret_cast<QModelIndex*>(vptr);
+    delete index;
 }
 
-void dos_qmodelindex_row(void* vptr, int& row)
+void dos_qmodelindex_row(void* vptr, int* row)
 {
-  auto index = reinterpret_cast<QModelIndex*>(vptr);
-  row = index->row();
+    auto index = reinterpret_cast<QModelIndex*>(vptr);
+    *row = index->row();
 }
 
-void dos_qmodelindex_column(void* vptr, int& column)
+void dos_qmodelindex_column(void* vptr, int* column)
 {
-  auto index = reinterpret_cast<QModelIndex*>(vptr);
-  column = index->column();
+    auto index = reinterpret_cast<QModelIndex*>(vptr);
+    *column = index->column();
 }
 
-void dos_qmodelindex_isValid(void* vptr, bool& isValid)
+void dos_qmodelindex_isValid(void* vptr, bool* isValid)
 {
-  auto index = reinterpret_cast<QModelIndex*>(vptr);
-  isValid = index->isValid();
+    auto index = reinterpret_cast<QModelIndex*>(vptr);
+    *isValid = index->isValid();
 }
 
 void dos_qmodelindex_data(void* vptr, int role, void* data)
 {
-  auto index = reinterpret_cast<QModelIndex*>(vptr);
-  auto result = reinterpret_cast<QVariant*>(data);
-  *result = index->data(role);
+    auto index = reinterpret_cast<QModelIndex*>(vptr);
+    auto result = reinterpret_cast<QVariant*>(data);
+    *result = index->data(role);
 }
 
 void dos_qmodelindex_parent(void* vptr, void* parent)
 {
-  auto index = reinterpret_cast<QModelIndex*>(vptr);
-  auto parentIndex = reinterpret_cast<QModelIndex*>(parent);
-  *parentIndex = index->parent();
+    auto index = reinterpret_cast<QModelIndex*>(vptr);
+    auto parentIndex = reinterpret_cast<QModelIndex*>(parent);
+    *parentIndex = index->parent();
 }
 
 void dos_qmodelindex_child(void* vptr, int row, int column, void* child)
 {
-  auto index = reinterpret_cast<QModelIndex*>(vptr);
-  auto childIndex = reinterpret_cast<QModelIndex*>(child);
-  *childIndex = index->child(row, column);
+    auto index = reinterpret_cast<QModelIndex*>(vptr);
+    auto childIndex = reinterpret_cast<QModelIndex*>(child);
+    *childIndex = index->child(row, column);
 }
 
 void dos_qmodelindex_sibling(void* vptr, int row, int column, void* sibling)
 {
-  auto index = reinterpret_cast<QModelIndex*>(vptr);
-  auto siblingIndex = reinterpret_cast<QModelIndex*>(sibling);
-  *siblingIndex = index->sibling(row, column);
+    auto index = reinterpret_cast<QModelIndex*>(vptr);
+    auto siblingIndex = reinterpret_cast<QModelIndex*>(sibling);
+    *siblingIndex = index->sibling(row, column);
 }
 
 void dos_qabstractlistmodel_create(void** vptr,
@@ -437,14 +438,14 @@ void dos_qabstractlistmodel_create(void** vptr,
                                    RowCountCallback rowCountCallback,
                                    DataCallback dataCallback)
 {
-  auto model = new BaseQAbstractListModel(modelObject, rowCountCallback, dataCallback);
-  *vptr = model;
+    auto model = new BaseQAbstractListModel(modelObject, rowCountCallback, dataCallback);
+    *vptr = model;
 }
 
 void dos_qabstractlistmodel_delete(void* vptr)
 {
-  auto model = reinterpret_cast<BaseQAbstractListModel*>(vptr);
-  delete model;
+    auto model = reinterpret_cast<BaseQAbstractListModel*>(vptr);
+    delete model;
 }
 
 void dos_qhash_int_qbytearray_create(QHashIntQByteArrayVoidPtr* vptr)
@@ -458,9 +459,16 @@ void dos_qhash_int_qbytearray_delete(QHashIntQByteArrayVoidPtr vptr)
     delete qHash;
 }
 
-void dos_qhash_int_qbytearray_insert(QHashIntQByteArrayVoidPtr vptr, int key, ConstCharPtr value)
+void dos_qhash_int_qbytearray_insert(QHashIntQByteArrayVoidPtr vptr, int key, const char* value)
 {
     auto qHash = reinterpret_cast<QHash<int, QByteArray>*>(vptr);
     qHash->insert(key, QByteArray(value));
+}
+
+void dos_qhash_int_qbytearray_value(QHashIntQByteArrayVoidPtr vptr, int key, char** result)
+{
+    auto qHash = reinterpret_cast<QHash<int, QByteArray>*>(vptr);
+    QByteArray value = qHash->value(key);
+    *result = qstrdup(value.data());
 }
 

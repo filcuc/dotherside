@@ -26,22 +26,37 @@ type QMetaType* {.pure.} = enum ## \
 
 var qobjectRegistry = initTable[ptr QObjectObj, bool]()
 
-proc debugMsg(message: string) = 
-  echo "NimQml: ", message
+template debugMsg(message: string) = 
+  {.push warning[user]: off.} # workaround to remove warnings; this won't be needed soon
+  when defined(debug):
+    {.pop.}
+    echo "NimQml: ", message
+  else:
+    {.pop.}
+  
+template debugMsg(typeName: string, procName: string) =
+  {.push warning[user]: off.} # workaround to remove warnings; this won't be needed soon
+  when defined(debug):
+    {.pop.}
+    var message = typeName
+    message &= ": "
+    message &= procName
+    debugMsg(message)
+  else:
+    {.pop.}  
 
-proc debugMsg(typeName: string, procName: string) = 
-  var message = typeName
-  message &= ": "
-  message &= procName
-  debugMsg(message)
-
-proc debugMsg(typeName: string, procName: string, userMessage: string) = 
-  var message = typeName
-  message &= ": "
-  message &= procName
-  message &= " "
-  message &= userMessage
-  debugMsg(message)
+template debugMsg(typeName: string, procName: string, userMessage: string) = 
+  {.push warning[user]: off.} # workaround to remove warnings; this won't be needed soon
+  when defined(debug):
+    {.pop.}
+    var message = typeName
+    message &= ": "
+    message &= procName
+    message &= " "
+    message &= userMessage
+    debugMsg(message)
+  else:
+    {.pop.}
 
 template newWithCondFinalizer(variable: expr, finalizer: expr) =
   ## calls ``new`` but only setting a finalizer when ``nimqml_use_finalizers``
@@ -632,22 +647,30 @@ proc newQAbstractListModel*(): QAbstractListModel =
   result.create()
 
 # RoleNames QHash
-proc dos_qhash_int_qbytearray_create(qHash: RawQHashIntByteArray) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qhash_int_qbytearray_create(qHash: var RawQHashIntByteArray) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qhash_int_qbytearray_delete(qHash: RawQHashIntByteArray) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qhash_int_qbytearray_insert(qHash: RawQHashIntByteArray, key: int, value: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qhash_int_qbytearray_value(qHash: RawQHashIntByteArray, key: int, value: var cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
-proc create(qHash: var QHashIntByteArray) =
+proc create*(qHash: var QHashIntByteArray) =
   debugMsg("QHashIntByteArray", "create")
   dos_qhash_int_qbytearray_create(qHash.data)
   qHash.deleted = false
 
-proc delete(qHash: QHashIntByteArray) =
+proc delete*(qHash: QHashIntByteArray) =
+  debugMsg("QHashIntByteArray", "delete")  
   dos_qhash_int_qbytearray_delete(qHash.data)
   qHash.deleted = true
 
-proc insert(qHash: QHashIntByteArray, key: int, value: cstring) =
+proc insert*(qHash: QHashIntByteArray, key: int, value: cstring) =
   dos_qhash_int_qbytearray_insert(qHash.data, key, value)
 
-proc newQHashIntQByteArray(): QHashIntByteArray =
+proc value*(qHash: QHashIntByteArray, key: int): string =
+  var rawString: cstring
+  dos_qhash_int_qbytearray_value(qHash.data, key, rawString)
+  result = $rawString
+  dos_chararray_delete(rawString)
+
+proc newQHashIntQByteArray*(): QHashIntByteArray =
   newWithCondFinalizer(result, delete)
   result.create()

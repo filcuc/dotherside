@@ -106,6 +106,4 @@ void DynamicSlot::_initSignature()
     }
 
     d->signature = signature.arg(d->name, arguments).toUtf8();
-
-    qDebug() << "C++: slot signature is " << d->signature;
 }

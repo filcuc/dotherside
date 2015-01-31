@@ -48,4 +48,4 @@ type
   QHashIntByteArrayObj = object of RootObj
     data: RawQHashIntByteArray
     deleted: bool
-  QHashIntByteArray = ref QHashIntByteArrayObj ## A QHash<int,QByteArray>
+  QHashIntByteArray* = ref QHashIntByteArrayObj ## A QHash<int,QByteArray>
