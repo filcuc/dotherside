@@ -1,12 +1,21 @@
 import NimQml
 import macros
 import typeinfo
+import tables
 
-type MyQAbstractListModel = ref object of QAbstractListModel
-
+type
+  Roles {.pure.} = enum
+    Name = cint(0)
+  MyQAbstractListModel = ref object of QAbstractListModel
+    m_roleNames: Table[int, cstring]
+    m_names: seq[string]
+  
 proc create(self: MyQAbstractListModel) = 
   var qAbstractListModel = self.QAbstractListModel
   qAbstractListModel.create
+  self.m_names = @["John", "Max", "Paul", "Anna"]
+  self.m_roleNames = initTable[int, cstring]()
+  self.m_roleNames[0] = "name"
 
 proc delete(self: MyQAbstractListModel) = 
   var qAbstractListModel = self.QAbstractListModel
@@ -17,12 +26,18 @@ proc newMyQAbstractListModel(): MyQAbstractListModel =
   result.create
   
 method rowCount(self: MyQAbstractListModel, index: QModelIndex): cint =
-  echo "index valid: " & $index.isValid & " row: " & $index.row & " column: " & $index.column  
-  return 3
+  return self.m_names.len.cint
 
 method data(self: MyQAbstractListModel, index: QModelIndex, role: cint): QVariant =
-  echo "index valid: " & $index.isValid & " row: " & $index.row & " column: " & $index.column  
-  return nil  
+  if not index.isValid:
+    return
+  if index.row < 0 or index.row >= self.m_names.len:
+    return  
+  if role == Roles.Name.cint:
+    return newQVariant(self.m_names[index.row])
+
+method roleNames(self: MyQAbstractListModel): Table[int, cstring] =
+  return self.m_roleNames  
   
 proc mainProc() =
   var app = newQApplication()
@@ -42,15 +57,7 @@ proc mainProc() =
   
   app.exec()
 
-proc mainProc2() =
-  var qhash = newQHashIntQByteArray()
-  defer: qHash.delete
-  qhash.insert(0,"Name")
-  qhash.insert(1, "Surname")
-  echo qhash.value(0)
-  echo qhash.value(1)
-  
 when isMainModule:
-  mainProc2()
+  mainProc()
   GC_fullcollect()
 

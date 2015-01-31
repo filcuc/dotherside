@@ -13,12 +13,7 @@ ApplicationWindow
     Component
     {
         id: myListModelDelegate
-        Rectangle
-        {
-            width: 10
-            height: 10
-            color: index % 2 == 0 ? "red" : "black"
-        }
+        Label { text: "Name:" + name }
     }
     
     ListView
