@@ -359,7 +359,6 @@ void dos_qobject_signal_emit(void* vptr, const char* name, int parametersCount, 
     dynamicQObject->emitSignal(QString::fromStdString(name), arguments);
 }
 
-
 void dos_qobject_property_create(void* vptr,
                                  const char* name,
                                  int type,
@@ -436,9 +435,13 @@ void dos_qmodelindex_sibling(void* vptr, int row, int column, void* sibling)
 void dos_qabstractlistmodel_create(void** vptr,
                                    void* modelObject,
                                    RowCountCallback rowCountCallback,
-                                   DataCallback dataCallback)
+                                   DataCallback dataCallback,
+                                   RoleNamesCallback roleNamesCallaback)
 {
-    auto model = new BaseQAbstractListModel(modelObject, rowCountCallback, dataCallback);
+    auto model = new BaseQAbstractListModel(modelObject, 
+                                            rowCountCallback, 
+                                            dataCallback, 
+                                            roleNamesCallaback);
     *vptr = model;
 }
 

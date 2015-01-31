@@ -123,7 +123,8 @@ void dos_qhash_int_qbytearray_value(QHashIntQByteArrayVoidPtr vptr, int key, cha
 void dos_qabstractlistmodel_create(void** vptr,
                                    void* callbackObject,
                                    RowCountCallback rowCountCallback,
-                                   DataCallback dataCallback);
+                                   DataCallback dataCallback,
+                                   RoleNamesCallback roleNamesCallback);
 void dos_qabstractlistmodel_delete(void* vptr);
 
 #ifdef __cplusplus

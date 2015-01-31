@@ -2,10 +2,12 @@
 
 BaseQAbstractListModel::BaseQAbstractListModel(void* modelObject,
         RowCountCallback rowCountCallback,
-        DataCallback dataCallback)
+        DataCallback dataCallback,
+        RoleNamesCallback roleNamesCallback)
     : m_modelObject(modelObject)
     , m_rowCountCallback(rowCountCallback)
     , m_dataCallback(dataCallback)
+    , m_roleNamesCallback(roleNamesCallback)
 {
 }
 
@@ -35,6 +37,7 @@ void* BaseQAbstractListModel::modelObject()
 QHash<int,QByteArray> BaseQAbstractListModel::roleNames() const
 {
     QHash<int, QByteArray> result;
+    m_roleNamesCallback(m_modelObject, &result);
     return result;
 }
 

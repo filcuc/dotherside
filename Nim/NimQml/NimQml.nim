@@ -594,15 +594,51 @@ proc sibling*(modelIndex: QModelIndex, row: cint, column: cint): QModelIndex =
   result = newQModelIndex()
   dos_qmodelindex_sibling(modelIndex.data, row, column, result.data)
 
+# QHashIntByteArray
+proc dos_qhash_int_qbytearray_create(qHash: var RawQHashIntByteArray) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qhash_int_qbytearray_delete(qHash: RawQHashIntByteArray) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qhash_int_qbytearray_insert(qHash: RawQHashIntByteArray, key: int, value: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qhash_int_qbytearray_value(qHash: RawQHashIntByteArray, key: int, value: var cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
+proc create*(qHash: var QHashIntByteArray) =
+  ## Create the QHash
+  debugMsg("QHashIntByteArray", "create")
+  dos_qhash_int_qbytearray_create(qHash.data)
+  qHash.deleted = false
+
+proc delete*(qHash: QHashIntByteArray) =
+  ## Delete the QHash
+  if not qHash.deleted:
+    debugMsg("QHashIntByteArray", "delete")  
+    dos_qhash_int_qbytearray_delete(qHash.data)
+    qHash.deleted = true
+
+proc insert*(qHash: QHashIntByteArray, key: int, value: cstring) =
+  ## Insert the value at the given key
+  dos_qhash_int_qbytearray_insert(qHash.data, key, value)
+
+proc value*(qHash: QHashIntByteArray, key: int): string =
+  ## Return the value associated at the given key  
+  var rawString: cstring
+  dos_qhash_int_qbytearray_value(qHash.data, key, rawString)
+  result = $rawString
+  dos_chararray_delete(rawString)
+
+proc newQHashIntQByteArray*(): QHashIntByteArray =
+  ## Create a new QHashIntQByteArray  
+  newWithCondFinalizer(result, delete)
+  result.create()
+  
 # QAbstractListModel
 type RowCountCallback = proc(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, result: var cint) {.cdecl.}
 type DataCallback = proc(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, role: cint, result: RawQVariant) {.cdecl.}
+type RoleNamesCallback = proc(modelObject: ptr QAbstractListModelObj, result: RawQHashIntByteArray) {.cdecl.}
 
 proc dos_qabstractlistmodel_create(model: var RawQAbstractListModel,
                                    modelPtr: ptr QAbstractListModelObj,
                                    rowCountCallback: RowCountCallback,
-                                   dataCallback: DataCallback) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+                                   dataCallback: DataCallback,
+                                   roleNamesCallback: RoleNamesCallback) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qabstractlistmodel_delete(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
 method rowCount*(model: QAbstractListModel, index: QModelIndex): cint =
@@ -625,12 +661,21 @@ proc dataCallback(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelInd
   if variant != nil:
     dos_qvariant_assign(result, variant.data)
     variant.delete
+
+method roleNames*(model: QAbstractListModel): Table[int, cstring] = 
+  discard()
+
+proc roleNamesCallback(modelObject: ptr QAbstractListModelObj, hash: RawQHashIntByteArray) {.cdecl, exportc.} =
+  let model = cast[QAbstractListModel](modelObject)
+  let table = model.roleNames()
+  for pair in table.pairs:
+    dos_qhash_int_qbytearray_insert(hash, pair.key, pair.val)
   
 proc create*(model: var QAbstractListModel) =
   ## Create a new QAbstractListModel
   debugMsg("QAbstractListModel", "create")
   let modelPtr = addr(model[])
-  dos_qabstractlistmodel_create(model.data, modelPtr, rowCountCallback, dataCallback)
+  dos_qabstractlistmodel_create(model.data, modelPtr, rowCountCallback, dataCallback, roleNamesCallback)
   model.deleted = false
 
 proc delete*(model: QAbstractListModel) =
@@ -646,31 +691,3 @@ proc newQAbstractListModel*(): QAbstractListModel =
   newWithCondFinalizer(result, delete)
   result.create()
 
-# RoleNames QHash
-proc dos_qhash_int_qbytearray_create(qHash: var RawQHashIntByteArray) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qhash_int_qbytearray_delete(qHash: RawQHashIntByteArray) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qhash_int_qbytearray_insert(qHash: RawQHashIntByteArray, key: int, value: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qhash_int_qbytearray_value(qHash: RawQHashIntByteArray, key: int, value: var cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-
-proc create*(qHash: var QHashIntByteArray) =
-  debugMsg("QHashIntByteArray", "create")
-  dos_qhash_int_qbytearray_create(qHash.data)
-  qHash.deleted = false
-
-proc delete*(qHash: QHashIntByteArray) =
-  debugMsg("QHashIntByteArray", "delete")  
-  dos_qhash_int_qbytearray_delete(qHash.data)
-  qHash.deleted = true
-
-proc insert*(qHash: QHashIntByteArray, key: int, value: cstring) =
-  dos_qhash_int_qbytearray_insert(qHash.data, key, value)
-
-proc value*(qHash: QHashIntByteArray, key: int): string =
-  var rawString: cstring
-  dos_qhash_int_qbytearray_value(qHash.data, key, rawString)
-  result = $rawString
-  dos_chararray_delete(rawString)
-
-proc newQHashIntQByteArray*(): QHashIntByteArray =
-  newWithCondFinalizer(result, delete)
-  result.create()

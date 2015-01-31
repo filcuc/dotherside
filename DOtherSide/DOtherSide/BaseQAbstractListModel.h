@@ -10,7 +10,8 @@ class BaseQAbstractListModel : public QAbstractListModel
   /// Constructor
   BaseQAbstractListModel(void* modelObject, 
                          RowCountCallback rowCountCallback,
-                         DataCallback dataCallback);
+                         DataCallback dataCallback,
+                         RoleNamesCallback roleNamesCallback);
 
   /// Return the model's row count
   virtual int rowCount(const QModelIndex& index = QModelIndex()) const override;
@@ -24,8 +25,11 @@ class BaseQAbstractListModel : public QAbstractListModel
   /// Return the roleNames
   virtual QHash<int, QByteArray> roleNames() const override;
   
+  
+  
  private:
   void* m_modelObject;
   RowCountCallback m_rowCountCallback;
   DataCallback m_dataCallback;
+  RoleNamesCallback m_roleNamesCallback;
 };
