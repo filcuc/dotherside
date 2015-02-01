@@ -645,6 +645,13 @@ proc dos_qabstractlistmodel_beginInsertRows(model: RawQAbstractListModel,
                                             first: cint,
                                             last: cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qabstractlistmodel_endInsertRows(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qabstractlistmodel_beginResetModel(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qabstractlistmodel_endResetModel(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qabstractlistmodel_dataChanged(model: RawQAbstractListModel,
+                                        parentLeft: RawQModelIndex,
+                                        bottomRight: RawQModelIndex,
+                                        rolesArrayPtr: ptr cint,
+                                        rolesArrayLength: cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
 method rowCount*(model: QAbstractListModel, index: QModelIndex): cint =
   ## Return the model's row count
@@ -697,7 +704,25 @@ proc newQAbstractListModel*(): QAbstractListModel =
   result.create()
 
 proc beginInsertRows(model: QAbstractListModel, parentIndex: QModelIndex, first: int, last: int) =
+  ## Notify the view that the model is about to inserting the given number of rows 
   dos_qabstractlistmodel_beginInsertRows(model.data, parentIndex.data, first.cint, last.cint)
 
 proc endInsertRows(model: QAbstractListModel) =
+  ## Notify the view that the rows have been inserted
   dos_qabstractlistmodel_endInsertRows(model.data)
+
+proc beginResetModel(model: QAbstractListModel) =
+  ## Notify the view that the model is about to resetting
+  dos_qabstractlistmodel_beginResetModel(model.data)
+
+proc endResetModel(model: QAbstractListModel) =
+  ## Notify the view that model has finished resetting
+  dos_qabstractlistmodel_endResetModel(model.data)
+
+proc dataChanged(model: QAbstractListModel,
+                 topLeft: QModelIndex,
+                 bottomRight: QModelIndex,
+                 roles: seq[cint]) =
+  ## Notify the view that the model data changed
+  var temp = roles
+  dos_qabstractlistmodel_dataChanged(model.data, topLeft.data, bottomRight.data, temp[0].addr, temp.len.cint)  

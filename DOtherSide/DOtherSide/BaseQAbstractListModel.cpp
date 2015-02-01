@@ -51,3 +51,22 @@ void BaseQAbstractListModel::publicEndInsertRows()
     return endInsertRows();
 }
 
+void BaseQAbstractListModel::publicBeginResetModel()
+{
+    beginResetModel();
+}
+
+void BaseQAbstractListModel::publicEndResetModel()
+{
+    endResetModel();
+}
+
+void BaseQAbstractListModel::publicDataChanged(const QModelIndex& topLeft,
+                                               const QModelIndex& bottomRight,
+                                               const QVector<int>& roles)
+{
+    emit dataChanged(topLeft, bottomRight, roles);
+}
+
+
+

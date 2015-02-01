@@ -125,8 +125,19 @@ void dos_qabstractlistmodel_create(void** vptr,
                                    RowCountCallback rowCountCallback,
                                    DataCallback dataCallback,
                                    RoleNamesCallback roleNamesCallback);
-void dos_qabstractlistmodel_beginInsertRows(void* vptr, QModelIndexVoidPtr parentIndex, int first, int last);
+void dos_qabstractlistmodel_beginInsertRows(void* vptr, 
+                                            QModelIndexVoidPtr parentIndex, 
+                                            int first, 
+                                            int last);
 void dos_qabstractlistmodel_endInsertRows(void* vptr);
+void dos_qabstractlistmodel_beginResetModel(void* vptr);
+void dos_qabstractlistmodel_endResetModel(void* vptr);
+void dos_qabstractlistmodel_dataChanged(void* vptr, 
+                                        QModelIndexVoidPtr topLeftIndex,
+                                        QModelIndexVoidPtr bottomRightIndex,
+                                        int* rolesArrayPtr,
+                                        int rolesArrayLength);
+
 void dos_qabstractlistmodel_delete(void* vptr);
 
 #ifdef __cplusplus

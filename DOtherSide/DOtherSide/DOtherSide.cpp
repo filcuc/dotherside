@@ -464,6 +464,31 @@ void dos_qabstractlistmodel_endInsertRows(void* vptr)
     model->publicEndInsertRows();
 }
 
+void dos_qabstractlistmodel_beginResetModel(void* vptr)
+{
+    auto model = reinterpret_cast<BaseQAbstractListModel*>(vptr);
+    model->publicBeginResetModel();
+}
+
+void dos_qabstractlistmodel_endResetModel(void* vptr)
+{
+    auto model = reinterpret_cast<BaseQAbstractListModel*>(vptr);
+    model->publicEndResetModel();
+}
+
+void dos_qabstractlistmodel_dataChanged(void* vptr, 
+                                        QModelIndexVoidPtr topLeftIndex, 
+                                        QModelIndexVoidPtr bottomRightIndex,
+                                        int* rolesArrayPtr,
+                                        int rolesArrayLength)
+{
+    auto model = reinterpret_cast<BaseQAbstractListModel*>(vptr);
+    auto topLeft = reinterpret_cast<QModelIndex*>(topLeftIndex);
+    auto bottomRight = reinterpret_cast<QModelIndex*>(bottomRightIndex);
+    auto roles = QVector<int>::fromStdVector(std::vector<int>(rolesArrayPtr, rolesArrayPtr + rolesArrayLength));
+    model->publicDataChanged(*topLeft, *bottomRight, roles);
+}
+
 void dos_qhash_int_qbytearray_create(QHashIntQByteArrayVoidPtr* vptr)
 {
     *vptr = new QHash<int, QByteArray>();

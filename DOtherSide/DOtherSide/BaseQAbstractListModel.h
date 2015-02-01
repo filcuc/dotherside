@@ -31,6 +31,17 @@ public:
     /// Expose endInsertRows
     void publicEndInsertRows();
     
+    /// Expose beginResetModel
+    void publicBeginResetModel();
+    
+    /// Expose endResetModel
+    void publicEndResetModel();
+    
+    /// Expose dataChanged
+    void publicDataChanged(const QModelIndex& topLeft, 
+                           const QModelIndex& bottomRight, 
+                           const QVector<int>& roles = QVector<int>());
+    
 private:
     void* m_modelObject;
     RowCountCallback m_rowCountCallback;
