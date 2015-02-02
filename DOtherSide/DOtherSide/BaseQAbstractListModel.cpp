@@ -51,6 +51,16 @@ void BaseQAbstractListModel::publicEndInsertRows()
     return endInsertRows();
 }
 
+void BaseQAbstractListModel::publicBeginRemoveRows(const QModelIndex& index, int first, int last)
+{
+    beginRemoveRows(index, first, last);
+}
+
+void BaseQAbstractListModel::publicEndRemoveRows()
+{
+    return endRemoveRows();
+}
+
 void BaseQAbstractListModel::publicBeginResetModel()
 {
     beginResetModel();

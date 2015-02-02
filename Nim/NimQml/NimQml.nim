@@ -645,6 +645,11 @@ proc dos_qabstractlistmodel_beginInsertRows(model: RawQAbstractListModel,
                                             first: cint,
                                             last: cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qabstractlistmodel_endInsertRows(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qabstractlistmodel_beginRemoveRows(model: RawQAbstractListModel,
+                                            parentIndex: RawQModelIndex,
+                                            first: cint,
+                                            last: cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qabstractlistmodel_endRemoveRows(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qabstractlistmodel_beginResetModel(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qabstractlistmodel_endResetModel(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qabstractlistmodel_dataChanged(model: RawQAbstractListModel,
@@ -674,8 +679,8 @@ proc dataCallback(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelInd
     dos_qvariant_assign(result, variant.data)
     variant.delete
 
-method roleNames*(model: QAbstractListModel): Table[int, cstring] = 
-  discard()
+method roleNames*(model: QAbstractListModel): Table[cint, cstring] = 
+  result = initTable[cint, cstring]()
 
 proc roleNamesCallback(modelObject: ptr QAbstractListModelObj, hash: RawQHashIntByteArray) {.cdecl, exportc.} =
   let model = cast[QAbstractListModel](modelObject)
@@ -703,23 +708,31 @@ proc newQAbstractListModel*(): QAbstractListModel =
   newWithCondFinalizer(result, delete)
   result.create()
 
-proc beginInsertRows(model: QAbstractListModel, parentIndex: QModelIndex, first: int, last: int) =
+proc beginInsertRows*(model: QAbstractListModel, parentIndex: QModelIndex, first: int, last: int) =
   ## Notify the view that the model is about to inserting the given number of rows 
   dos_qabstractlistmodel_beginInsertRows(model.data, parentIndex.data, first.cint, last.cint)
 
-proc endInsertRows(model: QAbstractListModel) =
+proc endInsertRows*(model: QAbstractListModel) =
   ## Notify the view that the rows have been inserted
   dos_qabstractlistmodel_endInsertRows(model.data)
 
-proc beginResetModel(model: QAbstractListModel) =
+proc beginRemoveRows*(model: QAbstractListModel, parentIndex: QModelIndex, first: int, last: int) =
+  ## Notify the view that the model is about to remove the given number of rows 
+  dos_qabstractlistmodel_beginRemoveRows(model.data, parentIndex.data, first.cint, last.cint)
+
+proc endRemoveRows*(model: QAbstractListModel) =
+  ## Notify the view that the rows have been removed
+  dos_qabstractlistmodel_endRemoveRows(model.data)
+
+proc beginResetModel*(model: QAbstractListModel) =
   ## Notify the view that the model is about to resetting
   dos_qabstractlistmodel_beginResetModel(model.data)
 
-proc endResetModel(model: QAbstractListModel) =
+proc endResetModel*(model: QAbstractListModel) =
   ## Notify the view that model has finished resetting
   dos_qabstractlistmodel_endResetModel(model.data)
 
-proc dataChanged(model: QAbstractListModel,
+proc dataChanged*(model: QAbstractListModel,
                  topLeft: QModelIndex,
                  bottomRight: QModelIndex,
                  roles: seq[cint]) =

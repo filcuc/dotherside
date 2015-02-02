@@ -464,6 +464,19 @@ void dos_qabstractlistmodel_endInsertRows(void* vptr)
     model->publicEndInsertRows();
 }
 
+void dos_qabstractlistmodel_beginRemoveRows(void* vptr, QModelIndexVoidPtr parentIndex, int first, int last)
+{
+    auto model = reinterpret_cast<BaseQAbstractListModel*>(vptr);
+    auto index = reinterpret_cast<QModelIndex*>(parentIndex);
+    model->publicBeginRemoveRows(*index, first, last);
+}
+
+void dos_qabstractlistmodel_endRemoveRows(void* vptr)
+{
+    auto model = reinterpret_cast<BaseQAbstractListModel*>(vptr);
+    model->publicEndRemoveRows();
+}
+
 void dos_qabstractlistmodel_beginResetModel(void* vptr)
 {
     auto model = reinterpret_cast<BaseQAbstractListModel*>(vptr);

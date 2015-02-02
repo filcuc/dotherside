@@ -31,6 +31,12 @@ public:
     /// Expose endInsertRows
     void publicEndInsertRows();
     
+    /// Expose beginRemoveRows
+    void publicBeginRemoveRows(const QModelIndex& index, int first, int last);
+    
+    /// Expose endInsertRows
+    void publicEndRemoveRows();
+    
     /// Expose beginResetModel
     void publicBeginResetModel();
     
