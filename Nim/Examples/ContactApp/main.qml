@@ -14,29 +14,31 @@ ApplicationWindow
         Menu
         {
             title: "&File"
-            MenuItem { text: "Load"; onTriggered: logic.onLoadTriggered() }
-            MenuItem { text: "Save"; onTriggered: logic.onSaveTriggered() }
-            MenuItem { text: "Exit"; onTriggered: logic.onExitTriggered() }
+            MenuItem { text: "&Load"; onTriggered: logic.onLoadTriggered() }
+            MenuItem { text: "&Save"; onTriggered: logic.onSaveTriggered() }
+            MenuItem { text: "&Exit"; onTriggered: logic.onExitTriggered() }
         }
     }
     
 	ColumnLayout
 	{
 	    anchors.fill: parent
-        
-        ListView
+
+        ScrollView
         {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            model: logic.contactList.count
-            spacing: 5
-            delegate: RowLayout {
-                width: ListView.view.width
-                property QtObject contact: logic.contactList.get(index)
-                TextField { Layout.fillWidth: true; text: contact.firstName }
-                TextField { Layout.fillWidth: true; text: contact.surname }
-                Button { text: "Save" }
-                Button { text: "Delete"; onClicked: logic.contactList.del(index) }
+
+            ListView
+            {
+                model: logic.contactList
+                spacing: 5
+                delegate: RowLayout {
+                    width: ListView.view.width
+                    TextField { Layout.fillWidth: true; text: firstName }
+                    TextField { Layout.fillWidth: true; text: surname }
+                    Button { text: "Delete"; onClicked: logic.delContact(index) }
+                }
             }
         }
 
@@ -46,7 +48,7 @@ ApplicationWindow
             TextField { id: nameTextField; Layout.fillWidth: true; text: "" }
             Label { text: "Surname" }
             TextField { id: surnameTextField; Layout.fillWidth: true; text: "" }
-            Button { text: "Add"; onClicked: logic.contactList.add(nameTextField.text, surnameTextField.text) }
+            Button { text: "Add"; onClicked: logic.addContact(nameTextField.text, surnameTextField.text) }
         }
 	}
 }

@@ -29,5 +29,11 @@ QtObject:
   method onExitTriggered(self: ApplicationLogic) {.slot.} =
     self.app.quit
 
+  method addContact(self: ApplicationLogic, name: string, surname: string) {.slot.} = 
+    self.contactList.add(name, surname)
+
+  method delContact(self: ApplicationLogic, index: int) {.slot.} =
+    self.contactList.del(index)  
+    
   QtProperty[QVariant] contactList:
     read = getContactList

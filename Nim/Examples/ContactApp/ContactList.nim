@@ -1,44 +1,73 @@
-## Please note we are using templates where ordinarily we would like to use procedures
-## due to bug: https://github.com/Araq/Nim/issues/1821
-import NimQml, NimQmlMacros, Contact
+import NimQml, NimQmlMacros, Contact, Tables
 
-QtObject:
-  type ContactList* = ref object of QObject
+type
+  ContactList* = ref object of QAbstractListModel
     contacts*: seq[Contact]
+  ContactRoles = enum
+    FirstNameRole = 0
+    SurnameRole = 1
 
-  proc delete*(self: ContactList) =
-    let qobject = self.QObject
-    qobject.delete
-    for contact in self.contacts:
-      contact.delete
-    self.contacts = @[]
-    
-  proc newContactList*(): ContactList =
-    new(result)
-    result.contacts = @[]
-    result.create()
-    
-  method getCount(self: ContactList): int {.slot.} = 
-    return self.contacts.len
+converter toCInt(value: ContactRoles): cint = return value.cint
+converter toCInt(value: int): cint = return value.cint
+converter toInt(value: ContactRoles): int = return value.int
+converter toInt(value: cint): int = return value.int
+converter toQVariant(value: string): QVariant = return value.newQVariant  
 
-  method countChanged(self: ContactList) {.signal.}
+proc create(self: ContactList) =
+  var model = self.QAbstractListModel
+  model.create
+  self.contacts = @[]
+
+proc delete(self: ContactList) =
+  let model = self.QAbstractListModel
+  model.delete
+  for contact in self.contacts:
+    contact.delete
+  self.contacts = @[]
     
-  method add*(self: ContactList, name: string, surname: string) {.slot.} =
-    let contact = newContact()
-    contact.firstName = name
-    contact.surname = surname
-    self.contacts.add(contact)
-    self.countChanged()
+proc newContactList*(): ContactList =
+  new(result, delete)
+  result.create()
+
+proc isRowValid(self: ContactList, row: cint): bool =
+  return row >= 0 and row < self.contacts.len
+
+method rowCount(self: ContactList, index: QModelIndex = nil): cint =
+  return self.contacts.len
+  
+method data(self: ContactList, index: QModelIndex, role: cint): QVariant =
+  if not index.isValid:
+    return
+  if not self.isRowValid(index.row):
+    return
+  if role == FirstNameRole:
+    return self.contacts[index.row].firstName
+  elif role == SurnameRole:
+    return self.contacts[index.row].surname
+  else:
+    return
+
+method roleNames(self: ContactList): Table[cint, cstring] =
+  result = initTable[cint, cstring]()
+  result[FirstNameRole] = "firstName"
+  result[SurnameRole] = "surname"
     
-  method get*(self: ContactList, index: int): QObject {.slot.} =
-    if index < 0 or index >= self.contacts.len:
-      return nil
-    result = self.contacts[index].QObject
+method add*(self: ContactList, name: string, surname: string) =
+  let contact = newContact()
+  contact.firstName = name
+  contact.surname = surname
+  self.beginInsertRows(newQModelIndex(), self.contacts.len, self.contacts.len)
+  self.contacts.add(contact)
+  self.endInsertRows()
     
-  method del*(self: ContactList, index: int) {.slot.} =
-    self.contacts.del(index)
-    self.countChanged()
+method get*(self: ContactList, pos: int): QObject =
+  if not self.isRowValid(pos):
+    return nil
+  result = self.contacts[pos].QObject
     
-  QtProperty[int] count:
-    read = getCount
-    notify = countChanged
+method del*(self: ContactList, pos: int) =
+  if not self.isRowValid(pos):
+    return 
+  self.beginRemoveRows(newQModelIndex(), pos, pos)
+  self.contacts.del(pos)    
+  self.endRemoveRows
