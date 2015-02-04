@@ -15,7 +15,6 @@ set(HEADERS_LIST
 
 set(SRC_LIST 
   DynamicProperty.cpp
-  DynamicQObject.cpp
   DynamicSignal.cpp
   DynamicSlot.cpp
 )

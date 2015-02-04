@@ -100,14 +100,14 @@ public:
     Q_DECLARE_FLAGS(MetaObjectFlags, MetaObjectFlag)
 
     QMetaObjectBuilder();
-    explicit QMetaObjectBuilder(const QMetaObject *prototype, QMetaObjectBuilder::AddMembers members = AllMembers);
+    explicit QMetaObjectBuilder(const QMetaObject* prototype, QMetaObjectBuilder::AddMembers members = AllMembers);
     virtual ~QMetaObjectBuilder();
 
     QByteArray className() const;
     void setClassName(const QByteArray& name);
 
-    const QMetaObject *superClass() const;
-    void setSuperClass(const QMetaObject *meta);
+    const QMetaObject* superClass() const;
+    void setSuperClass(const QMetaObject* meta);
 
     MetaObjectFlags flags() const;
     void setFlags(MetaObjectFlags);
@@ -129,7 +129,7 @@ public:
     QMetaMethodBuilder addConstructor(const QByteArray& signature);
     QMetaMethodBuilder addConstructor(const QMetaMethod& prototype);
 
-    QMetaPropertyBuilder addProperty(const QByteArray& name, const QByteArray& type, int notifierId=-1);
+    QMetaPropertyBuilder addProperty(const QByteArray& name, const QByteArray& type, int notifierId = -1);
     QMetaPropertyBuilder addProperty(const QMetaProperty& prototype);
 
     QMetaEnumBuilder addEnumerator(const QByteArray& name);
@@ -137,15 +137,15 @@ public:
 
     int addClassInfo(const QByteArray& name, const QByteArray& value);
 
-    int addRelatedMetaObject(const QMetaObject *meta);
+    int addRelatedMetaObject(const QMetaObject* meta);
 
-    void addMetaObject(const QMetaObject *prototype, QMetaObjectBuilder::AddMembers members = AllMembers);
+    void addMetaObject(const QMetaObject* prototype, QMetaObjectBuilder::AddMembers members = AllMembers);
 
     QMetaMethodBuilder method(int index) const;
     QMetaMethodBuilder constructor(int index) const;
     QMetaPropertyBuilder property(int index) const;
     QMetaEnumBuilder enumerator(int index) const;
-    const QMetaObject *relatedMetaObject(int index) const;
+    const QMetaObject* relatedMetaObject(int index) const;
 
     QByteArray classInfoName(int index) const;
     QByteArray classInfoValue(int index) const;
@@ -165,26 +165,26 @@ public:
     int indexOfEnumerator(const QByteArray& name);
     int indexOfClassInfo(const QByteArray& name);
 
-    typedef void (*StaticMetacallFunction)(QObject *, QMetaObject::Call, int, void **);
+    typedef void (*StaticMetacallFunction)(QObject*, QMetaObject::Call, int, void**);
 
     QMetaObjectBuilder::StaticMetacallFunction staticMetacallFunction() const;
     void setStaticMetacallFunction(QMetaObjectBuilder::StaticMetacallFunction value);
 
-    QMetaObject *toMetaObject() const;
-    QByteArray toRelocatableData(bool * = 0) const;
-    static void fromRelocatableData(QMetaObject *, const QMetaObject *, const QByteArray &);
+    QMetaObject* toMetaObject() const;
+    QByteArray toRelocatableData(bool* = 0) const;
+    static void fromRelocatableData(QMetaObject*, const QMetaObject*, const QByteArray&);
 
 #ifndef QT_NO_DATASTREAM
     void serialize(QDataStream& stream) const;
     void deserialize
-        (QDataStream& stream,
-         const QMap<QByteArray, const QMetaObject *>& references);
+    (QDataStream& stream,
+     const QMap<QByteArray, const QMetaObject*>& references);
 #endif
 
 private:
     Q_DISABLE_COPY(QMetaObjectBuilder)
 
-    QMetaObjectBuilderPrivate *d;
+    QMetaObjectBuilderPrivate* d;
 
     friend class QMetaMethodBuilder;
     friend class QMetaPropertyBuilder;
@@ -221,16 +221,16 @@ public:
     void setRevision(int revision);
 
 private:
-    const QMetaObjectBuilder *_mobj;
+    const QMetaObjectBuilder* _mobj;
     int _index;
 
     friend class QMetaObjectBuilder;
     friend class QMetaPropertyBuilder;
 
-    QMetaMethodBuilder(const QMetaObjectBuilder *mobj, int index)
+    QMetaMethodBuilder(const QMetaObjectBuilder* mobj, int index)
         : _mobj(mobj), _index(index) {}
 
-    QMetaMethodBuilderPrivate *d_func() const;
+    QMetaMethodBuilderPrivate* d_func() const;
 };
 
 class Q_CORE_EXPORT QMetaPropertyBuilder
@@ -238,7 +238,9 @@ class Q_CORE_EXPORT QMetaPropertyBuilder
 public:
     QMetaPropertyBuilder() : _mobj(0), _index(0) {}
 
-    int index() const { return _index; }
+    int index() const {
+        return _index;
+    }
 
     QByteArray name() const;
     QByteArray type() const;
@@ -278,15 +280,15 @@ public:
     void setRevision(int revision);
 
 private:
-    const QMetaObjectBuilder *_mobj;
+    const QMetaObjectBuilder* _mobj;
     int _index;
 
     friend class QMetaObjectBuilder;
 
-    QMetaPropertyBuilder(const QMetaObjectBuilder *mobj, int index)
+    QMetaPropertyBuilder(const QMetaObjectBuilder* mobj, int index)
         : _mobj(mobj), _index(index) {}
 
-    QMetaPropertyBuilderPrivate *d_func() const;
+    QMetaPropertyBuilderPrivate* d_func() const;
 };
 
 class Q_CORE_EXPORT QMetaEnumBuilder
@@ -294,7 +296,9 @@ class Q_CORE_EXPORT QMetaEnumBuilder
 public:
     QMetaEnumBuilder() : _mobj(0), _index(0) {}
 
-    int index() const { return _index; }
+    int index() const {
+        return _index;
+    }
 
     QByteArray name() const;
 
@@ -309,27 +313,27 @@ public:
     void removeKey(int index);
 
 private:
-    const QMetaObjectBuilder *_mobj;
+    const QMetaObjectBuilder* _mobj;
     int _index;
 
     friend class QMetaObjectBuilder;
 
-    QMetaEnumBuilder(const QMetaObjectBuilder *mobj, int index)
+    QMetaEnumBuilder(const QMetaObjectBuilder* mobj, int index)
         : _mobj(mobj), _index(index) {}
 
-    QMetaEnumBuilderPrivate *d_func() const;
+    QMetaEnumBuilderPrivate* d_func() const;
 };
 
 class Q_CORE_EXPORT QMetaStringTable
 {
 public:
-    explicit QMetaStringTable(const QByteArray &className);
+    explicit QMetaStringTable(const QByteArray& className);
 
-    int enter(const QByteArray &value);
+    int enter(const QByteArray& value);
 
     static int preferredAlignment();
     int blobSize() const;
-    void writeBlob(char *out) const;
+    void writeBlob(char* out) const;
 
 private:
     typedef QHash<QByteArray, int> Entries; // string --> index mapping
