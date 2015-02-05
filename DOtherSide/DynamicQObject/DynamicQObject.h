@@ -15,10 +15,8 @@
 
 /// This class implements a QObject to which signals, slots and properties can be added dynamically
 template <class T>
-class DynamicQObject : public T
+class DynamicQObject : public T, public IDynamicQObject
 {
-    typedef void (*Callback)(void*, void*, int, void**);
-
 public:
     /// Constructor
     DynamicQObject();
@@ -27,35 +25,31 @@ public:
     virtual ~DynamicQObject();
 
     /// Sets the function to be called from C++ to D or Nimrod
-    virtual void setDObjectCallback(Callback callback) {
-        m_dObjectCallback = callback;
-    }
+    virtual void setDObjectCallback(IDynamicQObject::Callback callback) override;
 
     /// Sets the D or Nimrod object that owns this DynamicQObject
-    virtual void setDObjectPointer(void* dObjectPointer)  {
-        m_dObjectPointer = dObjectPointer;
-    }
+    virtual void setDObjectPointer(void* dObjectPointer) override;
 
     /// Register a new signal
     virtual bool registerSignal(const QString& name,
                                 const QList<QMetaType::Type>& argumentsTypes,
-                                int& signalIndex);
+                                int& signalIndex) override;
 
     /// Register a new slot
     virtual bool registerSlot(const QString& name,
                               const QMetaType::Type returnType,
                               const QList<QMetaType::Type>& argumentsTypes,
-                              int& slotIndex);
+                              int& slotIndex) override;
 
     /// Register a new property
     virtual bool registerProperty(const QString& name,
                                   QMetaType::Type type,
                                   const QString& readSlotName,
                                   const QString& writeSlotName = "",
-                                  const QString& notifySignalName = "");
+                                  const QString& notifySignalName = "") override;
 
     /// Emit the signal with the given name and arguments
-    virtual bool emitSignal(const QString& name, const QList<QVariant>& argumentsValues);
+    virtual bool emitSignal(const QString& name, const QList<QVariant>& argumentsValues) override;
 
     /// Return the QMetaObject for this DynamicQObject
     virtual const QMetaObject* metaObject() const;
@@ -87,7 +81,7 @@ private:
     QHash<QByteArray, DynamicProperty> m_propertiesByName;
     QScopedPointer<QMetaObject> m_metaObject;
     void* m_dObjectPointer;
-    Callback m_dObjectCallback;
+    IDynamicQObject::Callback m_dObjectCallback;
 };
 
 template <typename T>
@@ -101,6 +95,18 @@ DynamicQObject<T>::DynamicQObject()
     builder.setClassName("DynamicQObject");
     builder.setSuperClass(&T::staticMetaObject);
     m_metaObject.reset(builder.toMetaObject());
+}
+
+template <typename T>
+void DynamicQObject<T>::setDObjectCallback(IDynamicQObject::Callback callback)
+{
+    m_dObjectCallback = callback;
+}
+
+template <typename T>
+void DynamicQObject<T>::setDObjectPointer(void* dObjectPointer)
+{
+    m_dObjectPointer = dObjectPointer;
 }
 
 template <typename T>
@@ -129,10 +135,10 @@ bool DynamicQObject<T>::registerSlot(const QString& name,
         methodBuilder.setAttributes(QMetaMethod::Scriptable);
     };
 
-    auto newMetaObject = recreateMetaObjectBuilder(m_metaObject.data()
-                         , afterSignalAdded
-                         , afterSlotAdded
-                         , afterPropertyAdded);
+    auto newMetaObject = recreateMetaObjectBuilder(m_metaObject.data(),
+                                                   afterSignalAdded,
+                                                   afterSlotAdded,
+                                                   afterPropertyAdded);
 
     m_metaObject.reset(newMetaObject);
 
@@ -158,13 +164,13 @@ bool DynamicQObject<T>::registerSignal(const QString& name, const QList<QMetaTyp
         methodBuilder.setAccess(QMetaMethod::Public);
     };
 
-    auto afterSlotAdded = [](QMetaObjectBuilder&) { };
+    auto afterSlotAdded = [](QMetaObjectBuilder&) {};
     auto afterPropertyAdded = afterSlotAdded;
 
-    auto newMetaObject = recreateMetaObjectBuilder(m_metaObject.data()
-                         , afterSignalAdded
-                         , afterSlotAdded
-                         , afterPropertyAdded);
+    auto newMetaObject = recreateMetaObjectBuilder(m_metaObject.data(),
+                                                   afterSignalAdded,
+                                                   afterSlotAdded,
+                                                   afterPropertyAdded);
 
     m_metaObject.reset(newMetaObject);
 
@@ -361,8 +367,9 @@ bool DynamicQObject<T>::writeProperty(const DynamicProperty& property, void** ar
 template <typename T>
 int DynamicQObject<T>::qt_metacall(QMetaObject::Call callType, int index, void**  args)
 {
-    if (callType == QMetaObject::InvokeMetaMethod)
+    switch (callType)
     {
+    case QMetaObject::InvokeMetaMethod: {
         QMetaMethod method = m_metaObject->method(index);
 
         if (!method.isValid())
@@ -371,8 +378,8 @@ int DynamicQObject<T>::qt_metacall(QMetaObject::Call callType, int index, void**
         DynamicSlot slot = m_slotsBySignature[method.methodSignature()];
         return executeSlot(slot, args) ? 1 : -1;
     }
-    else if (callType == QMetaObject::ReadProperty)
-    {
+
+    case QMetaObject::ReadProperty: {
         QMetaProperty metaProperty = m_metaObject->property(index);
 
         if (!metaProperty.isValid())
@@ -381,8 +388,8 @@ int DynamicQObject<T>::qt_metacall(QMetaObject::Call callType, int index, void**
         DynamicProperty dynamicProperty = m_propertiesByName.value(metaProperty.name(), DynamicProperty());
         return readProperty(dynamicProperty, args) ? 1 : -1;
     }
-    else if (callType == QMetaObject::WriteProperty)
-    {
+
+    case QMetaObject::WriteProperty: {
         QMetaProperty metaProperty = m_metaObject->property(index);
 
         if (!metaProperty.isValid())
@@ -390,6 +397,10 @@ int DynamicQObject<T>::qt_metacall(QMetaObject::Call callType, int index, void**
 
         DynamicProperty dynamicProperty = m_propertiesByName.value(metaProperty.name(), DynamicProperty());
         return writeProperty(dynamicProperty, args) ? 1 : -1;
+    }
+
+    default:
+        return T::qt_metacall(callType, index, args);
     }
 
     return -1;
@@ -426,19 +437,19 @@ QMetaObject* DynamicQObject<T>::recreateMetaObjectBuilder(QMetaObject* currentMe
     metaObjectBuilder.setClassName(currentMetaObject->className());
     metaObjectBuilder.setSuperClass(currentMetaObject->superClass());
 
-    foreach (auto& method, signalsList)
+    for (auto& method : signalsList)
         metaObjectBuilder.addMethod(method);
 
     // Call custom code to be executed after signal have been added
     afterSignalAdded(metaObjectBuilder);
 
-    foreach (auto& method, methodsList)
+    for (auto& method : methodsList)
         metaObjectBuilder.addMethod(method);
 
     // Call custom code to be executed after slots have been added
     afterSlotAdded(metaObjectBuilder);
 
-    foreach (auto& property, propertiesList)
+    for (auto& property : propertiesList)
         metaObjectBuilder.addProperty(property);
 
     afterPropertyAdded(metaObjectBuilder);

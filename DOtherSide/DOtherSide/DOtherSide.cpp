@@ -309,7 +309,7 @@ void dos_qvariant_setQAbstractListModel(void* vptr, void* value)
 
 void dos_qobject_create(void** vptr, void* dObjectPointer, DObjectCallback dObjectCallback)
 {
-    auto dynamicQObject = new DynamicQObject<QObject>();
+    auto dynamicQObject = new BaseQObject();
     QQmlEngine::setObjectOwnership(dynamicQObject, QQmlEngine::CppOwnership);
     dynamicQObject->setDObjectPointer(dObjectPointer);
     dynamicQObject->setDObjectCallback(dObjectCallback);
@@ -318,7 +318,7 @@ void dos_qobject_create(void** vptr, void* dObjectPointer, DObjectCallback dObje
 
 void dos_qobject_delete(void* vptr)
 {
-    auto dynamicQObject = reinterpret_cast<DynamicQObject<QObject>*>(vptr);
+    auto dynamicQObject = reinterpret_cast<BaseQObject*>(vptr);
     dynamicQObject->disconnect();
     delete dynamicQObject;
 }
@@ -328,7 +328,8 @@ void dos_qobject_slot_create(void* vptr, const char* name, int parametersCount, 
     if (parametersCount <= 0)
         return;
 
-    auto dynamicQObject = reinterpret_cast<DynamicQObject<QObject>*>(vptr);
+    auto qobject = reinterpret_cast<QObject*>(vptr);
+    auto dynamicQObject = dynamic_cast<IDynamicQObject*>(qobject);
 
     QMetaType::Type returnType = static_cast<QMetaType::Type>(parametersMetaTypes[0]);
     QList<QMetaType::Type> argumentsTypes;
@@ -343,7 +344,8 @@ void dos_qobject_signal_create(void* vptr, const char* name, int parametersCount
     if (parametersCount <= 0)
         return;
 
-    auto dynamicQObject = reinterpret_cast<DynamicQObject<QObject>*>(vptr);
+    auto qobject = reinterpret_cast<QObject*>(vptr);
+    auto dynamicQObject = dynamic_cast<IDynamicQObject*>(qobject);
 
     QList<QMetaType::Type> argumentsTypes;
     for (int i = 0; i < parametersCount; ++i)
@@ -354,10 +356,13 @@ void dos_qobject_signal_create(void* vptr, const char* name, int parametersCount
 
 void dos_qobject_signal_emit(void* vptr, const char* name, int parametersCount, void** parameters)
 {
-    auto dynamicQObject = reinterpret_cast<DynamicQObject<QObject>*>(vptr);
+    auto qobject = reinterpret_cast<QObject*>(vptr);
+    auto dynamicQObject = dynamic_cast<IDynamicQObject*>(qobject);
+
     QVariantList arguments;
     for (int i = 0; i < parametersCount; ++i)
         arguments << *(reinterpret_cast<QVariant*>(parameters[i]));
+
     dynamicQObject->emitSignal(QString::fromStdString(name), arguments);
 }
 
@@ -368,7 +373,8 @@ void dos_qobject_property_create(void* vptr,
                                  const char* writeSlot,
                                  const char* notifySignal)
 {
-    auto dynamicQObject = reinterpret_cast<DynamicQObject<QObject>*>(vptr);
+    auto qobject = reinterpret_cast<QObject*>(vptr);
+    auto dynamicQObject = dynamic_cast<IDynamicQObject*>(qobject);
     dynamicQObject->registerProperty(QString(name),
                                      QMetaType::Type(type),
                                      QString(readSlot),
