@@ -24,8 +24,16 @@ type
     signals: Table[string, cint]
     properties: Table[string, cint]
     deleted: bool
-  QObject* = ref QObjectObj ## A QObject
+  QObject* = ref QObjectObj
 
+  RawBaseQObjectObj = distinct pointer
+  BaseQObjectObj = object of QObjectObj
+  BaseQObject* = ref BaseQObjectObj ## A QObject
+
+  RawQAbstractListModel = distinct pointer
+  QAbstractListModelObj = object of QObjectObj
+  QAbstractListModel* = ref QAbstractListModelObj ## A QAbstractListModel
+  
   RawQQuickView = distinct pointer 
   QQuickView = ref object of RootObj ## A QQuickView
     data: RawQQuickView
@@ -37,12 +45,6 @@ type
   QModelIndex* = ref object of RootObj ## A QModelIndex
     data: RawQModelIndex
     deleted: bool
-
-  RawQAbstractListModel = distinct pointer
-  QAbstractListModelObj = object of RootObj  
-    data: RawQAbstractListModel
-    deleted: bool
-  QAbstractListModel* = ref QAbstractListModelObj ## A QAbstractListModel
 
   RawQHashIntByteArray = distinct pointer
   QHashIntByteArrayObj = object of RootObj

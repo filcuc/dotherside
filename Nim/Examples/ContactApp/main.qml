@@ -3,16 +3,15 @@ import QtQuick.Controls 1.2
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.1
 
-ApplicationWindow
-{
+ApplicationWindow {
+
 	width: 400
 	height: 300
     title: "ContactApp"
 	visible: true
 
     menuBar: MenuBar {
-        Menu
-        {
+        Menu {
             title: "&File"
             MenuItem { text: "&Load"; onTriggered: logic.onLoadTriggered() }
             MenuItem { text: "&Save"; onTriggered: logic.onSaveTriggered() }
@@ -20,35 +19,31 @@ ApplicationWindow
         }
     }
     
-	ColumnLayout
-	{
+	ColumnLayout {
 	    anchors.fill: parent
 
-        ScrollView
-        {
+        ScrollView {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            ListView
-            {
+            ListView {
                 model: logic.contactList
                 spacing: 5
                 delegate: RowLayout {
                     width: ListView.view.width
                     TextField { Layout.fillWidth: true; text: firstName }
                     TextField { Layout.fillWidth: true; text: surname }
-                    Button { text: "Delete"; onClicked: logic.delContact(index) }
+                    Button { text: "Delete"; onClicked: logic.contactList.del(index) }
                 }
             }
         }
 
-        RowLayout
-        {
+        RowLayout {
             Label { text: "Name" }
             TextField { id: nameTextField; Layout.fillWidth: true; text: "" }
             Label { text: "Surname" }
             TextField { id: surnameTextField; Layout.fillWidth: true; text: "" }
-            Button { text: "Add"; onClicked: logic.addContact(nameTextField.text, surnameTextField.text) }
+            Button { text: "Add"; onClicked: logic.contactList.add(nameTextField.text, surnameTextField.text) }
         }
 	}
 }

@@ -122,6 +122,7 @@ void dos_qhash_int_qbytearray_value(QHashIntQByteArrayVoidPtr vptr, int key, cha
 // QAbstractListModel
 void dos_qabstractlistmodel_create(void** vptr,
                                    void* callbackObject,
+                                   DObjectCallback dObjectCallback,
                                    RowCountCallback rowCountCallback,
                                    DataCallback dataCallback,
                                    RoleNamesCallback roleNamesCallback);

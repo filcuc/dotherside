@@ -78,7 +78,6 @@ proc dos_qvariant_create_qobject(variant: var RawQVariant, value: RawQObject) {.
 proc dos_qvariant_create_qvariant(variant: var RawQVariant, value: RawQVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_create_float(variant: var RawQVariant, value: cfloat) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_create_double(variant: var RawQVariant, value: cdouble) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_create_qabstractlistmodel(variant: var RawQVariant, value: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_delete(variant: RawQVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_isnull(variant: RawQVariant, isNull: var bool) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_toInt(variant: RawQVariant, value: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
@@ -93,7 +92,6 @@ proc dos_qvariant_setFloat(variant: RawQVariant, value: float)  {.cdecl, dynlib:
 proc dos_qvariant_toDouble(variant: RawQVariant, value: var cdouble) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_setDouble(variant: RawQVariant, value: cdouble) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qvariant_setQObject(variant: RawQVariant, value: RawQObject) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_setQAbstractListModel(variant: RawQVariant, value: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_chararray_delete(rawCString: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 
 proc create*(variant: QVariant) =
@@ -118,14 +116,9 @@ proc create*(variant: QVariant, value: string) =
 
 proc create*(variant: QVariant, value: QObject) =
   ## Create a new QVariant given a QObject
-  dos_qvariant_create_qobject(variant.data, value.data)
+  dos_qvariant_create_qobject(variant.data, value.data.RawQObject)
   variant.deleted = false
 
-proc create*(variant: QVariant, value: QAbstractListModel) =
-  ## Create a new QVariant given a QAbstractListModel
-  dos_qvariant_create_qabstractlistmodel(variant.data, value.data)
-  variant.deleted = false
-  
 proc create*(variant: QVariant, value: RawQVariant) =
   ## Create a new QVariant given another QVariant.
   ## The inner value of the QVariant is copied
@@ -172,11 +165,6 @@ proc newQVariant*(value: string): QVariant  =
 
 proc newQVariant*(value: QObject): QVariant  =
   ## Return a new QVariant given a QObject
-  newWithCondFinalizer(result, delete)
-  result.create(value)
-
-proc newQVariant*(value: QAbstractListModel): QVariant  =
-  ## Return a new QVariant given a QAbstractListModel
   newWithCondFinalizer(result, delete)
   result.create(value)
 
@@ -252,11 +240,7 @@ proc `stringVal=`*(variant: QVariant, value: string) =
 
 proc `qobjectVal=`*(variant: QVariant, value: QObject) =
   ## Sets the QVariant qobject value
-  dos_qvariant_setQObject(variant.data, value.data)
-
-proc `qabstractListModelVal=`*(variant: QVariant, value: QAbstractListModel) =
-  ## Sets the QVariant qabstractlistmodel value
-  dos_qvariant_setQAbstractListModel(variant.data, value.data)
+  dos_qvariant_setQObject(variant.data, value.data.RawQObject)
   
 proc assign*(leftValue: QVariant, rightValue: QVariant) =
   ## Assign a QVariant with another. The inner value of the QVariant is copied
@@ -636,6 +620,7 @@ type RoleNamesCallback = proc(modelObject: ptr QAbstractListModelObj, result: Ra
 
 proc dos_qabstractlistmodel_create(model: var RawQAbstractListModel,
                                    modelPtr: ptr QAbstractListModelObj,
+                                   qobjectCallback: QObjectCallBack,
                                    rowCountCallback: RowCountCallback,
                                    dataCallback: DataCallback,
                                    roleNamesCallback: RoleNamesCallback) {.cdecl, dynlib:"libDOtherSide.so", importc.}
@@ -691,18 +676,24 @@ proc roleNamesCallback(modelObject: ptr QAbstractListModelObj, hash: RawQHashInt
 proc create*(model: var QAbstractListModel) =
   ## Create a new QAbstractListModel
   debugMsg("QAbstractListModel", "create")
-  let modelPtr = addr(model[])
-  dos_qabstractlistmodel_create(model.data, modelPtr, rowCountCallback, dataCallback, roleNamesCallback)
+  model.slots = initTable[string,cint]()
+  model.signals = initTable[string, cint]()
+  model.properties = initTable[string, cint]()
   model.deleted = false
+  let modelPtr = addr(model[])
+  dos_qabstractlistmodel_create(model.data.RawQAbstractListModel, modelPtr, qobjectCallback, rowCountCallback, dataCallback, roleNamesCallback)
+  qobjectRegistry[modelPtr] = true
 
 proc delete*(model: QAbstractListModel) =
   ## Delete the given QAbstractListModel
   if not model.deleted:
     debugMsg("QAbstractListModel", "delete")
-    dos_qabstractlistmodel_delete(model.data)
-    model.data = nil.RawQAbstractListModel
+    let modelPtr = addr(model[])
+    qobjectRegistry.del modelPtr
+    dos_qabstractlistmodel_delete(model.data.RawQAbstractListModel)
+    model.data = nil.RawQObject
     model.deleted = true
-    
+
 proc newQAbstractListModel*(): QAbstractListModel =
   ## Return a new QAbstractListModel
   newWithCondFinalizer(result, delete)
@@ -710,32 +701,32 @@ proc newQAbstractListModel*(): QAbstractListModel =
 
 proc beginInsertRows*(model: QAbstractListModel, parentIndex: QModelIndex, first: int, last: int) =
   ## Notify the view that the model is about to inserting the given number of rows 
-  dos_qabstractlistmodel_beginInsertRows(model.data, parentIndex.data, first.cint, last.cint)
+  dos_qabstractlistmodel_beginInsertRows(model.data.RawQAbstractListModel, parentIndex.data, first.cint, last.cint)
 
 proc endInsertRows*(model: QAbstractListModel) =
   ## Notify the view that the rows have been inserted
-  dos_qabstractlistmodel_endInsertRows(model.data)
+  dos_qabstractlistmodel_endInsertRows(model.data.RawQAbstractListModel)
 
 proc beginRemoveRows*(model: QAbstractListModel, parentIndex: QModelIndex, first: int, last: int) =
   ## Notify the view that the model is about to remove the given number of rows 
-  dos_qabstractlistmodel_beginRemoveRows(model.data, parentIndex.data, first.cint, last.cint)
+  dos_qabstractlistmodel_beginRemoveRows(model.data.RawQAbstractListModel, parentIndex.data, first.cint, last.cint)
 
 proc endRemoveRows*(model: QAbstractListModel) =
   ## Notify the view that the rows have been removed
-  dos_qabstractlistmodel_endRemoveRows(model.data)
+  dos_qabstractlistmodel_endRemoveRows(model.data.RawQAbstractListModel)
 
 proc beginResetModel*(model: QAbstractListModel) =
   ## Notify the view that the model is about to resetting
-  dos_qabstractlistmodel_beginResetModel(model.data)
+  dos_qabstractlistmodel_beginResetModel(model.data.RawQAbstractListModel)
 
 proc endResetModel*(model: QAbstractListModel) =
   ## Notify the view that model has finished resetting
-  dos_qabstractlistmodel_endResetModel(model.data)
+  dos_qabstractlistmodel_endResetModel(model.data.RawQAbstractListModel)
 
 proc dataChanged*(model: QAbstractListModel,
                  topLeft: QModelIndex,
                  bottomRight: QModelIndex,
-                 roles: seq[cint]) =
+                 roles: var seq[cint]) =
   ## Notify the view that the model data changed
-  var temp = roles
-  dos_qabstractlistmodel_dataChanged(model.data, topLeft.data, bottomRight.data, temp[0].addr, temp.len.cint)  
+  dos_qabstractlistmodel_dataChanged(model.data.RawQAbstractListModel, topLeft.data, bottomRight.data, roles[0].addr, roles.len.cint)  
+  

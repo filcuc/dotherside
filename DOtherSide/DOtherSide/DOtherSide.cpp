@@ -442,6 +442,7 @@ void dos_qmodelindex_sibling(void* vptr, int row, int column, void* sibling)
 
 void dos_qabstractlistmodel_create(void** vptr,
                                    void* modelObject,
+                                   DObjectCallback dObjectCallback,
                                    RowCountCallback rowCountCallback,
                                    DataCallback dataCallback,
                                    RoleNamesCallback roleNamesCallaback)
@@ -450,6 +451,8 @@ void dos_qabstractlistmodel_create(void** vptr,
                                             rowCountCallback,
                                             dataCallback,
                                             roleNamesCallaback);
+    model->setDObjectPointer(modelObject);
+    model->setDObjectCallback(dObjectCallback);
     *vptr = model;
 }
 
