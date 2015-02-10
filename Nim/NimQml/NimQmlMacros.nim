@@ -493,7 +493,6 @@ macro QtObject*(qtDecl: stmt): stmt {.immediate.} =
       result.add it
   if typ == nil:
     error("you must declare an object that inherits from QObject")
-  let typeName = typ.getTypeName()
 
   result.add genOnSlotCalled(typ, slots)
 
