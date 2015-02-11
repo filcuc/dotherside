@@ -239,7 +239,7 @@ template prototypeOnSlotCalled(typ: expr): stmt {.dirty.} =
 
 #FIXME: changed parent, typ from typedesc to expr to workaround Nim issue #1874
 template prototypeCreate(typ: expr): stmt =
-  template create*(myQObject: var typ) =
+  proc create*(myQObject: var typ) =
     var super = (typ.superType())(myQObject)
     procCall create(super)
 
@@ -299,77 +299,86 @@ proc tryHandleSigSlot(def: PNimrodNode, signals: var seq[PNimrodNode], slots: va
     signals.add def
     result = true
 
-macro QtObject*(qtDecl: stmt): stmt {.immediate.} =
-  ## Generates boiler plate code for registering signals, slots 
-  ## and properties. 
-  ##
-  ## Currently generates:
-  ## - create: a method to register signal, slots and properties
-  ## - superType: a template that returns the super type of the
-  ##   object defined within the macro body
-  ## - onSlotCalled: a method to dispatch an on slot call to the
-  ##   appropiate method.
-  ##
-  ## Current limitations:
-  ## - only one type can be defined within the body of code sent to the 
-  ##   the macro. It is assumed, but not checked, that somewhere in the
-  ##   inheritance hierarchy this object derives from ``QObject``.
-  ## - generics are not currently supported
-  expectKind(qtDecl, nnkStmtList)
-  #echo treeRepr qtDecl
-  result = newStmtList()
-  var slots = newSeq[PNimrodNode]()
-  var properties = newSeq[PNimrodNode]()
-  var signals = newSeq[PNimrodNode]()
-  # holds all user defined procedures so we can add them after create
-  var userDefined = newSeq[PNimrodNode]()
-  # assume only one type per section for now
-  var typ: PNimrodNode
-  for it in qtDecl.children():
-    if it.kind == nnkTypeSection:
-      let typeDecl = it.findChild(it.kind == nnkTypeDef)
-      let superType = typeDecl.getSuperType()
-      if superType.kind == nnkEmpty:
-        # allow simple types and type aliases
-        result.add it
-      else:
-        # may come in useful if we want to check objects inherit from QObject
-        #let superName = if superType.kind == nnkIdent: superType 
-        #  else: superType.getNodeOf(nnkIdent)
-        if typ != nil:
-          error("you may not define more than one type " &
-                "within the code block passed to this macro")
-        else: # without this else, it fails to compile
-          typ = typeDecl
-          result.add it
-          result.add genSuperTemplate(typeDecl)
-    elif it.kind == nnkMethodDef:
-      if tryHandleSigSlot(it, signals, slots, result): continue
-      userDefined.add it
-    elif it.kind == nnkProcDef:
-      if tryHandleSigSlot(it, signals, slots, result): continue
-      userDefined.add it
-    elif it.kind == nnkCommand:
-      let bracket = it[0]
-      if bracket.kind != nnkBracketExpr:
-        error("do not know how to handle: \n" & repr(it))
-      # BracketExpr
-      #   Ident !"QtProperty"
-      #   Ident !"string"
-      let cmdIdent = bracket[0]
-      if cmdIdent == nil or cmdIdent.kind != nnkIdent or
-          ($cmdIdent).toLower() != "qtproperty":
-        error("do not know how to handle: \n" & repr(it))
-      properties.add it
-    else:
-      # everything else should pass through unchanged
-      result.add it
-  if typ == nil:
-    error("you must declare an object that inherits from QObject")
+proc genCreateDecl(typ: PNimrodNode): PNimrodNode {.compileTime.} =
+  ## generates forward declaration for ``create`` procedure
+  expectKind typ, nnkTypeDef
   let typeName = typ.getTypeName()
+  result = (getAst prototypeCreate(typeName))[0]
+  result.body = newEmptyNode()
+  if typ.isExported:
+    result.exportDef()
+  else:
+    result.unexportDef()
 
-  ## define onSlotCalled
-  var slotProto = (getAst prototypeOnSlotCalled(typeName))[0]
+proc genCreate(typ: PNimrodNode, signals: seq[PNimrodNode], slots: seq[PNimrodNode],
+    properties: seq[PNimrodNode]): PNimrodNode {.compileTime.} =
+  expectKind typ, nnkTypeDef
+  let typeName = typ.getTypeName()
+  result = (getAst prototypeCreate(typeName))[0]
+  # the template creates loads of openSyms - replace these with idents
+  result = doRemoveOpenSym(result)
+  if typ.isExported:
+    result.exportDef()
+  else:
+    result.unexportDef()
+  var createBody = result.body
+  for slot in slots:
+    let params = slot.params
+    let regSlotDot = newDotExpr(ident "myQObject", ident "registerSlot")
+    let name = ($slot.name).replace("*","")
+    let argTypesArray = genArgTypeArray(params)
+    let call = newCall(regSlotDot, newLit name, argTypesArray)
+    createBody.add call
+  for signal in signals:
+    let params = signal.params
+    let regSigDot = newDotExpr(ident "myQObject", ident "registerSignal")
+    let name = ($signal.name).replace("*","")
+    let argTypesArray = genArgTypeArray(params)
+    let call = newCall(regSigDot, newLit name, argTypesArray)
+    createBody.add call
+  for property in properties:
+    let bracket = property[0]
+    expectKind bracket, nnkBracketExpr
+    #Command
+    #  BracketExpr
+    #    Ident !"QtProperty"
+    #    Ident !"string"
+    #  Ident !"name"
+    #  StmtList
+    let nimPropType = bracket[1]
+    let qtPropMeta = nim2QtMeta[$nimPropType]
+    if qtPropMeta == nil: error($nimPropType & " not supported")
+    let metaDot = newDotExpr(ident "QMetaType", ident qtPropMeta)
+    let propertyName = property[1]
+    var read, write, notify: PNimrodNode
+    let stmtList = property[2]
+    # fields
+    #  StmtList
+    #   Asgn
+    #     Ident !"read"
+    #     Ident !"getName
+    for asgn in stmtList.children:
+      let name = asgn[0]
+      case $name
+      of "read":
+        read = asgn[1]
+      of "write":
+        write = asgn[1]
+      of "notify":
+        notify = asgn[1]
+      else:
+        error("unknown property field: " & $name)
+    let regPropDot = newDotExpr(ident "myQObject", ident "registerProperty")
+    let readArg = if read == nil: newNilLit() else: newLit($read)
+    let writeArg = if write == nil: newNilLit() else: newLit($write)
+    let notifyArg = if notify == nil: newNilLit() else: newLit($notify)
+    let call = newCall(regPropDot, newLit($propertyName), metaDot, readArg, writeArg, notifyArg)
+    createBody.add call
+
+proc genOnSlotCalled(typ: PNimrodNode, slots: seq[PNimrodNode]): PNimrodNode {.compileTime.} =
+  expectKind typ, nnkTypeDef
+  let typeName = typ.getTypeName()
+  result = (getAst prototypeOnSlotCalled(typeName))[0]
   var caseStmt = newNimNode(nnkCaseStmt)
   caseStmt.add ident("slotName")
   for slot in slots:
@@ -410,82 +419,84 @@ macro QtObject*(qtDecl: stmt): stmt {.immediate.} =
         let mapper = nimFromQtVariant[$retType]
         let dot = newDotExpr(argAccess, ident mapper)
         call = newAssignment(dot, call)
-    branchStmts.add call     
+    branchStmts.add call
     ofBranch.add branchStmts
     caseStmt.add ofBranch
   # add else: discard
   caseStmt.add newNimNode(nnkElse)
     .add newStmtList().add newNimNode(nnkDiscardStmt).add newNimNode(nnkEmpty)
-  slotProto.body.add caseStmt
-  result.add slotProto
+  result.body.add caseStmt
 
-  # generate create method
-  var createProto = (getAst prototypeCreate(typeName))[0]
-  # the template creates loads of openSyms - replace these with idents
-  createProto = doRemoveOpenSym(createProto)
-  if typ.isExported:
-    createProto.exportDef()
-  else:
-    createProto.unexportDef()
-  var createBody = createProto.templateBody
-  for slot in slots:
-    let params = slot.params
-    let regSlotDot = newDotExpr(ident "myQObject", ident "registerSlot")
-    let name = ($slot.name).replace("*","")
-    let argTypesArray = genArgTypeArray(params)
-    let call = newCall(regSlotDot, newLit name, argTypesArray)
-    createBody.add call
-  for signal in signals:
-    let params = signal.params
-    let regSigDot = newDotExpr(ident "myQObject", ident "registerSignal")
-    let name = ($signal.name).replace("*","")
-    let argTypesArray = genArgTypeArray(params)
-    let call = newCall(regSigDot, newLit name, argTypesArray)
-    createBody.add call
-  for property in properties:
-    let bracket = property[0]
-    expectKind bracket, nnkBracketExpr
-    #Command
-    #  BracketExpr
-    #    Ident !"QtProperty"
-    #    Ident !"string"
-    #  Ident !"name"
-    #  StmtList
-    let nimPropType = bracket[1]
-    let qtPropMeta = nim2QtMeta[$nimPropType]
-    if qtPropMeta == nil: error($nimPropType & " not supported")
-    let metaDot = newDotExpr(ident "QMetaType", ident qtPropMeta) 
-    let propertyName = property[1]
-    var read, write, notify: PNimrodNode
-    let stmtList = property[2]
-    # fields
-    #  StmtList
-    #   Asgn
-    #     Ident !"read"
-    #     Ident !"getName
-    for asgn in stmtList.children:
-      let name = asgn[0]
-      case $name
-      of "read":
-        read = asgn[1]
-      of "write":
-        write = asgn[1]
-      of "notify":
-        notify = asgn[1]
+macro QtObject*(qtDecl: stmt): stmt {.immediate.} =
+  ## Generates boiler plate code for registering signals, slots 
+  ## and properties. 
+  ##
+  ## Currently generates:
+  ## - create: a method to register signal, slots and properties
+  ## - superType: a template that returns the super type of the
+  ##   object defined within the macro body
+  ## - onSlotCalled: a method to dispatch an on slot call to the
+  ##   appropiate method.
+  ##
+  ## Current limitations:
+  ## - only one type can be defined within the body of code sent to the 
+  ##   the macro. It is assumed, but not checked, that somewhere in the
+  ##   inheritance hierarchy this object derives from ``QObject``.
+  ## - generics are not currently supported
+  expectKind(qtDecl, nnkStmtList)
+  #echo treeRepr qtDecl
+  result = newStmtList()
+  var slots = newSeq[PNimrodNode]()
+  var properties = newSeq[PNimrodNode]()
+  var signals = newSeq[PNimrodNode]()
+  # assume only one type per section for now
+  var typ: PNimrodNode
+  for it in qtDecl.children():
+    if it.kind == nnkTypeSection:
+      let typeDecl = it.findChild(it.kind == nnkTypeDef)
+      let superType = typeDecl.getSuperType()
+      if superType.kind == nnkEmpty:
+        # allow simple types and type aliases
+        result.add it
       else:
-        error("unknown property field: " & $name)
-    let regPropDot = newDotExpr(ident "myQObject", ident "registerProperty")
-    let readArg = if read == nil: newNilLit() else: newLit($read)
-    let writeArg = if write == nil: newNilLit() else: newLit($write)
-    let notifyArg = if notify == nil: newNilLit() else: newLit($notify)
-    let call = newCall(regPropDot, newLit($propertyName), metaDot, readArg, writeArg, notifyArg)
-    createBody.add call
+        # may come in useful if we want to check objects inherit from QObject
+        #let superName = if superType.kind == nnkIdent: superType 
+        #  else: superType.getNodeOf(nnkIdent)
+        if typ != nil:
+          error("you may not define more than one type " &
+                "within the code block passed to this macro")
+        else: # without this else, it fails to compile
+          typ = typeDecl
+          result.add it
+          result.add genSuperTemplate(typeDecl)
+          result.add genCreateDecl(typeDecl)
+    elif it.kind == nnkMethodDef:
+      if tryHandleSigSlot(it, signals, slots, result): continue
+      result.add it
+    elif it.kind == nnkProcDef:
+      if tryHandleSigSlot(it, signals, slots, result): continue
+      result.add it
+    elif it.kind == nnkCommand:
+      let bracket = it[0]
+      if bracket.kind != nnkBracketExpr:
+        error("do not know how to handle: \n" & repr(it))
+      # BracketExpr
+      #   Ident !"QtProperty"
+      #   Ident !"string"
+      let cmdIdent = bracket[0]
+      if cmdIdent == nil or cmdIdent.kind != nnkIdent or
+          ($cmdIdent).toLower() != "qtproperty":
+        error("do not know how to handle: \n" & repr(it))
+      properties.add it
+    else:
+      # everything else should pass through unchanged
+      result.add it
+  if typ == nil:
+    error("you must declare an object that inherits from QObject")
 
-  #echo repr createProto
-  result.add createProto
+  result.add genOnSlotCalled(typ, slots)
 
-  for fn in userDefined:
-    result.add fn
+  result.add genCreate(typ, signals, slots, properties)
 
   debug:
     echo repr result
