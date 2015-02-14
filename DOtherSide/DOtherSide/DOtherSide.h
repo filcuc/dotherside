@@ -125,16 +125,19 @@ void dos_qabstractlistmodel_create(void** vptr,
                                    DObjectCallback dObjectCallback,
                                    RowCountCallback rowCountCallback,
                                    DataCallback dataCallback,
-                                   RoleNamesCallback roleNamesCallback);
+                                   SetDataCallback setDataCallback,
+                                   RoleNamesCallback roleNamesCallback,
+                                   FlagsCallback FlagsCallback
+                                  );
 void dos_qabstractlistmodel_beginInsertRows(void* vptr,
-        QModelIndexVoidPtr parentIndex,
-        int first,
-        int last);
+                                            QModelIndexVoidPtr parentIndex,
+                                            int first,
+                                            int last);
 void dos_qabstractlistmodel_endInsertRows(void* vptr);
 void dos_qabstractlistmodel_beginRemoveRows(void* vptr,
-        QModelIndexVoidPtr parentIndex,
-        int first,
-        int last);
+                                            QModelIndexVoidPtr parentIndex,
+                                            int first,
+                                            int last);
 void dos_qabstractlistmodel_endRemoveRows(void* vptr);
 void dos_qabstractlistmodel_beginResetModel(void* vptr);
 void dos_qabstractlistmodel_endResetModel(void* vptr);

@@ -4,9 +4,9 @@ QtObject:
   type
     ContactList* = ref object of QAbstractListModel
       contacts*: seq[Contact]
-    ContactRoles = enum
-      FirstNameRole = 0
-      SurnameRole = 1
+    ContactRoles {.pure.} = enum
+      FirstName = 0
+      Surname = 1
 
   converter toCInt(value: ContactRoles): cint = return value.cint
   converter toCInt(value: int): cint = return value.cint
@@ -34,17 +34,41 @@ QtObject:
       return
     if index.row < 0 or index.row >= self.contacts.len:
       return
-    if role == FirstNameRole:
-      return self.contacts[index.row].firstName
-    elif role == SurnameRole:
-      return self.contacts[index.row].surname
-    else:
-      return
+    let contact = self.contacts[index.row]
+    let contactRole = role.ContactRoles
+    case contactRole:
+      of ContactRoles.FirstName: return contact.firstName
+      of ContactRoles.Surname: return contact.surname
+      else: return
 
+  method setData(self: ContactList, index: QModelIndex, value: QVariant, role: cint): bool = 
+    result = false    
+    if not index.isValid:
+      return
+    if index.row < 0 or index.row >= self.contacts.len:
+      return
+    if value.isNull:
+        return
+    var contact = self.contacts[index.row]
+    let contactRole = role.ContactRoles
+    case contactRole:
+      of ContactRoles.FirstName:
+        contact.firstName = value.stringVal
+        self.dataChanged(index, index, @[role])
+        result = true
+      of ContactRoles.Surname:
+        contact.surname = value.stringVal
+        self.dataChanged(index, index, @[role])
+        result = true
+      else: discard()
+
+  method flags(self: ContactList): QItemFlag =
+    return QItemFlag.IsEditable    
+      
   method roleNames(self: ContactList): Table[cint, cstring] =
     result = initTable[cint, cstring]()
-    result[FirstNameRole] = "firstName"
-    result[SurnameRole] = "surname"
+    result[ContactRoles.FirstName] = "firstName"
+    result[ContactRoles.Surname] = "surname"
     
   method add*(self: ContactList, name: string, surname: string) {.slot.} =
     let contact = newContact()

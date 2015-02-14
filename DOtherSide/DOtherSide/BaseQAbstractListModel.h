@@ -13,14 +13,22 @@ public:
     BaseQAbstractListModel(void* modelObject,
                            RowCountCallback rowCountCallback,
                            DataCallback dataCallback,
-                           RoleNamesCallback roleNamesCallback);
+                           SetDataCallback setDataCallback,
+                           RoleNamesCallback roleNamesCallback,
+                           FlagsCallback flagsCallback);
 
     /// Return the model's row count
     virtual int rowCount(const QModelIndex& index = QModelIndex()) const override;
-
+    
     /// Return the QVariant at the given index
     virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
+    /// Sets the QVariant value at the given index and role
+    virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) override;
+    
+    /// Return the item flags for the given index
+    virtual Qt::ItemFlags flags(const QModelIndex& index) const override;
+    
     /// Return the dModelPointer
     void* modelObject();
 
@@ -54,17 +62,23 @@ private:
     void* m_modelObject;
     RowCountCallback m_rowCountCallback;
     DataCallback m_dataCallback;
+    SetDataCallback m_setDataCallback;
     RoleNamesCallback m_roleNamesCallback;
+    FlagsCallback m_flagsCallback;
 };
 
 BaseQAbstractListModel::BaseQAbstractListModel(void* modelObject,
         RowCountCallback rowCountCallback,
         DataCallback dataCallback,
-        RoleNamesCallback roleNamesCallback)
+        SetDataCallback setDataCallback,
+        RoleNamesCallback roleNamesCallback,
+        FlagsCallback flagsCallback)
     : m_modelObject(modelObject)
     , m_rowCountCallback(rowCountCallback)
     , m_dataCallback(dataCallback)
+    , m_setDataCallback(setDataCallback)
     , m_roleNamesCallback(roleNamesCallback)
+    , m_flagsCallback(flagsCallback)
 {
 }
 
@@ -84,6 +98,26 @@ QVariant BaseQAbstractListModel::data(const QModelIndex& index, int role) const
     QVariant result;
     m_dataCallback(m_modelObject, newIndex, role, &result);
     return result;
+}
+
+bool BaseQAbstractListModel::setData(const QModelIndex& index, const QVariant& value, int role)
+{
+    auto newIndex = new QModelIndex(index);
+    *newIndex = index;
+    auto newValue = new QVariant();
+    *newValue = value;
+    bool result = false;
+    m_setDataCallback(m_modelObject, newIndex, newValue, role, &result);
+    return result;
+}
+
+Qt::ItemFlags BaseQAbstractListModel::flags(const QModelIndex& index) const
+{
+    auto newIndex = new QModelIndex(index);
+    *newIndex = index;
+    int result;
+    m_flagsCallback(m_modelObject, newIndex, &result);
+    return Qt::ItemFlags(result);
 }
 
 void* BaseQAbstractListModel::modelObject()

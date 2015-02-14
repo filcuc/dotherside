@@ -616,14 +616,18 @@ proc newQHashIntQByteArray*(): QHashIntByteArray =
 # QAbstractListModel
 type RowCountCallback = proc(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, result: var cint) {.cdecl.}
 type DataCallback = proc(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, role: cint, result: RawQVariant) {.cdecl.}
+type SetDataCallback = proc(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, value: RawQVariant, role: cint, result: var bool) {.cdecl.}
 type RoleNamesCallback = proc(modelObject: ptr QAbstractListModelObj, result: RawQHashIntByteArray) {.cdecl.}
+type FlagsCallback = proc(modelObject: ptr QAbstractListModelObj, index: RawQModelIndex, result: var cint) {.cdecl.}
 
 proc dos_qabstractlistmodel_create(model: var RawQAbstractListModel,
                                    modelPtr: ptr QAbstractListModelObj,
                                    qobjectCallback: QObjectCallBack,
                                    rowCountCallback: RowCountCallback,
                                    dataCallback: DataCallback,
-                                   roleNamesCallback: RoleNamesCallback) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+                                   setDataCallback: SetDataCallBack,
+                                   roleNamesCallback: RoleNamesCallback,
+                                   flagsCallback: FlagsCallback) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qabstractlistmodel_delete(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qabstractlistmodel_beginInsertRows(model: RawQAbstractListModel,
                                             parentIndex: RawQModelIndex,
@@ -664,6 +668,16 @@ proc dataCallback(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelInd
     dos_qvariant_assign(result, variant.data)
     variant.delete
 
+method setData*(model: QAbstractListModel, index: QModelIndex, value: QVariant, role: cint): bool =
+  ## Sets the data at the given index and role. Return true on success, false otherwise
+  return false 
+
+proc setDataCallback(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, rawQVariant: RawQVariant,  role: cint, result: var bool) {.cdecl, exportc.} =
+  let model = cast[QAbstractListModel](modelObject)
+  let index = newQModelIndex(rawIndex)
+  let variant = newQVariant(rawQVariant)
+  result = model.setData(index, variant, role)
+    
 method roleNames*(model: QAbstractListModel): Table[cint, cstring] = 
   result = initTable[cint, cstring]()
 
@@ -672,7 +686,15 @@ proc roleNamesCallback(modelObject: ptr QAbstractListModelObj, hash: RawQHashInt
   let table = model.roleNames()
   for pair in table.pairs:
     dos_qhash_int_qbytearray_insert(hash, pair.key, pair.val)
-  
+
+method flags*(model: QAbstractListModel, index: QModelIndex): QItemFlag =
+  return QItemFlag.None
+
+proc flagsCallback(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, result: var cint) {.cdecl, exportc.} =
+  let model = cast[QAbstractListModel](modelObject)
+  let index = newQModelIndex(rawIndex)
+  result = model.flags(index).cint
+    
 proc create*(model: var QAbstractListModel) =
   ## Create a new QAbstractListModel
   debugMsg("QAbstractListModel", "create")
@@ -681,7 +703,7 @@ proc create*(model: var QAbstractListModel) =
   model.properties = initTable[string, cint]()
   model.deleted = false
   let modelPtr = addr(model[])
-  dos_qabstractlistmodel_create(model.data.RawQAbstractListModel, modelPtr, qobjectCallback, rowCountCallback, dataCallback, roleNamesCallback)
+  dos_qabstractlistmodel_create(model.data.RawQAbstractListModel, modelPtr, qobjectCallback, rowCountCallback, dataCallback, setDataCallback, roleNamesCallback, flagsCallback)
   qobjectRegistry[modelPtr] = true
 
 proc delete*(model: QAbstractListModel) =
@@ -726,7 +748,8 @@ proc endResetModel*(model: QAbstractListModel) =
 proc dataChanged*(model: QAbstractListModel,
                  topLeft: QModelIndex,
                  bottomRight: QModelIndex,
-                 roles: var seq[cint]) =
+                 roles: seq[cint]) =
   ## Notify the view that the model data changed
-  dos_qabstractlistmodel_dataChanged(model.data.RawQAbstractListModel, topLeft.data, bottomRight.data, roles[0].addr, roles.len.cint)  
+  var copy = roles
+  dos_qabstractlistmodel_dataChanged(model.data.RawQAbstractListModel, topLeft.data, bottomRight.data, copy[0].addr, copy.len.cint)  
   

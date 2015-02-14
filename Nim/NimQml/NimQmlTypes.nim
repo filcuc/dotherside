@@ -51,3 +51,16 @@ type
     data: RawQHashIntByteArray
     deleted: bool
   QHashIntByteArray* = ref QHashIntByteArrayObj ## A QHash<int,QByteArray>
+
+  QItemFlag* {.pure.} = enum 
+    None = 0.cint, 
+    IsSelectable = 1.cint,
+    IsEditable = 2.cint,
+    IsDragEnabled = 4.cint,
+    IsDropEnabled = 8.cint,
+    IsUserCheckable = 16.cint,
+    IsEnabled = 32.cint,
+    IsTristate = 64.cint,
+    NeverHasChildren = 128.cint
+  
+  

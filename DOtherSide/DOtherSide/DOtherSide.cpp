@@ -445,12 +445,16 @@ void dos_qabstractlistmodel_create(void** vptr,
                                    DObjectCallback dObjectCallback,
                                    RowCountCallback rowCountCallback,
                                    DataCallback dataCallback,
-                                   RoleNamesCallback roleNamesCallaback)
+                                   SetDataCallback setDataCallback,
+                                   RoleNamesCallback roleNamesCallaback,
+                                   FlagsCallback flagsCallback)
 {
     auto model = new BaseQAbstractListModel(modelObject,
                                             rowCountCallback,
                                             dataCallback,
-                                            roleNamesCallaback);
+                                            setDataCallback,
+                                            roleNamesCallaback,
+                                            flagsCallback);
     model->setDObjectPointer(modelObject);
     model->setDObjectCallback(dObjectCallback);
     *vptr = model;
