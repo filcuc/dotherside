@@ -1,5 +1,7 @@
 #include "DOtherSide.h"
 
+#include <iostream>
+
 #include <QtCore/QDir>
 #include <QtCore/QDebug>
 #include <QtCore/QModelIndex>
@@ -8,10 +10,10 @@
 #include <QtQml/QQmlApplicationEngine>
 #include <QtQuick/QQuickView>
 #include <QtWidgets/QApplication>
-#include <iostream>
 
 #include "DynamicQObject.h"
 #include "BaseQAbstractListModel.h"
+#include "BaseQObject.h"
 
 void convert_to_cstring(const QString& source, char** destination, int* length)
 {
@@ -307,7 +309,7 @@ void dos_qvariant_setQAbstractListModel(void* vptr, void* value)
 
 void dos_qobject_create(void** vptr, void* dObjectPointer, DObjectCallback dObjectCallback)
 {
-    auto dynamicQObject = new DynamicQObject();
+    auto dynamicQObject = new BaseQObject();
     QQmlEngine::setObjectOwnership(dynamicQObject, QQmlEngine::CppOwnership);
     dynamicQObject->setDObjectPointer(dObjectPointer);
     dynamicQObject->setDObjectCallback(dObjectCallback);
@@ -316,7 +318,7 @@ void dos_qobject_create(void** vptr, void* dObjectPointer, DObjectCallback dObje
 
 void dos_qobject_delete(void* vptr)
 {
-    auto dynamicQObject = reinterpret_cast<DynamicQObject*>(vptr);
+    auto dynamicQObject = reinterpret_cast<BaseQObject*>(vptr);
     dynamicQObject->disconnect();
     delete dynamicQObject;
 }
@@ -326,7 +328,8 @@ void dos_qobject_slot_create(void* vptr, const char* name, int parametersCount, 
     if (parametersCount <= 0)
         return;
 
-    auto dynamicQObject = reinterpret_cast<DynamicQObject*>(vptr);
+    auto qobject = reinterpret_cast<QObject*>(vptr);
+    auto dynamicQObject = dynamic_cast<IDynamicQObject*>(qobject);
 
     QMetaType::Type returnType = static_cast<QMetaType::Type>(parametersMetaTypes[0]);
     QList<QMetaType::Type> argumentsTypes;
@@ -341,7 +344,8 @@ void dos_qobject_signal_create(void* vptr, const char* name, int parametersCount
     if (parametersCount <= 0)
         return;
 
-    auto dynamicQObject = reinterpret_cast<DynamicQObject*>(vptr);
+    auto qobject = reinterpret_cast<QObject*>(vptr);
+    auto dynamicQObject = dynamic_cast<IDynamicQObject*>(qobject);
 
     QList<QMetaType::Type> argumentsTypes;
     for (int i = 0; i < parametersCount; ++i)
@@ -352,10 +356,13 @@ void dos_qobject_signal_create(void* vptr, const char* name, int parametersCount
 
 void dos_qobject_signal_emit(void* vptr, const char* name, int parametersCount, void** parameters)
 {
-    auto dynamicQObject = reinterpret_cast<DynamicQObject*>(vptr);
+    auto qobject = reinterpret_cast<QObject*>(vptr);
+    auto dynamicQObject = dynamic_cast<IDynamicQObject*>(qobject);
+
     QVariantList arguments;
     for (int i = 0; i < parametersCount; ++i)
         arguments << *(reinterpret_cast<QVariant*>(parameters[i]));
+
     dynamicQObject->emitSignal(QString::fromStdString(name), arguments);
 }
 
@@ -366,7 +373,8 @@ void dos_qobject_property_create(void* vptr,
                                  const char* writeSlot,
                                  const char* notifySignal)
 {
-    auto dynamicQObject = reinterpret_cast<DynamicQObject*>(vptr);
+    auto qobject = reinterpret_cast<QObject*>(vptr);
+    auto dynamicQObject = dynamic_cast<IDynamicQObject*>(qobject);
     dynamicQObject->registerProperty(QString(name),
                                      QMetaType::Type(type),
                                      QString(readSlot),
@@ -434,6 +442,7 @@ void dos_qmodelindex_sibling(void* vptr, int row, int column, void* sibling)
 
 void dos_qabstractlistmodel_create(void** vptr,
                                    void* modelObject,
+                                   DObjectCallback dObjectCallback,
                                    RowCountCallback rowCountCallback,
                                    DataCallback dataCallback,
                                    RoleNamesCallback roleNamesCallaback)
@@ -442,6 +451,8 @@ void dos_qabstractlistmodel_create(void** vptr,
                                             rowCountCallback,
                                             dataCallback,
                                             roleNamesCallaback);
+    model->setDObjectPointer(modelObject);
+    model->setDObjectCallback(dObjectCallback);
     *vptr = model;
 }
 
@@ -489,8 +500,8 @@ void dos_qabstractlistmodel_endResetModel(void* vptr)
     model->publicEndResetModel();
 }
 
-void dos_qabstractlistmodel_dataChanged(void* vptr, 
-                                        QModelIndexVoidPtr topLeftIndex, 
+void dos_qabstractlistmodel_dataChanged(void* vptr,
+                                        QModelIndexVoidPtr topLeftIndex,
                                         QModelIndexVoidPtr bottomRightIndex,
                                         int* rolesArrayPtr,
                                         int rolesArrayLength)

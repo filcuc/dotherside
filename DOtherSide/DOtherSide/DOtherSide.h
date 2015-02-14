@@ -122,22 +122,23 @@ void dos_qhash_int_qbytearray_value(QHashIntQByteArrayVoidPtr vptr, int key, cha
 // QAbstractListModel
 void dos_qabstractlistmodel_create(void** vptr,
                                    void* callbackObject,
+                                   DObjectCallback dObjectCallback,
                                    RowCountCallback rowCountCallback,
                                    DataCallback dataCallback,
                                    RoleNamesCallback roleNamesCallback);
-void dos_qabstractlistmodel_beginInsertRows(void* vptr, 
-                                            QModelIndexVoidPtr parentIndex, 
-                                            int first, 
-                                            int last);
+void dos_qabstractlistmodel_beginInsertRows(void* vptr,
+        QModelIndexVoidPtr parentIndex,
+        int first,
+        int last);
 void dos_qabstractlistmodel_endInsertRows(void* vptr);
-void dos_qabstractlistmodel_beginRemoveRows(void* vptr, 
-                                            QModelIndexVoidPtr parentIndex, 
-                                            int first, 
-                                            int last);
+void dos_qabstractlistmodel_beginRemoveRows(void* vptr,
+        QModelIndexVoidPtr parentIndex,
+        int first,
+        int last);
 void dos_qabstractlistmodel_endRemoveRows(void* vptr);
 void dos_qabstractlistmodel_beginResetModel(void* vptr);
 void dos_qabstractlistmodel_endResetModel(void* vptr);
-void dos_qabstractlistmodel_dataChanged(void* vptr, 
+void dos_qabstractlistmodel_dataChanged(void* vptr,
                                         QModelIndexVoidPtr topLeftIndex,
                                         QModelIndexVoidPtr bottomRightIndex,
                                         int* rolesArrayPtr,
