@@ -2,8 +2,8 @@
 	Filippo Cucchetto <filippocucchetto@gmail.com>
 	
 	Will Szumski <will@cowboycoders.org>
-:Version: 0.2.0
-:Date: 2015/01/02
+:Version: 0.3.0
+:Date: 2015/02/15
 
 Introduction
 -----------
@@ -126,6 +126,7 @@ At the time of writing the QVariant class support the following types:
 * int
 * string
 * bool
+* float
 * QObject derived classes
 
 Example 3: exposing complex data and procedures to Qml
@@ -247,3 +248,57 @@ The ``QtProperty`` macro has the following syntax
 .. code-block:: nim
   QtProperty[typeOfProperty] nameOfProperty
 
+Example 5: ContactApp
+-------------------------
+The last example tries to show you all the stuff presented
+in the previous chapters and gives you an introduction to how
+to expose lists to qml.
+
+Qt models are a huge topic and explaining how they work is
+out of scope. For further information please read the official
+Qt documentation.
+
+The main file follows the basic logic of creating a qml
+engine and exposing a QObject derived object "ApplicationLogic"
+through a global "logic" property
+
+``Examples/ContactApp/main.nim``
+
+.. code-block:: nim
+   :file: ../Examples/ContactApp/main.nim
+
+The qml file shows a simple app with a central tableview
+
+``Examples/ContactApp/main.qml``
+
+.. code-block:: qml
+   :file: ../Examples/ContactApp/main.qml
+
+The important things to notice are:
+1. The menubar load, save and exit items handlers call the logic load, save and exit slots
+2. The TableView model is retrieved by the logic.contactList property
+3. The delete and add buttons call the del and add slots of the logic.contactList model
+
+The ApplicationLogic object is as follows:
+
+``Examples/ContactApp/ApplicationLogic.nim``
+
+.. code-block:: nim
+   :file: ../Examples/ContactApp/ApplicationLogic.nim
+
+The ApplicationLogic object,
+1. expose some slots for handling the qml menubar triggered signals
+2. expose a contactList property that return a QAbstractListModel derived object that manage the list of contacts
+
+The ContactList object is as follows:
+
+``Examples/ContactApp/ContactList.nim``
+
+.. code-block:: nim
+   :file: ../Examples/ContactApp/ContactList.nim
+
+The ContactList object:
+1. overrides the ``rowCount`` method for returning the number of rows stored in the model 
+2. overrides the ``data`` method for returning the value for the exported roles  
+3. overrides the ``roleNames`` method for returning the names of the roles of the model. This name are then available in the qml item delegates
+4. defines two slots ``add`` and ``del`` that add or delete a Contact. During this operations the model execute the ``beginInsertRows`` and ``beginRemoveRows`` for notifing the view of an upcoming change. Once the add or delete operations are done the model execute the ``endInsertRows`` and ``endRemoveRows``.

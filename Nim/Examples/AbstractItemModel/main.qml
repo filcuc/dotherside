@@ -7,15 +7,19 @@ ApplicationWindow
 {
     width: 400
     height: 300
-    title: "SimpleData"
+    title: "AbstractItemModel"
     Component.onCompleted: visible = true
 
-    ColumnLayout
+    Component
+    {
+        id: myListModelDelegate
+        Label { text: "Name:" + name }
+    }
+    
+    ListView
     {
         anchors.fill: parent
-        SpinBox { value: qVar1}
-        TextField { text: qVar2}
-        CheckBox { checked: qVar3}
-        SpinBox { value: qVar4; decimals: 1 }
+        model: myListModel
+        delegate: myListModelDelegate
     }
 }
