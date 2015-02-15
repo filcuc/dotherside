@@ -41,30 +41,6 @@ QtObject:
       of ContactRoles.Surname: return contact.surname
       else: return
 
-  method setData(self: ContactList, index: QModelIndex, value: QVariant, role: cint): bool = 
-    result = false    
-    if not index.isValid:
-      return
-    if index.row < 0 or index.row >= self.contacts.len:
-      return
-    if value.isNull:
-        return
-    var contact = self.contacts[index.row]
-    let contactRole = role.ContactRoles
-    case contactRole:
-      of ContactRoles.FirstName:
-        contact.firstName = value.stringVal
-        self.dataChanged(index, index, @[role])
-        result = true
-      of ContactRoles.Surname:
-        contact.surname = value.stringVal
-        self.dataChanged(index, index, @[role])
-        result = true
-      else: discard()
-
-  method flags(self: ContactList): QtItemFlag =
-    return QtItemFlag.IsEditable    
-      
   method roleNames(self: ContactList): Table[cint, cstring] =
     result = initTable[cint, cstring]()
     result[ContactRoles.FirstName] = "firstName"
