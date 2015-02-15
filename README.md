@@ -4,6 +4,9 @@ THIS IS UNSTABLE AND ALPHA SOFTWARE
 ## Description
 Qml bindings for both D and Nim programming languages
 
+## Change log
+The project change log can be read [here](./CHANGELOG.md).
+
 ## Documentation
 The documentation for the Nim programming language can be
 read [here](http://filcuc.github.io/DOtherSide/ "").
