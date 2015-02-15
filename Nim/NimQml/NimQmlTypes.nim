@@ -52,7 +52,7 @@ type
     deleted: bool
   QHashIntByteArray* = ref QHashIntByteArrayObj ## A QHash<int,QByteArray>
 
-  QItemFlag* {.pure.} = enum 
+  QtItemFlag* {.pure.} = enum 
     None = 0.cint, 
     IsSelectable = 1.cint,
     IsEditable = 2.cint,
@@ -63,4 +63,6 @@ type
     IsTristate = 64.cint,
     NeverHasChildren = 128.cint
   
-  
+  QtOrientation {.pure.} = enum
+    Horizontal = 1.cint,
+    Vertical = 2.cint

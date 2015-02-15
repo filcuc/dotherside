@@ -28,7 +28,7 @@ QtObject:
 
   method rowCount(self: ContactList, index: QModelIndex = nil): cint =
     return self.contacts.len
-  
+
   method data(self: ContactList, index: QModelIndex, role: cint): QVariant =
     if not index.isValid:
       return
@@ -62,8 +62,8 @@ QtObject:
         result = true
       else: discard()
 
-  method flags(self: ContactList): QItemFlag =
-    return QItemFlag.IsEditable    
+  method flags(self: ContactList): QtItemFlag =
+    return QtItemFlag.IsEditable    
       
   method roleNames(self: ContactList): Table[cint, cstring] =
     result = initTable[cint, cstring]()

@@ -12,13 +12,18 @@ public:
     /// Constructor
     BaseQAbstractListModel(void* modelObject,
                            RowCountCallback rowCountCallback,
+                           ColumnCountCallback columnCountCallback,
                            DataCallback dataCallback,
                            SetDataCallback setDataCallback,
                            RoleNamesCallback roleNamesCallback,
-                           FlagsCallback flagsCallback);
+                           FlagsCallback flagsCallback,
+                           HeaderDataCallback headerDataCallback);
 
     /// Return the model's row count
-    virtual int rowCount(const QModelIndex& index = QModelIndex()) const override;
+    virtual int rowCount(const QModelIndex& parent = QModelIndex()) const override;
+    
+    /// Return the model's column count
+    virtual int columnCount(const QModelIndex& parent = QModelIndex()) const override;
     
     /// Return the QVariant at the given index
     virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
@@ -28,6 +33,9 @@ public:
     
     /// Return the item flags for the given index
     virtual Qt::ItemFlags flags(const QModelIndex& index) const override;
+    
+    /// Return the data for the given role and section in the header with the specified orientation
+    virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
     
     /// Return the dModelPointer
     void* modelObject();
@@ -61,33 +69,48 @@ public:
 private:
     void* m_modelObject;
     RowCountCallback m_rowCountCallback;
+    ColumnCountCallback m_columnCountCallback;
     DataCallback m_dataCallback;
     SetDataCallback m_setDataCallback;
     RoleNamesCallback m_roleNamesCallback;
     FlagsCallback m_flagsCallback;
+    HeaderDataCallback m_headerDataCallback;
 };
 
 BaseQAbstractListModel::BaseQAbstractListModel(void* modelObject,
         RowCountCallback rowCountCallback,
+        ColumnCountCallback columnCountCallback,
         DataCallback dataCallback,
         SetDataCallback setDataCallback,
         RoleNamesCallback roleNamesCallback,
-        FlagsCallback flagsCallback)
+        FlagsCallback flagsCallback,
+        HeaderDataCallback headerDataCallback)
     : m_modelObject(modelObject)
     , m_rowCountCallback(rowCountCallback)
+    , m_columnCountCallback(columnCountCallback)
     , m_dataCallback(dataCallback)
     , m_setDataCallback(setDataCallback)
     , m_roleNamesCallback(roleNamesCallback)
     , m_flagsCallback(flagsCallback)
+    , m_headerDataCallback(headerDataCallback)
 {
 }
 
-int BaseQAbstractListModel::rowCount(const QModelIndex& index) const
+int BaseQAbstractListModel::rowCount(const QModelIndex& parent) const
 {
-    auto newIndex = new QModelIndex();
-    *newIndex = index;
+    auto parentIndex = new QModelIndex();
+    *parentIndex = parent;
     int result;
-    m_rowCountCallback(m_modelObject, newIndex, &result);
+    m_rowCountCallback(m_modelObject, parentIndex, &result);
+    return result;
+}
+
+int BaseQAbstractListModel::columnCount(const QModelIndex& parent) const
+{
+    auto parentIndex = new QModelIndex();
+    *parentIndex = parent;
+    int result;
+    m_columnCountCallback(m_modelObject, parentIndex, &result);
     return result;
 }
 
@@ -118,6 +141,13 @@ Qt::ItemFlags BaseQAbstractListModel::flags(const QModelIndex& index) const
     int result;
     m_flagsCallback(m_modelObject, newIndex, &result);
     return Qt::ItemFlags(result);
+}
+
+QVariant BaseQAbstractListModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    QVariant result;
+    m_headerDataCallback(m_modelObject, section, orientation, role, &result);
+    return result;
 }
 
 void* BaseQAbstractListModel::modelObject()

@@ -444,17 +444,21 @@ void dos_qabstractlistmodel_create(void** vptr,
                                    void* modelObject,
                                    DObjectCallback dObjectCallback,
                                    RowCountCallback rowCountCallback,
+                                   ColumnCountCallback columnCountCallback,
                                    DataCallback dataCallback,
                                    SetDataCallback setDataCallback,
                                    RoleNamesCallback roleNamesCallaback,
-                                   FlagsCallback flagsCallback)
+                                   FlagsCallback flagsCallback,
+                                   HeaderDataCallback headerDataCallback)
 {
     auto model = new BaseQAbstractListModel(modelObject,
                                             rowCountCallback,
+                                            columnCountCallback,
                                             dataCallback,
                                             setDataCallback,
                                             roleNamesCallaback,
-                                            flagsCallback);
+                                            flagsCallback,
+                                            headerDataCallback);
     model->setDObjectPointer(modelObject);
     model->setDObjectCallback(dObjectCallback);
     *vptr = model;

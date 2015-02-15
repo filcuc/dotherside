@@ -124,11 +124,12 @@ void dos_qabstractlistmodel_create(void** vptr,
                                    void* callbackObject,
                                    DObjectCallback dObjectCallback,
                                    RowCountCallback rowCountCallback,
+                                   ColumnCountCallback columnCountCallback,
                                    DataCallback dataCallback,
                                    SetDataCallback setDataCallback,
                                    RoleNamesCallback roleNamesCallback,
-                                   FlagsCallback FlagsCallback
-                                  );
+                                   FlagsCallback flagsCallback,
+                                   HeaderDataCallback headerDataCallback);
 void dos_qabstractlistmodel_beginInsertRows(void* vptr,
                                             QModelIndexVoidPtr parentIndex,
                                             int first,

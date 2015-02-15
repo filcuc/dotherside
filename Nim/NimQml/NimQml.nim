@@ -614,20 +614,25 @@ proc newQHashIntQByteArray*(): QHashIntByteArray =
   result.create()
   
 # QAbstractListModel
-type RowCountCallback = proc(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, result: var cint) {.cdecl.}
-type DataCallback = proc(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, role: cint, result: RawQVariant) {.cdecl.}
-type SetDataCallback = proc(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, value: RawQVariant, role: cint, result: var bool) {.cdecl.}
-type RoleNamesCallback = proc(modelObject: ptr QAbstractListModelObj, result: RawQHashIntByteArray) {.cdecl.}
-type FlagsCallback = proc(modelObject: ptr QAbstractListModelObj, index: RawQModelIndex, result: var cint) {.cdecl.}
+type
+  RowCountCallback = proc(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, result: var cint) {.cdecl.}
+  ColumnCountCallback = proc(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, result: var cint) {.cdecl.}
+  DataCallback = proc(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, role: cint, result: RawQVariant) {.cdecl.}
+  SetDataCallback = proc(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, value: RawQVariant, role: cint, result: var bool) {.cdecl.}
+  RoleNamesCallback = proc(modelObject: ptr QAbstractListModelObj, result: RawQHashIntByteArray) {.cdecl.}
+  FlagsCallback = proc(modelObject: ptr QAbstractListModelObj, index: RawQModelIndex, result: var cint) {.cdecl.}
+  HeaderDataCallback = proc(modelObject: ptr QAbstractListModelObj, section: cint, orientation: cint, role: cint, result: RawQVariant) {.cdecl.}
 
 proc dos_qabstractlistmodel_create(model: var RawQAbstractListModel,
                                    modelPtr: ptr QAbstractListModelObj,
                                    qobjectCallback: QObjectCallBack,
                                    rowCountCallback: RowCountCallback,
+                                   columnCountCallback: ColumnCountCallback,
                                    dataCallback: DataCallback,
                                    setDataCallback: SetDataCallBack,
                                    roleNamesCallback: RoleNamesCallback,
-                                   flagsCallback: FlagsCallback) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+                                   flagsCallback: FlagsCallback,
+                                   headerDataCallback: HeaderDataCallback) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qabstractlistmodel_delete(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
 proc dos_qabstractlistmodel_beginInsertRows(model: RawQAbstractListModel,
                                             parentIndex: RawQModelIndex,
@@ -652,15 +657,27 @@ method rowCount*(model: QAbstractListModel, index: QModelIndex): cint =
   return 0
 
 proc rowCountCallback(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, result: var cint) {.cdecl, exportc.} =
+  debugMsg("QAbstractListModel", "rowCountCallback")
   let model = cast[QAbstractListModel](modelObject)
   let index = newQModelIndex(rawIndex)
   result = model.rowCount(index)
 
+method columnCount*(model: QAbstractListModel, index: QModelIndex): cint =
+  ## Return the model's column count
+  return 1
+
+proc columnCountCallback(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, result: var cint) {.cdecl, exportc.} =
+  debugMsg("QAbstractListModel", "columnCountCallback")
+  let model = cast[QAbstractListModel](modelObject)
+  let index = newQModelIndex(rawIndex)
+  result = model.columnCount(index)
+  
 method data*(model: QAbstractListModel, index: QModelIndex, role: cint): QVariant =
-  ## Return the data at the given model index and role  
+  ## Return the data at the given model index and role
   return nil  
   
 proc dataCallback(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, role: cint, result: RawQVariant) {.cdecl, exportc.} =
+  debugMsg("QAbstractListModel", "dataCallback")
   let model = cast[QAbstractListModel](modelObject)
   let index = newQModelIndex(rawIndex)
   let variant = data(model, index, role)
@@ -673,27 +690,44 @@ method setData*(model: QAbstractListModel, index: QModelIndex, value: QVariant, 
   return false 
 
 proc setDataCallback(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, rawQVariant: RawQVariant,  role: cint, result: var bool) {.cdecl, exportc.} =
+  debugMsg("QAbstractListModel", "setDataCallback")
   let model = cast[QAbstractListModel](modelObject)
   let index = newQModelIndex(rawIndex)
   let variant = newQVariant(rawQVariant)
   result = model.setData(index, variant, role)
     
-method roleNames*(model: QAbstractListModel): Table[cint, cstring] = 
+method roleNames*(model: QAbstractListModel): Table[cint, cstring] =
+  ## Return the model role names  
   result = initTable[cint, cstring]()
 
 proc roleNamesCallback(modelObject: ptr QAbstractListModelObj, hash: RawQHashIntByteArray) {.cdecl, exportc.} =
+  debugMsg("QAbstractListModel", "roleNamesCallback")
   let model = cast[QAbstractListModel](modelObject)
   let table = model.roleNames()
   for pair in table.pairs:
     dos_qhash_int_qbytearray_insert(hash, pair.key, pair.val)
 
-method flags*(model: QAbstractListModel, index: QModelIndex): QItemFlag =
-  return QItemFlag.None
+method flags*(model: QAbstractListModel, index: QModelIndex): QtItemFlag =
+  ## Return the item flags and the given index
+  return QtItemFlag.None
 
 proc flagsCallback(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, result: var cint) {.cdecl, exportc.} =
+  debugMsg("QAbstractListModel", "flagsCallback")
   let model = cast[QAbstractListModel](modelObject)
   let index = newQModelIndex(rawIndex)
   result = model.flags(index).cint
+
+method headerData*(model: QAbstractListModel, section: cint, orientation: QtOrientation, role: cint): QVariant =
+  ## Returns the data for the given role and section in the header with the specified orientation
+  return nil
+
+proc headerDataCallback(modelObject: ptr QAbstractListModelObj, section: cint, orientation: cint, role: cint, result: RawQVariant) {.cdecl, exportc.} =
+  debugMsg("QAbstractListModel", "headerDataCallback")
+  let model = cast[QAbstractListModel](modelObject)
+  let variant = model.headerData(section, orientation.QtOrientation, role)
+  if variant != nil:
+    dos_qvariant_assign(result, variant.data)
+    variant.delete
     
 proc create*(model: var QAbstractListModel) =
   ## Create a new QAbstractListModel
@@ -703,7 +737,7 @@ proc create*(model: var QAbstractListModel) =
   model.properties = initTable[string, cint]()
   model.deleted = false
   let modelPtr = addr(model[])
-  dos_qabstractlistmodel_create(model.data.RawQAbstractListModel, modelPtr, qobjectCallback, rowCountCallback, dataCallback, setDataCallback, roleNamesCallback, flagsCallback)
+  dos_qabstractlistmodel_create(model.data.RawQAbstractListModel, modelPtr, qobjectCallback, rowCountCallback, columnCountCallback, dataCallback, setDataCallback, roleNamesCallback, flagsCallback, headerDataCallback)
   qobjectRegistry[modelPtr] = true
 
 proc delete*(model: QAbstractListModel) =
