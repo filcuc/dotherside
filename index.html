@@ -1148,8 +1148,8 @@ dt pre > span.Operator ~ span.Identifier, dt pre > span.Operator ~ span.Operator
     <table class="docinfo" frame="void" rules="none"><col class="docinfo-name" /><col class="docinfo-content" /><tbody valign="top"><tr><th class="docinfo-name">Authors:</th><td><p>Filippo Cucchetto &lt;filippocucchetto@gmail.com&gt;</p>
 <p>Will Szumski &lt;will@cowboycoders.org&gt;</p>
 </td></tr>
-<tr><th class="docinfo-name">Version:</th><td> 0.2.0</td></tr>
-<tr><th class="docinfo-name">Date:</th><td> 2015/01/02</td></tr>
+<tr><th class="docinfo-name">Version:</th><td> 0.3.0</td></tr>
+<tr><th class="docinfo-name">Date:</th><td> 2015/02/15</td></tr>
 </tbody></table>
 <h1 id="introduction">Introduction</h1><p>The NimQml module adds Qt Qml bindings to the Nim programming language allowing you to create new modern UI by mixing the Qml declarative syntax and the Nim imperative language.</p>
 <p>The NimQml is made by two components:</p>
@@ -1195,12 +1195,10 @@ nimble install</pre>
 <span class="Keyword">import</span> <span class="Identifier">typeinfo</span>
 
 <span class="Keyword">proc</span> <span class="Identifier">mainProc</span><span class="Punctuation">(</span><span class="Punctuation">)</span> <span class="Operator">=</span>
-  <span class="Keyword">var</span> <span class="Identifier">app</span><span class="Punctuation">:</span> <span class="Identifier">QApplication</span>
-  <span class="Identifier">app</span><span class="Operator">.</span><span class="Identifier">create</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+  <span class="Keyword">var</span> <span class="Identifier">app</span> <span class="Operator">=</span> <span class="Identifier">newQApplication</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
   <span class="Keyword">defer</span><span class="Punctuation">:</span> <span class="Identifier">app</span><span class="Operator">.</span><span class="Identifier">delete</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
    
-  <span class="Keyword">var</span> <span class="Identifier">engine</span><span class="Punctuation">:</span> <span class="Identifier">QQmlApplicationEngine</span>
-  <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">create</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+  <span class="Keyword">var</span> <span class="Identifier">engine</span> <span class="Operator">=</span> <span class="Identifier">newQQmlApplicationEngine</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
   <span class="Keyword">defer</span><span class="Punctuation">:</span> <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">delete</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
 
   <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">load</span><span class="Punctuation">(</span><span class="StringLit">&quot;main.qml&quot;</span><span class="Punctuation">)</span>
@@ -1208,6 +1206,7 @@ nimble install</pre>
 
 <span class="Keyword">when</span> <span class="Identifier">isMainModule</span><span class="Punctuation">:</span>
   <span class="Identifier">mainProc</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+  <span class="Identifier">GC_fullcollect</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
 
 </pre><p><tt class="docutils literal"><span class="pre">Examples/HelloWorld/main.qml</span></tt></p>
 <pre>import QtQuick 2.2
@@ -1237,38 +1236,34 @@ ApplicationWindow
 <span class="Keyword">import</span> <span class="Identifier">typeinfo</span>
 
 <span class="Keyword">proc</span> <span class="Identifier">mainProc</span><span class="Punctuation">(</span><span class="Punctuation">)</span> <span class="Operator">=</span>
-  <span class="Keyword">var</span> <span class="Identifier">app</span><span class="Punctuation">:</span> <span class="Identifier">QApplication</span>
-  <span class="Identifier">app</span><span class="Operator">.</span><span class="Identifier">create</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+  <span class="Keyword">var</span> <span class="Identifier">app</span> <span class="Operator">=</span> <span class="Identifier">newQApplication</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
   <span class="Keyword">defer</span><span class="Punctuation">:</span> <span class="Identifier">app</span><span class="Operator">.</span><span class="Identifier">delete</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
    
-  <span class="Keyword">var</span> <span class="Identifier">engine</span><span class="Punctuation">:</span> <span class="Identifier">QQmlApplicationEngine</span>
-  <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">create</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+  <span class="Keyword">var</span> <span class="Identifier">engine</span> <span class="Operator">=</span> <span class="Identifier">newQQmlApplicationEngine</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
   <span class="Keyword">defer</span><span class="Punctuation">:</span> <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">delete</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
 
-  <span class="Keyword">var</span> <span class="Identifier">qVar1</span><span class="Punctuation">:</span> <span class="Identifier">QVariant</span>
-  <span class="Identifier">qVar1</span><span class="Operator">.</span><span class="Identifier">create</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+  <span class="Keyword">var</span> <span class="Identifier">qVar1</span> <span class="Operator">=</span> <span class="Identifier">newQVariant</span><span class="Punctuation">(</span><span class="DecNumber">10</span><span class="Punctuation">)</span>
   <span class="Keyword">defer</span><span class="Punctuation">:</span> <span class="Identifier">qVar1</span><span class="Operator">.</span><span class="Identifier">delete</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
-  <span class="Identifier">qVar1</span><span class="Operator">.</span><span class="Identifier">intVal</span> <span class="Operator">=</span> <span class="DecNumber">10</span>
 
-  <span class="Keyword">var</span> <span class="Identifier">qVar2</span><span class="Punctuation">:</span> <span class="Identifier">QVariant</span>
-  <span class="Identifier">qVar2</span><span class="Operator">.</span><span class="Identifier">create</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+  <span class="Keyword">var</span> <span class="Identifier">qVar2</span> <span class="Operator">=</span> <span class="Identifier">newQVariant</span><span class="Punctuation">(</span><span class="StringLit">&quot;Hello World&quot;</span><span class="Punctuation">)</span>
   <span class="Keyword">defer</span><span class="Punctuation">:</span> <span class="Identifier">qVar2</span><span class="Operator">.</span><span class="Identifier">delete</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
-  <span class="Identifier">qVar2</span><span class="Operator">.</span><span class="Identifier">stringVal</span> <span class="Operator">=</span> <span class="StringLit">&quot;Hello World&quot;</span>
 
-  <span class="Keyword">var</span> <span class="Identifier">qVar3</span><span class="Punctuation">:</span> <span class="Identifier">QVariant</span>
-  <span class="Identifier">qVar3</span><span class="Operator">.</span><span class="Identifier">create</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+  <span class="Keyword">var</span> <span class="Identifier">qVar3</span> <span class="Operator">=</span> <span class="Identifier">newQVariant</span><span class="Punctuation">(</span><span class="Identifier">false</span><span class="Punctuation">)</span>
   <span class="Keyword">defer</span><span class="Punctuation">:</span> <span class="Identifier">qVar3</span><span class="Operator">.</span><span class="Identifier">delete</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
-  <span class="Identifier">qVar3</span><span class="Operator">.</span><span class="Identifier">boolVal</span> <span class="Operator">=</span> <span class="Identifier">false</span>
+
+  <span class="Keyword">var</span> <span class="Identifier">qVar4</span> <span class="Operator">=</span> <span class="Identifier">newQVariant</span><span class="Punctuation">(</span><span class="FloatNumber">3.5</span><span class="Operator">.</span><span class="Identifier">float</span><span class="Punctuation">)</span>
+  <span class="Keyword">defer</span><span class="Punctuation">:</span> <span class="Identifier">qVar4</span><span class="Operator">.</span><span class="Identifier">delete</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
   
   <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">rootContext</span><span class="Operator">.</span><span class="Identifier">setContextProperty</span><span class="Punctuation">(</span><span class="StringLit">&quot;qVar1&quot;</span><span class="Punctuation">,</span> <span class="Identifier">qVar1</span><span class="Punctuation">)</span> 
   <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">rootContext</span><span class="Operator">.</span><span class="Identifier">setContextProperty</span><span class="Punctuation">(</span><span class="StringLit">&quot;qVar2&quot;</span><span class="Punctuation">,</span> <span class="Identifier">qVar2</span><span class="Punctuation">)</span>
-  <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">rootContext</span><span class="Operator">.</span><span class="Identifier">setContextProperty</span><span class="Punctuation">(</span><span class="StringLit">&quot;qVar3&quot;</span><span class="Punctuation">,</span> <span class="Identifier">qVar2</span><span class="Punctuation">)</span>
-  
+  <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">rootContext</span><span class="Operator">.</span><span class="Identifier">setContextProperty</span><span class="Punctuation">(</span><span class="StringLit">&quot;qVar3&quot;</span><span class="Punctuation">,</span> <span class="Identifier">qVar3</span><span class="Punctuation">)</span>
+  <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">rootContext</span><span class="Operator">.</span><span class="Identifier">setContextProperty</span><span class="Punctuation">(</span><span class="StringLit">&quot;qVar4&quot;</span><span class="Punctuation">,</span> <span class="Identifier">qVar4</span><span class="Punctuation">)</span>
   <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">load</span><span class="Punctuation">(</span><span class="StringLit">&quot;main.qml&quot;</span><span class="Punctuation">)</span>
   <span class="Identifier">app</span><span class="Operator">.</span><span class="Identifier">exec</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
 
 <span class="Keyword">when</span> <span class="Identifier">isMainModule</span><span class="Punctuation">:</span>
   <span class="Identifier">mainProc</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+  <span class="Identifier">GC_fullcollect</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
 
 </pre><p><tt class="docutils literal"><span class="pre">Examples/SimpleData/main.qml</span></tt></p>
 <pre>import QtQuick 2.2
@@ -1289,6 +1284,7 @@ ApplicationWindow
         SpinBox { value: qVar1}
         TextField { text: qVar2}
         CheckBox { checked: qVar3}
+        SpinBox { value: qVar4; decimals: 1 }
     }
 }
 </pre><p>The following example shows how to expose simple data types to Qml:</p>
@@ -1300,6 +1296,7 @@ ApplicationWindow
 <ul class="simple"><li>int</li>
 <li>string</li>
 <li>bool</li>
+<li>float</li>
 <li>QObject derived classes</li>
 </ul>
 
@@ -1320,28 +1317,25 @@ ApplicationWindow
 <span class="Keyword">import</span> <span class="Identifier">Contact</span>
 
 <span class="Keyword">proc</span> <span class="Identifier">mainProc</span><span class="Punctuation">(</span><span class="Punctuation">)</span> <span class="Operator">=</span>
-  <span class="Keyword">var</span> <span class="Identifier">app</span><span class="Punctuation">:</span> <span class="Identifier">QApplication</span>
-  <span class="Identifier">app</span><span class="Operator">.</span><span class="Identifier">create</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+  <span class="Keyword">var</span> <span class="Identifier">app</span> <span class="Operator">=</span> <span class="Identifier">newQApplication</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
   <span class="Keyword">defer</span><span class="Punctuation">:</span> <span class="Identifier">app</span><span class="Operator">.</span><span class="Identifier">delete</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
    
   <span class="Keyword">var</span> <span class="Identifier">contact</span> <span class="Operator">=</span> <span class="Identifier">newContact</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
   <span class="Keyword">defer</span><span class="Punctuation">:</span> <span class="Identifier">contact</span><span class="Operator">.</span><span class="Identifier">delete</span><span class="Punctuation">(</span><span class="Punctuation">)</span> 
   
-  <span class="Keyword">var</span> <span class="Identifier">engine</span><span class="Punctuation">:</span> <span class="Identifier">QQmlApplicationEngine</span>
-  <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">create</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+  <span class="Keyword">var</span> <span class="Identifier">engine</span> <span class="Operator">=</span> <span class="Identifier">newQQmlApplicationEngine</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
   <span class="Keyword">defer</span><span class="Punctuation">:</span> <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">delete</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
 
-  <span class="Keyword">var</span> <span class="Identifier">variant</span><span class="Punctuation">:</span> <span class="Identifier">QVariant</span>
-  <span class="Identifier">variant</span><span class="Operator">.</span><span class="Identifier">create</span><span class="Punctuation">(</span><span class="Identifier">contact</span><span class="Punctuation">)</span>
+  <span class="Keyword">var</span> <span class="Identifier">variant</span> <span class="Operator">=</span> <span class="Identifier">newQVariant</span><span class="Punctuation">(</span><span class="Identifier">contact</span><span class="Punctuation">)</span>
   <span class="Keyword">defer</span><span class="Punctuation">:</span> <span class="Identifier">variant</span><span class="Operator">.</span><span class="Identifier">delete</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
 
-  <span class="Keyword">var</span> <span class="Identifier">rootContext</span><span class="Punctuation">:</span> <span class="Identifier">QQmlContext</span> <span class="Operator">=</span> <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">rootContext</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
-  <span class="Identifier">rootContext</span><span class="Operator">.</span><span class="Identifier">setContextProperty</span><span class="Punctuation">(</span><span class="StringLit">&quot;contact&quot;</span><span class="Punctuation">,</span> <span class="Identifier">variant</span><span class="Punctuation">)</span>
+  <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">rootContext</span><span class="Operator">.</span><span class="Identifier">setContextProperty</span><span class="Punctuation">(</span><span class="StringLit">&quot;contact&quot;</span><span class="Punctuation">,</span> <span class="Identifier">variant</span><span class="Punctuation">)</span>
   <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">load</span><span class="Punctuation">(</span><span class="StringLit">&quot;main.qml&quot;</span><span class="Punctuation">)</span>
   <span class="Identifier">app</span><span class="Operator">.</span><span class="Identifier">exec</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
 
 <span class="Keyword">when</span> <span class="Identifier">isMainModule</span><span class="Punctuation">:</span>
   <span class="Identifier">mainProc</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+  <span class="Identifier">GC_fullcollect</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
 
 </pre><p>Here, nothing special happens except:</p>
 <ol class="simple"><li>The creation of Contact object</li>
@@ -1393,17 +1387,24 @@ ApplicationWindow
 
 <span class="Keyword">type</span> <span class="Identifier">Contact</span> <span class="Operator">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">QObject</span> 
   <span class="Identifier">m_name</span><span class="Punctuation">:</span> <span class="Identifier">string</span>
-  
-<span class="Keyword">template</span> <span class="Identifier">newContact</span><span class="Operator">*</span><span class="Punctuation">(</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Identifier">Contact</span> <span class="Operator">=</span> 
-  <span class="Keyword">var</span> <span class="Identifier">result</span> <span class="Operator">=</span> <span class="Identifier">Contact</span><span class="Punctuation">(</span><span class="Identifier">m_name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;initialName&quot;</span><span class="Punctuation">)</span>
-  <span class="Identifier">result</span><span class="Operator">.</span><span class="Identifier">create</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
-  <span class="Identifier">result</span><span class="Operator">.</span><span class="Identifier">m_name</span> <span class="Operator">=</span> <span class="StringLit">&quot;InitialName&quot;</span>
-  <span class="Identifier">result</span><span class="Operator">.</span><span class="Identifier">registerSlot</span><span class="Punctuation">(</span><span class="StringLit">&quot;getName&quot;</span><span class="Punctuation">,</span> <span class="Punctuation">[</span><span class="Identifier">QMetaType</span><span class="Operator">.</span><span class="Identifier">QString</span><span class="Punctuation">]</span><span class="Punctuation">)</span>
-  <span class="Identifier">result</span><span class="Operator">.</span><span class="Identifier">registerSlot</span><span class="Punctuation">(</span><span class="StringLit">&quot;setName&quot;</span><span class="Punctuation">,</span> <span class="Punctuation">[</span><span class="Identifier">QMetaType</span><span class="Operator">.</span><span class="Identifier">Void</span><span class="Punctuation">,</span> <span class="Identifier">QMetaType</span><span class="Operator">.</span><span class="Identifier">QString</span><span class="Punctuation">]</span><span class="Punctuation">)</span>
-  <span class="Identifier">result</span><span class="Operator">.</span><span class="Identifier">registerSignal</span><span class="Punctuation">(</span><span class="StringLit">&quot;nameChanged&quot;</span><span class="Punctuation">,</span> <span class="Punctuation">[</span><span class="Identifier">QMetaType</span><span class="Operator">.</span><span class="Identifier">Void</span><span class="Punctuation">]</span><span class="Punctuation">)</span>
-  <span class="Identifier">result</span><span class="Operator">.</span><span class="Identifier">registerProperty</span><span class="Punctuation">(</span><span class="StringLit">&quot;name&quot;</span><span class="Punctuation">,</span> <span class="Identifier">QMetaType</span><span class="Operator">.</span><span class="Identifier">QString</span><span class="Punctuation">,</span> <span class="StringLit">&quot;getName&quot;</span><span class="Punctuation">,</span> <span class="StringLit">&quot;setName&quot;</span><span class="Punctuation">,</span> <span class="StringLit">&quot;nameChanged&quot;</span><span class="Punctuation">)</span>
-  <span class="Identifier">result</span>
 
+<span class="Keyword">proc</span> <span class="Identifier">delete</span><span class="Operator">*</span><span class="Punctuation">(</span><span class="Identifier">self</span><span class="Punctuation">:</span> <span class="Identifier">Contact</span><span class="Punctuation">)</span> <span class="Operator">=</span> 
+  <span class="Keyword">var</span> <span class="Identifier">qobject</span> <span class="Operator">=</span> <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">QObject</span>
+  <span class="Identifier">qobject</span><span class="Operator">.</span><span class="Identifier">delete</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+
+<span class="Keyword">proc</span> <span class="Identifier">create</span><span class="Operator">*</span><span class="Punctuation">(</span><span class="Identifier">self</span><span class="Punctuation">:</span> <span class="Identifier">Contact</span><span class="Punctuation">)</span> <span class="Operator">=</span>
+  <span class="Keyword">var</span> <span class="Identifier">qobject</span> <span class="Operator">=</span> <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">QObject</span>
+  <span class="Identifier">qobject</span><span class="Operator">.</span><span class="Identifier">create</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+  <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">m_name</span> <span class="Operator">=</span> <span class="StringLit">&quot;InitialName&quot;</span>
+  <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">registerSlot</span><span class="Punctuation">(</span><span class="StringLit">&quot;getName&quot;</span><span class="Punctuation">,</span> <span class="Punctuation">[</span><span class="Identifier">QMetaType</span><span class="Operator">.</span><span class="Identifier">QString</span><span class="Punctuation">]</span><span class="Punctuation">)</span>
+  <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">registerSlot</span><span class="Punctuation">(</span><span class="StringLit">&quot;setName&quot;</span><span class="Punctuation">,</span> <span class="Punctuation">[</span><span class="Identifier">QMetaType</span><span class="Operator">.</span><span class="Identifier">Void</span><span class="Punctuation">,</span> <span class="Identifier">QMetaType</span><span class="Operator">.</span><span class="Identifier">QString</span><span class="Punctuation">]</span><span class="Punctuation">)</span>
+  <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">registerSignal</span><span class="Punctuation">(</span><span class="StringLit">&quot;nameChanged&quot;</span><span class="Punctuation">,</span> <span class="Punctuation">[</span><span class="Identifier">QMetaType</span><span class="Operator">.</span><span class="Identifier">Void</span><span class="Punctuation">]</span><span class="Punctuation">)</span>
+  <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">registerProperty</span><span class="Punctuation">(</span><span class="StringLit">&quot;name&quot;</span><span class="Punctuation">,</span> <span class="Identifier">QMetaType</span><span class="Operator">.</span><span class="Identifier">QString</span><span class="Punctuation">,</span> <span class="StringLit">&quot;getName&quot;</span><span class="Punctuation">,</span> <span class="StringLit">&quot;setName&quot;</span><span class="Punctuation">,</span> <span class="StringLit">&quot;nameChanged&quot;</span><span class="Punctuation">)</span>
+  
+<span class="Keyword">proc</span> <span class="Identifier">newContact</span><span class="Operator">*</span><span class="Punctuation">(</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Identifier">Contact</span> <span class="Operator">=</span> 
+  <span class="Identifier">new</span><span class="Punctuation">(</span><span class="Identifier">result</span><span class="Punctuation">,</span> <span class="Identifier">delete</span><span class="Punctuation">)</span>
+  <span class="Identifier">result</span><span class="Operator">.</span><span class="Identifier">create</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+  
 <span class="Keyword">method</span> <span class="Identifier">getName</span><span class="Operator">*</span><span class="Punctuation">(</span><span class="Identifier">self</span><span class="Punctuation">:</span> <span class="Identifier">Contact</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Identifier">string</span> <span class="Operator">=</span>
   <span class="Identifier">result</span> <span class="Operator">=</span> <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">m_name</span>
 
@@ -1419,7 +1420,8 @@ ApplicationWindow
     <span class="Keyword">of</span> <span class="StringLit">&quot;setName&quot;</span><span class="Punctuation">:</span>
       <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">setName</span><span class="Punctuation">(</span><span class="Identifier">args</span><span class="Punctuation">[</span><span class="DecNumber">1</span><span class="Punctuation">]</span><span class="Operator">.</span><span class="Identifier">stringVal</span><span class="Punctuation">)</span>
     <span class="Keyword">else</span><span class="Punctuation">:</span>
-      <span class="Keyword">discard</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre><p>First we declare a QObject subclass and provide a simple new method where we:</p>
+      <span class="Keyword">discard</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+</pre><p>First we declare a QObject subclass and provide a simple new method where we:</p>
 <p>1. invoke the <tt class="docutils literal"><span class="pre">create()</span></tt> procedure. This invoke the C++ bridge and allocate a QObject instance</p>
 <ol class="simple"><li>register a slot <tt class="docutils literal"><span class="pre">getName</span></tt> for reading the Contact name field</li>
 <li>register a slot <tt class="docutils literal"><span class="pre">setName</span></tt> for writing the Contact name</li>
@@ -1437,29 +1439,25 @@ ApplicationWindow
 <span class="Keyword">import</span> <span class="Identifier">Contact</span>
 
 <span class="Keyword">proc</span> <span class="Identifier">mainProc</span><span class="Punctuation">(</span><span class="Punctuation">)</span> <span class="Operator">=</span>
-  <span class="Keyword">var</span> <span class="Identifier">app</span><span class="Punctuation">:</span> <span class="Identifier">QApplication</span>
-  <span class="Identifier">app</span><span class="Operator">.</span><span class="Identifier">create</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+  <span class="Keyword">var</span> <span class="Identifier">app</span> <span class="Operator">=</span> <span class="Identifier">newQApplication</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
   <span class="Keyword">defer</span><span class="Punctuation">:</span> <span class="Identifier">app</span><span class="Operator">.</span><span class="Identifier">delete</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
    
   <span class="Keyword">var</span> <span class="Identifier">contact</span> <span class="Operator">=</span> <span class="Identifier">newContact</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
   <span class="Keyword">defer</span><span class="Punctuation">:</span> <span class="Identifier">contact</span><span class="Operator">.</span><span class="Identifier">delete</span><span class="Punctuation">(</span><span class="Punctuation">)</span> 
 
-  <span class="Keyword">var</span> <span class="Identifier">engine</span><span class="Punctuation">:</span> <span class="Identifier">QQmlApplicationEngine</span>
-  <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">create</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+  <span class="Keyword">var</span> <span class="Identifier">engine</span> <span class="Operator">=</span> <span class="Identifier">newQQmlApplicationEngine</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
   <span class="Keyword">defer</span><span class="Punctuation">:</span> <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">delete</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
 
-  <span class="Keyword">var</span> <span class="Identifier">variant</span><span class="Punctuation">:</span> <span class="Identifier">QVariant</span>
-  <span class="Identifier">variant</span><span class="Operator">.</span><span class="Identifier">create</span><span class="Punctuation">(</span><span class="Identifier">contact</span><span class="Punctuation">)</span>
+  <span class="Keyword">var</span> <span class="Identifier">variant</span> <span class="Operator">=</span> <span class="Identifier">newQVariant</span><span class="Punctuation">(</span><span class="Identifier">contact</span><span class="Punctuation">)</span>
   <span class="Keyword">defer</span><span class="Punctuation">:</span> <span class="Identifier">variant</span><span class="Operator">.</span><span class="Identifier">delete</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
 
-  <span class="Keyword">var</span> <span class="Identifier">rootContext</span><span class="Punctuation">:</span> <span class="Identifier">QQmlContext</span> <span class="Operator">=</span> <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">rootContext</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
-  <span class="Identifier">rootContext</span><span class="Operator">.</span><span class="Identifier">setContextProperty</span><span class="Punctuation">(</span><span class="StringLit">&quot;contact&quot;</span><span class="Punctuation">,</span> <span class="Identifier">variant</span><span class="Punctuation">)</span>
+  <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">rootContext</span><span class="Operator">.</span><span class="Identifier">setContextProperty</span><span class="Punctuation">(</span><span class="StringLit">&quot;contact&quot;</span><span class="Punctuation">,</span> <span class="Identifier">variant</span><span class="Punctuation">)</span>
   <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">load</span><span class="Punctuation">(</span><span class="StringLit">&quot;main.qml&quot;</span><span class="Punctuation">)</span>
   <span class="Identifier">app</span><span class="Operator">.</span><span class="Identifier">exec</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
 
 <span class="Keyword">when</span> <span class="Identifier">isMainModule</span><span class="Punctuation">:</span>
   <span class="Identifier">mainProc</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
-
+  <span class="Identifier">GC_fullcollect</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
 </pre><p><tt class="docutils literal"><span class="pre">Examples/QtObjectMacro/main.qml</span></tt></p>
 <pre>import QtQuick 2.2
 import QtQuick.Controls 1.2
@@ -1504,20 +1502,24 @@ ApplicationWindow
   <span class="Keyword">type</span> <span class="Identifier">Contact</span><span class="Operator">*</span> <span class="Operator">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">QObject</span>
     <span class="Identifier">m_name</span><span class="Punctuation">:</span> <span class="Identifier">string</span>
 
-  <span class="Keyword">template</span> <span class="Identifier">newContact</span><span class="Operator">*</span><span class="Punctuation">(</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Identifier">Contact</span> <span class="Operator">=</span>
-    <span class="Keyword">var</span> <span class="Identifier">result</span> <span class="Operator">=</span> <span class="Identifier">Contact</span><span class="Punctuation">(</span><span class="Identifier">m_name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;initialName&quot;</span><span class="Punctuation">)</span>
-    <span class="Identifier">result</span><span class="Operator">.</span><span class="Identifier">create</span>
-    <span class="Identifier">result</span>
-  
-  <span class="Keyword">method</span> <span class="Identifier">getName</span><span class="Operator">*</span><span class="Punctuation">(</span><span class="Identifier">contact</span><span class="Punctuation">:</span> <span class="Identifier">Contact</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Identifier">string</span> <span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">slot</span><span class="Operator">.</span><span class="Punctuation">}</span> <span class="Operator">=</span>
-    <span class="Identifier">result</span> <span class="Operator">=</span> <span class="Identifier">contact</span><span class="Operator">.</span><span class="Identifier">m_name</span>
+  <span class="Keyword">proc</span> <span class="Identifier">delete</span><span class="Operator">*</span><span class="Punctuation">(</span><span class="Identifier">self</span><span class="Punctuation">:</span> <span class="Identifier">Contact</span><span class="Punctuation">)</span> <span class="Operator">=</span> 
+    <span class="Keyword">var</span> <span class="Identifier">qobject</span> <span class="Operator">=</span> <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">QObject</span>
+    <span class="Identifier">qobject</span><span class="Operator">.</span><span class="Identifier">delete</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
 
-  <span class="Keyword">method</span> <span class="Identifier">nameChanged</span><span class="Operator">*</span><span class="Punctuation">(</span><span class="Identifier">contact</span><span class="Punctuation">:</span> <span class="Identifier">Contact</span><span class="Punctuation">)</span> <span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">signal</span><span class="Operator">.</span><span class="Punctuation">}</span>
+  <span class="Keyword">proc</span> <span class="Identifier">newContact</span><span class="Operator">*</span><span class="Punctuation">(</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Identifier">Contact</span> <span class="Operator">=</span>
+    <span class="Identifier">new</span><span class="Punctuation">(</span><span class="Identifier">result</span><span class="Punctuation">,</span> <span class="Identifier">delete</span><span class="Punctuation">)</span>
+    <span class="Identifier">result</span><span class="Operator">.</span><span class="Identifier">m_name</span> <span class="Operator">=</span> <span class="StringLit">&quot;InitialName&quot;</span>
+    <span class="Identifier">result</span><span class="Operator">.</span><span class="Identifier">create</span>
   
-  <span class="Keyword">method</span> <span class="Identifier">setName</span><span class="Operator">*</span><span class="Punctuation">(</span><span class="Identifier">contact</span><span class="Punctuation">:</span> <span class="Identifier">Contact</span><span class="Punctuation">,</span> <span class="Identifier">name</span><span class="Punctuation">:</span> <span class="Identifier">string</span><span class="Punctuation">)</span> <span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">slot</span><span class="Operator">.</span><span class="Punctuation">}</span> <span class="Operator">=</span>
-    <span class="Keyword">if</span> <span class="Identifier">contact</span><span class="Operator">.</span><span class="Identifier">m_name</span> <span class="Operator">!=</span> <span class="Identifier">name</span><span class="Punctuation">:</span>
-      <span class="Identifier">contact</span><span class="Operator">.</span><span class="Identifier">m_name</span> <span class="Operator">=</span> <span class="Identifier">name</span>
-      <span class="Identifier">contact</span><span class="Operator">.</span><span class="Identifier">nameChanged</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+  <span class="Keyword">method</span> <span class="Identifier">getName</span><span class="Operator">*</span><span class="Punctuation">(</span><span class="Identifier">self</span><span class="Punctuation">:</span> <span class="Identifier">Contact</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Identifier">string</span> <span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">slot</span><span class="Operator">.</span><span class="Punctuation">}</span> <span class="Operator">=</span>
+    <span class="Identifier">result</span> <span class="Operator">=</span> <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">m_name</span>
+
+  <span class="Keyword">method</span> <span class="Identifier">nameChanged</span><span class="Operator">*</span><span class="Punctuation">(</span><span class="Identifier">self</span><span class="Punctuation">:</span> <span class="Identifier">Contact</span><span class="Punctuation">)</span> <span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">signal</span><span class="Operator">.</span><span class="Punctuation">}</span>
+  
+  <span class="Keyword">method</span> <span class="Identifier">setName</span><span class="Operator">*</span><span class="Punctuation">(</span><span class="Identifier">self</span><span class="Punctuation">:</span> <span class="Identifier">Contact</span><span class="Punctuation">,</span> <span class="Identifier">name</span><span class="Punctuation">:</span> <span class="Identifier">string</span><span class="Punctuation">)</span> <span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">slot</span><span class="Operator">.</span><span class="Punctuation">}</span> <span class="Operator">=</span>
+    <span class="Keyword">if</span> <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">m_name</span> <span class="Operator">!=</span> <span class="Identifier">name</span><span class="Punctuation">:</span>
+      <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">m_name</span> <span class="Operator">=</span> <span class="Identifier">name</span>
+      <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">nameChanged</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
   
   <span class="Identifier">QtProperty</span><span class="Punctuation">[</span><span class="Identifier">string</span><span class="Punctuation">]</span> <span class="Identifier">name</span><span class="Punctuation">:</span>
     <span class="Identifier">read</span> <span class="Operator">=</span> <span class="Identifier">getName</span>
@@ -1531,13 +1533,244 @@ ApplicationWindow
 </ol>
 <p>The <tt class="docutils literal"><span class="pre">QtProperty</span></tt> macro has the following syntax</p>
 <pre><span class="Identifier">QtProperty</span><span class="Punctuation">[</span><span class="Identifier">typeOfProperty</span><span class="Punctuation">]</span> <span class="Identifier">nameOfProperty</span></pre>
+<h1 id="example-5-contactapp">Example 5: ContactApp</h1><p>The last example tries to show you all the stuff presented in the previous chapters and gives you an introduction to how to expose lists to qml.</p>
+<p>Qt models are a huge topic and explaining how they work is out of scope. For further information please read the official Qt documentation.</p>
+<p>The main file follows the basic logic of creating a qml engine and exposing a QObject derived object &quot;ApplicationLogic&quot; through a global &quot;logic&quot; property</p>
+<p><tt class="docutils literal"><span class="pre">Examples/ContactApp/main.nim</span></tt></p>
+<pre><span class="Keyword">import</span> <span class="Identifier">NimQml</span><span class="Punctuation">,</span> <span class="Identifier">ApplicationLogic</span>
+
+<span class="Keyword">proc</span> <span class="Identifier">mainProc</span><span class="Punctuation">(</span><span class="Punctuation">)</span> <span class="Operator">=</span>
+  <span class="Keyword">let</span> <span class="Identifier">app</span> <span class="Operator">=</span> <span class="Identifier">newQApplication</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+  <span class="Keyword">defer</span><span class="Punctuation">:</span> <span class="Identifier">app</span><span class="Operator">.</span><span class="Identifier">delete</span>
+  <span class="Keyword">let</span> <span class="Identifier">logic</span> <span class="Operator">=</span> <span class="Identifier">newApplicationLogic</span><span class="Punctuation">(</span><span class="Identifier">app</span><span class="Punctuation">)</span>
+  <span class="Keyword">defer</span><span class="Punctuation">:</span> <span class="Identifier">logic</span><span class="Operator">.</span><span class="Identifier">delete</span>
+  <span class="Keyword">let</span> <span class="Identifier">engine</span> <span class="Operator">=</span> <span class="Identifier">newQQmlApplicationEngine</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+  <span class="Keyword">defer</span><span class="Punctuation">:</span> <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">delete</span>
+  <span class="Keyword">let</span> <span class="Identifier">logicVariant</span> <span class="Operator">=</span> <span class="Identifier">newQVariant</span><span class="Punctuation">(</span><span class="Identifier">logic</span><span class="Punctuation">)</span>
+  <span class="Keyword">defer</span><span class="Punctuation">:</span> <span class="Identifier">logicVariant</span><span class="Operator">.</span><span class="Identifier">delete</span>
+  <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">rootContext</span><span class="Operator">.</span><span class="Identifier">setContextProperty</span><span class="Punctuation">(</span><span class="StringLit">&quot;logic&quot;</span><span class="Punctuation">,</span> <span class="Identifier">logicVariant</span><span class="Punctuation">)</span>
+  <span class="Identifier">engine</span><span class="Operator">.</span><span class="Identifier">load</span><span class="Punctuation">(</span><span class="StringLit">&quot;main.qml&quot;</span><span class="Punctuation">)</span>
+  <span class="Identifier">app</span><span class="Operator">.</span><span class="Identifier">exec</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+
+<span class="Keyword">when</span> <span class="Identifier">isMainModule</span><span class="Punctuation">:</span>
+  <span class="Identifier">mainProc</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+</pre><p>The qml file shows a simple app with a central tableview</p>
+<p><tt class="docutils literal"><span class="pre">Examples/ContactApp/main.qml</span></tt></p>
+<pre>import QtQuick 2.2
+import QtQuick.Controls 1.2
+import QtQuick.Layouts 1.1
+import QtQuick.Window 2.1
+
+ApplicationWindow {
+
+	width: 500
+	height: 300
+    title: &quot;ContactApp&quot;
+	visible: true
+
+    menuBar: MenuBar {
+        Menu {
+            title: &quot;&amp;File&quot;
+            MenuItem { text: &quot;&amp;Load&quot;; onTriggered: logic.onLoadTriggered() }
+            MenuItem { text: &quot;&amp;Save&quot;; onTriggered: logic.onSaveTriggered() }
+            MenuItem { text: &quot;&amp;Exit&quot;; onTriggered: logic.onExitTriggered() }
+        }
+    }
+    
+	ColumnLayout {
+	    anchors.fill: parent
+
+        Component {
+            id: tableTextDelegate
+            Label {
+                id: tableTextDelegateInstance
+                property var styleData: undefined
+                states: State {
+                    when: styleData !== undefined
+                    PropertyChanges { 
+                        target: tableTextDelegateInstance; 
+                        text: styleData.value; 
+                        color: styleData.textColor
+                    }
+                }
+            }
+        }
+
+        Component {
+            id: tableButtonDelegate
+            Button {
+                id: tableButtonDelegateInstance
+                property var styleData: undefined
+                text: &quot;Delete&quot;
+                onClicked: logic.contactList.del(styleData.row)
+            }
+        }
+
+        Component {
+            id: tableItemDelegate
+            Loader {
+                id: tableItemDelegateInstance
+                sourceComponent: {
+                    if (styleData.column === 0 || styleData.column === 1)
+                        return tableTextDelegate
+                    else if (styleData.column === 2)
+                        return tableButtonDelegate
+                    else
+                        return tableTextDelegate
+                }
+                Binding {
+                    target: tableItemDelegateInstance.item
+                    property: &quot;styleData&quot;
+                    value: styleData
+                }
+            }
+        }
+
+        TableView {
+            model: logic.contactList
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            TableViewColumn { role: &quot;firstName&quot;; title: &quot;FirstName&quot;; width: 200 }
+            TableViewColumn { role: &quot;surname&quot;; title: &quot;Surname&quot;; width: 200}
+            TableViewColumn { width: 100; }
+            itemDelegate: tableItemDelegate
+        }
+
+        RowLayout {
+            Label { text: &quot;Name&quot; }
+            TextField { id: nameTextField; Layout.fillWidth: true; text: &quot;&quot; }
+            Label { text: &quot;Surname&quot; }
+            TextField { id: surnameTextField; Layout.fillWidth: true; text: &quot;&quot; }
+            Button { 
+                text: &quot;Add&quot;
+                onClicked: logic.contactList.add(nameTextField.text, surnameTextField.text)
+                enabled: nameTextField.text !== &quot;&quot; &amp;&amp; surnameTextField.text !== &quot;&quot;
+            }
+        }
+	}
+}
+</pre><p>The important things to notice are:</p>
+<ol class="simple"><li>The menubar load, save and exit items handlers call the logic load, save and exit slots</li>
+<li>The TableView model is retrieved by the logic.contactList property</li>
+<li>The delete and add buttons call the del and add slots of the logic.contactList model</li>
+</ol>
+<p>The ApplicationLogic object is as follows:</p>
+<p><tt class="docutils literal"><span class="pre">Examples/ContactApp/ApplicationLogic.nim</span></tt></p>
+<pre><span class="Keyword">import</span> <span class="Identifier">NimQml</span><span class="Punctuation">,</span> <span class="Identifier">NimQmlMacros</span><span class="Punctuation">,</span> <span class="Identifier">ContactList</span>
+
+<span class="Identifier">QtObject</span><span class="Punctuation">:</span>
+  <span class="Keyword">type</span> <span class="Identifier">ApplicationLogic</span><span class="Operator">*</span> <span class="Operator">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">QObject</span>
+    <span class="Identifier">contactList</span><span class="Punctuation">:</span> <span class="Identifier">ContactList</span>
+    <span class="Identifier">app</span><span class="Punctuation">:</span> <span class="Identifier">QApplication</span>
+
+  <span class="Keyword">proc</span> <span class="Identifier">delete</span><span class="Operator">*</span><span class="Punctuation">(</span><span class="Identifier">self</span><span class="Punctuation">:</span> <span class="Identifier">ApplicationLogic</span><span class="Punctuation">)</span> <span class="Operator">=</span>
+    <span class="Keyword">let</span> <span class="Identifier">qobject</span> <span class="Operator">=</span> <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">QObject</span>
+    <span class="Identifier">qobject</span><span class="Operator">.</span><span class="Identifier">delete</span>
+    <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">contactList</span><span class="Operator">.</span><span class="Identifier">delete</span>
+
+  <span class="Keyword">proc</span> <span class="Identifier">newApplicationLogic</span><span class="Operator">*</span><span class="Punctuation">(</span><span class="Identifier">app</span><span class="Punctuation">:</span> <span class="Identifier">QApplication</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Identifier">ApplicationLogic</span> <span class="Operator">=</span>
+    <span class="Identifier">new</span><span class="Punctuation">(</span><span class="Identifier">result</span><span class="Punctuation">)</span>
+    <span class="Identifier">result</span><span class="Operator">.</span><span class="Identifier">contactList</span> <span class="Operator">=</span> <span class="Identifier">newContactList</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+    <span class="Identifier">result</span><span class="Operator">.</span><span class="Identifier">app</span> <span class="Operator">=</span> <span class="Identifier">app</span>
+    <span class="Identifier">result</span><span class="Operator">.</span><span class="Identifier">create</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+
+  <span class="Keyword">method</span> <span class="Identifier">getContactList</span><span class="Punctuation">(</span><span class="Identifier">self</span><span class="Punctuation">:</span> <span class="Identifier">ApplicationLogic</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Identifier">QVariant</span> <span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">slot</span><span class="Operator">.</span><span class="Punctuation">}</span> <span class="Operator">=</span> 
+    <span class="Keyword">return</span> <span class="Identifier">newQVariant</span><span class="Punctuation">(</span><span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">contactList</span><span class="Punctuation">)</span>
+
+  <span class="Keyword">method</span> <span class="Identifier">onLoadTriggered</span><span class="Punctuation">(</span><span class="Identifier">self</span><span class="Punctuation">:</span> <span class="Identifier">ApplicationLogic</span><span class="Punctuation">)</span> <span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">slot</span><span class="Operator">.</span><span class="Punctuation">}</span> <span class="Operator">=</span>
+    <span class="Identifier">echo</span> <span class="StringLit">&quot;Load Triggered&quot;</span>
+    <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">contactList</span><span class="Operator">.</span><span class="Identifier">add</span><span class="Punctuation">(</span><span class="StringLit">&quot;John&quot;</span><span class="Punctuation">,</span> <span class="StringLit">&quot;Doo&quot;</span><span class="Punctuation">)</span>
+
+  <span class="Keyword">method</span> <span class="Identifier">onSaveTriggered</span><span class="Punctuation">(</span><span class="Identifier">self</span><span class="Punctuation">:</span> <span class="Identifier">ApplicationLogic</span><span class="Punctuation">)</span> <span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">slot</span><span class="Operator">.</span><span class="Punctuation">}</span> <span class="Operator">=</span>
+    <span class="Identifier">echo</span> <span class="StringLit">&quot;Save Triggered&quot;</span>  
+    
+  <span class="Keyword">method</span> <span class="Identifier">onExitTriggered</span><span class="Punctuation">(</span><span class="Identifier">self</span><span class="Punctuation">:</span> <span class="Identifier">ApplicationLogic</span><span class="Punctuation">)</span> <span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">slot</span><span class="Operator">.</span><span class="Punctuation">}</span> <span class="Operator">=</span>
+    <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">app</span><span class="Operator">.</span><span class="Identifier">quit</span>
+
+  <span class="Identifier">QtProperty</span><span class="Punctuation">[</span><span class="Identifier">QVariant</span><span class="Punctuation">]</span> <span class="Identifier">contactList</span><span class="Punctuation">:</span>
+    <span class="Identifier">read</span> <span class="Operator">=</span> <span class="Identifier">getContactList</span>
+</pre><p>The ApplicationLogic object,</p>
+<ol class="simple"><li>expose some slots for handling the qml menubar triggered signals</li>
+<li>expose a contactList property that return a QAbstractListModel derived object that manage the list of contacts</li>
+</ol>
+<p>The ContactList object is as follows:</p>
+<p><tt class="docutils literal"><span class="pre">Examples/ContactApp/ContactList.nim</span></tt></p>
+<pre><span class="Keyword">import</span> <span class="Identifier">NimQml</span><span class="Punctuation">,</span> <span class="Identifier">NimQmlMacros</span><span class="Punctuation">,</span> <span class="Identifier">Contact</span><span class="Punctuation">,</span> <span class="Identifier">Tables</span>
+
+<span class="Identifier">QtObject</span><span class="Punctuation">:</span>
+  <span class="Keyword">type</span>
+    <span class="Identifier">ContactList</span><span class="Operator">*</span> <span class="Operator">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">QAbstractListModel</span>
+      <span class="Identifier">contacts</span><span class="Operator">*:</span> <span class="Identifier">seq</span><span class="Punctuation">[</span><span class="Identifier">Contact</span><span class="Punctuation">]</span>
+    <span class="Identifier">ContactRoles</span> <span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">pure</span><span class="Operator">.</span><span class="Punctuation">}</span> <span class="Operator">=</span> <span class="Keyword">enum</span>
+      <span class="Identifier">FirstName</span> <span class="Operator">=</span> <span class="DecNumber">0</span>
+      <span class="Identifier">Surname</span> <span class="Operator">=</span> <span class="DecNumber">1</span>
+
+  <span class="Keyword">converter</span> <span class="Identifier">toCInt</span><span class="Punctuation">(</span><span class="Identifier">value</span><span class="Punctuation">:</span> <span class="Identifier">ContactRoles</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Identifier">cint</span> <span class="Operator">=</span> <span class="Keyword">return</span> <span class="Identifier">value</span><span class="Operator">.</span><span class="Identifier">cint</span>
+  <span class="Keyword">converter</span> <span class="Identifier">toCInt</span><span class="Punctuation">(</span><span class="Identifier">value</span><span class="Punctuation">:</span> <span class="Identifier">int</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Identifier">cint</span> <span class="Operator">=</span> <span class="Keyword">return</span> <span class="Identifier">value</span><span class="Operator">.</span><span class="Identifier">cint</span>
+  <span class="Keyword">converter</span> <span class="Identifier">toInt</span><span class="Punctuation">(</span><span class="Identifier">value</span><span class="Punctuation">:</span> <span class="Identifier">ContactRoles</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Identifier">int</span> <span class="Operator">=</span> <span class="Keyword">return</span> <span class="Identifier">value</span><span class="Operator">.</span><span class="Identifier">int</span>
+  <span class="Keyword">converter</span> <span class="Identifier">toInt</span><span class="Punctuation">(</span><span class="Identifier">value</span><span class="Punctuation">:</span> <span class="Identifier">cint</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Identifier">int</span> <span class="Operator">=</span> <span class="Keyword">return</span> <span class="Identifier">value</span><span class="Operator">.</span><span class="Identifier">int</span>
+  <span class="Keyword">converter</span> <span class="Identifier">toQVariant</span><span class="Punctuation">(</span><span class="Identifier">value</span><span class="Punctuation">:</span> <span class="Identifier">string</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Identifier">QVariant</span> <span class="Operator">=</span> <span class="Keyword">return</span> <span class="Identifier">value</span><span class="Operator">.</span><span class="Identifier">newQVariant</span> 
+
+  <span class="Keyword">proc</span> <span class="Identifier">delete</span><span class="Punctuation">(</span><span class="Identifier">self</span><span class="Punctuation">:</span> <span class="Identifier">ContactList</span><span class="Punctuation">)</span> <span class="Operator">=</span>
+    <span class="Keyword">let</span> <span class="Identifier">model</span> <span class="Operator">=</span> <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">QAbstractListModel</span>
+    <span class="Identifier">model</span><span class="Operator">.</span><span class="Identifier">delete</span>
+    <span class="Keyword">for</span> <span class="Identifier">contact</span> <span class="Keyword">in</span> <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">contacts</span><span class="Punctuation">:</span>
+      <span class="Identifier">contact</span><span class="Operator">.</span><span class="Identifier">delete</span>
+    <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">contacts</span> <span class="Operator">=</span> <span class="Operator">@</span><span class="Punctuation">[</span><span class="Punctuation">]</span>
+    
+  <span class="Keyword">proc</span> <span class="Identifier">newContactList</span><span class="Operator">*</span><span class="Punctuation">(</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Identifier">ContactList</span> <span class="Operator">=</span>
+    <span class="Identifier">new</span><span class="Punctuation">(</span><span class="Identifier">result</span><span class="Punctuation">,</span> <span class="Identifier">delete</span><span class="Punctuation">)</span>
+    <span class="Identifier">result</span><span class="Operator">.</span><span class="Identifier">contacts</span> <span class="Operator">=</span> <span class="Operator">@</span><span class="Punctuation">[</span><span class="Punctuation">]</span>
+    <span class="Identifier">result</span><span class="Operator">.</span><span class="Identifier">create</span>
+
+  <span class="Keyword">method</span> <span class="Identifier">rowCount</span><span class="Punctuation">(</span><span class="Identifier">self</span><span class="Punctuation">:</span> <span class="Identifier">ContactList</span><span class="Punctuation">,</span> <span class="Identifier">index</span><span class="Punctuation">:</span> <span class="Identifier">QModelIndex</span> <span class="Operator">=</span> <span class="Keyword">nil</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Identifier">cint</span> <span class="Operator">=</span>
+    <span class="Keyword">return</span> <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">contacts</span><span class="Operator">.</span><span class="Identifier">len</span>
+
+  <span class="Keyword">method</span> <span class="Identifier">data</span><span class="Punctuation">(</span><span class="Identifier">self</span><span class="Punctuation">:</span> <span class="Identifier">ContactList</span><span class="Punctuation">,</span> <span class="Identifier">index</span><span class="Punctuation">:</span> <span class="Identifier">QModelIndex</span><span class="Punctuation">,</span> <span class="Identifier">role</span><span class="Punctuation">:</span> <span class="Identifier">cint</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Identifier">QVariant</span> <span class="Operator">=</span>
+    <span class="Keyword">if</span> <span class="Keyword">not</span> <span class="Identifier">index</span><span class="Operator">.</span><span class="Identifier">isValid</span><span class="Punctuation">:</span>
+      <span class="Keyword">return</span>
+    <span class="Keyword">if</span> <span class="Identifier">index</span><span class="Operator">.</span><span class="Identifier">row</span> <span class="Operator">&lt;</span> <span class="DecNumber">0</span> <span class="Keyword">or</span> <span class="Identifier">index</span><span class="Operator">.</span><span class="Identifier">row</span> <span class="Operator">&gt;=</span> <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">contacts</span><span class="Operator">.</span><span class="Identifier">len</span><span class="Punctuation">:</span>
+      <span class="Keyword">return</span>
+    <span class="Keyword">let</span> <span class="Identifier">contact</span> <span class="Operator">=</span> <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">contacts</span><span class="Punctuation">[</span><span class="Identifier">index</span><span class="Operator">.</span><span class="Identifier">row</span><span class="Punctuation">]</span>
+    <span class="Keyword">let</span> <span class="Identifier">contactRole</span> <span class="Operator">=</span> <span class="Identifier">role</span><span class="Operator">.</span><span class="Identifier">ContactRoles</span>
+    <span class="Keyword">case</span> <span class="Identifier">contactRole</span><span class="Punctuation">:</span>
+      <span class="Keyword">of</span> <span class="Identifier">ContactRoles</span><span class="Operator">.</span><span class="Identifier">FirstName</span><span class="Punctuation">:</span> <span class="Keyword">return</span> <span class="Identifier">contact</span><span class="Operator">.</span><span class="Identifier">firstName</span>
+      <span class="Keyword">of</span> <span class="Identifier">ContactRoles</span><span class="Operator">.</span><span class="Identifier">Surname</span><span class="Punctuation">:</span> <span class="Keyword">return</span> <span class="Identifier">contact</span><span class="Operator">.</span><span class="Identifier">surname</span>
+      <span class="Keyword">else</span><span class="Punctuation">:</span> <span class="Keyword">return</span>
+
+  <span class="Keyword">method</span> <span class="Identifier">roleNames</span><span class="Punctuation">(</span><span class="Identifier">self</span><span class="Punctuation">:</span> <span class="Identifier">ContactList</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Identifier">Table</span><span class="Punctuation">[</span><span class="Identifier">cint</span><span class="Punctuation">,</span> <span class="Identifier">cstring</span><span class="Punctuation">]</span> <span class="Operator">=</span>
+    <span class="Identifier">result</span> <span class="Operator">=</span> <span class="Identifier">initTable</span><span class="Punctuation">[</span><span class="Identifier">cint</span><span class="Punctuation">,</span> <span class="Identifier">cstring</span><span class="Punctuation">]</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+    <span class="Identifier">result</span><span class="Punctuation">[</span><span class="Identifier">ContactRoles</span><span class="Operator">.</span><span class="Identifier">FirstName</span><span class="Punctuation">]</span> <span class="Operator">=</span> <span class="StringLit">&quot;firstName&quot;</span>
+    <span class="Identifier">result</span><span class="Punctuation">[</span><span class="Identifier">ContactRoles</span><span class="Operator">.</span><span class="Identifier">Surname</span><span class="Punctuation">]</span> <span class="Operator">=</span> <span class="StringLit">&quot;surname&quot;</span>
+    
+  <span class="Keyword">method</span> <span class="Identifier">add</span><span class="Operator">*</span><span class="Punctuation">(</span><span class="Identifier">self</span><span class="Punctuation">:</span> <span class="Identifier">ContactList</span><span class="Punctuation">,</span> <span class="Identifier">name</span><span class="Punctuation">:</span> <span class="Identifier">string</span><span class="Punctuation">,</span> <span class="Identifier">surname</span><span class="Punctuation">:</span> <span class="Identifier">string</span><span class="Punctuation">)</span> <span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">slot</span><span class="Operator">.</span><span class="Punctuation">}</span> <span class="Operator">=</span>
+    <span class="Keyword">let</span> <span class="Identifier">contact</span> <span class="Operator">=</span> <span class="Identifier">newContact</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+    <span class="Identifier">contact</span><span class="Operator">.</span><span class="Identifier">firstName</span> <span class="Operator">=</span> <span class="Identifier">name</span>
+    <span class="Identifier">contact</span><span class="Operator">.</span><span class="Identifier">surname</span> <span class="Operator">=</span> <span class="Identifier">surname</span>
+    <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">beginInsertRows</span><span class="Punctuation">(</span><span class="Identifier">newQModelIndex</span><span class="Punctuation">(</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">contacts</span><span class="Operator">.</span><span class="Identifier">len</span><span class="Punctuation">,</span> <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">contacts</span><span class="Operator">.</span><span class="Identifier">len</span><span class="Punctuation">)</span>
+    <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">contacts</span><span class="Operator">.</span><span class="Identifier">add</span><span class="Punctuation">(</span><span class="Identifier">contact</span><span class="Punctuation">)</span>
+    <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">endInsertRows</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+    
+  <span class="Keyword">method</span> <span class="Identifier">del</span><span class="Operator">*</span><span class="Punctuation">(</span><span class="Identifier">self</span><span class="Punctuation">:</span> <span class="Identifier">ContactList</span><span class="Punctuation">,</span> <span class="Identifier">pos</span><span class="Punctuation">:</span> <span class="Identifier">int</span><span class="Punctuation">)</span> <span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">slot</span><span class="Operator">.</span><span class="Punctuation">}</span> <span class="Operator">=</span>
+    <span class="Keyword">if</span> <span class="Identifier">pos</span> <span class="Operator">&lt;</span> <span class="DecNumber">0</span> <span class="Keyword">or</span> <span class="Identifier">pos</span> <span class="Operator">&gt;=</span> <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">contacts</span><span class="Operator">.</span><span class="Identifier">len</span><span class="Punctuation">:</span>
+      <span class="Keyword">return</span> 
+    <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">beginRemoveRows</span><span class="Punctuation">(</span><span class="Identifier">newQModelIndex</span><span class="Punctuation">(</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">pos</span><span class="Punctuation">,</span> <span class="Identifier">pos</span><span class="Punctuation">)</span>
+    <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">contacts</span><span class="Operator">.</span><span class="Identifier">del</span><span class="Punctuation">(</span><span class="Identifier">pos</span><span class="Punctuation">)</span>    
+    <span class="Identifier">self</span><span class="Operator">.</span><span class="Identifier">endRemoveRows</span>
+</pre><p>The ContactList object:</p>
+<ol class="simple"><li>overrides the <tt class="docutils literal"><span class="pre">rowCount</span></tt> method for returning the number of rows stored in the model</li>
+<li>overrides the <tt class="docutils literal"><span class="pre">data</span></tt> method for returning the value for the exported roles</li>
+<li>overrides the <tt class="docutils literal"><span class="pre">roleNames</span></tt> method for returning the names of the roles of the model. This name are then available in the qml item delegates</li>
+<li>defines two slots <tt class="docutils literal"><span class="pre">add</span></tt> and <tt class="docutils literal"><span class="pre">del</span></tt> that add or delete a Contact. During this operations the model execute the <tt class="docutils literal"><span class="pre">beginInsertRows</span></tt> and <tt class="docutils literal"><span class="pre">beginRemoveRows</span></tt> for notifing the view of an upcoming change. Once the add or delete operations are done the model execute the <tt class="docutils literal"><span class="pre">endInsertRows</span></tt> and <tt class="docutils literal"><span class="pre">endRemoveRows</span></tt>.</li>
+</ol>
+
 
 
     <div class="row">
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small>Made with Nim. Generated: 2015-01-06 13:11:40 UTC</small>
+        <small>Made with Nim. Generated: 2015-02-15 14:40:35 UTC</small>
       </div>
     </div>
   </div>
