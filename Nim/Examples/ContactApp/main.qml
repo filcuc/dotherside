@@ -3,50 +3,91 @@ import QtQuick.Controls 1.2
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.1
 
-ApplicationWindow
-{
-	width: 400
+ApplicationWindow {
+
+	width: 500
 	height: 300
     title: "ContactApp"
 	visible: true
 
     menuBar: MenuBar {
-        Menu
-        {
+        Menu {
             title: "&File"
-            MenuItem { text: "Load"; onTriggered: logic.onLoadTriggered() }
-            MenuItem { text: "Save"; onTriggered: logic.onSaveTriggered() }
-            MenuItem { text: "Exit"; onTriggered: logic.onExitTriggered() }
+            MenuItem { text: "&Load"; onTriggered: logic.onLoadTriggered() }
+            MenuItem { text: "&Save"; onTriggered: logic.onSaveTriggered() }
+            MenuItem { text: "&Exit"; onTriggered: logic.onExitTriggered() }
         }
     }
     
-	ColumnLayout
-	{
+	ColumnLayout {
 	    anchors.fill: parent
-        
-        ListView
-        {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            model: logic.contactList.count
-            spacing: 5
-            delegate: RowLayout {
-                width: ListView.view.width
-                property QtObject contact: logic.contactList.get(index)
-                TextField { Layout.fillWidth: true; text: contact.firstName }
-                TextField { Layout.fillWidth: true; text: contact.surname }
-                Button { text: "Save" }
-                Button { text: "Delete"; onClicked: logic.contactList.del(index) }
+
+        Component {
+            id: tableTextDelegate
+            Label {
+                id: tableTextDelegateInstance
+                property var styleData: undefined
+                states: State {
+                    when: styleData !== undefined
+                    PropertyChanges { 
+                        target: tableTextDelegateInstance; 
+                        text: styleData.value; 
+                        color: styleData.textColor
+                    }
+                }
             }
         }
 
-        RowLayout
-        {
+        Component {
+            id: tableButtonDelegate
+            Button {
+                id: tableButtonDelegateInstance
+                property var styleData: undefined
+                text: "Delete"
+                onClicked: logic.contactList.del(styleData.row)
+            }
+        }
+
+        Component {
+            id: tableItemDelegate
+            Loader {
+                id: tableItemDelegateInstance
+                sourceComponent: {
+                    if (styleData.column === 0 || styleData.column === 1)
+                        return tableTextDelegate
+                    else if (styleData.column === 2)
+                        return tableButtonDelegate
+                    else
+                        return tableTextDelegate
+                }
+                Binding {
+                    target: tableItemDelegateInstance.item
+                    property: "styleData"
+                    value: styleData
+                }
+            }
+        }
+
+        TableView {
+            model: logic.contactList
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            TableViewColumn { role: "firstName"; title: "FirstName"; width: 200 }
+            TableViewColumn { role: "surname"; title: "Surname"; width: 200}
+            TableViewColumn { width: 100; }
+            itemDelegate: tableItemDelegate
+        }
+
+        RowLayout {
             Label { text: "Name" }
             TextField { id: nameTextField; Layout.fillWidth: true; text: "" }
             Label { text: "Surname" }
             TextField { id: surnameTextField; Layout.fillWidth: true; text: "" }
-            Button { text: "Add"; onClicked: logic.contactList.add(nameTextField.text, surnameTextField.text) }
+            Button { 
+                text: "Add"
+                onClicked: logic.contactList.add(nameTextField.text, surnameTextField.text)
+                enabled: nameTextField.text !== "" && surnameTextField.text !== ""
+            }
         }
 	}
 }

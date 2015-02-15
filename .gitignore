@@ -5,3 +5,4 @@ build
 .directory
 #*#
 nimcache
+*.kdev4

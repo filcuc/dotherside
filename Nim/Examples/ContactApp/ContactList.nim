@@ -1,44 +1,62 @@
-## Please note we are using templates where ordinarily we would like to use procedures
-## due to bug: https://github.com/Araq/Nim/issues/1821
-import NimQml, NimQmlMacros, Contact
+import NimQml, NimQmlMacros, Contact, Tables
 
 QtObject:
-  type ContactList* = ref object of QObject
-    contacts*: seq[Contact]
+  type
+    ContactList* = ref object of QAbstractListModel
+      contacts*: seq[Contact]
+    ContactRoles {.pure.} = enum
+      FirstName = 0
+      Surname = 1
 
-  proc delete*(self: ContactList) =
-    let qobject = self.QObject
-    qobject.delete
+  converter toCInt(value: ContactRoles): cint = return value.cint
+  converter toCInt(value: int): cint = return value.cint
+  converter toInt(value: ContactRoles): int = return value.int
+  converter toInt(value: cint): int = return value.int
+  converter toQVariant(value: string): QVariant = return value.newQVariant 
+
+  proc delete(self: ContactList) =
+    let model = self.QAbstractListModel
+    model.delete
     for contact in self.contacts:
       contact.delete
     self.contacts = @[]
     
   proc newContactList*(): ContactList =
-    new(result)
+    new(result, delete)
     result.contacts = @[]
-    result.create()
-    
-  method getCount(self: ContactList): int {.slot.} = 
+    result.create
+
+  method rowCount(self: ContactList, index: QModelIndex = nil): cint =
     return self.contacts.len
 
-  method countChanged(self: ContactList) {.signal.}
+  method data(self: ContactList, index: QModelIndex, role: cint): QVariant =
+    if not index.isValid:
+      return
+    if index.row < 0 or index.row >= self.contacts.len:
+      return
+    let contact = self.contacts[index.row]
+    let contactRole = role.ContactRoles
+    case contactRole:
+      of ContactRoles.FirstName: return contact.firstName
+      of ContactRoles.Surname: return contact.surname
+      else: return
+
+  method roleNames(self: ContactList): Table[cint, cstring] =
+    result = initTable[cint, cstring]()
+    result[ContactRoles.FirstName] = "firstName"
+    result[ContactRoles.Surname] = "surname"
     
   method add*(self: ContactList, name: string, surname: string) {.slot.} =
     let contact = newContact()
     contact.firstName = name
     contact.surname = surname
+    self.beginInsertRows(newQModelIndex(), self.contacts.len, self.contacts.len)
     self.contacts.add(contact)
-    self.countChanged()
+    self.endInsertRows()
     
-  method get*(self: ContactList, index: int): QObject {.slot.} =
-    if index < 0 or index >= self.contacts.len:
-      return nil
-    result = self.contacts[index].QObject
-    
-  method del*(self: ContactList, index: int) {.slot.} =
-    self.contacts.del(index)
-    self.countChanged()
-    
-  QtProperty[int] count:
-    read = getCount
-    notify = countChanged
+  method del*(self: ContactList, pos: int) {.slot.} =
+    if pos < 0 or pos >= self.contacts.len:
+      return 
+    self.beginRemoveRows(newQModelIndex(), pos, pos)
+    self.contacts.del(pos)    
+    self.endRemoveRows

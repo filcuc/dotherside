@@ -26,22 +26,37 @@ type QMetaType* {.pure.} = enum ## \
 
 var qobjectRegistry = initTable[ptr QObjectObj, bool]()
 
-proc debugMsg(message: string) = 
-  echo "NimQml: ", message
+template debugMsg(message: string) = 
+  {.push warning[user]: off.} # workaround to remove warnings; this won't be needed soon
+  when defined(debug):
+    {.pop.}
+    echo "NimQml: ", message
+  else:
+    {.pop.}
+  
+template debugMsg(typeName: string, procName: string) =
+  {.push warning[user]: off.} # workaround to remove warnings; this won't be needed soon
+  when defined(debug):
+    {.pop.}
+    var message = typeName
+    message &= ": "
+    message &= procName
+    debugMsg(message)
+  else:
+    {.pop.}  
 
-proc debugMsg(typeName: string, procName: string) = 
-  var message = typeName
-  message &= ": "
-  message &= procName
-  debugMsg(message)
-
-proc debugMsg(typeName: string, procName: string, userMessage: string) = 
-  var message = typeName
-  message &= ": "
-  message &= procName
-  message &= " "
-  message &= userMessage
-  debugMsg(message)
+template debugMsg(typeName: string, procName: string, userMessage: string) = 
+  {.push warning[user]: off.} # workaround to remove warnings; this won't be needed soon
+  when defined(debug):
+    {.pop.}
+    var message = typeName
+    message &= ": "
+    message &= procName
+    message &= " "
+    message &= userMessage
+    debugMsg(message)
+  else:
+    {.pop.}
 
 template newWithCondFinalizer(variable: expr, finalizer: expr) =
   ## calls ``new`` but only setting a finalizer when ``nimqml_use_finalizers``
@@ -101,7 +116,7 @@ proc create*(variant: QVariant, value: string) =
 
 proc create*(variant: QVariant, value: QObject) =
   ## Create a new QVariant given a QObject
-  dos_qvariant_create_qobject(variant.data, value.data)
+  dos_qvariant_create_qobject(variant.data, value.data.RawQObject)
   variant.deleted = false
 
 proc create*(variant: QVariant, value: RawQVariant) =
@@ -225,8 +240,8 @@ proc `stringVal=`*(variant: QVariant, value: string) =
 
 proc `qobjectVal=`*(variant: QVariant, value: QObject) =
   ## Sets the QVariant qobject value
-  dos_qvariant_setQObject(variant.data, value.data)
-
+  dos_qvariant_setQObject(variant.data, value.data.RawQObject)
+  
 proc assign*(leftValue: QVariant, rightValue: QVariant) =
   ## Assign a QVariant with another. The inner value of the QVariant is copied
   dos_qvariant_assign(leftValue.data, rightValue.data)  
@@ -491,3 +506,284 @@ proc newQQuickView*(): QQuickView =
   ## Return a new QQuickView  
   newWithCondFinalizer(result, delete)
   result.create()
+
+# QModelIndex
+proc dos_qmodelindex_create(modelIndex: var RawQModelIndex) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qmodelindex_delete(modelIndex: RawQModelIndex) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qmodelindex_row(modelIndex: RawQModelIndex, row: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qmodelindex_column(modelIndex: RawQModelIndex, column: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qmodelindex_isValid(modelIndex: RawQModelIndex, column: var bool) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qmodelindex_data(modelIndex: RawQModelIndex, role: cint, data: RawQVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qmodelindex_parent(modelIndex: RawQModelIndex, parent: RawQModelIndex) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qmodelindex_child(modelIndex: RawQModelIndex, row: cint, column: cint, parent: RawQModelIndex) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qmodelindex_sibling(modelIndex: RawQModelIndex, row: cint, column: cint, sibling: RawQModelIndex) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+
+proc create*(modelIndex: var QModelIndex) =
+  ## Create a new QModelIndex
+  dos_qmodelindex_create(modelIndex.data)
+  modelIndex.deleted = false
+
+proc create*(modelIndex: var QModelIndex, rawQModelIndex: RawQModelIndex) =
+  ## Create a new QModelIndex
+  modelIndex.data = rawQModelIndex
+  modelIndex.deleted = false
+  
+proc delete*(modelIndex: QModelIndex) =
+  ## Delete the given QModelIndex
+  if not modelIndex.deleted:
+    debugMsg("QModelIndex", "delete")
+    dos_qmodelindex_delete(modelIndex.data)
+    modelIndex.data = nil.RawQModelIndex
+    modelIndex.deleted = true
+
+proc newQModelIndex*(): QModelIndex =
+  ## Return a new QModelIndex
+  newWithCondFinalizer(result, delete)
+  result.create()
+
+proc newQModelIndex*(rawQModelIndex: RawQModelIndex): QModelIndex =
+  ## Return a new QModelIndex given a raw index
+  newWithCondFinalizer(result, delete)
+  result.create(rawQModelIndex)
+
+proc row*(modelIndex: QModelIndex): cint =
+  ## Return the index row
+  dos_qmodelindex_row(modelIndex.data, result)
+
+proc column*(modelIndex: QModelIndex): cint =
+  ## Return the index column
+  dos_qmodelindex_column(modelIndex.data, result)
+
+proc isValid*(modelIndex: QModelIndex): bool =
+  ## Return true if the index is valid, false otherwise
+  dos_qmodelindex_isValid(modelIndex.data, result)
+
+proc data*(modelIndex: QModelIndex, role: cint): QVariant =
+  ## Return the model data associated to the given role  
+  result = newQVariant()
+  dos_qmodelindex_data(modelIndex.data, role, result.data)
+
+proc parent*(modelIndex: QModelIndex): QModelIndex =
+  ## Return the parent index
+  result = newQModelIndex()
+  dos_qmodelindex_parent(modelIndex.data, result.data)
+
+proc child*(modelIndex: QModelIndex, row: cint, column: cint): QModelIndex =
+  ## Return the child index associated to the given row and column
+  result = newQModelIndex()
+  dos_qmodelindex_child(modelIndex.data, row, column, result.data)
+
+proc sibling*(modelIndex: QModelIndex, row: cint, column: cint): QModelIndex =
+  ## Return the sibling index associated to the given row and column
+  result = newQModelIndex()
+  dos_qmodelindex_sibling(modelIndex.data, row, column, result.data)
+
+# QHashIntByteArray
+proc dos_qhash_int_qbytearray_create(qHash: var RawQHashIntByteArray) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qhash_int_qbytearray_delete(qHash: RawQHashIntByteArray) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qhash_int_qbytearray_insert(qHash: RawQHashIntByteArray, key: int, value: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qhash_int_qbytearray_value(qHash: RawQHashIntByteArray, key: int, value: var cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+
+proc create*(qHash: var QHashIntByteArray) =
+  ## Create the QHash
+  debugMsg("QHashIntByteArray", "create")
+  dos_qhash_int_qbytearray_create(qHash.data)
+  qHash.deleted = false
+
+proc delete*(qHash: QHashIntByteArray) =
+  ## Delete the QHash
+  if not qHash.deleted:
+    debugMsg("QHashIntByteArray", "delete")  
+    dos_qhash_int_qbytearray_delete(qHash.data)
+    qHash.deleted = true
+
+proc insert*(qHash: QHashIntByteArray, key: int, value: cstring) =
+  ## Insert the value at the given key
+  dos_qhash_int_qbytearray_insert(qHash.data, key, value)
+
+proc value*(qHash: QHashIntByteArray, key: int): string =
+  ## Return the value associated at the given key  
+  var rawString: cstring
+  dos_qhash_int_qbytearray_value(qHash.data, key, rawString)
+  result = $rawString
+  dos_chararray_delete(rawString)
+
+proc newQHashIntQByteArray*(): QHashIntByteArray =
+  ## Create a new QHashIntQByteArray  
+  newWithCondFinalizer(result, delete)
+  result.create()
+  
+# QAbstractListModel
+type
+  RowCountCallback = proc(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, result: var cint) {.cdecl.}
+  ColumnCountCallback = proc(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, result: var cint) {.cdecl.}
+  DataCallback = proc(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, role: cint, result: RawQVariant) {.cdecl.}
+  SetDataCallback = proc(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, value: RawQVariant, role: cint, result: var bool) {.cdecl.}
+  RoleNamesCallback = proc(modelObject: ptr QAbstractListModelObj, result: RawQHashIntByteArray) {.cdecl.}
+  FlagsCallback = proc(modelObject: ptr QAbstractListModelObj, index: RawQModelIndex, result: var cint) {.cdecl.}
+  HeaderDataCallback = proc(modelObject: ptr QAbstractListModelObj, section: cint, orientation: cint, role: cint, result: RawQVariant) {.cdecl.}
+
+proc dos_qabstractlistmodel_create(model: var RawQAbstractListModel,
+                                   modelPtr: ptr QAbstractListModelObj,
+                                   qobjectCallback: QObjectCallBack,
+                                   rowCountCallback: RowCountCallback,
+                                   columnCountCallback: ColumnCountCallback,
+                                   dataCallback: DataCallback,
+                                   setDataCallback: SetDataCallBack,
+                                   roleNamesCallback: RoleNamesCallback,
+                                   flagsCallback: FlagsCallback,
+                                   headerDataCallback: HeaderDataCallback) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qabstractlistmodel_delete(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qabstractlistmodel_beginInsertRows(model: RawQAbstractListModel,
+                                            parentIndex: RawQModelIndex,
+                                            first: cint,
+                                            last: cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qabstractlistmodel_endInsertRows(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qabstractlistmodel_beginRemoveRows(model: RawQAbstractListModel,
+                                            parentIndex: RawQModelIndex,
+                                            first: cint,
+                                            last: cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qabstractlistmodel_endRemoveRows(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qabstractlistmodel_beginResetModel(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qabstractlistmodel_endResetModel(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qabstractlistmodel_dataChanged(model: RawQAbstractListModel,
+                                        parentLeft: RawQModelIndex,
+                                        bottomRight: RawQModelIndex,
+                                        rolesArrayPtr: ptr cint,
+                                        rolesArrayLength: cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+
+method rowCount*(model: QAbstractListModel, index: QModelIndex): cint =
+  ## Return the model's row count
+  return 0
+
+proc rowCountCallback(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, result: var cint) {.cdecl, exportc.} =
+  debugMsg("QAbstractListModel", "rowCountCallback")
+  let model = cast[QAbstractListModel](modelObject)
+  let index = newQModelIndex(rawIndex)
+  result = model.rowCount(index)
+
+method columnCount*(model: QAbstractListModel, index: QModelIndex): cint =
+  ## Return the model's column count
+  return 1
+
+proc columnCountCallback(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, result: var cint) {.cdecl, exportc.} =
+  debugMsg("QAbstractListModel", "columnCountCallback")
+  let model = cast[QAbstractListModel](modelObject)
+  let index = newQModelIndex(rawIndex)
+  result = model.columnCount(index)
+  
+method data*(model: QAbstractListModel, index: QModelIndex, role: cint): QVariant =
+  ## Return the data at the given model index and role
+  return nil  
+  
+proc dataCallback(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, role: cint, result: RawQVariant) {.cdecl, exportc.} =
+  debugMsg("QAbstractListModel", "dataCallback")
+  let model = cast[QAbstractListModel](modelObject)
+  let index = newQModelIndex(rawIndex)
+  let variant = data(model, index, role)
+  if variant != nil:
+    dos_qvariant_assign(result, variant.data)
+    variant.delete
+
+method setData*(model: QAbstractListModel, index: QModelIndex, value: QVariant, role: cint): bool =
+  ## Sets the data at the given index and role. Return true on success, false otherwise
+  return false 
+
+proc setDataCallback(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, rawQVariant: RawQVariant,  role: cint, result: var bool) {.cdecl, exportc.} =
+  debugMsg("QAbstractListModel", "setDataCallback")
+  let model = cast[QAbstractListModel](modelObject)
+  let index = newQModelIndex(rawIndex)
+  let variant = newQVariant(rawQVariant)
+  result = model.setData(index, variant, role)
+    
+method roleNames*(model: QAbstractListModel): Table[cint, cstring] =
+  ## Return the model role names  
+  result = initTable[cint, cstring]()
+
+proc roleNamesCallback(modelObject: ptr QAbstractListModelObj, hash: RawQHashIntByteArray) {.cdecl, exportc.} =
+  debugMsg("QAbstractListModel", "roleNamesCallback")
+  let model = cast[QAbstractListModel](modelObject)
+  let table = model.roleNames()
+  for pair in table.pairs:
+    dos_qhash_int_qbytearray_insert(hash, pair.key, pair.val)
+
+method flags*(model: QAbstractListModel, index: QModelIndex): QtItemFlag =
+  ## Return the item flags and the given index
+  return QtItemFlag.None
+
+proc flagsCallback(modelObject: ptr QAbstractListModelObj, rawIndex: RawQModelIndex, result: var cint) {.cdecl, exportc.} =
+  debugMsg("QAbstractListModel", "flagsCallback")
+  let model = cast[QAbstractListModel](modelObject)
+  let index = newQModelIndex(rawIndex)
+  result = model.flags(index).cint
+
+method headerData*(model: QAbstractListModel, section: cint, orientation: QtOrientation, role: cint): QVariant =
+  ## Returns the data for the given role and section in the header with the specified orientation
+  return nil
+
+proc headerDataCallback(modelObject: ptr QAbstractListModelObj, section: cint, orientation: cint, role: cint, result: RawQVariant) {.cdecl, exportc.} =
+  debugMsg("QAbstractListModel", "headerDataCallback")
+  let model = cast[QAbstractListModel](modelObject)
+  let variant = model.headerData(section, orientation.QtOrientation, role)
+  if variant != nil:
+    dos_qvariant_assign(result, variant.data)
+    variant.delete
+    
+proc create*(model: var QAbstractListModel) =
+  ## Create a new QAbstractListModel
+  debugMsg("QAbstractListModel", "create")
+  model.slots = initTable[string,cint]()
+  model.signals = initTable[string, cint]()
+  model.properties = initTable[string, cint]()
+  model.deleted = false
+  let modelPtr = addr(model[])
+  dos_qabstractlistmodel_create(model.data.RawQAbstractListModel, modelPtr, qobjectCallback, rowCountCallback, columnCountCallback, dataCallback, setDataCallback, roleNamesCallback, flagsCallback, headerDataCallback)
+  qobjectRegistry[modelPtr] = true
+
+proc delete*(model: QAbstractListModel) =
+  ## Delete the given QAbstractListModel
+  if not model.deleted:
+    debugMsg("QAbstractListModel", "delete")
+    let modelPtr = addr(model[])
+    qobjectRegistry.del modelPtr
+    dos_qabstractlistmodel_delete(model.data.RawQAbstractListModel)
+    model.data = nil.RawQObject
+    model.deleted = true
+
+proc newQAbstractListModel*(): QAbstractListModel =
+  ## Return a new QAbstractListModel
+  newWithCondFinalizer(result, delete)
+  result.create()
+
+proc beginInsertRows*(model: QAbstractListModel, parentIndex: QModelIndex, first: int, last: int) =
+  ## Notify the view that the model is about to inserting the given number of rows 
+  dos_qabstractlistmodel_beginInsertRows(model.data.RawQAbstractListModel, parentIndex.data, first.cint, last.cint)
+
+proc endInsertRows*(model: QAbstractListModel) =
+  ## Notify the view that the rows have been inserted
+  dos_qabstractlistmodel_endInsertRows(model.data.RawQAbstractListModel)
+
+proc beginRemoveRows*(model: QAbstractListModel, parentIndex: QModelIndex, first: int, last: int) =
+  ## Notify the view that the model is about to remove the given number of rows 
+  dos_qabstractlistmodel_beginRemoveRows(model.data.RawQAbstractListModel, parentIndex.data, first.cint, last.cint)
+
+proc endRemoveRows*(model: QAbstractListModel) =
+  ## Notify the view that the rows have been removed
+  dos_qabstractlistmodel_endRemoveRows(model.data.RawQAbstractListModel)
+
+proc beginResetModel*(model: QAbstractListModel) =
+  ## Notify the view that the model is about to resetting
+  dos_qabstractlistmodel_beginResetModel(model.data.RawQAbstractListModel)
+
+proc endResetModel*(model: QAbstractListModel) =
+  ## Notify the view that model has finished resetting
+  dos_qabstractlistmodel_endResetModel(model.data.RawQAbstractListModel)
+
+proc dataChanged*(model: QAbstractListModel,
+                 topLeft: QModelIndex,
+                 bottomRight: QModelIndex,
+                 roles: seq[cint]) =
+  ## Notify the view that the model data changed
+  var copy = roles
+  dos_qabstractlistmodel_dataChanged(model.data.RawQAbstractListModel, topLeft.data, bottomRight.data, copy[0].addr, copy.len.cint)  
+  
