@@ -1,3 +1,6 @@
+import qobject;
+import qvariant;
+
 /*
 enum Type {
         UnknownType = 0, Bool = 1, Int = 2, UInt = 3, LongLong = 4, ULongLong = 5,
@@ -28,7 +31,9 @@ public int GetMetaType(T)()
   if (is (T == int) 
     || is (T == bool) 
     || is (T == string) 
-    || is (T == void))
+    || is (T == void)
+    || is (T == QObject)
+    || is (T == QVariant))
 {
   static if (is (T == bool))
     return 1;
@@ -38,6 +43,10 @@ public int GetMetaType(T)()
     return 43;
   else if (is (T == string))
     return 10;
+  else if (is (T == QObject))
+    return 39;
+  else if (is (T == QVariant))
+    return 41; 
   else
     return 0;
 }

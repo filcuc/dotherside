@@ -61,6 +61,11 @@ class QVariant
   {
     dos_qvariant_setString(this.data, value.toStringz());
   }
+  
+  public void setValue(QObject value)
+  {
+    dos_qvariant_setQObject(this.data, value.data);
+  }
 
   public void getValue(ref int value)
   {

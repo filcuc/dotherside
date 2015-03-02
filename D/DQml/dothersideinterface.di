@@ -42,6 +42,8 @@ extern(C)
   void dos_qvariant_setString(void*, immutable(char)*);
   void dos_qvariant_isnull(void*, ref bool result);
   void dos_qvariant_delete(void*);
+  void dos_qvariant_assign(void*, void*);
+  void dos_qvariant_setQObject(void*, void*);
 
   // QObject
   void dos_qobject_create(ref void*,
