@@ -199,8 +199,8 @@ bool DynamicQObject<T>::registerProperty(const QString& name,
 
     m_propertiesByName.insert(name.toUtf8(), property);
 
-    auto afterSignalAdded = [](QMetaObjectBuilder & metaObjectBuilder) {};
-    auto afterSlotAdded = [](QMetaObjectBuilder & metaObjectBuilder) {};
+	auto afterSignalAdded = [](QMetaObjectBuilder & metaObjectBuilder) { Q_UNUSED(metaObjectBuilder); };
+	auto afterSlotAdded = [](QMetaObjectBuilder & metaObjectBuilder) { Q_UNUSED(metaObjectBuilder); };
     auto afterPropertyAdded = [name, type, notifySignal](QMetaObjectBuilder & metaObjectBuilder)
     {
         int signalIndex = -1;

@@ -102,6 +102,7 @@ bool DynamicSignal::validate(const QVariantList& arguments)
 	// match this signal signature
 	// This is important because a class could have multiple
 	// signals with the same name but different arguments
+	Q_UNUSED(arguments);
     return true;
 }
 
