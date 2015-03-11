@@ -5,6 +5,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QDebug>
 #include <QtCore/QModelIndex>
+#include <QtCore/QHash>
 #include <QtGui/QGuiApplication>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlApplicationEngine>

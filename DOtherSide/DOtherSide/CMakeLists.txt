@@ -4,6 +4,10 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_FLAGS "-std=c++11")
 
+IF (WIN32)
+	ADD_DEFINITIONS(-DWIN32)
+ENDIF()
+
 find_package(Qt5Core)
 find_package(Qt5Qml)
 find_package(Qt5Gui)
