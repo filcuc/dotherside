@@ -1,7 +1,4 @@
 # DOtherSide
-THIS IS UNSTABLE AND ALPHA SOFTWARE
-
-## Description
 Qml bindings for both D and Nim programming languages
 
 ## Change log
@@ -14,11 +11,16 @@ read [here](http://filcuc.github.io/DOtherSide/ "").
 For the D programming language is an on going project
 and pull request are accepted.
 
-## Requirements
+## Supported Platforms and Requirements
+Currently we support the following platforms/compilers:
+- Linux both 32/64bit with gcc
+- Windows 32/64bit with Visual Studio 2013 Community Edition 
+
 You need the following software:
 * Qt 5.3
 * dmd 2.065
-* gcc 4.8 or later with c++11 support
+* gcc 4.8 or later with c++11 support (Linux)
+* Visual Studio 2013 Community Edition (Windows)
 * nim 0.10.2
 
 ## Build Instructions
