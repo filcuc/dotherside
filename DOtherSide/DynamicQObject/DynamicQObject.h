@@ -362,6 +362,8 @@ bool DynamicQObject<T>::writeProperty(const DynamicProperty& property, void** ar
 
     QVariant newValue(writeSlot.argumentTypeAt(0), args[0]);
     executeSlot(writeSlot, {newValue});
+
+	return true;
 }
 
 template <typename T>
