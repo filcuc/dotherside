@@ -5,7 +5,7 @@
 #include <QtCore/QString>
 #include <QtCore/QMetaType>
 
-class PropertyData;
+struct PropertyData;
 
 class DynamicProperty
 {

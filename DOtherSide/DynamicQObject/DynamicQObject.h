@@ -211,7 +211,7 @@ bool DynamicQObject<T>::registerProperty(const QString& name,
                 QMetaMethodBuilder methodBuilder = metaObjectBuilder.method(i);
                 if (methodBuilder.methodType() == QMetaMethod::Signal)
                 {
-                    if (methodBuilder.signature() == QMetaObject::normalizedSignature(notifySignal.signature()));
+                    if (methodBuilder.signature() == QMetaObject::normalizedSignature(notifySignal.signature()))
                     {
                         signalIndex = i;
                         break;
