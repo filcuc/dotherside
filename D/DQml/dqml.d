@@ -6,3 +6,4 @@ public import qobject;
 public import qqmlapplicationengine;
 public import qquickview;
 public import qmetatype;
+public import qmodelindex;

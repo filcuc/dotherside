@@ -87,4 +87,15 @@ extern(C)
 				   immutable(char)* notifySignal);
 
   void dos_qobject_delete(void*);
+
+  // QModelIndex
+  void dos_qmodelindex_create(ref void* index);
+  void dos_qmodelindex_delete(void* index);
+  void dos_qmodelindex_row(void*, ref int result);
+  void dos_qmodelindex_column(void*, ref int result);
+  void dos_qmodelindex_isValid(void* index, ref bool result);
+  void dos_qmodelindex_data(void* index, int role, void* variant);
+  void dos_qmodelindex_parent(void* index, void* parent);
+  void dos_qmodelindex_child(void* index, int r, int c, void* child);
+  void dos_qmodelindex_sibling(void* index, int r, int c, void* sibling);
 }

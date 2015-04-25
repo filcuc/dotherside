@@ -11,5 +11,6 @@ add_library(${PROJECT_NAME} STATIC
   chararray.d
   qguiapplication.d
   qapplication.d
+  qmodelindex.d
 )
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
