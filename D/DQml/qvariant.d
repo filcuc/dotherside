@@ -24,13 +24,23 @@ class QVariant
   {
     dos_qvariant_create_string(this.data, value.toStringz());
   }
-  
+
+  public this(float value)
+  {
+    dos_qvariant_create_float(this.data, value);
+  }
+    
+  public this(double value)
+  {
+    dos_qvariant_create_double(this.data, value);
+  }
+
   public this(QObject value)
   {
     dos_qvariant_create_qobject(this.data, value.rawData());
   }
 
-  public  this(void* data, bool hasOwnership = false)
+  public this(void* data, bool hasOwnership = false)
   {
     this.data = data;
     this.hasOwnership = hasOwnership;
@@ -67,6 +77,16 @@ class QVariant
     dos_qvariant_setQObject(this.data, value.rawData());
   }
 
+  public void setValue(float value)
+  {
+    dos_qvariant_setFloat(this.data, value);
+  }
+
+  public void setValue(double value)
+  {
+    dos_qvariant_setDouble(this.data, value);
+  }
+
   public void getValue(ref int value)
   {
     value = toInt();
@@ -81,7 +101,17 @@ class QVariant
   {
     value = toString();
   }
+
+  public void getValue(ref float value)
+  {
+    value = toFloat();
+  }
   
+  public void getValue(ref double value)
+  {
+    value = toDouble();
+  }
+
   public  bool isNull()
   {
     bool result;
@@ -100,6 +130,20 @@ class QVariant
   {
     int result;
     dos_qvariant_toInt(this.data, result);
+    return result;
+  }
+
+  public float toFloat()
+  {
+    float result;
+    dos_qvariant_toFloat(this.data, result);
+    return result;
+  }
+
+  public double toDouble()
+  {
+    double result;
+    dos_qvariant_toDouble(this.data, result);
     return result;
   }
   

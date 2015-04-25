@@ -1,10 +1,17 @@
 extern(C)
 {
+  // QApplication
+  void dos_qapplication_create();
+  void dos_qapplication_exec();
+  void dos_qapplication_delete();
+  void dos_qapplication_quit();
+
   // QGuiApplication
   void dos_qguiapplication_create();
   void dos_qguiapplication_exec();
   void dos_qguiapplication_delete();
-
+  void dos_qguiapplication_quit();
+  
   // QQmlApplicationEngine
   void dos_qqmlapplicationengine_create(ref void*);
   void dos_qqmlapplicationengine_load(void*, immutable (char)* filename);
@@ -30,17 +37,23 @@ extern(C)
 
   // QVariant
   void dos_qvariant_create(ref void*);
-  void dos_qvariant_create_int(ref void*, int value);
-  void dos_qvariant_create_bool(ref void*, bool value);
-  void dos_qvariant_create_string(ref void*, immutable(char)* value);
+  void dos_qvariant_create_int(ref void*, int);
+  void dos_qvariant_create_bool(ref void*, bool);
+  void dos_qvariant_create_string(ref void*, immutable(char)*);
   void dos_qvariant_create_qobject(ref void*, void*);
+  void dos_qvariant_create_float(ref void*, float);
+  void dos_qvariant_create_double(ref void*, double);
   void dos_qvariant_toInt(void*, ref int);
   void dos_qvariant_setInt(void*, int);
   void dos_qvariant_toBool(void*, ref bool);
   void dos_qvariant_setBool(void*, bool);
   void dos_qvariant_toString(void*, ref char*, ref int);
   void dos_qvariant_setString(void*, immutable(char)*);
-  void dos_qvariant_isnull(void*, ref bool result);
+  void dos_qvariant_toFloat(void*, ref float);
+  void dos_qvariant_setFloat(void*, float);
+  void dos_qvariant_toDouble(void*, ref double);
+  void dos_qvariant_setDouble(void*, double);
+  void dos_qvariant_isnull(void*, ref bool);
   void dos_qvariant_delete(void*);
   void dos_qvariant_assign(void*, void*);
   void dos_qvariant_setQObject(void*, void*);

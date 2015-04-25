@@ -16,4 +16,9 @@ class QGuiApplication
   {
     dos_qguiapplication_exec();
   }
+
+  void quit()
+  {
+    dos_qguiapplication_quit();
+  }
 }

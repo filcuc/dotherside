@@ -14,7 +14,7 @@ class QQmlApplicationEngine
     dos_qqmlapplicationengine_delete(data);
   }
 
-  public QQmlContext context()
+  public QQmlContext rootContext()
   {
     void* contextData;
     dos_qqmlapplicationengine_context(data, contextData);
