@@ -1,48 +1,65 @@
 import dqml;
 import contact;
 import std.stdio;
+import std.format;
 
 class ContactList : QObject 
 {
     this()
     {
         contacts = new Contact[](0);
-        getCount = registerSlot("getCount", &_getCount);
-        countChanged = registerSignal!(int)("countChanged");
-        registerProperty!(int)("count", "getCount", null, "countChanged");
-        getContact = registerSlot("getContact", &_getContact);
-        addContact = registerSlot("addContact", &_addContact);
+        registerSlot("getCount", [QMetaType.Int]);
+        registerSignal("countChanged", [QMetaType.Int]);
+        registerProperty("count", QMetaType.Int, "getCount", null, "countChanged");
+        registerSlot("getContact", [QMetaType.QObject, QMetaType.Int]);
+        registerSlot("addContact", [QMetaType.Void, QMetaType.String, QMetaType.String]);
     }
     
     ~this()
     {
         foreach (contact; this.contacts)
-        {
-            destroy(contact);
-        }
+           destroy(contact);
     }
   
-    public QSlot!(int delegate()) getCount;
-    public QSignal!(int) countChanged;
-  
-    public QSlot!(QObject delegate(int)) getContact;
-    public QSlot!(void delegate(string, string)) addContact;
-    
-    private void _addContact(string firstName, string lastName)
+    public void addContact(string firstName, string lastName)
     {
+        writefln("addContact %s %s", firstName, lastName);
         this.contacts ~= new Contact(firstName, lastName);
-        countChanged(_getCount());
+        emit ("countChanged", new QVariant(getCount()));
     }
   
-    private QObject _getContact(int index)
+    public QObject getContact(int index)
     {
+        writefln("getContact index %d", index);
         return this.contacts[index];
     }
     
-    private int _getCount() 
+    public int getCount() 
     { 
-        return cast(int)this.contacts.length; 
+        auto result = cast(int)this.contacts.length;
+	writefln("getCount %d", result);
+	return result;
     }
+
+  override void onSlotCalled(QVariant slotName, QVariant[] arguments)
+  {
+    switch(slotName.toString())
+      {
+      case "addContact":
+	assert(arguments.length == 3);
+	addContact(arguments[1].toString(),
+		   arguments[2].toString());
+	break;
+      case "getContact":
+	arguments[0].setValue(getContact(arguments[1].toInt()));
+	break;
+      case "getCount":
+	arguments[0].setValue(getCount());
+	break;
+      default:
+	break;
+      }
+  }
   
     private Contact[] contacts;
 }

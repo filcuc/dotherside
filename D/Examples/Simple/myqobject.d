@@ -1,29 +1,45 @@
+import std.stdio;
+import std.format;
 import dqml;
 
 class MyQObject : QObject 
 {
   this()
   {
-    getName = registerSlot("getName", &_getName);
-    setName = registerSlot("setName", &_setName);
-    nameChanged = registerSignal!(string)("nameChanged");
-    registerProperty!(string)("name", "getName", "setName", "nameChanged");
-   }
-  
-  public QSlot!(string delegate()) getName;
-  private string _getName() { return this.name; }
+    m_name = "John Doo";
+    registerSlot("name", [QMetaType.String]);
+    registerSlot("setName", [QMetaType.Void, QMetaType.String]);
+    registerSignal("nameChanged", [QMetaType.String]);
+    registerProperty("name", QMetaType.String, "name", "setName", "nameChanged");
+  }
 
-  public QSlot!(void delegate(string)) setName;
-  private void _setName(string name)
+  public string name()
   {
-    if (this.name != name)
+    return m_name;
+  }
+
+  public void setName(string name)
+  {
+    if (name == m_name)
+      return;
+    m_name = name;
+    emit("nameChanged", new QVariant(name));
+  }
+
+  override void onSlotCalled(QVariant slotName, QVariant[] arguments)
+  {
+    switch(slotName.toString())
     {
-      this.name = name;
-      nameChanged(this.name);
+    case "name":
+        arguments[0].setValue(name());
+        break;
+    case "setName":
+        setName(arguments[1].toString());
+        break;
+    default:
+        break;
     }
   }
 
-  public QSignal!(string) nameChanged;
-
-  private string name;
+  private string m_name;
 }

@@ -3,31 +3,25 @@ import QtQuick.Controls 1.2
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.1
 
-ApplicationWindow
-{
-	width: 400
-	height: 300
+ApplicationWindow {
+    width: 400
+    height: 300
+    visible: true
 
-	Component.onCompleted: visible = true
+    ColumnLayout {
+        anchors.fill: parent
 
-	ColumnLayout
-	{
-	    anchors.fill: parent
+        Label {
+            text: "Current name iss:" + myQObject.name
+        }
 
-	    Label
-	    {
-	        text: "Current name is:" + myQObject.name
-	    }
+        TextField {
+            id: textField
+        }
 
-	    TextField
-	    {
-	        id: textField
-	    }
-
-	    Button
-	    {
-	        text: "Change Name"
-	        onClicked: myQObject.name = textField.text 
-	    }
-	}
+        Button {
+            text: "Change Name"
+            onClicked: myQObject.name = textField.text
+        }
+    }
 }

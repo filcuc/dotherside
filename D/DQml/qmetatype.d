@@ -27,26 +27,37 @@ enum Type {
     };
 */
 
-public int GetMetaType(T)() 
-  if (is (T == int) 
-    || is (T == bool) 
-    || is (T == string) 
+public enum QMetaType
+{
+  Unknown = 0,
+  Bool = 1,
+  Int = 2,
+  Void = 43,
+  String = 10,
+  QObject = 39,
+  QVariant = 41
+}
+
+public QMetaType GetMetaType(T)() 
+  if (is (T == int)
+    || is (T == bool)
+    || is (T == string)
     || is (T == void)
     || is (T == QObject)
     || is (T == QVariant))
 {
   static if (is (T == bool))
-    return 1;
+    return QMetaType.Bool;
   else if (is (T == int))
-    return 2;
+    return QMetaType.Int;
   else if (is( T == void))
-    return 43;
+    return QMetaType.Void;
   else if (is (T == string))
-    return 10;
+    return QMetaType.String;
   else if (is (T == QObject))
-    return 39;
+    return QMetaType.QObject;
   else if (is (T == QVariant))
-    return 41; 
+    return QMetaType.QVariant;
   else
-    return 0;
+    return QMetaType.Unknown;
 }

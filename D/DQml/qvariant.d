@@ -27,7 +27,7 @@ class QVariant
   
   public this(QObject value)
   {
-    dos_qvariant_create_qobject(this.data, value.data);
+    dos_qvariant_create_qobject(this.data, value.rawData());
   }
 
   public  this(void* data, bool hasOwnership = false)
@@ -64,7 +64,7 @@ class QVariant
   
   public void setValue(QObject value)
   {
-    dos_qvariant_setQObject(this.data, value.data);
+    dos_qvariant_setQObject(this.data, value.rawData());
   }
 
   public void getValue(ref int value)

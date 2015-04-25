@@ -1,4 +1,6 @@
 import dqml;
+import std.format;
+import std.stdio;
 
 class Contact : QObject
 {
@@ -7,52 +9,66 @@ class Contact : QObject
         this.firstName = firstName;
         this.lastName = lastName;
         
-        getFirstName = registerSlot("getFirstName", &_getFirstName);
-        setFirstName = registerSlot("setFirstName", &_setFirstName);
-        firstNameChanged = registerSignal!(string)("firstNameChanged");
-        registerProperty!(string)("firstName", "getFirstName", "setFirstName", "firstNameChanged");
+        registerSlot("getFirstName", [QMetaType.String]);
+        registerSlot("setFirstName", [QMetaType.Void, QMetaType.String]);
+        registerSignal("firstNameChanged", [QMetaType.String]);
+        registerProperty("firstName", QMetaType.String, "getFirstName", "setFirstName", "firstNameChanged");
         
-        getLastName = registerSlot("getLastName", &_getLastName);
-        setLastName = registerSlot("setLastName", &_setLastName);
-        lastNameChanged = registerSignal!(string)("lastNameChanged");
-        registerProperty!(string)("lastName", "getLastName", "setLastName", "lastNameChanged");
+        registerSlot("getLastName", [QMetaType.String]);
+        registerSlot("setLastName", [QMetaType.Void, QMetaType.String]);
+        registerSignal("lastNameChanged", [QMetaType.String]);
+        registerProperty("lastName", QMetaType.String, "getLastName", "setLastName", "lastNameChanged");
     }
     
-    public QSlot!(string delegate()) getFirstName;
-    public QSlot!(void delegate(string)) setFirstName;
-    public QSignal!(string) firstNameChanged;
-    
-    public QSlot!(string delegate()) getLastName;
-    public QSlot!(void delegate(string)) setLastName;
-    public QSignal!(string) lastNameChanged;
-    
-    private string _getFirstName() 
+    public string getFirstName() 
     { 
         return this.firstName; 
     }
     
-    private void _setFirstName(string firstName)
+    public void setFirstName(string firstName)
     {
         if (this.firstName != firstName)
         {
             this.firstName = firstName;
-            firstNameChanged(firstName);
+            emit("firstNameChanged", firstName);
         }
     }
     
-    private string _getLastName() 
-    { 
+    public string getLastName() 
+    {
+      writefln("Returning %s", this.lastName);
         return this.lastName; 
     }
     
-    private void _setLastName(string lastName)
+    public void setLastName(string lastName)
     {
         if (this.lastName != lastName)
         {
             this.lastName = lastName;
-            lastNameChanged(lastName);
+	    emit("lastNameChanged", lastName);
         }
     }
+
+  protected override void onSlotCalled(QVariant slotName, QVariant[] arguments)
+  {
+    switch(slotName.toString())
+      {
+      case "getFirstName":
+	arguments[0].setValue(getFirstName());
+	break;
+      case "setFirstName":
+	setFirstName(arguments[1].toString());
+	break;
+      case "getLastName":
+	arguments[0].setValue(getLastName());
+	break;
+      case "setLastName":
+	setLastName(arguments[1].toString());
+	break;
+      default:
+	break;
+      }
+  }
     
     private string firstName;
     private string lastName;
