@@ -32,10 +32,11 @@ public enum QMetaType
   Unknown = 0,
   Bool = 1,
   Int = 2,
-  Void = 43,
   String = 10,
+  VoidStr = 31,
   QObject = 39,
-  QVariant = 41
+  QVariant = 41,
+  Void = 43
 }
 
 public QMetaType GetMetaType(T)() 
@@ -44,7 +45,8 @@ public QMetaType GetMetaType(T)()
     || is (T == string)
     || is (T == void)
     || is (T == QObject)
-    || is (T == QVariant))
+    || is (T == QVariant)
+    || is (T == void*))
 {
   static if (is (T == bool))
     return QMetaType.Bool;
@@ -58,6 +60,8 @@ public QMetaType GetMetaType(T)()
     return QMetaType.QObject;
   else if (is (T == QVariant))
     return QMetaType.QVariant;
+  else if (is (T == void*))
+    return QMetaType.VoidStar;
   else
     return QMetaType.Unknown;
 }
