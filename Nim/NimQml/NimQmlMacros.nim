@@ -31,9 +31,9 @@ let nim2QtMeta {.compileTime.} = {
     "" : "Void", # no return, which is represented by an nnkEmpty node
 }.toTable
 
-proc getNodeOf*(tree: PNimrodNode, kind: TNimrodNodeKind): PNimrodNode {.compileTime.} =
+proc getNodeOf*(tree: NimNode, kind: NimNodeKind): NimNode {.compileTime.} =
   ## recursively looks for a node of kind, ``kind``, in the tree provided as ``tree``
-  ## Returnsthe first node that satisfies this condition 
+  ## Returns the first node that satisfies this condition 
   for i in 0.. <tree.len:
     var child = tree[i]
     if child.kind == kind:
@@ -46,12 +46,12 @@ static:
   type Context* = ref object of RootObj
   type NullContext* = ref object of Context  
 
-type NodeModifier*[T] = proc(context: T, a: var PNimrodNode): PNimrodNode
+type NodeModifier*[T] = proc(context: T, a: var NimNode): NimNode
 
 # had to remove type bound on hook due to recent regression with generics
-proc hookOnNode*[T](context: T, code: PNimrodNode, hook: NodeModifier, 
-    recursive: bool = false): PNimrodNode {.compileTime.} =
-  ## Iterates over the tree, ``code``, calling ``hook`` on each ``PNimrodNode``
+proc hookOnNode*[T](context: T, code: NimNode, hook: NodeModifier, 
+    recursive: bool = false): NimNode {.compileTime.} =
+  ## Iterates over the tree, ``code``, calling ``hook`` on each ``NimNode``
   ## encountered. If ``recursive`` is true, it will recurse over the tree, otherwise
   ## it will only visit ``code``'s children. ``hook`` should return a replacement for 
   ## the node that was passed in via it's return value. `hook` may return nil to remove
@@ -69,7 +69,7 @@ proc hookOnNode*[T](context: T, code: PNimrodNode, hook: NodeModifier,
   return newCode
   
 proc removeOpenSym*(context: NullContext, 
-  a: var PNimrodNode): PNimrodNode {.compileTime.} =
+  a: var NimNode): NimNode {.compileTime.} =
   ## replaces: ``nnkOpenSymChoice`` and ``nnkSym`` nodes with idents 
   ## corresponding to the symbols string representation. 
   if a.kind == nnkOpenSymChoice: 
@@ -79,8 +79,8 @@ proc removeOpenSym*(context: NullContext,
   return a
   
 proc newTemplate*(name = newEmptyNode(); 
-    params: openArray[PNimrodNode] = [newEmptyNode()];  
-    body: PNimrodNode = newStmtList()): PNimrodNode {.compileTime.} =
+    params: openArray[NimNode] = [newEmptyNode()];  
+    body: NimNode = newStmtList()): NimNode {.compileTime.} =
   ## shortcut for creating a new template
   ##
   ## The ``params`` array must start with the return type of the template, 
@@ -99,7 +99,7 @@ template declareSuperTemplate*(parent: expr, typ: expr): stmt =
   template superType*(ofType: typedesc[typ]): typedesc[parent] =
     parent
 
-proc getTypeName*(a: PNimrodNode): PNimrodNode {.compileTime.} =
+proc getTypeName*(a: NimNode): NimNode {.compileTime.} =
   ## returns the node containing the name of an object in a 
   ## given type definition block 
   expectMinLen a, 1
@@ -112,7 +112,7 @@ proc getTypeName*(a: PNimrodNode): PNimrodNode {.compileTime.} =
   elif testee[0].kind in {nnkPostfix}:
     return testee[0][1]
 
-proc isExported(def: PNimrodNode): bool {.compileTime.} =
+proc isExported(def: NimNode): bool {.compileTime.} =
   ## given a type definition, ``typedef``, determines whether or
   ## not the type is exported with a '*'
   assert def.kind in {nnkTypeDef, nnkProcDef, nnkMethodDef, nnkTemplateDef},
@@ -120,7 +120,7 @@ proc isExported(def: PNimrodNode): bool {.compileTime.} =
   if def[0].kind == nnkPostfix:
     return true
 
-proc exportDef(def: PNimrodNode) {.compileTime.} =
+proc exportDef(def: NimNode) {.compileTime.} =
   ## Exports exportable definitions. Currently only supports
   ## templates, methods and procedures and types.
   if def.kind in {nnkProcDef, nnkMethodDef, nnkTemplateDef, nnkTypeDef}:
@@ -130,7 +130,7 @@ proc exportDef(def: PNimrodNode) {.compileTime.} =
   else:
     error("node: " & $def.kind & " not supported")
 
-proc unexportDef(def: PNimrodNode) {.compileTime.} =
+proc unexportDef(def: NimNode) {.compileTime.} =
   ## unexports exportable definitions. Currently only supports
   ## templates, methods and procedures and types.
   if def.kind in {nnkProcDef, nnkMethodDef, nnkTemplateDef, nnkTypeDef}:
@@ -140,7 +140,7 @@ proc unexportDef(def: PNimrodNode) {.compileTime.} =
   else:
     error("node: " & $def.kind & " not supported")
 
-proc genSuperTemplate*(typeDecl: PNimrodNode): PNimrodNode {.compileTime.} =
+proc genSuperTemplate*(typeDecl: NimNode): NimNode {.compileTime.} =
   ## generates a template, with name: superType, that returns the super type
   ## of the object defined in the type defintion, ``typeDecl``. ``typeDecl``
   ## must contain an object inheriting from a base type.
@@ -158,13 +158,13 @@ proc genSuperTemplate*(typeDecl: PNimrodNode): PNimrodNode {.compileTime.} =
   else:
     result.unexportDef()
 
-proc getSuperType*(typeDecl: PNimrodNode): PNimrodNode {.compileTime.} =
+proc getSuperType*(typeDecl: NimNode): NimNode {.compileTime.} =
   ## returns ast containing superType info, may not be an ident if generic
   let inheritStmt = typeDecl.getNodeOf(nnkOfInherit)
   if inheritStmt.isNil: return newEmptyNode()
   return inheritStmt[0]
 
-proc getPragmaName*(child: PNimrodNode): PNimrodNode {.compileTime.} =
+proc getPragmaName*(child: NimNode): NimNode {.compileTime.} =
   ## name of child in a nnkPragma section
   if child.kind == nnkIdent:
     return child
@@ -172,7 +172,7 @@ proc getPragmaName*(child: PNimrodNode): PNimrodNode {.compileTime.} =
   let ident = child.getNodeOf(nnkIdent)
   result = ident
 
-proc removePragma*(pragma: PNimrodNode, toRemove: string): PNimrodNode {.compileTime.} =
+proc removePragma*(pragma: NimNode, toRemove: string): NimNode {.compileTime.} =
   ## removes a pragma from pragma definition, `pragma`, with name `toRemove`
   expectKind pragma, nnkPragma
   result = newNimNode(nnkPragma)
@@ -184,7 +184,7 @@ proc removePragma*(pragma: PNimrodNode, toRemove: string): PNimrodNode {.compile
   if result.len == 0:
     return newEmptyNode() 
 
-proc hasPragma*(node: PNimrodNode, pragmaName: string): bool {.compileTime.} =
+proc hasPragma*(node: NimNode, pragmaName: string): bool {.compileTime.} =
   ## Returns ``true`` iff the method, or proc definition: ``node``, has a pragma
   ## ``pragmaName``
   doAssert node.kind in {nnkMethodDef, nnkProcDef}
@@ -197,21 +197,21 @@ proc hasPragma*(node: PNimrodNode, pragmaName: string): bool {.compileTime.} =
     if $child.getPragmaName() == pragmaName:
       return true
 
-proc getArgType*(arg: PNimrodNode): PNimrodNode  {.compileTime.} =
-  ## returns the ``PNimrodNode`` representing a parameters type
+proc getArgType*(arg: NimNode): NimNode  {.compileTime.} =
+  ## returns the ``NimNode`` representing a parameters type
   if arg[1].kind == nnkIdent: 
     arg[1] 
   else: 
     arg[1].getNodeOf(nnkIdent)
 
-proc getArgName*(arg: PNimrodNode): PNimrodNode  {.compileTime.} =
-  ## returns the ``PNimrodNode`` representing a parameters name
+proc getArgName*(arg: NimNode): NimNode  {.compileTime.} =
+  ## returns the ``NimNode`` representing a parameters name
   if arg[0].kind == nnkIdent: 
     arg[0] 
   else: 
     arg[0].getNodeOf(nnkIdent)    
 
-proc addSignalBody(signal: PNimrodNode): PNimrodNode {.compileTime.} =
+proc addSignalBody(signal: NimNode): NimNode {.compileTime.} =
   # e.g: produces: emit(MyQObject, "nameChanged")
   assert signal.kind in {nnkMethodDef, nnkProcDef}
   result = newStmtList()
@@ -220,7 +220,7 @@ proc addSignalBody(signal: PNimrodNode): PNimrodNode {.compileTime.} =
   let params = signal.params
   # type signal defined on is the 1st arg
   let self = getArgName(params[1])
-  var args = newSeq[PNimrodNode]()
+  var args = newSeq[NimNode]()
   args.add(self)
   args.add newLit($name)
   if params.len > 2: # more args than just type
@@ -238,19 +238,19 @@ template prototypeOnSlotCalled(typ: expr): stmt {.dirty.} =
     procCall onSlotCalled(super, slotName, args)
 
 #FIXME: changed parent, typ from typedesc to expr to workaround Nim issue #1874
-template prototypeCreate(typ: expr): stmt =
+template prototypeCreate(typ: expr): stmt {.dirty.}=
   proc create*(myQObject: var typ) =
     var super = (typ.superType())(myQObject)
     procCall create(super)
 
-proc doRemoveOpenSym(a: var PNimrodNode): PNimrodNode {.compileTime.} =
+proc doRemoveOpenSym(a: var NimNode): NimNode {.compileTime.} =
   hookOnNode(NullContext(),a, removeOpenSym, true)
 
-proc templateBody*(a: PNimrodNode): PNimrodNode {.compileTime.} =
+proc templateBody*(a: NimNode): NimNode {.compileTime.} =
   expectKind a, nnkTemplateDef
   result = a[6]
   
-proc genArgTypeArray(params: PNimrodNode): PNimrodNode {.compileTime.} =
+proc genArgTypeArray(params: NimNode): NimNode {.compileTime.} =
   expectKind params, nnkFormalParams
   result = newNimNode(nnkBracket)
   for i in 0 .. <params.len:
@@ -265,7 +265,7 @@ proc genArgTypeArray(params: PNimrodNode): PNimrodNode {.compileTime.} =
     let metaDot = newDotExpr(ident "QMetaType", ident qtMeta)
     result.add metaDot
 
-proc getIdentDefName*(a: PNimrodNode): PNimrodNode {.compileTime.} =
+proc getIdentDefName*(a: NimNode): NimNode {.compileTime.} =
   ## returns object field name from ident def
   expectKind a, nnkIdentDefs
   if a[0].kind == nnkIdent:
@@ -273,8 +273,8 @@ proc getIdentDefName*(a: PNimrodNode): PNimrodNode {.compileTime.} =
   elif a[0].kind == nnkPostFix:
     return a[0][1]
 
-proc tryHandleSigSlot(def: PNimrodNode, signals: var seq[PNimrodNode], slots: var seq[PNimrodNode],
-    generatedCode: var PNimrodNode): bool {.compileTime.} =
+proc tryHandleSigSlot(def: NimNode, signals: var seq[NimNode], slots: var seq[NimNode],
+    generatedCode: var NimNode): bool {.compileTime.} =
   ## Checks a method/proc definition for signals and slots. On finding a method/proc with
   ## a {.signal.} or {.slot.} pragma, it will strip the pragma, add the definition to the
   ## appropriate seq, append the stripped version to the generated code block and return true
@@ -299,7 +299,7 @@ proc tryHandleSigSlot(def: PNimrodNode, signals: var seq[PNimrodNode], slots: va
     signals.add def
     result = true
 
-proc genCreateDecl(typ: PNimrodNode): PNimrodNode {.compileTime.} =
+proc genCreateDecl(typ: NimNode): NimNode {.compileTime.} =
   ## generates forward declaration for ``create`` procedure
   expectKind typ, nnkTypeDef
   let typeName = typ.getTypeName()
@@ -310,8 +310,8 @@ proc genCreateDecl(typ: PNimrodNode): PNimrodNode {.compileTime.} =
   else:
     result.unexportDef()
 
-proc genCreate(typ: PNimrodNode, signals: seq[PNimrodNode], slots: seq[PNimrodNode],
-    properties: seq[PNimrodNode]): PNimrodNode {.compileTime.} =
+proc genCreate(typ: NimNode, signals: seq[NimNode], slots: seq[NimNode],
+    properties: seq[NimNode]): NimNode {.compileTime.} =
   expectKind typ, nnkTypeDef
   let typeName = typ.getTypeName()
   result = (getAst prototypeCreate(typeName))[0]
@@ -350,7 +350,7 @@ proc genCreate(typ: PNimrodNode, signals: seq[PNimrodNode], slots: seq[PNimrodNo
     if qtPropMeta == nil: error($nimPropType & " not supported")
     let metaDot = newDotExpr(ident "QMetaType", ident qtPropMeta)
     let propertyName = property[1]
-    var read, write, notify: PNimrodNode
+    var read, write, notify: NimNode
     let stmtList = property[2]
     # fields
     #  StmtList
@@ -375,7 +375,7 @@ proc genCreate(typ: PNimrodNode, signals: seq[PNimrodNode], slots: seq[PNimrodNo
     let call = newCall(regPropDot, newLit($propertyName), metaDot, readArg, writeArg, notifyArg)
     createBody.add call
 
-proc genOnSlotCalled(typ: PNimrodNode, slots: seq[PNimrodNode]): PNimrodNode {.compileTime.} =
+proc genOnSlotCalled(typ: NimNode, slots: seq[NimNode]): NimNode {.compileTime.} =
   expectKind typ, nnkTypeDef
   let typeName = typ.getTypeName()
   result = (getAst prototypeOnSlotCalled(typeName))[0]
@@ -389,7 +389,7 @@ proc genOnSlotCalled(typ: PNimrodNode, slots: seq[PNimrodNode]): PNimrodNode {.c
     let params = slot.params
     let hasReturn = not (params[0].kind == nnkEmpty)
     var branchStmts = newStmtList()
-    var args = newSeq[PNimrodNode]()
+    var args = newSeq[NimNode]()
     # first params always the object
     args.add ident "myQObject"
     for i in 2.. <params.len:
@@ -446,11 +446,11 @@ macro QtObject*(qtDecl: stmt): stmt {.immediate.} =
   expectKind(qtDecl, nnkStmtList)
   #echo treeRepr qtDecl
   result = newStmtList()
-  var slots = newSeq[PNimrodNode]()
-  var properties = newSeq[PNimrodNode]()
-  var signals = newSeq[PNimrodNode]()
+  var slots = newSeq[NimNode]()
+  var properties = newSeq[NimNode]()
+  var signals = newSeq[NimNode]()
   # assume only one type per section for now
-  var typ: PNimrodNode
+  var typ: NimNode
   for it in qtDecl.children():
     if it.kind == nnkTypeSection:
       let typeDecl = it.findChild(it.kind == nnkTypeDef)
