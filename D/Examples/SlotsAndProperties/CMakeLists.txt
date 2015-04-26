@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project (SlotsAndProperties C D )
+project (DQmlSlotsAndProperties C D )
 add_executable(${PROJECT_NAME} main.d contact.d)
 target_include_directories(${PROJECT_NAME} PUBLIC
   "${CMAKE_CURRENT_SOURCE_DIR}/../../DQml"
