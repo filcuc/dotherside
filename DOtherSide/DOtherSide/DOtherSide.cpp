@@ -16,11 +16,10 @@
 #include "BaseQAbstractListModel.h"
 #include "BaseQObject.h"
 
-void convert_to_cstring(const QString& source, char** destination, int* length)
+void convert_to_cstring(const QString& source, char** destination)
 {
     QByteArray array = source.toUtf8();
     *destination = qstrdup(array.data());
-    *length = qstrlen(array.data());
 }
 
 void dos_qguiapplication_create()
@@ -110,11 +109,11 @@ void dos_qquickview_delete(void* vptr)
     delete view;
 }
 
-void dos_qquickview_source(void* vptr, char** result, int* length)
+void dos_qquickview_source(void* vptr, char** result)
 {
     QQuickView* view = reinterpret_cast<QQuickView*>(vptr);
     QUrl url = view->source();
-    convert_to_cstring(url.toString(), result, length);
+    convert_to_cstring(url.toString(), result);
 }
 
 void dos_qquickview_set_source(void* vptr, const char* filename)
@@ -129,29 +128,16 @@ void dos_qquickview_rootContext(void* vptr, void** context)
     *context = view->rootContext();
 }
 
-void dos_chararray_create(char** ptr)
-{
-    *ptr = 0;
-}
-
-void dos_chararray_create(char** ptr, int size)
-{
-    if (size > 0)
-        *ptr = new char[size];
-    else
-        *ptr = 0;
-}
-
 void dos_chararray_delete(char* ptr)
 {
     if (ptr) delete[] ptr;
 }
 
-void dos_qqmlcontext_baseUrl(void* vptr, char** result, int* length)
+void dos_qqmlcontext_baseUrl(void* vptr, char** result)
 {
     QQmlContext* context = reinterpret_cast<QQmlContext*>(vptr);
     QUrl url = context->baseUrl();
-    convert_to_cstring(url.toString(), result, length);
+    convert_to_cstring(url.toString(), result);
 }
 
 void dos_qqmlcontext_setcontextproperty(void* vptr, const char* name, void* value)
@@ -258,10 +244,10 @@ void dos_qvariant_toDouble(void* vptr, double* value)
     *value = variant->toDouble();
 }
 
-void dos_qvariant_toString(void* vptr, char** ptr, int* size)
+void dos_qvariant_toString(void* vptr, char** ptr)
 {
     auto variant = reinterpret_cast<QVariant*>(vptr);
-    convert_to_cstring(variant->toString(), ptr, size);
+    convert_to_cstring(variant->toString(), ptr);
 }
 
 void dos_qvariant_setInt(void* vptr, int value)

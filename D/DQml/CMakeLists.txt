@@ -8,7 +8,6 @@ add_library(${PROJECT_NAME} STATIC
   qquickview.d
   qqmlapplicationengine.d
   qqmlcontext.d
-  chararray.d
   qguiapplication.d
   qapplication.d
   qmodelindex.d
