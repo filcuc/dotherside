@@ -7,3 +7,4 @@ public import qqmlapplicationengine;
 public import qquickview;
 public import qmetatype;
 public import qmodelindex;
+public import qabstractlistmodel;

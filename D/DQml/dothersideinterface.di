@@ -102,4 +102,18 @@ extern(C)
     void dos_qhash_int_qbytearray_delete(void*);
     void dos_qhash_int_qbytearray_insert(void*, int, immutable(char)*);
     void dos_qhash_int_qbytearray_value(void*, int, ref char*);
+
+    // QAbstractListModel
+    void dos_qabstractlistmodel_create(ref void*,
+                                       void*,
+                                       void function (void*, void*, int, void**),
+                                       void function (void*, void*, ref int),
+                                       void function (void*, void*, ref int),
+                                       void function (void*, void*, int, void*),
+                                       void function (void*, void*, void*, int, ref bool),
+                                       void function (void*, void*),
+                                       void function (void*, void*, ref int),
+                                       void function (void*, int, int, int, void*));
+    void dos_qabstractlistmodel_delete(void*);
 }
+

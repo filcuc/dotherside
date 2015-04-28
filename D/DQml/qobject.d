@@ -11,32 +11,27 @@ import qvariant;
 
 public class QObject
 {
-    this()
+    public this()
     {
-        dos_qobject_create(this.data, cast (void*) this, &staticSlotCallback);
+        this(false);
+    }
+
+    protected this(bool disableDosCalls)
+    {
+        this.disableDosCalls = disableDosCalls;
+        if (!this.disableDosCalls)
+            dos_qobject_create(this.data, cast(void*)this, &staticSlotCallback);
     }
 
     ~this()
     {
-        dos_qobject_delete(this.data);
+        if (!this.disableDosCalls)
+            dos_qobject_delete(this.data);
     }
 
     public void* rawData()
     {
         return this.data;
-    }
-
-    private extern (C) static void staticSlotCallback(void* qObjectPtr,
-                                                      void* rawSlotName,
-                                                      int numParameters,
-                                                      void** parametersArray)
-    {
-        QVariant[] parameters = new QVariant[numParameters];
-        for (int i = 0; i < numParameters; ++i)
-            parameters[i] = new QVariant(parametersArray[i]);
-        QObject qObject = cast(QObject) qObjectPtr;
-        QVariant slotName = new QVariant(rawSlotName);
-        qObject.onSlotCalled(slotName, parameters);
     }
 
     protected void onSlotCalled(QVariant slotName, QVariant[] parameters)
@@ -107,5 +102,19 @@ public class QObject
                                 array.ptr);
     }
 
-    private void* data;
+    protected extern (C) static void staticSlotCallback(void* qObjectPtr,
+                                                      void* rawSlotName,
+                                                      int numParameters,
+                                                      void** parametersArray)
+    {
+        QVariant[] parameters = new QVariant[numParameters];
+        for (int i = 0; i < numParameters; ++i)
+            parameters[i] = new QVariant(parametersArray[i]);
+        QObject qObject = cast(QObject) qObjectPtr;
+        QVariant slotName = new QVariant(rawSlotName);
+        qObject.onSlotCalled(slotName, parameters);
+    }
+
+    protected void* data;
+    private bool disableDosCalls;
 }
