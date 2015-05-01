@@ -4,27 +4,32 @@ import std.string;
 
 class QQmlApplicationEngine
 {
-    public this()
+    this()
     {
-        dos_qqmlapplicationengine_create(data);
+        dos_qqmlapplicationengine_create(this.vptr);
     }
   
-    public ~this()
+    ~this()
     {
-        dos_qqmlapplicationengine_delete(data);
+        dos_qqmlapplicationengine_delete(this.vptr);
+    }
+
+    public void* voidPointer()
+    {
+        return this.vptr;
     }
 
     public QQmlContext rootContext()
     {
-        void* contextData;
-        dos_qqmlapplicationengine_context(data, contextData);
-        return new QQmlContext(contextData);
+        void* contextVPtr;
+        dos_qqmlapplicationengine_context(this.vptr, contextVPtr);
+        return new QQmlContext(contextVPtr);
     }
   
     public void load(string filename)
     {
-        dos_qqmlapplicationengine_load(data, filename.toStringz());
+        dos_qqmlapplicationengine_load(this.vptr, filename.toStringz());
     }
   
-    private void* data;
+    private void* vptr;
 }

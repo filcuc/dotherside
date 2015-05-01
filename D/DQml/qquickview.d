@@ -6,40 +6,45 @@ class QQuickView
 { 
     this()
     {
-        dos_qquickview_create(data);
+        dos_qquickview_create(this.vptr);
     }
   
     ~this()
     {
-        dos_qquickview_delete(data);
+        dos_qquickview_delete(this.vptr);
     }
-  
-    void show()
+
+    public void* voidPointer()
     {
-        dos_qquickview_show(data);
+        return this.vptr;
     }
   
-    QQmlContext rootContext()
+    public void show()
+    {
+        dos_qquickview_show(this.vptr);
+    }
+  
+    public QQmlContext rootContext()
     {
         void* contextData;
-        dos_qquickview_rootContext(data, contextData);
+        dos_qquickview_rootContext(this.vptr, contextData);
         return new QQmlContext(contextData);
     }
   
-    string source()
+    public string source()
     {
         char* array;
-        dos_qquickview_source(data, array);
+        dos_qquickview_source(this.vptr, array);
         string result = fromStringz(array).dup;
         dos_chararray_delete(array);
         return result;
     }
   
-    void setSource(string filename)
+    public void setSource(string filename)
     {
         immutable(char)* filenameAsCString = filename.toStringz();
-        dos_qquickview_set_source(data, filenameAsCString);
+        dos_qquickview_set_source(this.vptr, filenameAsCString);
     }
 
-    private void* data;
+    private void* vptr;
 }

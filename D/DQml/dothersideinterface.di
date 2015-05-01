@@ -114,6 +114,13 @@ extern(C)
                                        void function (void*, void*),
                                        void function (void*, void*, ref int),
                                        void function (void*, int, int, int, void*));
+    void dos_qabstractlistmodel_beginInsertRows(void* vptr, void* parent, int first, int last);
+    void dos_qabstractlistmodel_endInsertRows(void* vptr);
+    void dos_qabstractlistmodel_beginRemoveRows(void* vptr, void* parent, int first, int last);
+    void dos_qabstractlistmodel_endRemoveRows(void* vptr);
+    void dos_qabstractlistmodel_beginResetModel(void* vptr);
+    void dos_qabstractlistmodel_endResetModel(void* vptr);
+    void dos_qabstractlistmodel_dataChanged(void* vptr, void* topLeft, void* bottomRight, int* rolesPtr, int rolesLength);
     void dos_qabstractlistmodel_delete(void*);
 }
 

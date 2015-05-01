@@ -8,13 +8,18 @@ class QModelIndex
         dos_qmodelindex_create(this.ptr);
     }
 
+    this(void* ptr)
+    {
+        this.ptr = ptr;
+    }
+
     ~this()
     {
         dos_qmodelindex_delete(this.ptr);
         ptr = null;
     }
 
-    public void* internalPtr()
+    public void* voidPointer()
     {
         return this.ptr;
     }
@@ -43,7 +48,7 @@ class QModelIndex
     public QVariant data(int role)
     {
         auto result = new QVariant();
-        dos_qmodelindex_data(this.ptr, role, result.rawData());
+        dos_qmodelindex_data(this.ptr, role, result.voidPointer());
         return result;
     }
 

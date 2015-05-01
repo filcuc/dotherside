@@ -20,18 +20,21 @@ public class QObject
     {
         this.disableDosCalls = disableDosCalls;
         if (!this.disableDosCalls)
-            dos_qobject_create(this.data, cast(void*)this, &staticSlotCallback);
+            dos_qobject_create(this.vptr, cast(void*)this, &staticSlotCallback);
     }
 
     ~this()
     {
         if (!this.disableDosCalls)
-            dos_qobject_delete(this.data);
+        {
+            dos_qobject_delete(this.vptr);
+            this.vptr = null;
+        }
     }
 
-    public void* rawData()
+    public void* voidPointer()
     {
-        return this.data;
+        return this.vptr;
     }
 
     protected void onSlotCalled(QVariant slotName, QVariant[] parameters)
@@ -43,7 +46,7 @@ public class QObject
         int index = -1;
         int  length = cast(int)types.length;
         int[] array = to!(int[])(types);
-        dos_qobject_slot_create(this.data,
+        dos_qobject_slot_create(this.vptr,
                                 name.toStringz(),
                                 length,
                                 array.ptr,
@@ -55,7 +58,7 @@ public class QObject
         int index = -1;
         int length = cast(int)types.length;
         int[] array = length > 0 ? to!(int[])(types) : null;
-        dos_qobject_signal_create(this.data,
+        dos_qobject_signal_create(this.vptr,
                                   name.toStringz(),
                                   length,
                                   array.ptr,
@@ -68,7 +71,7 @@ public class QObject
                                     string writeSlotName,
                                     string notifySignalName)
     {
-        dos_qobject_property_create(this.data,
+        dos_qobject_property_create(this.vptr,
                                     name.toStringz(),
                                     type,
                                     readSlotName.toStringz(),
@@ -94,18 +97,18 @@ public class QObject
         if (length > 0) {
             array = new void*[length];
             foreach (int i, QVariant v; arguments)
-                array[i] = v.rawData();
+                array[i] = v.voidPointer();
         }
-        dos_qobject_signal_emit(this.data,
+        dos_qobject_signal_emit(this.vptr,
                                 signalName.toStringz(),
                                 length,
                                 array.ptr);
     }
 
     protected extern (C) static void staticSlotCallback(void* qObjectPtr,
-                                                      void* rawSlotName,
-                                                      int numParameters,
-                                                      void** parametersArray)
+                                                        void* rawSlotName,
+                                                        int numParameters,
+                                                        void** parametersArray)
     {
         QVariant[] parameters = new QVariant[numParameters];
         for (int i = 0; i < numParameters; ++i)
@@ -115,6 +118,6 @@ public class QObject
         qObject.onSlotCalled(slotName, parameters);
     }
 
-    protected void* data;
+    protected void* vptr;
     private bool disableDosCalls;
 }
