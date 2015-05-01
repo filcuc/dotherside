@@ -4,7 +4,7 @@ import std.string;
 
 class QQmlContext
 {
-    public this(void* ptr)
+    this(void* vptr)
     {
         this.vptr = vptr;
     }
@@ -17,7 +17,7 @@ class QQmlContext
     public string baseUrl()
     {
         char* array;
-        dos_qqmlcontext_baseUrl(vptr, array);
+        dos_qqmlcontext_baseUrl(this.vptr, array);
         string result = fromStringz(array).dup;
         dos_chararray_delete(array);
         return result;
@@ -25,7 +25,7 @@ class QQmlContext
   
     public void setContextProperty(string name, QVariant value)
     {
-        dos_qqmlcontext_setcontextproperty(vptr, name.ptr, value.voidPointer());
+        dos_qqmlcontext_setcontextproperty(this.vptr, name.ptr, value.voidPointer());
     }
 
     private void* vptr;

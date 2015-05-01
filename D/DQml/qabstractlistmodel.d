@@ -33,7 +33,7 @@ class QAbstractListModel : QObject
 
     public int columnCount(QModelIndex parentIndex)
     {
-        return 0;
+        return 1;
     }
 
     public QVariant data(QModelIndex index, int role)
