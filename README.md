@@ -17,11 +17,11 @@ Currently we support the following platforms/compilers:
 - Windows 32/64bit with Visual Studio 2013 Community Edition 
 
 You need the following software:
-* Qt 5.3
-* dmd 2.065
-* gcc 4.8 or later with c++11 support (Linux)
-* Visual Studio 2013 Community Edition (Windows)
-* nim 0.10.2
+* Qt 5.3 or higher
+* dmd 2.065 or higher
+* gcc 4.8 or later with c++11 support (Linux) or higher
+* Visual Studio 2013 Community Edition (Windows) or higher
+* nim 0.10.3 
 
 ## Build Instructions
 1. Open a shell terminal inside the cloned repo
@@ -30,7 +30,7 @@ You need the following software:
 4. make
 
 ## Install Instructions
-For the C++ bridge:
+For the DOtherSide C++ bridge:
 
 1. Copy the libDOtherSide.so from the build dir to your system lib i.e /usr/lib
 
@@ -44,6 +44,7 @@ For NimQml use the Nimble package manager:
 * Creation of custom QObject and inject in a qml QtQuick view (both Nim and D)
 * Slot and Signal creation for the following types int, bool, string (both Nim and D)
 * Creation of properties for databinding (both Nim and D)
+* Subclassing of QAbstractListModels 
 
 
 
