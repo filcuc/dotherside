@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
-project (Main C D )
-add_executable(${PROJECT_NAME} myqobject.d main.d)
+project (DQmlContactApp C D )
+add_executable(${PROJECT_NAME} main.d applicationlogic.d contact.d contactlist.d)
 target_include_directories(${PROJECT_NAME} PUBLIC
   "${CMAKE_CURRENT_SOURCE_DIR}/../../DQml"
   ${CMAKE_CURRENT_SOURCE_DIR})

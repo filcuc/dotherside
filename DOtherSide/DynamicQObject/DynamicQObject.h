@@ -199,8 +199,8 @@ bool DynamicQObject<T>::registerProperty(const QString& name,
 
     m_propertiesByName.insert(name.toUtf8(), property);
 
-    auto afterSignalAdded = [](QMetaObjectBuilder & metaObjectBuilder) {};
-    auto afterSlotAdded = [](QMetaObjectBuilder & metaObjectBuilder) {};
+	auto afterSignalAdded = [](QMetaObjectBuilder & metaObjectBuilder) { Q_UNUSED(metaObjectBuilder); };
+	auto afterSlotAdded = [](QMetaObjectBuilder & metaObjectBuilder) { Q_UNUSED(metaObjectBuilder); };
     auto afterPropertyAdded = [name, type, notifySignal](QMetaObjectBuilder & metaObjectBuilder)
     {
         int signalIndex = -1;
@@ -211,7 +211,7 @@ bool DynamicQObject<T>::registerProperty(const QString& name,
                 QMetaMethodBuilder methodBuilder = metaObjectBuilder.method(i);
                 if (methodBuilder.methodType() == QMetaMethod::Signal)
                 {
-                    if (methodBuilder.signature() == QMetaObject::normalizedSignature(notifySignal.signature()));
+                    if (methodBuilder.signature() == QMetaObject::normalizedSignature(notifySignal.signature()))
                     {
                         signalIndex = i;
                         break;
@@ -362,6 +362,8 @@ bool DynamicQObject<T>::writeProperty(const DynamicProperty& property, void** ar
 
     QVariant newValue(writeSlot.argumentTypeAt(0), args[0]);
     executeSlot(writeSlot, {newValue});
+
+	return true;
 }
 
 template <typename T>

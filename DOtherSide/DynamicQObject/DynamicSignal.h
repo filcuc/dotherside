@@ -8,7 +8,7 @@
 #include <QtCore/QMetaType>
 #include <QtCore/QList>
 
-class SignalData;
+struct SignalData;
 
 class DynamicSignal
 {
@@ -25,7 +25,6 @@ public:
     QByteArray signature() const;
 
     bool validate(const QVariantList& arguments);
-    static bool validate(const QList<QMetaType::Type>& argumentsTypes, const QVariantList& argumentsValues);
 
 private:
     void _initSignature();
@@ -99,11 +98,11 @@ QByteArray DynamicSignal::signature() const
 
 bool DynamicSignal::validate(const QVariantList& arguments)
 {
-    return true;
-}
-
-bool DynamicSignal::validate(const QList<QMetaType::Type>& argumentsTypes, const QVariantList& argumentsValues)
-{
+	// TODO: here we should test if the given arguments
+	// match this signal signature
+	// This is important because a class could have multiple
+	// signals with the same name but different arguments
+	Q_UNUSED(arguments);
     return true;
 }
 

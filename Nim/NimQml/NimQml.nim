@@ -1,5 +1,12 @@
 include NimQmlTypes
 
+when defined(windows):
+  const dOtherSideDll* = "libDOtherSide.dll"
+elif defined(macosx):
+  const dOtherSideDll* = "libDOtherSide.dylib"
+else:
+  const dOtherSideDll* = "libDOtherSide.so"
+
 ## NimQml aims to provide binding to the QML for the Nim programming language
 ##
 ## Optional finalizers
@@ -70,29 +77,29 @@ template newWithCondFinalizer(variable: expr, finalizer: expr) =
     new(variable)
 
 # QVariant
-proc dos_qvariant_create(variant: var RawQVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_create_int(variant: var RawQVariant, value: cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_create_bool(variant: var RawQVariant, value: bool) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_create_string(variant: var RawQVariant, value: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_create_qobject(variant: var RawQVariant, value: RawQObject) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_create_qvariant(variant: var RawQVariant, value: RawQVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_create_float(variant: var RawQVariant, value: cfloat) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_create_double(variant: var RawQVariant, value: cdouble) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_delete(variant: RawQVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_isnull(variant: RawQVariant, isNull: var bool) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_toInt(variant: RawQVariant, value: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_toBool(variant: RawQVariant, value: var bool) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_toString(variant: RawQVariant, value: var cstring, length: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_setInt(variant: RawQVariant, value: cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_setBool(variant: RawQVariant, value: bool) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_setString(variant: RawQVariant, value: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_assign(leftValue: RawQVariant, rightValue: RawQVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_toFloat(variant: RawQVariant, value: var cfloat) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_setFloat(variant: RawQVariant, value: float)  {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_toDouble(variant: RawQVariant, value: var cdouble) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_setDouble(variant: RawQVariant, value: cdouble) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qvariant_setQObject(variant: RawQVariant, value: RawQObject) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_chararray_delete(rawCString: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qvariant_create(variant: var RawQVariant) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qvariant_create_int(variant: var RawQVariant, value: cint) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qvariant_create_bool(variant: var RawQVariant, value: bool) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qvariant_create_string(variant: var RawQVariant, value: cstring) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qvariant_create_qobject(variant: var RawQVariant, value: RawQObject) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qvariant_create_qvariant(variant: var RawQVariant, value: RawQVariant) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qvariant_create_float(variant: var RawQVariant, value: cfloat) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qvariant_create_double(variant: var RawQVariant, value: cdouble) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qvariant_delete(variant: RawQVariant) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qvariant_isnull(variant: RawQVariant, isNull: var bool) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qvariant_toInt(variant: RawQVariant, value: var cint) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qvariant_toBool(variant: RawQVariant, value: var bool) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qvariant_toString(variant: RawQVariant, value: var cstring) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qvariant_setInt(variant: RawQVariant, value: cint) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qvariant_setBool(variant: RawQVariant, value: bool) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qvariant_setString(variant: RawQVariant, value: cstring) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qvariant_assign(leftValue: RawQVariant, rightValue: RawQVariant) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qvariant_toFloat(variant: RawQVariant, value: var cfloat) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qvariant_setFloat(variant: RawQVariant, value: float)  {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qvariant_toDouble(variant: RawQVariant, value: var cdouble) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qvariant_setDouble(variant: RawQVariant, value: cdouble) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qvariant_setQObject(variant: RawQVariant, value: RawQObject) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_chararray_delete(rawCString: cstring) {.cdecl, dynlib:dOtherSideDll, importc.}
 
 proc create*(variant: QVariant) =
   ## Create a new QVariant
@@ -229,8 +236,7 @@ proc `doubleVal=`*(variant: QVariant, value: cdouble) =
 proc stringVal*(variant: QVariant): string = 
   ## Return the QVariant value as string
   var rawCString: cstring
-  var rawCStringLength: cint
-  dos_qvariant_toString(variant.data, rawCString, rawCStringLength)
+  dos_qvariant_toString(variant.data, rawCString)
   result = $rawCString
   dos_chararray_delete(rawCString)
 
@@ -247,10 +253,10 @@ proc assign*(leftValue: QVariant, rightValue: QVariant) =
   dos_qvariant_assign(leftValue.data, rightValue.data)  
 
 # QQmlApplicationEngine
-proc dos_qqmlapplicationengine_create(engine: var RawQQmlApplicationEngine) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qqmlapplicationengine_load(engine: RawQQmlApplicationEngine, filename: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qqmlapplicationengine_context(engine: RawQQmlApplicationEngine, context: var QQmlContext) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qqmlapplicationengine_delete(engine: RawQQmlApplicationEngine) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qqmlapplicationengine_create(engine: var RawQQmlApplicationEngine) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qqmlapplicationengine_load(engine: RawQQmlApplicationEngine, filename: cstring) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qqmlapplicationengine_context(engine: RawQQmlApplicationEngine, context: var QQmlContext) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qqmlapplicationengine_delete(engine: RawQQmlApplicationEngine) {.cdecl, dynlib:dOtherSideDll, importc.}
 
 proc create*(engine: QQmlApplicationEngine) = 
   ## Create an new QQmlApplicationEngine
@@ -279,17 +285,17 @@ proc newQQmlApplicationEngine*(): QQmlApplicationEngine =
   result.create()
 
 # QQmlContext
-proc dos_qqmlcontext_setcontextproperty(context: QQmlContext, propertyName: cstring, propertyValue: RawQVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qqmlcontext_setcontextproperty(context: QQmlContext, propertyName: cstring, propertyValue: RawQVariant) {.cdecl, dynlib:dOtherSideDll, importc.}
 
 proc setContextProperty*(context: QQmlContext, propertyName: string, propertyValue: QVariant) = 
   ## Sets a new property with the given value
   dos_qqmlcontext_setcontextproperty(context, propertyName, propertyValue.data)
 
 # QApplication
-proc dos_qapplication_create() {.cdecl, dynlib: "libDOtherSide.so", importc.}
-proc dos_qapplication_exec() {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qapplication_quit() {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qapplication_delete() {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qapplication_create() {.cdecl, dynlib: dOtherSideDll, importc.}
+proc dos_qapplication_exec() {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qapplication_quit() {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qapplication_delete() {.cdecl, dynlib:dOtherSideDll, importc.}
 
 proc create*(application: QApplication) = 
   ## Create a new QApplication
@@ -317,10 +323,10 @@ proc newQApplication*(): QApplication =
   result.create()
 
 # QGuiApplication
-proc dos_qguiapplication_create() {.cdecl, dynlib: "libDOtherSide.so", importc.}
-proc dos_qguiapplication_exec() {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qguiapplication_quit() {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qguiapplication_delete() {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qguiapplication_create() {.cdecl, dynlib: dOtherSideDll, importc.}
+proc dos_qguiapplication_exec() {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qguiapplication_quit() {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qguiapplication_delete() {.cdecl, dynlib:dOtherSideDll, importc.}
 
 proc create*(application: QGuiApplication) = 
   ## Create a new QApplication
@@ -373,12 +379,12 @@ proc toCIntSeq(metaTypes: openarray[QMetaType]): seq[cint] =
 
 type QObjectCallBack = proc(nimobject: ptr QObjectObj, slotName: RawQVariant, numArguments: cint, arguments: RawQVariantArrayPtr) {.cdecl.}
     
-proc dos_qobject_create(qobject: var RawQObject, nimobject: ptr QObjectObj, qobjectCallback: QObjectCallBack) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qobject_delete(qobject: RawQObject) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qobject_slot_create(qobject: RawQObject, slotName: cstring, argumentsCount: cint, argumentsMetaTypes: ptr cint, slotIndex: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qobject_signal_create(qobject: RawQObject, signalName: cstring, argumentsCount: cint, argumentsMetaTypes: ptr cint, signalIndex: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qobject_signal_emit(qobject: RawQObject, signalName: cstring, argumentsCount: cint, arguments: ptr RawQVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qobject_property_create(qobject: RawQObject, propertyName: cstring, propertyType: cint, readSlot: cstring, writeSlot: cstring, notifySignal: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qobject_create(qobject: var RawQObject, nimobject: ptr QObjectObj, qobjectCallback: QObjectCallBack) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qobject_delete(qobject: RawQObject) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qobject_slot_create(qobject: RawQObject, slotName: cstring, argumentsCount: cint, argumentsMetaTypes: ptr cint, slotIndex: var cint) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qobject_signal_create(qobject: RawQObject, signalName: cstring, argumentsCount: cint, argumentsMetaTypes: ptr cint, signalIndex: var cint) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qobject_signal_emit(qobject: RawQObject, signalName: cstring, argumentsCount: cint, arguments: ptr RawQVariant) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qobject_property_create(qobject: RawQObject, propertyName: cstring, propertyType: cint, readSlot: cstring, writeSlot: cstring, notifySignal: cstring) {.cdecl, dynlib:dOtherSideDll, importc.}
 
 method onSlotCalled*(nimobject: QObject, slotName: string, args: openarray[QVariant]) =
   ## Called from the NimQml bridge when a slot is called from Qml.
@@ -470,11 +476,11 @@ proc emit*(qobject: QObject, signalName: string, args: openarray[QVariant] = [])
     dos_qobject_signal_emit(qobject.data, signalName, 0, nil)
 
 # QQuickView
-proc dos_qquickview_create(view: var RawQQuickView) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qquickview_delete(view: RawQQuickView) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qquickview_show(view: RawQQuickView) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qquickview_source(view: RawQQuickView, filename: var cstring, length: var int) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qquickview_set_source(view: RawQQuickView, filename: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qquickview_create(view: var RawQQuickView) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qquickview_delete(view: RawQQuickView) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qquickview_show(view: RawQQuickView) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qquickview_source(view: RawQQuickView, filename: var cstring, length: var int) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qquickview_set_source(view: RawQQuickView, filename: cstring) {.cdecl, dynlib:dOtherSideDll, importc.}
 
 proc create(view: var QQuickView) =
   ## Create a new QQuickView
@@ -508,15 +514,15 @@ proc newQQuickView*(): QQuickView =
   result.create()
 
 # QModelIndex
-proc dos_qmodelindex_create(modelIndex: var RawQModelIndex) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qmodelindex_delete(modelIndex: RawQModelIndex) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qmodelindex_row(modelIndex: RawQModelIndex, row: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qmodelindex_column(modelIndex: RawQModelIndex, column: var cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qmodelindex_isValid(modelIndex: RawQModelIndex, column: var bool) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qmodelindex_data(modelIndex: RawQModelIndex, role: cint, data: RawQVariant) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qmodelindex_parent(modelIndex: RawQModelIndex, parent: RawQModelIndex) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qmodelindex_child(modelIndex: RawQModelIndex, row: cint, column: cint, parent: RawQModelIndex) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qmodelindex_sibling(modelIndex: RawQModelIndex, row: cint, column: cint, sibling: RawQModelIndex) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qmodelindex_create(modelIndex: var RawQModelIndex) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qmodelindex_delete(modelIndex: RawQModelIndex) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qmodelindex_row(modelIndex: RawQModelIndex, row: var cint) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qmodelindex_column(modelIndex: RawQModelIndex, column: var cint) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qmodelindex_isValid(modelIndex: RawQModelIndex, column: var bool) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qmodelindex_data(modelIndex: RawQModelIndex, role: cint, data: RawQVariant) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qmodelindex_parent(modelIndex: RawQModelIndex, parent: RawQModelIndex) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qmodelindex_child(modelIndex: RawQModelIndex, row: cint, column: cint, parent: RawQModelIndex) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qmodelindex_sibling(modelIndex: RawQModelIndex, row: cint, column: cint, sibling: RawQModelIndex) {.cdecl, dynlib:dOtherSideDll, importc.}
 
 proc create*(modelIndex: var QModelIndex) =
   ## Create a new QModelIndex
@@ -579,10 +585,10 @@ proc sibling*(modelIndex: QModelIndex, row: cint, column: cint): QModelIndex =
   dos_qmodelindex_sibling(modelIndex.data, row, column, result.data)
 
 # QHashIntByteArray
-proc dos_qhash_int_qbytearray_create(qHash: var RawQHashIntByteArray) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qhash_int_qbytearray_delete(qHash: RawQHashIntByteArray) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qhash_int_qbytearray_insert(qHash: RawQHashIntByteArray, key: int, value: cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qhash_int_qbytearray_value(qHash: RawQHashIntByteArray, key: int, value: var cstring) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+proc dos_qhash_int_qbytearray_create(qHash: var RawQHashIntByteArray) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qhash_int_qbytearray_delete(qHash: RawQHashIntByteArray) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qhash_int_qbytearray_insert(qHash: RawQHashIntByteArray, key: int, value: cstring) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qhash_int_qbytearray_value(qHash: RawQHashIntByteArray, key: int, value: var cstring) {.cdecl, dynlib:dOtherSideDll, importc.}
 
 proc create*(qHash: var QHashIntByteArray) =
   ## Create the QHash
@@ -632,25 +638,25 @@ proc dos_qabstractlistmodel_create(model: var RawQAbstractListModel,
                                    setDataCallback: SetDataCallBack,
                                    roleNamesCallback: RoleNamesCallback,
                                    flagsCallback: FlagsCallback,
-                                   headerDataCallback: HeaderDataCallback) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qabstractlistmodel_delete(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+                                   headerDataCallback: HeaderDataCallback) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qabstractlistmodel_delete(model: RawQAbstractListModel) {.cdecl, dynlib:dOtherSideDll, importc.}
 proc dos_qabstractlistmodel_beginInsertRows(model: RawQAbstractListModel,
                                             parentIndex: RawQModelIndex,
                                             first: cint,
-                                            last: cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qabstractlistmodel_endInsertRows(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+                                            last: cint) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qabstractlistmodel_endInsertRows(model: RawQAbstractListModel) {.cdecl, dynlib:dOtherSideDll, importc.}
 proc dos_qabstractlistmodel_beginRemoveRows(model: RawQAbstractListModel,
                                             parentIndex: RawQModelIndex,
                                             first: cint,
-                                            last: cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qabstractlistmodel_endRemoveRows(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qabstractlistmodel_beginResetModel(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
-proc dos_qabstractlistmodel_endResetModel(model: RawQAbstractListModel) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+                                            last: cint) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qabstractlistmodel_endRemoveRows(model: RawQAbstractListModel) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qabstractlistmodel_beginResetModel(model: RawQAbstractListModel) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qabstractlistmodel_endResetModel(model: RawQAbstractListModel) {.cdecl, dynlib:dOtherSideDll, importc.}
 proc dos_qabstractlistmodel_dataChanged(model: RawQAbstractListModel,
                                         parentLeft: RawQModelIndex,
                                         bottomRight: RawQModelIndex,
                                         rolesArrayPtr: ptr cint,
-                                        rolesArrayLength: cint) {.cdecl, dynlib:"libDOtherSide.so", importc.}
+                                        rolesArrayLength: cint) {.cdecl, dynlib:dOtherSideDll, importc.}
 
 method rowCount*(model: QAbstractListModel, index: QModelIndex): cint =
   ## Return the model's row count

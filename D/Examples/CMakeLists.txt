@@ -1,1 +1,5 @@
-add_subdirectory(Simple)
+add_subdirectory(HelloWorld)
+add_subdirectory(SimpleData)
+add_subdirectory(SlotsAndProperties)
+add_subdirectory(AbstractItemModel)
+add_subdirectory(ContactApp)

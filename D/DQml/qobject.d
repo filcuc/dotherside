@@ -1,104 +1,123 @@
 import std.stdio;
+import std.format;
 import std.conv;
 import std.container;
 import std.traits;
 import std.string;
+import std.algorithm;
 import dothersideinterface;
 import qmetatype;
 import qvariant;
-import qslot;
-import qsignal;
 
 public class QObject
 {
-  this()
-  {
-    dos_qobject_create(this.data, cast (void*) this, &staticSlotCallback);
-  }
-  
-  ~this()
-  {
-    dos_qobject_delete(this.data);
-  }
-  
-  private extern (C) static void staticSlotCallback(void* qObjectPtr,
-						    void* slotName,
-						    int numParameters,
-						    void** parametersArray)
-  {
-    QVariant[] parameters = new QVariant[numParameters];
-    for (int i = 0; i < numParameters; ++i)
-      parameters[i] = new QVariant(parametersArray[i]);
-    QObject qObject = cast(QObject) qObjectPtr;
-    QVariant name = new QVariant(slotName);
-    ISlot slot = qObject.slotsByName[name.toString()];
-    slot.Execute(parameters);
-  }
-
-  protected auto registerSlot(T)(string name, T t) {
-    auto slot = CreateQSlot(t);
-    auto rawName = name.toStringz();
-    int slotIndex = -1;
-    int[] parameterMetaTypes = slot.GetParameterMetaTypes();
-    int numArgs = cast(int)parameterMetaTypes.length;
-    dos_qobject_slot_create(data, rawName, numArgs, parameterMetaTypes.ptr, slotIndex);
-    slotsByName[name] = slot;
-    return slot;
-  }
-  
-  protected auto registerSignal(Args...)(string name) {
-    auto signal = CreateQSignal!(Args)(this, name);
-    auto rawName = name.toStringz();
-    int index = -1;
-    int[] parameterMetaTypes = signal.GetParameterMetaTypes();
-    int numArgs = cast(int)parameterMetaTypes.length;
-    dos_qobject_signal_create(data, rawName, numArgs, parameterMetaTypes.ptr, index);
-    signalsByName[name] = signal;
-    return signal;
-  }
-
-  protected void registerProperty(T)(string name,
-				     string readSlotName,
-				     string writeSlotName,
-				     string notifySignalName)
-  {
-    int propertyMetaType = GetMetaType!(T)();
-    dos_qobject_property_create(data,
-				name.toStringz(),
-				propertyMetaType,
-				readSlotName.toStringz(),
-				writeSlotName.toStringz(),
-				notifySignalName.toStringz());
-  }
-  
-  public void* data;
-  private ISlot[string] slotsByName;
-  private ISignal[string] signalsByName;
-}
-
-unittest
-{
-  auto test = new class QObject {
-    this()
+    public this()
     {
-      fooSignal = registerSignal!()("fooSignal");
-      barSignal = registerSignal!(int)("barSignal");
-      foo = registerSlot("foo", &_foo);
-      bar = registerSlot("bar", &_bar);
+        this(false);
     }
-    
-    QSlot!(void delegate()) foo;
-    void _foo() { writeln("D: Called slot \"foo\"");}
+
+    protected this(bool disableDosCalls)
+    {
+        this.disableDosCalls = disableDosCalls;
+        if (!this.disableDosCalls)
+            dos_qobject_create(this.vptr, cast(void*)this, &staticSlotCallback);
+    }
+
+    ~this()
+    {
+        if (!this.disableDosCalls)
+        {
+            dos_qobject_delete(this.vptr);
+            this.vptr = null;
+        }
+    }
+
+    public void* voidPointer()
+    {
+        return this.vptr;
+    }
+
+    protected void onSlotCalled(QVariant slotName, QVariant[] parameters)
+    {
+    }
+
+    protected void registerSlot(string name, QMetaType[] types)
+    {
+        int index = -1;
+        int  length = cast(int)types.length;
+        int[] array = to!(int[])(types);
+        dos_qobject_slot_create(this.vptr,
+                                name.toStringz(),
+                                length,
+                                array.ptr,
+                                index);
+    }
+
+    protected void registerSignal(string name, QMetaType[] types)
+    {
+        int index = -1;
+        int length = cast(int)types.length;
+        int[] array = length > 0 ? to!(int[])(types) : null;
+        dos_qobject_signal_create(this.vptr,
+                                  name.toStringz(),
+                                  length,
+                                  array.ptr,
+                                  index);
+    }
+
+    protected void registerProperty(string name,
+                                    QMetaType type,
+                                    string readSlotName,
+                                    string writeSlotName,
+                                    string notifySignalName)
+    {
+        dos_qobject_property_create(this.vptr,
+                                    name.toStringz(),
+                                    type,
+                                    readSlotName.toStringz(),
+                                    writeSlotName.toStringz(),
+                                    notifySignalName.toStringz());
+    }
+
+    protected void emit(T)(string signalName, T t)
+    {
+        emit(signalName, new QVariant(t));
+    }
   
-    QSlot!(void delegate(int)) bar;
-    void _bar(int arg) { writeln("D: Calling slot \"_bar\" with arg \"", arg, "\""); }
-    
-    QSignal!() fooSignal;
-    QSignal!int barSignal;
-  };
-  
-  test.foo();
-  test.bar(10);
-  test.fooSignal();
-  test.barSignal(10);
+    protected void emit(string signalName, QVariant value)
+    {
+        QVariant[] array = [value];
+        emit(signalName, array);
+    }
+
+    protected void emit(string signalName, QVariant[] arguments = null)
+    {
+        int length = cast(int)arguments.length;
+        void*[] array = null;
+        if (length > 0) {
+            array = new void*[length];
+            foreach (int i, QVariant v; arguments)
+                array[i] = v.voidPointer();
+        }
+        dos_qobject_signal_emit(this.vptr,
+                                signalName.toStringz(),
+                                length,
+                                array.ptr);
+    }
+
+    protected extern (C) static void staticSlotCallback(void* qObjectPtr,
+                                                        void* rawSlotName,
+                                                        int numParameters,
+                                                        void** parametersArray)
+    {
+        QVariant[] parameters = new QVariant[numParameters];
+        for (int i = 0; i < numParameters; ++i)
+            parameters[i] = new QVariant(parametersArray[i]);
+        QObject qObject = cast(QObject) qObjectPtr;
+        QVariant slotName = new QVariant(rawSlotName);
+        qObject.onSlotCalled(slotName, parameters);
+    }
+
+    protected void* vptr;
+    private bool disableDosCalls;
 }

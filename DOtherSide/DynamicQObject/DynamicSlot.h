@@ -14,7 +14,7 @@
 
 #include "private/qmetaobjectbuilder_p.h"
 
-class SlotData;
+struct SlotData;
 class QString;
 
 class DynamicSlot
@@ -31,7 +31,6 @@ public:
     QString name() const;
     bool isValid() const;
     QByteArray signature() const;
-    bool validate(const QVariantList& argumentsValues);
     QMetaType::Type returnType() const;
     QList<QMetaType::Type> argumentsTypes() const;
     QMetaType::Type argumentTypeAt(int i) const;
@@ -108,11 +107,6 @@ bool DynamicSlot::isValid() const
 QByteArray DynamicSlot::signature() const
 {
     return isValid() ? d->signature : QByteArray();
-}
-
-bool DynamicSlot::validate(const QVariantList& argumentsValues)
-{
-    return true;
 }
 
 QMetaType::Type DynamicSlot::returnType() const

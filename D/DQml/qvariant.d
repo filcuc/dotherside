@@ -1,111 +1,160 @@
 import dothersideinterface;
 import qobject;
 import std.string;
-import chararray;
 
 class QVariant
 {
-  public this()
-  {
-    dos_qvariant_create(this.data);
-  }
+    public this()
+    {
+        dos_qvariant_create(this.vptr);
+    }
   
-  public this(int value)
-  {
-    dos_qvariant_create_int(this.data, value);
-  }
+    public this(int value)
+    {
+        dos_qvariant_create_int(this.vptr, value);
+    }
   
-  public this(bool value)
-  {
-    dos_qvariant_create_bool(this.data, value);
-  }
+    public this(bool value)
+    {
+        dos_qvariant_create_bool(this.vptr, value);
+    }
   
-  public this(string value)
-  {
-    dos_qvariant_create_string(this.data, value.toStringz());
-  }
+    public this(string value)
+    {
+        dos_qvariant_create_string(this.vptr, value.toStringz());
+    }
+
+    public this(float value)
+    {
+        dos_qvariant_create_float(this.vptr, value);
+    }
+    
+    public this(double value)
+    {
+        dos_qvariant_create_double(this.vptr, value);
+    }
+
+    public this(QObject value)
+    {
+        dos_qvariant_create_qobject(this.vptr, value.voidPointer());
+    }
+
+    public this(void* vptr, bool hasOwnership = false)
+    {
+        this.vptr = vptr;
+        this.hasOwnership = hasOwnership;
+    }
+
+    ~this()
+    {
+        if (this.hasOwnership)
+            dos_qvariant_delete(this.vptr);
+    }
+
+    public void* voidPointer()
+    {
+        return this.vptr;
+    }
+
+    public void setValue(int value)
+    {
+        dos_qvariant_setInt(this.vptr, value);
+    }
+
+    public void setValue(bool value)
+    {
+        dos_qvariant_setBool(this.vptr, value);
+    }
+
+    public void setValue(string value)
+    {
+        dos_qvariant_setString(this.vptr, value.toStringz());
+    }
   
-  public this(QObject value)
-  {
-    dos_qvariant_create_qobject(this.data, value.data);
-  }
+    public void setValue(QObject value)
+    {
+        dos_qvariant_setQObject(this.vptr, value.voidPointer());
+    }
 
-  public  this(void* data, bool hasOwnership = false)
-  {
-    this.data = data;
-    this.hasOwnership = hasOwnership;
-  }
+    public void setValue(float value)
+    {
+        dos_qvariant_setFloat(this.vptr, value);
+    }
 
-  ~this()
-  {
-    if (this.hasOwnership)
-      dos_qvariant_delete(this.data);
-  }
+    public void setValue(double value)
+    {
+        dos_qvariant_setDouble(this.vptr, value);
+    }
 
-  public void* rawData()
-  {
-    return data;
-  }
+    public void getValue(ref int value)
+    {
+        value = toInt();
+    }
 
-  public void setValue(int value)
-  {
-    dos_qvariant_setInt(this.data, value);
-  }
+    public void getValue(ref bool value)
+    {
+        value = toBool();
+    }
 
-  public void setValue(bool value)
-  {
-    dos_qvariant_setBool(this.data, value);
-  }
+    public void getValue(ref string value)
+    {
+        value = toString();
+    }
 
-  public void setValue(string value)
-  {
-    dos_qvariant_setString(this.data, value.toStringz());
-  }
-
-  public void getValue(ref int value)
-  {
-    value = toInt();
-  }
-
-  public void getValue(ref bool value)
-  {
-    value = toBool();
-  }
-
-  public void getValue(ref string value)
-  {
-    value = toString();
-  }
+    public void getValue(ref float value)
+    {
+        value = toFloat();
+    }
   
-  public  bool isNull()
-  {
-    bool result;
-    dos_qvariant_isnull(this.data, result);
-    return result;
-  }
-  
-  public  bool toBool()
-  {
-    bool result;
-    dos_qvariant_toBool(this.data, result);
-    return result;
-  }
-  
-  public int toInt()
-  {
-    int result;
-    dos_qvariant_toInt(this.data, result);
-    return result;
-  }
-  
-  public override string toString()
-  {
-    auto result = new CharArray();
-    scope(exit) destroy(result);
-    dos_qvariant_toString(this.data, result.dataRef(), result.sizeRef());
-    return result.toString();
-  }
+    public void getValue(ref double value)
+    {
+        value = toDouble();
+    }
 
-  private void* data = null;
-  private bool hasOwnership = true;
+    public  bool isNull()
+    {
+        bool result;
+        dos_qvariant_isnull(this.vptr, result);
+        return result;
+    }
+  
+    public  bool toBool()
+    {
+        bool result;
+        dos_qvariant_toBool(this.vptr, result);
+        return result;
+    }
+  
+    public int toInt()
+    {
+        int result;
+        dos_qvariant_toInt(this.vptr, result);
+        return result;
+    }
+
+    public float toFloat()
+    {
+        float result;
+        dos_qvariant_toFloat(this.vptr, result);
+        return result;
+    }
+
+    public double toDouble()
+    {
+        double result;
+        dos_qvariant_toDouble(this.vptr, result);
+        return result;
+    }
+  
+    public override string toString()
+    {
+        char* array;
+        dos_qvariant_toString(this.vptr, array);
+        string result = fromStringz(array).dup;
+        dos_chararray_delete(array);
+        return result;
+    }
+
+    private void* vptr = null;
+    private bool hasOwnership = true;
 }

@@ -3,13 +3,14 @@ project (DQml C D )
 add_library(${PROJECT_NAME} STATIC
   dqml.d
   qobject.d
-  qslot.d
   qvariant.d
+  qmetatype.d
   qquickview.d
   qqmlapplicationengine.d
   qqmlcontext.d
-  qsignal.d
-  chararray.d
   qguiapplication.d
+  qapplication.d
+  qmodelindex.d
+  qabstractlistmodel.d
 )
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

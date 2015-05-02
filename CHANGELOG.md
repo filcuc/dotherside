@@ -1,3 +1,12 @@
+# Version 4.0
+* [DQml] Inheritance of slots and signals is now supported
+* [DQml] Added support for QAbstractListModel subclasses
+* [DQml] Put on par the examples for matching those in NimQml
+* [NimQml] Fixed AbstractItemModel example
+* [NimQml] Initial support for windows builds with Visual Studio community edition
+* [DOtherSide] Initial support for windows build
+* [DOtherSide] Removed most warnings and code cleanup
+
 # Version 3.0
 * [NimQml] Added support for QAbstractListModel subclasses 
 * [NimQml] Fixed QtObject macro wrong reorder of the methods and proc declaration (thanks to Will)
