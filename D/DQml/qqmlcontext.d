@@ -1,31 +1,32 @@
 import dothersideinterface;
 import qvariant;
-import chararray;
+import std.string;
 
 class QQmlContext
 {
-  public this(void* data)
-  {
-    this.data = data;
-  }
+    this(void* vptr)
+    {
+        this.vptr = vptr;
+    }
 
-  public void* rawData()
-  {
-    return data;
-  }
+    public void* voidPointer()
+    {
+        return vptr;
+    }
 
-  public string baseUrl()
-  {
-    auto array = new CharArray();
-    scope(exit) destroy(array);
-    dos_qqmlcontext_baseUrl(data, array.dataRef(), array.sizeRef());
-    return array.toString();
-  }
+    public string baseUrl()
+    {
+        char* array;
+        dos_qqmlcontext_baseUrl(this.vptr, array);
+        string result = fromStringz(array).dup;
+        dos_chararray_delete(array);
+        return result;
+    }
   
-  public void setContextProperty(string name, QVariant value)
-  {
-    dos_qqmlcontext_setcontextproperty(data, name.ptr, value.rawData());
-  }
+    public void setContextProperty(string name, QVariant value)
+    {
+        dos_qqmlcontext_setcontextproperty(this.vptr, name.ptr, value.voidPointer());
+    }
 
-  private void* data;
+    private void* vptr;
 }

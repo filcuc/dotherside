@@ -39,17 +39,16 @@ DOS_API void dos_qqmlapplicationengine_delete(void* vptr);
 // QQuickView
 DOS_API void dos_qquickview_create(void** vptr);
 DOS_API void dos_qquickview_show(void* vptr);
-DOS_API void dos_qquickview_source(void* vptr, char** result, int* length);
+DOS_API void dos_qquickview_source(void* vptr, char** result);
 DOS_API void dos_qquickview_set_source(void* vptr, const char* filename);
 DOS_API void dos_qquickview_delete(void* vptr);
-DOS_API void dos_qquickview_rootContext(void* vptr, void** context);
+DOS_API void dos_qquickview_rootContext(void* vptr, void** result);
  
 // QQmlContext
-DOS_API void dos_qqmlcontext_baseUrl(void* vptr, char** result, int* length);
+DOS_API void dos_qqmlcontext_baseUrl(void* vptr, char** result);
 DOS_API void dos_qqmlcontext_setcontextproperty(void* vptr, const char* name, void* value);
 
 // CharArray
-DOS_API void dos_chararray_create(char** ptr, int size);
 DOS_API void dos_chararray_delete(char* ptr);
 
 // QVariant
@@ -62,19 +61,19 @@ DOS_API void dos_qvariant_create_qvariant(void** vptr, void* value);
 DOS_API void dos_qvariant_create_float(void** vptr, float value);
 DOS_API void dos_qvariant_create_double(void** vptr, double value);
 DOS_API void dos_qvariant_create_qabstractlistmodel(void** vptr, void* value);
-DOS_API void dos_qvariant_toInt(void* vptr, int* value);
+DOS_API void dos_qvariant_toInt(void* vptr, int* result);
 DOS_API void dos_qvariant_setInt(void* vptr, int value);
-DOS_API void dos_qvariant_toBool(void* vptr, bool* value);
+DOS_API void dos_qvariant_toBool(void* vptr, bool* result);
 DOS_API void dos_qvariant_setBool(void* vptr, bool value);
-DOS_API void dos_qvariant_toFloat(void* vptr, float* value);
+DOS_API void dos_qvariant_toFloat(void* vptr, float* result);
 DOS_API void dos_qvariant_setFloat(void* vptr, float value);
-DOS_API void dos_qvariant_toDouble(void* vptr, double* value);
+DOS_API void dos_qvariant_toDouble(void* vptr, double* result);
 DOS_API void dos_qvariant_setDouble(void* vptr, double value);
-DOS_API void dos_qvariant_toString(void* vptr, char** ptr, int* size);
+DOS_API void dos_qvariant_toString(void* vptr, char** result);
 DOS_API void dos_qvariant_setString(void* vptr, const char* value);
 DOS_API void dos_qvariant_setQObject(void* vptr, void* value);
 DOS_API void dos_qvariant_setQAbstractListModel(void* vptr, void* value);
-DOS_API void dos_qvariant_isnull(void* vptr, bool* isNull);
+DOS_API void dos_qvariant_isnull(void* vptr, bool* result);
 DOS_API void dos_qvariant_delete(void* vptr);
 DOS_API void dos_qvariant_assign(void* vptr, void* other);
 
@@ -82,24 +81,20 @@ DOS_API void dos_qvariant_assign(void* vptr, void* other);
 DOS_API void dos_qobject_create(void** vptr,
                                 void* dObjectPointer,
                                 DObjectCallback dObjectCallback);
-
 DOS_API void dos_qobject_slot_create(void* vptr,
                                      const char* name,
                                      int parametersCount,
                                      int* parametersMetaTypes,
                                      int* slotIndex);
-
 DOS_API void dos_qobject_signal_create(void* vptr,
                                        const char* name,
                                        int parametersCount,
                                        int* parametersMetaTypes,
                                        int* signalIndex);
-
 DOS_API void dos_qobject_signal_emit(void* vptr,
                                      const char* name,
                                      int parametersCount,
                                      void** parameters);
-
 DOS_API void dos_qobject_property_create(void* vptr,
                                          const char* name,
                                          int propertyMetaType,
@@ -136,24 +131,13 @@ DOS_API void dos_qabstractlistmodel_create(void** vptr,
                                            RoleNamesCallback roleNamesCallback,
                                            FlagsCallback flagsCallback,
                                            HeaderDataCallback headerDataCallback);
-DOS_API void dos_qabstractlistmodel_beginInsertRows(void* vptr,
-                                                    QModelIndexVoidPtr parentIndex,
-                                                    int first,
-                                                    int last);
+DOS_API void dos_qabstractlistmodel_beginInsertRows(void* vptr, void* parent, int first, int last);
 DOS_API void dos_qabstractlistmodel_endInsertRows(void* vptr);
-DOS_API void dos_qabstractlistmodel_beginRemoveRows(void* vptr,
-                                                    QModelIndexVoidPtr parentIndex,
-                                                    int first,
-                                                    int last);
+DOS_API void dos_qabstractlistmodel_beginRemoveRows(void* vptr, void* parent, int first, int last);
 DOS_API void dos_qabstractlistmodel_endRemoveRows(void* vptr);
 DOS_API void dos_qabstractlistmodel_beginResetModel(void* vptr);
 DOS_API void dos_qabstractlistmodel_endResetModel(void* vptr);
-DOS_API void dos_qabstractlistmodel_dataChanged(void* vptr,
-                                                QModelIndexVoidPtr topLeftIndex,
-                                                QModelIndexVoidPtr bottomRightIndex,
-                                                int* rolesArrayPtr,
-                                                int rolesArrayLength);
-
+DOS_API void dos_qabstractlistmodel_dataChanged(void* vptr, void* topLeft, void* bottomRight, int* rolesPtr, int rolesLength);
 DOS_API void dos_qabstractlistmodel_delete(void* vptr);
 
 #ifdef __cplusplus

@@ -8,8 +8,9 @@ add_library(${PROJECT_NAME} STATIC
   qquickview.d
   qqmlapplicationengine.d
   qqmlcontext.d
-  chararray.d
   qguiapplication.d
   qapplication.d
+  qmodelindex.d
+  qabstractlistmodel.d
 )
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
