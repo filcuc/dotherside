@@ -27,7 +27,7 @@ class Contact : QObject
         }
     }
 
-    override protected void onSlotCalled(QVariant slotName, QVariant[] arguments)
+    protected override void onSlotCalled(QVariant slotName, QVariant[] arguments)
     {
         switch (slotName.toString())
         {
