@@ -89,7 +89,7 @@ proc dos_qvariant_delete(variant: RawQVariant) {.cdecl, dynlib:dOtherSideDll, im
 proc dos_qvariant_isnull(variant: RawQVariant, isNull: var bool) {.cdecl, dynlib:dOtherSideDll, importc.}
 proc dos_qvariant_toInt(variant: RawQVariant, value: var cint) {.cdecl, dynlib:dOtherSideDll, importc.}
 proc dos_qvariant_toBool(variant: RawQVariant, value: var bool) {.cdecl, dynlib:dOtherSideDll, importc.}
-proc dos_qvariant_toString(variant: RawQVariant, value: var cstring, length: var cint) {.cdecl, dynlib:dOtherSideDll, importc.}
+proc dos_qvariant_toString(variant: RawQVariant, value: var cstring) {.cdecl, dynlib:dOtherSideDll, importc.}
 proc dos_qvariant_setInt(variant: RawQVariant, value: cint) {.cdecl, dynlib:dOtherSideDll, importc.}
 proc dos_qvariant_setBool(variant: RawQVariant, value: bool) {.cdecl, dynlib:dOtherSideDll, importc.}
 proc dos_qvariant_setString(variant: RawQVariant, value: cstring) {.cdecl, dynlib:dOtherSideDll, importc.}
@@ -236,8 +236,7 @@ proc `doubleVal=`*(variant: QVariant, value: cdouble) =
 proc stringVal*(variant: QVariant): string = 
   ## Return the QVariant value as string
   var rawCString: cstring
-  var rawCStringLength: cint
-  dos_qvariant_toString(variant.data, rawCString, rawCStringLength)
+  dos_qvariant_toString(variant.data, rawCString)
   result = $rawCString
   dos_chararray_delete(rawCString)
 
