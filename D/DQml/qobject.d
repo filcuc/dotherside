@@ -119,5 +119,5 @@ public class QObject
     }
 
     protected void* vptr;
-    private bool disableDosCalls;
+    protected bool disableDosCalls;
 }
