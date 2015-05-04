@@ -20,9 +20,6 @@ type
   RawQObject = distinct pointer
   QObjectObj = object of RootObj
     data: RawQObject
-    slots: Table[string, cint]
-    signals: Table[string, cint]
-    properties: Table[string, cint]
     deleted: bool
   QObject* = ref QObjectObj
 

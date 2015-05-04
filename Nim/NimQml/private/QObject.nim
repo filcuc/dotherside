@@ -1,6 +1,38 @@
-type RawQVariantArray {.unchecked.} = array[0..0, RawQVariant]
-type RawQVariantArrayPtr = ptr RawQVariantArray
-type RawQVariantSeq = seq[RawQVariant]
+type
+  RawQVariantArray {.unchecked.} = array[0..0, RawQVariant]
+  RawQVariantArrayPtr = ptr RawQVariantArray
+  RawQVariantSeq = seq[RawQVariant]
+  QObjectCallBack = proc(nimobject: ptr QObjectObj, slotName: RawQVariant, numArguments: cint, arguments: RawQVariantArrayPtr) {.cdecl.}
+  
+proc dos_qobject_create(qobject: var void,
+                        nimobject: ptr QObjectObj,
+                        qobjectCallback: QObjectCallBack) {.cdecl, dynlib:dOtherSideDll, importc.}
+
+proc dos_qobject_delete(qobject: RawQObject) {.cdecl, dynlib:dOtherSideDll, importc.}
+
+proc dos_qobject_slot_create(qobject: RawQObject,
+                             slotName: cstring,
+                             argumentsCount: cint,
+                             argumentsMetaTypes: ptr cint,
+                             slotIndex: var cint) {.cdecl, dynlib:dOtherSideDll, importc.}
+
+proc dos_qobject_signal_create(qobject: RawQObject,
+                               signalName: cstring,
+                               argumentsCount: cint,
+                               argumentsMetaTypes: ptr cint,
+                               signalIndex: var cint) {.cdecl, dynlib:dOtherSideDll, importc.}
+
+proc dos_qobject_signal_emit(qobject: RawQObject,
+                             signalName: cstring,
+                             argumentsCount: cint,
+                             arguments: ptr RawQVariant) {.cdecl, dynlib:dOtherSideDll, importc.}
+
+proc dos_qobject_property_create(qobject: pointer,
+                                 propertyName: cstring,
+                                 propertyType: cint,
+                                 readSlot: cstring,
+                                 writeSlot: cstring,
+                                 notifySignal: cstring) {.cdecl, dynlib:dOtherSideDll, importc.}
 
 proc toVariantSeq(args: RawQVariantArrayPtr, numArgs: cint): seq[QVariant] =
   result = @[]
@@ -21,15 +53,6 @@ proc toCIntSeq(metaTypes: openarray[QMetaType]): seq[cint] =
   for metaType in metaTypes:
     result.add(cint(metaType))
 
-type QObjectCallBack = proc(nimobject: ptr QObjectObj, slotName: RawQVariant, numArguments: cint, arguments: RawQVariantArrayPtr) {.cdecl.}
-    
-proc dos_qobject_create(qobject: var RawQObject, nimobject: ptr QObjectObj, qobjectCallback: QObjectCallBack) {.cdecl, dynlib:dOtherSideDll, importc.}
-proc dos_qobject_delete(qobject: RawQObject) {.cdecl, dynlib:dOtherSideDll, importc.}
-proc dos_qobject_slot_create(qobject: RawQObject, slotName: cstring, argumentsCount: cint, argumentsMetaTypes: ptr cint, slotIndex: var cint) {.cdecl, dynlib:dOtherSideDll, importc.}
-proc dos_qobject_signal_create(qobject: RawQObject, signalName: cstring, argumentsCount: cint, argumentsMetaTypes: ptr cint, signalIndex: var cint) {.cdecl, dynlib:dOtherSideDll, importc.}
-proc dos_qobject_signal_emit(qobject: RawQObject, signalName: cstring, argumentsCount: cint, arguments: ptr RawQVariant) {.cdecl, dynlib:dOtherSideDll, importc.}
-proc dos_qobject_property_create(qobject: RawQObject, propertyName: cstring, propertyType: cint, readSlot: cstring, writeSlot: cstring, notifySignal: cstring) {.cdecl, dynlib:dOtherSideDll, importc.}
-
 method onSlotCalled*(nimobject: QObject, slotName: string, args: openarray[QVariant]) =
   ## Called from the NimQml bridge when a slot is called from Qml.
   ## Subclasses can override the given method for handling the slot call
@@ -49,13 +72,10 @@ proc qobjectCallback(nimObject: ptr QObjectObj, slotName: RawQVariant, numArgume
     dos_qvariant_assign(arguments[0], argumentsAsQVariant[0].data)
     GC_unref(qobject)
 
-proc create*(qobject: QObject) =
+proc create(qobject: QObject) =
   ## Create a new QObject
   debugMsg("QObject", "create")
   qobject.deleted = false
-  qobject.slots = initTable[string,cint]()
-  qobject.signals = initTable[string, cint]()
-  qobject.properties = initTable[string, cint]()
   let qobjectPtr = addr(qobject[])
   dos_qobject_create(qobject.data, qobjectPtr, qobjectCallback)
   qobjectRegistry[qobjectPtr] = true
@@ -83,7 +103,6 @@ proc registerSlot*(qobject: QObject,
   var copy = toCIntSeq(metatypes)
   var index: cint 
   dos_qobject_slot_create(qobject.data, slotName, cint(copy.len), addr(copy[0].cint), index)
-  qobject.slots[slotName] = index
 
 proc registerSignal*(qobject: QObject,
                      signalName: string, 
@@ -95,7 +114,6 @@ proc registerSignal*(qobject: QObject,
     dos_qobject_signal_create(qobject.data, signalName, copy.len.cint, addr(copy[0].cint), index)
   else:
     dos_qobject_signal_create(qobject.data, signalName, 0, nil, index)
-  qobject.signals[signalName] = index
 
 proc registerProperty*(qobject: QObject,
                        propertyName: string, 
