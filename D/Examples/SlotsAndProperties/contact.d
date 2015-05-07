@@ -5,14 +5,19 @@ import std.string;
 import std.stdio;
 
 struct QtProperty {
-    public enum Type { Read = 0, Write = 1}
+    public string type;
     public string name;
-    public Type type;
+    public string read;
+    public string write;
+    public string notify;
 
-    this(string name, Type type)
+    this(string type, string name, string read, string write, string notify)
     {
-        this.name = name;
         this.type = type;
+        this.name = name;
+        this.read = read;
+        this.write = write;
+        this.notify = notify;
     }
 }
 struct QtSlot {};
@@ -122,11 +127,23 @@ string GenerateMetaType(string typeName)
     }
 }
 
-string GenerateMetaTypesList(FunctionInfo info)
+string GenerateMetaTypesListForSlot(FunctionInfo info)
 {
     string result = GenerateMetaType(info.returnType);
     foreach (typeName; info.parameterTypes)
         result ~= format(", %s", GenerateMetaType(typeName));
+    return result;
+}
+
+string GenerateMetaTypesListForSignal(FunctionInfo info)
+{
+    string result = "";
+    for (int i = 0; i < info.parameterTypes.length; ++i)
+    {
+        if (i > 0)
+            result ~= ", ";
+        result ~= GenerateMetaType(info.parameterTypes[i]);
+    }
     return result;
 }
 
@@ -140,11 +157,31 @@ string GenerateQObjectInit(T)()
     
     foreach (slot; info.slots)
     {
-        auto metaTypes = GenerateMetaTypesList(slot);
+        auto metaTypes = GenerateMetaTypesListForSlot(slot);
         result ~= format("registerSlot(\"%s\", [%s]);\n", slot.name, metaTypes);
+    }
+
+    foreach (signal; info.signals)
+    {
+        auto metaTypes = GenerateMetaTypesListForSignal(signal);
+        result ~= format("registerSignal(\"%s\", [%s]);\n", signal.name, metaTypes);
+    }
+
+    foreach (property; info.properties)
+    {
+        result ~= format("registerProperty(\"%s\", %s, \"%s\", \"%s\", \"%s\");\n", property.name, GenerateMetaType(property.type), property.read, property.write, property.notify);
     }
     
     result ~= "}";
+    return result;
+}
+
+string Q_OBJECT(T)()
+{
+    string result = "";
+    result ~= GenerateOnSlotCalled!(Contact) ~ "\n";
+    result ~= GenerateQObjectInit!(Contact) ~ "\n";
+    result ~= GenerateQtSignals!(Contact) ~ "\n";
     return result;
 }
 
@@ -165,7 +202,13 @@ struct QtInfo
 QtInfo IterateUDA(T)()
 {
     QtInfo result;
-    
+
+    foreach (attribute; __traits(getAttributes, T)) {
+        static if (is (typeof(attribute) == QtProperty)) {
+            result.properties ~= attribute;
+        }
+    }
+        
     foreach (member; __traits(allMembers, T))
     {
         static if (isSomeFunction!(__traits(getMember, T, member)))
@@ -180,7 +223,6 @@ QtInfo IterateUDA(T)()
 
             bool isSlot = attributeNames.canFind("QtSlot");
             bool isSignal = attributeNames.canFind("QtSignal");
-            bool isProperty = attributeNames.canFind("QtProperty");
             
             // Extract the Function Return Type and Arguments
             if (isSlot || isSignal)
@@ -205,29 +247,15 @@ QtInfo IterateUDA(T)()
 }
 
 
+@QtProperty(string.stringof, "name", "getName", "setName", "nameChanged")
+@QtProperty(string.stringof, "surname", "getSurname", "setSurname", "surnameChanged")
 class Contact : QObject
 {
+    mixin(Q_OBJECT!(Contact));    
+
     this()
     {
-        registerSlot("getName", [QMetaType.String]);
-        registerSlot("setName", [QMetaType.Void, QMetaType.String]);
-        registerSignal("nameChanged", [QMetaType.String]);
-        registerProperty("name", QMetaType.String, "getName", "setName", "nameChanged");
-
-        auto info = IterateUDA!(Contact);
-        
-        foreach(slot; info.slots)
-            writeln("Slot:", slot.name);
-        
-        foreach(signal; info.signals)
-            writeln("Signals:", signal.name);
-        
-        foreach(property; info.properties)
-            writeln("Property:", property.name);
-        
-        writeln(GenerateOnSlotCalled!(Contact));
-//        writeln(GenerateQObjectInit!(Contact));
-        writeln(GenerateQtSignals!(Contact));
+        qobjectInit();
     }
     
     ~this() {}
@@ -266,10 +294,6 @@ class Contact : QObject
     @QtSignal()
     void surnameChanged(string surname);
 
-    mixin(GenerateOnSlotCalled!(Contact));
-    mixin(GenerateQObjectInit!(Contact));
-    mixin(GenerateQtSignals!(Contact));
-    
     private string m_name;
     private string m_surname;
 }
