@@ -4,7 +4,8 @@ import std.algorithm;
 import std.string;
 import std.stdio;
 
-struct QtProperty {
+struct QtProperty 
+{
     public string type;
     public string name;
     public string read;
@@ -22,6 +23,7 @@ struct QtProperty {
 }
 struct QtSlot {};
 struct QtSignal {};
+
 
 string GenerateVariantConversionCall(string typeName)
 {
@@ -66,16 +68,15 @@ string GenerateCaseBlock(FunctionInfo info)
     return result;
 }
 
-string GenerateOnSlotCalled(T)()
+string GenerateOnSlotCalled(QtInfo info)
 {
     string result = "protected override void onSlotCalled(QVariant slotName, QVariant[] arguments)\n";
     result ~= "{\n";
     result ~= "switch(slotName.toString())\n";
     result ~= "{\n";
-    auto info = IterateUDA!(T)();
     foreach (slot; info.slots)
         result ~= GenerateCaseBlock(slot);
-    result ~= "default: break;\n";
+    result ~= "default: super.onSlotCalled(slotName, arguments);\n";
     result ~= "}\n"; // 
     result ~= "}";
     return result;
@@ -98,17 +99,11 @@ string GenerateSignalCall(FunctionInfo info)
     return result;
 }
 
-string GenerateQtSignals(T)()
+string GenerateQtSignals(QtInfo info)
 {
     string result = "";
-
-    auto info = IterateUDA!(T)();
-    
     foreach (signal; info.signals)
-    {
         result ~= GenerateSignalCall(signal) ~ "\n";
-    }
-
     return result;
 }
 
@@ -130,8 +125,8 @@ string GenerateMetaType(string typeName)
 string GenerateMetaTypesListForSlot(FunctionInfo info)
 {
     string result = GenerateMetaType(info.returnType);
-    foreach (typeName; info.parameterTypes)
-        result ~= format(", %s", GenerateMetaType(typeName));
+    result ~= ", ";
+    result ~= GenerateMetaTypesListForSignal(info);
     return result;
 }
 
@@ -147,13 +142,11 @@ string GenerateMetaTypesListForSignal(FunctionInfo info)
     return result;
 }
 
-string GenerateQObjectInit(T)()
+string GenerateQObjectInit(QtInfo info)
 {
     string result = "";
-    result ~= "protected void qobjectInit()\n";
+    result ~= "protected override void qobjectInit()\n";
     result ~= "{\n";
-
-    auto info = IterateUDA!(T)();
     
     foreach (slot; info.slots)
     {
@@ -172,6 +165,8 @@ string GenerateQObjectInit(T)()
         result ~= format("registerProperty(\"%s\", %s, \"%s\", \"%s\", \"%s\");\n", property.name, GenerateMetaType(property.type), property.read, property.write, property.notify);
     }
     
+    result ~= "super.qobjectInit();\n";
+    
     result ~= "}";
     return result;
 }
@@ -179,9 +174,10 @@ string GenerateQObjectInit(T)()
 string Q_OBJECT(T)()
 {
     string result = "";
-    result ~= GenerateOnSlotCalled!(Contact) ~ "\n";
-    result ~= GenerateQObjectInit!(Contact) ~ "\n";
-    result ~= GenerateQtSignals!(Contact) ~ "\n";
+    auto info = IterateUDA!(T);
+    result ~= GenerateOnSlotCalled(info) ~ "\n";
+    result ~= GenerateQObjectInit(info) ~ "\n";
+    result ~= GenerateQtSignals(info) ~ "\n";
     return result;
 }
 
@@ -254,9 +250,7 @@ class Contact : QObject
     mixin(Q_OBJECT!(Contact));    
 
     this()
-    {
-        qobjectInit();
-    }
+    {}
     
     ~this() {}
 
