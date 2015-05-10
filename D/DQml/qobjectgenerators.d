@@ -29,15 +29,19 @@ string GenerateVariantConversionCall(string typeName)
     switch (typeName)
     {
     case "string":
-        return "toString()";
+        return ".toString()";
     case "int":
-        return "toInt()";
+        return ".toInt()";
     case "bool":
-        return "toBool()";
+        return ".toBool()";
+    case "float":
+        return ".toFloat()";
+    case "double":
+        return ".toDouble()";
     case "QVariant":
         return "";
     default:
-        throw new Exception("error");
+        throw new Exception("Unknown conversion function from Qvariant to " ~ typeName);
     }
 }
 
@@ -49,7 +53,7 @@ string GenerateArgumentList(string[] typeNames)
         auto typeName = typeNames[i];
         auto variantCall = GenerateVariantConversionCall(typeName);
         result ~= i > 0 ? "," : "";
-        result ~= format("arguments[%d].%s", i+1, variantCall);
+        result ~= format("arguments[%d]%s", i+1, variantCall);
     }
     return result;
 }
@@ -126,6 +130,10 @@ string GenerateMetaType(string typeName)
         return "QMetaType.QVariant";
     case "bool":
         return "QMetaType.Bool";
+    case "float":
+        return "QMetaType.Float";
+    case "double":
+        return "QMetaType.Double";
     default:
         throw new Exception(format("Unknown conversion from %s to QMetaType", typeName));
     }
@@ -155,7 +163,7 @@ string GenerateQObjectInit(QtInfo info)
 {
     string result = "";
     result ~= "protected override void qobjectInit()\n";
-    
+    result ~= "{\n";
     foreach (slot; info.slots)
     {
         auto metaTypes = GenerateMetaTypesListForSlot(slot);
