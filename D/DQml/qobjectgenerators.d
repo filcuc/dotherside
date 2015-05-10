@@ -32,6 +32,10 @@ string GenerateVariantConversionCall(string typeName)
         return "toString()";
     case "int":
         return "toInt()";
+    case "bool":
+        return "toBool()";
+    case "QVariant":
+        return "";
     default:
         throw new Exception("error");
     }
@@ -116,6 +120,12 @@ string GenerateMetaType(string typeName)
         return "QMetaType.Int";
     case "string":
         return "QMetaType.String";
+    case "QObject":
+        return "QMetaType.QObject";
+    case "QVariant":
+        return "QMetaType.QVariant";
+    case "bool":
+        return "QMetaType.Bool";
     default:
         throw new Exception(format("Unknown conversion from %s to QMetaType", typeName));
     }
@@ -145,7 +155,6 @@ string GenerateQObjectInit(QtInfo info)
 {
     string result = "";
     result ~= "protected override void qobjectInit()\n";
-    result ~= "{\n writeln(\"OK\");\n";
     
     foreach (slot; info.slots)
     {
@@ -198,7 +207,8 @@ mixin template InjectQObjectMacro()
         
         foreach (member; __traits(allMembers, T))
         {
-            static if (isSomeFunction!(__traits(getMember, T, member)))
+            static if (__traits(compiles, __traits(getMember, T, member))
+                       && isSomeFunction!(__traits(getMember, T, member)))
             {
                 // Retrieve the UDA
                 auto attributes = __traits(getAttributes, __traits(getMember, T, member));

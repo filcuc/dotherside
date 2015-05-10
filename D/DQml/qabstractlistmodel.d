@@ -19,6 +19,7 @@ class QAbstractListModel : QObject
                                       &roleNamesCallback,
                                       &flagsCallback,
                                       &headerDataCallback);
+        qobjectInit();
     }
 
     ~this()

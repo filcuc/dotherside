@@ -20,8 +20,10 @@ public class QObject
     {
         this.disableDosCalls = disableDosCalls;
         if (!this.disableDosCalls)
+        {
             dos_qobject_create(this.vptr, cast(void*)this, &staticSlotCallback);
-        qobjectInit();
+            qobjectInit();
+        }
     }
 
     ~this()

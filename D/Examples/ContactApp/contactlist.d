@@ -5,13 +5,14 @@ import std.algorithm;
 
 class ContactList : QAbstractListModel
 {
+    mixin InjectQObjectMacro;
+    mixin(Q_OBJECT!(ContactList));
+
     this()
     {
         this.m_contacts = [];
         this.m_roleNames[Roles.FirstName] = "firstName";
         this.m_roleNames[Roles.LastName] = "lastName";
-        this.registerSlot("add", [QMetaType.Void, QMetaType.String, QMetaType.String]);
-        this.registerSlot("del", [QMetaType.Void, QMetaType.Int]);
     }
 
     public override int rowCount(QModelIndex parent = null)
@@ -50,6 +51,7 @@ class ContactList : QAbstractListModel
         return this.m_roleNames;
     }
 
+    @QtSlot()
     public void add(string firstName, string lastName)
     {
         auto index = new QModelIndex();
@@ -60,6 +62,7 @@ class ContactList : QAbstractListModel
         endInsertRows();
     }
 
+    @QtSlot()
     public void del(int pos)
     {
         if (pos < 0 || pos >= rowCount())
@@ -69,21 +72,6 @@ class ContactList : QAbstractListModel
         beginRemoveRows(index, pos, pos);
         this.m_contacts = remove(this.m_contacts, pos);
         endRemoveRows();
-    }
-
-    protected override void onSlotCalled(QVariant slotName, QVariant[] arguments)
-    {
-        switch (slotName.toString())
-        {
-        case "add":
-            add(arguments[1].toString(), arguments[2].toString());
-            break;
-        case "del":
-            del(arguments[1].toInt());
-            break;
-        default:
-            break;
-        }
     }
 
     private Contact[] m_contacts;
