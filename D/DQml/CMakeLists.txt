@@ -12,5 +12,6 @@ add_library(${PROJECT_NAME} STATIC
   qapplication.d
   qmodelindex.d
   qabstractlistmodel.d
+  qobjectgenerators.d
 )
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
