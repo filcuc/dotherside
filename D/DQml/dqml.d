@@ -8,3 +8,7 @@ public import qquickview;
 public import qmetatype;
 public import qmodelindex;
 public import qabstractlistmodel;
+public import qobjectgenerators;
+public import std.traits;
+public import std.algorithm;
+public import std.stdio;

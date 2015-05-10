@@ -710,8 +710,8 @@ proc roleNamesCallback(modelObject: ptr QAbstractListModelObj, hash: RawQHashInt
   debugMsg("QAbstractListModel", "roleNamesCallback")
   let model = cast[QAbstractListModel](modelObject)
   let table = model.roleNames()
-  for pair in table.pairs:
-    dos_qhash_int_qbytearray_insert(hash, pair.key, pair.val)
+  for key, val in table.pairs:
+    dos_qhash_int_qbytearray_insert(hash, key, val)
 
 method flags*(model: QAbstractListModel, index: QModelIndex): QtItemFlag =
   ## Return the item flags and the given index
