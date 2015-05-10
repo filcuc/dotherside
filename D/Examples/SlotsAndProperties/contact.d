@@ -1,23 +1,25 @@
 import dqml;
 
+@QtProperty(string.stringof, "name", "getName", "setName", "nameChanged")
+@QtProperty(string.stringof, "surname", "getSurname", "setSurname", "surnameChanged")
 class Contact : QObject
 {
-    this()
-    {
-        registerSlot("getName", [QMetaType.String]);
-        registerSlot("setName", [QMetaType.Void, QMetaType.String]);
-        registerSignal("nameChanged", [QMetaType.String]);
-        registerProperty("name", QMetaType.String, "getName", "setName", "nameChanged");
-    }
+    mixin InjectQObjectMacro;
+    mixin(Q_OBJECT!(Contact));
     
-    ~this() {}
+    this()
+    {}
+    
+    ~this()
+    {}
 
-
+    @QtSlot()
     public string getName()
     {
         return m_name;
     }
 
+    @QtSlot()
     public void setName(string name)
     {
         if (m_name != name)
@@ -27,20 +29,24 @@ class Contact : QObject
         }
     }
 
-    protected override void onSlotCalled(QVariant slotName, QVariant[] arguments)
+    @QtSignal()
+    public void nameChanged(string name);
+
+    @QtSlot()
+    public string getSurname()
     {
-        switch (slotName.toString())
-        {
-        case "getName":
-            arguments[0].setValue(getName());
-            break;
-        case "setName":
-            setName(arguments[1].toString());
-            break;
-        default:
-            break;
-        }
+        return m_surname;
     }
 
+    @QtSlot()
+    public void setSurname(string surname)
+    {
+        m_surname = surname;
+    }
+
+    @QtSignal()
+    void surnameChanged(string surname);
+
     private string m_name;
+    private string m_surname;
 }
