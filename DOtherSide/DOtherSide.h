@@ -14,10 +14,6 @@ extern "C"
 {
 #endif
 
-typedef char* CharPtr;
-typedef void(*Function)(void*);
-typedef void(*DObjectCallback)(void*, void*, int, void**);
-
 // QGuiApplication
 DOS_API void dos_qguiapplication_create();
 DOS_API void dos_qguiapplication_exec();

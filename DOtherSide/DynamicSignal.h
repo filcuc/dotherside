@@ -1,5 +1,4 @@
-#ifndef DYNAMICSIGNAL_H
-#define DYNAMICSIGNAL_H
+#pragma once
 
 #include <memory>
 
@@ -10,7 +9,7 @@
 
 struct SignalData;
 
-class DynamicSignal
+class DynamicSignal final
 {
 public:
     DynamicSignal();
@@ -119,5 +118,3 @@ void DynamicSignal::_initSignature()
 
     d->signature = signature.arg(d->name, arguments).toUtf8();
 }
-
-#endif

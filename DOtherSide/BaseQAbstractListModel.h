@@ -1,12 +1,11 @@
-#ifndef BASEQABSTRACTLISTMODEL_H
-#define BASEQABSTRACTLISTMODEL_H
+#pragma once
 
 #include "DOtherSideTypes.h"
 #include "DynamicQObject.h"
 #include <QAbstractListModel>
 
 /// This class act as a base class for D and Nim QAbstractListModel
-class BaseQAbstractListModel : public DynamicQObject<QAbstractListModel>
+class BaseQAbstractListModel final : public DynamicQObject<QAbstractListModel>
 {
 public:
     /// Constructor
@@ -20,28 +19,28 @@ public:
                            HeaderDataCallback headerDataCallback);
 
     /// Return the model's row count
-    virtual int rowCount(const QModelIndex& parent = QModelIndex()) const override;
+    int rowCount(const QModelIndex& parent = QModelIndex()) const override;
     
     /// Return the model's column count
-    virtual int columnCount(const QModelIndex& parent = QModelIndex()) const override;
+    int columnCount(const QModelIndex& parent = QModelIndex()) const override;
     
     /// Return the QVariant at the given index
-    virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
+    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
     /// Sets the QVariant value at the given index and role
-    virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) override;
+    bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) override;
     
     /// Return the item flags for the given index
-    virtual Qt::ItemFlags flags(const QModelIndex& index) const override;
+    Qt::ItemFlags flags(const QModelIndex& index) const override;
     
     /// Return the data for the given role and section in the header with the specified orientation
-    virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
     
     /// Return the dModelPointer
     void* modelObject();
 
     /// Return the roleNames
-    virtual QHash<int, QByteArray> roleNames() const override;
+    QHash<int, QByteArray> roleNames() const override;
 
     /// Expose beginInsertRows
     void publicBeginInsertRows(const QModelIndex& index, int first, int last);
@@ -199,4 +198,3 @@ void BaseQAbstractListModel::publicDataChanged(const QModelIndex& topLeft,
     emit dataChanged(topLeft, bottomRight, roles);
 }
 
-#endif

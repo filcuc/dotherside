@@ -1,10 +1,9 @@
-#ifndef IDYNAMICQOBJECT_H
-#define IDYNAMICQOBJECT_H
+#pragma once
 
 class IDynamicQObject
 {
 public:
-    typedef void (*Callback)(void*, void*, int, void**);
+    using Callback = void (*)(void*, void*, int, void**);
 
     /// Destructor
     virtual ~IDynamicQObject() = default;
@@ -36,5 +35,3 @@ public:
     /// Emit the signal with the given name and arguments
     virtual bool emitSignal(const QString& name, const QList<QVariant>& argumentsValues) = 0;
 };
-
-#endif
