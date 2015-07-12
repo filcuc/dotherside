@@ -25,7 +25,7 @@ function(add_nim_executable )
   add_custom_target(
       ${ARGS_TARGET} ALL
       COMMAND
-	      ${NIM_EXECUTABLE} "c" ${in_paths} "--nimcache:" ${DIRECTORY} "--out:" ${nim_target} ${in_files} 
+	      ${NIM_EXECUTABLE} "cpp" ${in_paths} "--nimcache:" ${DIRECTORY} "--out:" ${nim_target} ${in_files} 
       DEPENDS
 	      ${in_files}
   )

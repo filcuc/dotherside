@@ -1,5 +1,4 @@
-#ifndef DYNAMICSLOT_H
-#define DYNAMICSLOT_H
+#pragma once
 
 #include <memory>
 #include <functional>
@@ -17,7 +16,7 @@
 struct SlotData;
 class QString;
 
-class DynamicSlot
+class DynamicSlot final
 {
 public:
     DynamicSlot();
@@ -137,5 +136,3 @@ void DynamicSlot::_initSignature()
 
     d->signature = signature.arg(d->name, arguments).toUtf8();
 }
-
-#endif

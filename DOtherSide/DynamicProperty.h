@@ -1,5 +1,4 @@
-#ifndef DYNAMICPROPERTY_H
-#define DYNAMICPROPERTY_H
+#pragma once
 
 #include <memory>
 #include <QtCore/QString>
@@ -7,7 +6,7 @@
 
 struct PropertyData;
 
-class DynamicProperty
+class DynamicProperty final
 {
 public:
     DynamicProperty();
@@ -39,7 +38,7 @@ private:
     std::unique_ptr<PropertyData> d;
 };
 
-struct PropertyData
+struct PropertyData final
 {
     PropertyData(const QString& name,
                  QMetaType::Type type,
@@ -148,5 +147,3 @@ QString DynamicProperty::notifySignal() const
 {
     return d->notifySignalName;
 }
-
-#endif
