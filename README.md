@@ -19,9 +19,10 @@ Currently we support the following platforms/compilers:
 You need the following software:
 * Qt 5.3 or higher
 * dmd 2.065 or higher
-* gcc 4.8 or later with c++11 support (Linux) or higher
-* Visual Studio 2013 Community Edition (Windows) or higher
-* nim 0.10.3 
+* Linux: gcc 4.8 or later with c++11 support or higher
+* Windows: Visual Studio 2013 Community Edition (Windows) or higher
+* Windows: MingGW 4.9.2 or higher
+* nim 0.10.3 or higher
 
 ## Build Instructions
 1. Open a shell terminal inside the cloned repo
