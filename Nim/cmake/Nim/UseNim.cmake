@@ -5,7 +5,7 @@ function(add_nim_executable )
   set(oneValueArgs TARGET)
   set(multiValueArgs SOURCES PATHS)
   cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
-  
+
   # collect set of input source files
   set(in_files "")
   foreach(src ${ARGS_SOURCES} ${ARGS_UNPARSED_ARGUMENTS})
@@ -16,16 +16,22 @@ function(add_nim_executable )
   foreach(path ${ARGS_PATHS} ${ARGS_UNPARSED_ARGUMENTS})
     list(APPEND in_paths "--path:${CMAKE_CURRENT_SOURCE_DIR}/${path}")
   endforeach(path ${ARGS_PATHS} ${ARGS_UNPARSED_ARGUMENTS})
-  
+
   # set the target binary and nim cache directory
   set(nim_target "${CMAKE_CURRENT_BINARY_DIR}/${ARGS_TARGET}")
   set(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/nimcache")
+
+  set(NIM_OPTIONS "")
+
+  if(UNIX)
+    set(NIM_OPTIONS "--passL:-lpthread")
+  endif()
 
   # add target to trigger the nimrod compiler
   add_custom_target(
       ${ARGS_TARGET} ALL
       COMMAND
-	      ${NIM_EXECUTABLE} "cpp" ${in_paths} "--nimcache:" ${DIRECTORY} "--out:" ${nim_target} ${in_files} 
+	      ${NIM_EXECUTABLE} "c" ${in_paths} ${NIM_OPTIONS} "--nimcache:" ${DIRECTORY} "--out:" ${nim_target} ${in_files}
       DEPENDS
 	      ${in_files}
   )
