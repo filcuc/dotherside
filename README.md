@@ -1,6 +1,6 @@
 # DOtherSide
 
-Linux: [![Build Status](https://travis-ci.org/filcuc/DOtherSide.svg?branch=develop)](https://travis-ci.org/filcuc/DOtherSide)
+[![Build Status](https://travis-ci.org/filcuc/DOtherSide.svg?branch=develop)](https://travis-ci.org/filcuc/DOtherSide)
 
 ## Description
 
