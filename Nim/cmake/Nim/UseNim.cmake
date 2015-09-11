@@ -19,19 +19,30 @@ function(add_nim_executable )
 
   # set the target binary and nim cache directory
   set(nim_target "${CMAKE_CURRENT_BINARY_DIR}/${ARGS_TARGET}")
-  set(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/nimcache")
+  set(nim_cache_dir "${CMAKE_CURRENT_BINARY_DIR}/nimcache")
 
-  set(NIM_OPTIONS "")
-
+  # compiler 
+  set(nim_compiler "c")
+  
+  # compiler options
+  set(nim_compiler_options "")
+  if (WIN32)
+    if (MSVC OR MSVC_IDE)
+	  set(nim_compiler_options "--cc:vcc")
+	endif()
+  endif()
+  
+  # thread options
+  set(nim_thread_options "")
   if(UNIX)
-    set(NIM_OPTIONS "--passL:-lpthread")
+    set(nim_thread_options "--passL:-lpthread")
   endif()
 
   # add target to trigger the nimrod compiler
   add_custom_target(
       ${ARGS_TARGET} ALL
       COMMAND
-	      ${NIM_EXECUTABLE} "c" ${in_paths} ${NIM_OPTIONS} "--nimcache:" ${DIRECTORY} "--out:" ${nim_target} ${in_files}
+	      ${NIM_EXECUTABLE} ${nim_compiler} ${nim_compiler_options} ${nim_thread_options} ${in_paths} "--nimcache:" ${nim_cache_dir} "--out:" ${nim_target} ${in_files}
       DEPENDS
 	      ${in_files}
   )
