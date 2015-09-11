@@ -1,0 +1,38 @@
+language: cpp
+compiler: gcc
+sudo: required
+
+before_install:
+- sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+- sudo add-apt-repository ppa:beineri/opt-qt55 -y
+- sudo apt-get update
+
+install:
+- echo `pwd`
+- export PROJECT_DIR=`pwd`
+- echo "Installing Qt and GCC"
+- sudo apt-get -y install qt-latest gcc-5 g++-5
+- echo "Moving to /tmp"
+- cd /tmp
+- echo "Installing CMake"
+- wget http://www.cmake.org/files/v3.3/cmake-3.3.1-Linux-x86_64.tar.gz
+- tar xf cmake-3.3.1-Linux-x86_64.tar.gz
+- export CMAKE_EXECUTABLE=/tmp/cmake-3.3.1-Linux-x86_64/bin/cmake
+- wget http://downloads.dlang.org/releases/2015/dmd_2.068.0-0_amd64.deb
+- echo "Installing D"
+- sudo dpkg -i dmd_2.068.0-0_amd64.deb
+- echo "Installing Nim"
+- wget http://cz.archive.ubuntu.com/ubuntu/pool/universe/n/nim/nim_0.11.2+dfsg1-4_amd64.deb
+- sudo dpkg -i nim_0.11.2+dfsg1-4_amd64.deb
+- cd -
+
+before_script:
+- export CXX=g++-5
+- export CC=gcc-5
+- source /opt/qt55/bin/qt55-env.sh
+
+script:
+- mkdir build
+- cd build
+- $CMAKE_EXECUTABLE ..
+- make
