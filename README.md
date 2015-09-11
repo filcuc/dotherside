@@ -1,4 +1,9 @@
-# DOtherSide
+# DOtherSide 
+
+[![Build Status](https://travis-ci.org/filcuc/DOtherSide.svg?branch=master)](https://travis-ci.org/filcuc/DOtherSide)
+
+## Description
+
 Qml bindings for both D and Nim programming languages
 
 ## Change log
