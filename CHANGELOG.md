@@ -1,6 +1,10 @@
+# Version 0.4.5
+* Removed the D bindings
+* Removed the Nim bindings
+
 # Version 0.4.2
 * [DOtherSide] Code cleanup and little refactoring
-* [NimQml] Made nim compiles with the "cpp" option by default. This should fix C/C++ interop problems 
+* [NimQml] Made nim compiles with the "cpp" option by default. This should fix C/C++ interop problems
 
 # Version 0.4.1
 * [DQml] Added support for code generation of slots, signals and properties by using custom UDAs
