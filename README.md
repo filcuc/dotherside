@@ -1,4 +1,5 @@
 # DOtherSide
+[![License](https://img.shields.io/badge/license-LGPL-green.svg)](https://github.com/filcuc/DOtherSide/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/filcuc/DOtherSide.svg?branch=develop)](https://travis-ci.org/filcuc/DOtherSide)
 
 C language library for creating bindings for the Qt QML language.
