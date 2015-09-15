@@ -1,5 +1,0 @@
-cmake_minimum_required(VERSION 3.0)
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Nim)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Nim/UseNim.cmake)
-find_package(Nim)
-add_subdirectory(Examples)
