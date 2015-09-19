@@ -16,6 +16,8 @@
 template <class T>
 class DynamicQObject : public T, public IDynamicQObject
 {
+    using SafeQMetaObjectPtr = std::unique_ptr<QMetaObject, void(*)(void*)>;
+
 public:
     /// Constructor
     DynamicQObject();
@@ -73,12 +75,12 @@ private:
                                                   const std::function<void(QMetaObjectBuilder&)>& afterSlotAdded,
                                                   const std::function<void(QMetaObjectBuilder&)>& afterPropertyAdded);
 
+    SafeQMetaObjectPtr m_metaObject;
     QHash<QString, DynamicSignal> m_signalsByName;
     QHash<QByteArray, DynamicSignal> m_signalsBySignature;
     QHash<QString, DynamicSlot> m_slotsByName;
     QHash<QByteArray, DynamicSlot> m_slotsBySignature;
     QHash<QByteArray, DynamicProperty> m_propertiesByName;
-    QScopedPointer<QMetaObject> m_metaObject;
     void* m_dObjectPointer;
     IDynamicQObject::Callback m_dObjectCallback;
 };
@@ -86,6 +88,7 @@ private:
 template <typename T>
 DynamicQObject<T>::DynamicQObject()
     : T()
+    , m_metaObject(nullptr, ::free)
     , m_dObjectPointer(nullptr)
     , m_dObjectCallback(nullptr)
 {
@@ -134,7 +137,7 @@ bool DynamicQObject<T>::registerSlot(const QString& name,
         methodBuilder.setAttributes(QMetaMethod::Scriptable);
     };
 
-    auto newMetaObject = recreateMetaObjectBuilder(m_metaObject.data(),
+    auto newMetaObject = recreateMetaObjectBuilder(m_metaObject.get(),
                                                    afterSignalAdded,
                                                    afterSlotAdded,
                                                    afterPropertyAdded);
@@ -166,7 +169,7 @@ bool DynamicQObject<T>::registerSignal(const QString& name, const QList<QMetaTyp
     auto afterSlotAdded = [](QMetaObjectBuilder&) {};
     auto afterPropertyAdded = afterSlotAdded;
 
-    auto newMetaObject = recreateMetaObjectBuilder(m_metaObject.data(),
+    auto newMetaObject = recreateMetaObjectBuilder(m_metaObject.get(),
                                                    afterSignalAdded,
                                                    afterSlotAdded,
                                                    afterPropertyAdded);
@@ -228,7 +231,7 @@ bool DynamicQObject<T>::registerProperty(const QString& name,
             builder.setConstant(true);
     };
 
-    auto newMetaObject = recreateMetaObjectBuilder(m_metaObject.data()
+    auto newMetaObject = recreateMetaObjectBuilder(m_metaObject.get()
                                                    , afterSignalAdded
                                                    , afterSlotAdded
                                                    , afterPropertyAdded);
@@ -272,7 +275,7 @@ bool DynamicQObject<T>::emitSignal(const QString& name, const QList<QVariant>& a
 template <typename T>
 const QMetaObject* DynamicQObject<T>::metaObject() const
 {
-    return m_metaObject.data();
+    return m_metaObject.get();
 }
 
 template <typename T>
