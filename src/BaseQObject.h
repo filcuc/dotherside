@@ -2,5 +2,4 @@
 
 #include "DynamicQObject.h"
 
-class BaseQObject final : public DynamicQObject<QObject> {};
-
+using BaseQObject = DynamicQObject<QObject>;
