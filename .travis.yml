@@ -30,3 +30,4 @@ script:
 - cd build
 - $CMAKE_EXECUTABLE ..
 - make
+- ./test/TestDynamicQObject
