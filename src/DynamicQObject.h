@@ -61,7 +61,7 @@ public:
 private:
     bool executeSlot(const DynamicSlot& slot, void**  args);
 
-    QVariant executeSlot(const DynamicSlot& slot, const QList<QVariant>& args = QList<QVariant>());
+    QVariant executeSlot(const DynamicSlot& slot, const std::vector<QVariant> &args);
 
     bool readProperty(const DynamicProperty& property, void** args);
 
@@ -284,9 +284,13 @@ bool DynamicQObject<T>::executeSlot(const DynamicSlot& slot, void**  args)
     if (!slot.isValid())
         return false;
 
-    QList<QVariant> arguments;
+    if (!m_dObjectCallback || !m_dObjectPointer)
+        return false;
+
+    std::vector<QVariant> arguments;
+    arguments.reserve(slot.argumentsTypes().size());
     for (int i = 0; i < slot.argumentsTypes().count(); ++i)
-        arguments << QVariant(slot.argumentTypeAt(i), args[i + 1]);
+        arguments.emplace_back(QVariant(slot.argumentTypeAt(i), args[i + 1]));
 
     QVariant result = executeSlot(slot, arguments);
 
@@ -300,23 +304,27 @@ bool DynamicQObject<T>::executeSlot(const DynamicSlot& slot, void**  args)
 }
 
 template <typename T>
-QVariant DynamicQObject<T>::executeSlot(const DynamicSlot& slot, const QList<QVariant>& args)
+QVariant DynamicQObject<T>::executeSlot(const DynamicSlot& slot, const std::vector<QVariant>& args)
 {
+    QVariant result;
+
+    if (!m_dObjectCallback || !m_dObjectPointer)
+        return result;
+
+    // prepare slot name
     QVariant slotName(slot.name());
 
-    const int numParametersPlusReturn = slot.argumentsTypes().count() + 1;
-    std::vector<QVariant> argumentsAsVariants(numParametersPlusReturn);
-    std::vector<void*> argumentsAsVoidPointers(numParametersPlusReturn);
+    // prepare void* for the QVariants
+    std::vector<void*> argumentsAsVoidPointers;
+    argumentsAsVoidPointers.reserve(args.size() + 1);
+    argumentsAsVoidPointers.emplace_back(&result);
+    for (size_t i = 0; i < args.size(); ++i)
+        argumentsAsVoidPointers.emplace_back((void*)(&args[i]));
 
-    for (int i = 0; i < numParametersPlusReturn; ++i) {
-        argumentsAsVariants[i] =  i == 0 ? QVariant() : args[i - 1];
-        argumentsAsVoidPointers[i] = &argumentsAsVariants[i];
-    }
+    // send them to the binding handler
+    m_dObjectCallback(m_dObjectPointer, &slotName, argumentsAsVoidPointers.size(), &argumentsAsVoidPointers[0]);
 
-    if (m_dObjectCallback && m_dObjectPointer)
-        m_dObjectCallback(m_dObjectPointer, &slotName, numParametersPlusReturn, &argumentsAsVoidPointers[0]);
-
-    return argumentsAsVariants[0];
+    return result;
 }
 
 template <typename T>
