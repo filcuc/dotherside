@@ -77,13 +77,13 @@ private:
 };
 
 BaseQAbstractListModel::BaseQAbstractListModel(void* modelObject,
-        RowCountCallback rowCountCallback,
-        ColumnCountCallback columnCountCallback,
-        DataCallback dataCallback,
-        SetDataCallback setDataCallback,
-        RoleNamesCallback roleNamesCallback,
-        FlagsCallback flagsCallback,
-        HeaderDataCallback headerDataCallback)
+                                               RowCountCallback rowCountCallback,
+                                               ColumnCountCallback columnCountCallback,
+                                               DataCallback dataCallback,
+                                               SetDataCallback setDataCallback,
+                                               RoleNamesCallback roleNamesCallback,
+                                               FlagsCallback flagsCallback,
+                                               HeaderDataCallback headerDataCallback)
     : m_modelObject(modelObject)
     , m_rowCountCallback(rowCountCallback)
     , m_columnCountCallback(columnCountCallback)
@@ -192,8 +192,8 @@ void BaseQAbstractListModel::publicEndResetModel()
 }
 
 void BaseQAbstractListModel::publicDataChanged(const QModelIndex& topLeft,
-        const QModelIndex& bottomRight,
-        const QVector<int>& roles)
+                                               const QModelIndex& bottomRight,
+                                               const QVector<int>& roles)
 {
     emit dataChanged(topLeft, bottomRight, roles);
 }

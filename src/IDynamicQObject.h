@@ -8,12 +8,6 @@ public:
     /// Destructor
     virtual ~IDynamicQObject() = default;
 
-    /// Sets the function to be called from C++ to D or Nimrod
-    virtual void setDObjectCallback(Callback callback) = 0;
-
-    /// Sets the D or Nimrod object that owns this DynamicQObject
-    virtual void setDObjectPointer(void* dObjectPointer) = 0;
-
     /// Register a new signal
     virtual bool registerSignal(const QString& name,
                                 const QList<QMetaType::Type>& argumentsTypes,

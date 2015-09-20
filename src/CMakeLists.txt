@@ -27,11 +27,21 @@ set(HEADERS_LIST
     DOtherSide.h
     DynamicQObject.h
     IDynamicQObject.h
+    OnSlotExecutedHandler.h
 )
 
 set(SRC_LIST 
     DOtherSide.cpp
+    OnSlotExecutedHandler.cpp
+    DynamicSlot.cpp
+    DynamicSignal.cpp
+    DynamicProperty.cpp
 )
 
+# Shared version for distributing
 add_library(${PROJECT_NAME} SHARED ${SRC_LIST} ${HEADERS_LIST})
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick)
+
+# Static version for testing
+add_library("${PROJECT_NAME}Static" STATIC ${SRC_LIST} ${HEADERS_LIST})
+target_link_libraries("${PROJECT_NAME}Static" PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick)

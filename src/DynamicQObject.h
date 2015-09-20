@@ -17,6 +17,7 @@ template <class T>
 class DynamicQObject : public T, public IDynamicQObject
 {
     using SafeQMetaObjectPtr = std::unique_ptr<QMetaObject, void(*)(void*)>;
+    using OnSlotExecutedHandler = std::function<QVariant(const DynamicSlot&, const std::vector<QVariant>&)>;
 
 public:
     /// Constructor
@@ -25,11 +26,8 @@ public:
     /// Destructor
     virtual ~DynamicQObject();
 
-    /// Sets the function to be called from C++ to D or Nimrod
-    void setDObjectCallback(IDynamicQObject::Callback callback) override;
-
-    /// Sets the D or Nimrod object that owns this DynamicQObject
-    void setDObjectPointer(void* dObjectPointer) override;
+    /// Sets the on slot executed handler
+    void setOnSlotExecutedHandler(const OnSlotExecutedHandler& handler);
 
     /// Register a new signal
     bool registerSignal(const QString& name,
@@ -61,8 +59,6 @@ public:
 private:
     bool executeSlot(const DynamicSlot& slot, void**  args);
 
-    QVariant executeSlot(const DynamicSlot& slot, const std::vector<QVariant> &args);
-
     bool readProperty(const DynamicProperty& property, void** args);
 
     bool writeProperty(const DynamicProperty& property, void** args);
@@ -81,16 +77,13 @@ private:
     QHash<QString, DynamicSlot> m_slotsByName;
     QHash<QByteArray, DynamicSlot> m_slotsBySignature;
     QHash<QByteArray, DynamicProperty> m_propertiesByName;
-    void* m_dObjectPointer;
-    IDynamicQObject::Callback m_dObjectCallback;
+    OnSlotExecutedHandler m_onSlotExecutedHandler;
 };
 
 template <typename T>
 DynamicQObject<T>::DynamicQObject()
     : T()
     , m_metaObject(nullptr, ::free)
-    , m_dObjectPointer(nullptr)
-    , m_dObjectCallback(nullptr)
 {
     QMetaObjectBuilder builder;
     builder.setFlags(QMetaObjectBuilder::DynamicMetaObject);
@@ -100,15 +93,9 @@ DynamicQObject<T>::DynamicQObject()
 }
 
 template <typename T>
-void DynamicQObject<T>::setDObjectCallback(IDynamicQObject::Callback callback)
+void DynamicQObject<T>::setOnSlotExecutedHandler(const DynamicQObject::OnSlotExecutedHandler &handler)
 {
-    m_dObjectCallback = callback;
-}
-
-template <typename T>
-void DynamicQObject<T>::setDObjectPointer(void* dObjectPointer)
-{
-    m_dObjectPointer = dObjectPointer;
+    m_onSlotExecutedHandler = handler;
 }
 
 template <typename T>
@@ -284,15 +271,12 @@ bool DynamicQObject<T>::executeSlot(const DynamicSlot& slot, void**  args)
     if (!slot.isValid())
         return false;
 
-    if (!m_dObjectCallback || !m_dObjectPointer)
-        return false;
-
     std::vector<QVariant> arguments;
     arguments.reserve(slot.argumentsTypes().size());
     for (int i = 0; i < slot.argumentsTypes().count(); ++i)
         arguments.emplace_back(QVariant(slot.argumentTypeAt(i), args[i + 1]));
 
-    QVariant result = executeSlot(slot, arguments);
+    QVariant result = m_onSlotExecutedHandler(slot, arguments);
 
     if (slot.returnType() != QMetaType::Void && result.isValid())
     {
@@ -301,30 +285,6 @@ bool DynamicQObject<T>::executeSlot(const DynamicSlot& slot, void**  args)
     }
 
     return true;
-}
-
-template <typename T>
-QVariant DynamicQObject<T>::executeSlot(const DynamicSlot& slot, const std::vector<QVariant>& args)
-{
-    QVariant result;
-
-    if (!m_dObjectCallback || !m_dObjectPointer)
-        return result;
-
-    // prepare slot name
-    QVariant slotName(slot.name());
-
-    // prepare void* for the QVariants
-    std::vector<void*> argumentsAsVoidPointers;
-    argumentsAsVoidPointers.reserve(args.size() + 1);
-    argumentsAsVoidPointers.emplace_back(&result);
-    for (size_t i = 0; i < args.size(); ++i)
-        argumentsAsVoidPointers.emplace_back((void*)(&args[i]));
-
-    // send them to the binding handler
-    m_dObjectCallback(m_dObjectPointer, &slotName, argumentsAsVoidPointers.size(), &argumentsAsVoidPointers[0]);
-
-    return result;
 }
 
 template <typename T>
@@ -370,8 +330,10 @@ bool DynamicQObject<T>::writeProperty(const DynamicProperty& property, void** ar
     if (writeSlot.returnType() != QMetaType::Void)
         return false;
 
-    QVariant newValue(writeSlot.argumentTypeAt(0), args[0]);
-    executeSlot(writeSlot, {newValue});
+    void* sortedArgs[2];                    // The write property is peculiar because it has
+    sortedArgs[0] = args[2];                // the actual value in pos 0 and result in 2
+    sortedArgs[1] = args[0];                // We reorder it for having the result in 0 and
+    executeSlot(writeSlot, sortedArgs);     // first arg in 1
 
     return true;
 }

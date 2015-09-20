@@ -11,4 +11,4 @@ find_package(Qt5Test REQUIRED)
 
 add_executable(${PROJECT_NAME} test_dynamicqobject.cpp)
 
-target_link_libraries(${PROJECT_NAME} Qt5::Test)
+target_link_libraries(${PROJECT_NAME} DOtherSideStatic Qt5::Test)

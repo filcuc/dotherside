@@ -15,6 +15,7 @@
 #include "DynamicQObject.h"
 #include "BaseQAbstractListModel.h"
 #include "BaseQObject.h"
+#include "OnSlotExecutedHandler.h"
 
 void convert_to_cstring(const QString& source, char** destination)
 {
@@ -298,8 +299,7 @@ void dos_qobject_create(void** vptr, void* dObjectPointer, DObjectCallback dObje
 {
     auto dynamicQObject = new BaseQObject();
     QQmlEngine::setObjectOwnership(dynamicQObject, QQmlEngine::CppOwnership);
-    dynamicQObject->setDObjectPointer(dObjectPointer);
-    dynamicQObject->setDObjectCallback(dObjectCallback);
+    dynamicQObject->setOnSlotExecutedHandler(OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
     *vptr = dynamicQObject;
 }
 
@@ -428,7 +428,7 @@ void dos_qmodelindex_sibling(void* vptr, int row, int column, void* sibling)
 }
 
 void dos_qabstractlistmodel_create(void** vptr,
-                                   void* modelObject,
+                                   void* dObjectPointer,
                                    DObjectCallback dObjectCallback,
                                    RowCountCallback rowCountCallback,
                                    ColumnCountCallback columnCountCallback,
@@ -438,7 +438,7 @@ void dos_qabstractlistmodel_create(void** vptr,
                                    FlagsCallback flagsCallback,
                                    HeaderDataCallback headerDataCallback)
 {
-    auto model = new BaseQAbstractListModel(modelObject,
+    auto model = new BaseQAbstractListModel(dObjectPointer,
                                             rowCountCallback,
                                             columnCountCallback,
                                             dataCallback,
@@ -446,8 +446,7 @@ void dos_qabstractlistmodel_create(void** vptr,
                                             roleNamesCallaback,
                                             flagsCallback,
                                             headerDataCallback);
-    model->setDObjectPointer(modelObject);
-    model->setDObjectCallback(dObjectCallback);
+    model->setOnSlotExecutedHandler(OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
     *vptr = model;
 }
 
