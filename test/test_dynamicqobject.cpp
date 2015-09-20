@@ -60,6 +60,25 @@ private slots:
         QCOMPARE(result, true);
         result = dynamicQObject.registerProperty("foo", QMetaType::Int, "foo", "setFoo", "fooChanged");
         QCOMPARE(result, true);
+
+        int propertyValue = -1;
+
+        auto handler = [&propertyValue](const DynamicSlot &slot, const std::vector<QVariant> &args) -> QVariant {
+            if (slot.name() == "foo")
+                return propertyValue;
+            else if (slot.name() == "setFoo")
+                propertyValue = args.front().toInt();
+            return QVariant();
+        };
+
+        dynamicQObject.setOnSlotExecutedHandler(handler);
+
+        // Test property read
+        QCOMPARE(dynamicQObject.property("foo").toInt(), -1);
+
+        // Test property write and signal emittion
+        dynamicQObject.setProperty("foo", 10);
+        QCOMPARE(propertyValue, 10);
     }
 
 private:
