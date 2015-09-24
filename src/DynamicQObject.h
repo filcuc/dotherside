@@ -93,7 +93,7 @@ DynamicQObject<T>::DynamicQObject()
 }
 
 template <typename T>
-void DynamicQObject<T>::setOnSlotExecutedHandler(const DynamicQObject::OnSlotExecutedHandler &handler)
+void DynamicQObject<T>::setOnSlotExecutedHandler(const typename DynamicQObject::OnSlotExecutedHandler &handler)
 {
     m_onSlotExecutedHandler = handler;
 }
