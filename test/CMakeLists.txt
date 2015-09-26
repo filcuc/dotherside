@@ -10,5 +10,5 @@ endif()
 find_package(Qt5Test REQUIRED)
 
 add_executable(${PROJECT_NAME} test_dynamicqobject.cpp)
-
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 target_link_libraries(${PROJECT_NAME} DOtherSideStatic Qt5::Test)
