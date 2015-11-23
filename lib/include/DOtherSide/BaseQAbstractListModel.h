@@ -1,8 +1,11 @@
 #pragma once
 
-#include "DOtherSideTypes.h"
-#include "DynamicQObject.h"
+// Qt
 #include <QAbstractListModel>
+// DOtherSide
+#include "DOtherSide/DOtherSideTypes.h"
+#include "DOtherSide/DynamicQObject.h"
+
 
 /// This class act as a base class for D and Nim QAbstractListModel
 class BaseQAbstractListModel final : public DynamicQObject<QAbstractListModel>

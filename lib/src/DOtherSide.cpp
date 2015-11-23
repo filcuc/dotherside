@@ -1,4 +1,4 @@
-#include "DOtherSide.h"
+#include "DOtherSide/DOtherSide.h"
 
 #include <iostream>
 
@@ -12,10 +12,10 @@
 #include <QtQuick/QQuickView>
 #include <QtWidgets/QApplication>
 
-#include "DynamicQObject.h"
-#include "BaseQAbstractListModel.h"
-#include "BaseQObject.h"
-#include "OnSlotExecutedHandler.h"
+#include "DOtherSide/DynamicQObject.h"
+#include "DOtherSide/BaseQAbstractListModel.h"
+#include "DOtherSide/BaseQObject.h"
+#include "DOtherSide/OnSlotExecutedHandler.h"
 
 void convert_to_cstring(const QString& source, char** destination)
 {

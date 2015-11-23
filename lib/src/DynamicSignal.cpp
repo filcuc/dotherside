@@ -1,4 +1,4 @@
-#include "DynamicSignal.h"
+#include "DOtherSide/DynamicSignal.h"
 
 struct DynamicSignal::SignalData
 {
@@ -9,8 +9,7 @@ struct DynamicSignal::SignalData
 
 DynamicSignal::DynamicSignal()
     : d(nullptr)
-{
-}
+{}
 
 DynamicSignal::DynamicSignal(const QString& name, const QList<QMetaType::Type>& arguments)
     : d(new SignalData())
@@ -45,9 +44,7 @@ DynamicSignal& DynamicSignal::operator=(const DynamicSignal& signal)
     return *this;
 }
 
-DynamicSignal::~DynamicSignal()
-{
-}
+DynamicSignal::~DynamicSignal() = default;
 
 bool DynamicSignal::isValid() const
 {

@@ -1,8 +1,11 @@
 #pragma once
 
-#include <QVariant>
+// std
 #include <vector>
-#include "IDynamicQObject.h"
+// Qt
+#include <QVariant>
+// DOtherSide
+#include "DOtherSide/IDynamicQObject.h"
 
 class DynamicSlot;
 

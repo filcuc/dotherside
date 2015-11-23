@@ -1,5 +1,5 @@
-#include "OnSlotExecutedHandler.h"
-#include "DynamicSlot.h"
+#include "DOtherSide/OnSlotExecutedHandler.h"
+#include "DOtherSide/DynamicSlot.h"
 
 OnSlotExecutedHandler::OnSlotExecutedHandler(void *dObjectPointer,
                                              IDynamicQObject::Callback dObjectCallback)

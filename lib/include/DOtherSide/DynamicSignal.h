@@ -1,7 +1,8 @@
 #pragma once
 
+// std
 #include <memory>
-
+// Qt
 #include <QtCore/QMetaType>
 #include <QtCore/QString>
 #include <QtCore/QMetaType>

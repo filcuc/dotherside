@@ -1,8 +1,9 @@
 #pragma once
 
+// std
 #include <memory>
 #include <functional>
-
+// Qt
 #include <QtCore/QList>
 #include <QtCore/QMetaType>
 #include <QtCore/QVariant>
@@ -10,7 +11,6 @@
 #include <QtCore/QString>
 #include <QtCore/QVariant>
 #include <QtCore/QMetaType>
-
 #include "private/qmetaobjectbuilder_p.h"
 
 class QString;

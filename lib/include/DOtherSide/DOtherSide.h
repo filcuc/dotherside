@@ -7,7 +7,7 @@
 #define DOS_API  
 #endif
 
-#include "DOtherSideTypes.h"
+#include <DOtherSide/DOtherSideTypes.h>
 
 #ifdef __cplusplus
 extern "C"
