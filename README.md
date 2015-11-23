@@ -8,13 +8,18 @@ Currently the DOtherSide library is used by the following bindings:
 * [nimqml](https://github.com/filcuc/nimqml), QML bindings for the Nim programming language
 * [dqml](https://github.com/filcuc/dqml), QML bindings for the D programming language
 
+## Prebuilt binaries
+Currently we provide the prebuilt binaries for the following
+Linux distributions through the [OpenSUSE OBS service](https://build.opensuse.org/package/show/home:filcuc/DOtherSide)
+* ```Archlinux``` : [here](http://software.opensuse.org/download.html?project=home%3Afilcuc&package=DOtherSide)
+
+## Change log
+The project change log can be read [here](./CHANGELOG.md).
+
 ## Supported platforms
 Currently we support the following platforms/compilers:
 - Linux both 32/64bit with gcc
 - Windows 32/64bit with Visual Studio 2013 Community Edition
-
-## Change log
-The project change log can be read [here](./CHANGELOG.md).
 
 ## Build requirements
 You need the following software:
@@ -30,4 +35,13 @@ You need the following software:
 4. make
 
 ## Install Instructions
-Copy the libDOtherSide.so from the build dir to your system lib i.e /usr/lib
+Once you built the package just type 
+```
+make install
+```
+by default cmake will install to the default CMAKE prefix.
+If you want to customize this location type the following command
+during the build steps when invoking cmake
+```
+cmake -DCMAKE_INSTALL_PREFIX:PATH=/path/to/install/prefix path/to/CMakeLists.txt
+```
