@@ -15,9 +15,9 @@ install:
 - echo "Moving to /tmp"
 - cd /tmp
 - echo "Installing CMake"
-- wget http://www.cmake.org/files/v3.3/cmake-3.3.1-Linux-x86_64.tar.gz
-- tar xf cmake-3.3.1-Linux-x86_64.tar.gz
-- export CMAKE_EXECUTABLE=/tmp/cmake-3.3.1-Linux-x86_64/bin/cmake
+- wget --no-check-certificate https://cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz
+- tar xf cmake-3.3.2-Linux-x86_64.tar.gz
+- export CMAKE_EXECUTABLE=/tmp/cmake-3.3.2-Linux-x86_64/bin/cmake
 - cd -
 
 before_script:
