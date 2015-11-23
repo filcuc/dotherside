@@ -1,5 +1,5 @@
 #pragma once
 
-#include "DynamicQObject.h"
+#include "DOtherSide/DynamicQObject.h"
 
 using BaseQObject = DynamicQObject<QObject>;

@@ -1,10 +1,13 @@
-#include <QTest>
-#include <QSignalSpy>
+// std
 #include <tuple>
 #include <iostream>
+// Qt
 #include <QDebug>
-#include "../src/BaseQObject.h"
-#include "../src/DynamicQObject.h"
+#include <QTest>
+#include <QSignalSpy>
+// DOtherSide
+#include "DOtherSide/BaseQObject.h"
+#include "DOtherSide/DynamicQObject.h"
 
 // Templates that convers a T to a string
 template <typename T>

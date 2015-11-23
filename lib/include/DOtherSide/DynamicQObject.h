@@ -1,16 +1,18 @@
 #pragma once
 
+// std
 #include <memory>
 #include <array>
+// Qt
 #include <QtCore/QObject>
 #include <QtCore/QScopedPointer>
 #include <QtCore/QDebug>
-
 #include "private/qmetaobjectbuilder_p.h"
-#include "DynamicSignal.h"
-#include "DynamicSlot.h"
-#include "DynamicProperty.h"
-#include "IDynamicQObject.h"
+// DOtherSide
+#include "DOtherSide/DynamicSignal.h"
+#include "DOtherSide/DynamicSlot.h"
+#include "DOtherSide/DynamicProperty.h"
+#include "DOtherSide/IDynamicQObject.h"
 
 /// This class implements a QObject to which signals, slots and properties can be added dynamically
 template <class T>
