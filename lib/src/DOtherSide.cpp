@@ -6,12 +6,12 @@
 #include <QtCore/QDebug>
 #include <QtCore/QModelIndex>
 #include <QtCore/QHash>
+#include <QtCore/QResource>
 #include <QtGui/QGuiApplication>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlApplicationEngine>
 #include <QtQuick/QQuickView>
 #include <QtWidgets/QApplication>
-#include <QResource>
 
 #include "DOtherSide/DynamicQObject.h"
 #include "DOtherSide/BaseQAbstractListModel.h"
@@ -90,13 +90,13 @@ void dos_qqmlapplicationengine_load_url(void* vptr, void* url)
 {
     QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
     QUrl* qurl = reinterpret_cast<QUrl*>(url);
-    engine -> load(*qurl);
+    engine->load(*qurl);
 }
 
 void dos_qqmlapplicationengine_add_import_path(void* vptr, const char* path)
 {
     QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
-    engine -> addImportPath(QString(path));
+    engine->addImportPath(QString(path));
 }
 
 void dos_qqmlapplicationengine_context(void* vptr, void** context)
@@ -552,12 +552,12 @@ void dos_qhash_int_qbytearray_value(QHashIntQByteArrayVoidPtr vptr, int key, cha
 
 void dos_qresource_register(const char* filename)
 {
-    QResource::registerResource(QString(filename));
+    QResource::registerResource(QString::fromUtf8(filename));
 }
 
 void dos_qurl_create(void** vptr, const char* url, int parsingMode)
 {
-    *vptr = new QUrl(QString(url), (QUrl::ParsingMode) parsingMode);
+    *vptr = new QUrl(QString::fromUtf8(url), (QUrl::ParsingMode) parsingMode);
 }
 
 void dos_qurl_delete(void* vptr)
