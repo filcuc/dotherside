@@ -24,6 +24,11 @@ void convert_to_cstring(const QString& source, char** destination)
     *destination = qstrdup(array.data());
 }
 
+void dos_qcoreapplication_application_dir_path(char** result)
+{
+    convert_to_cstring(QCoreApplication::applicationDirPath(), result);
+}
+
 void dos_qguiapplication_create()
 {
     static int argc = 1;

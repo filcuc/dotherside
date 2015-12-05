@@ -14,6 +14,9 @@ extern "C"
 {
 #endif
 
+// QCoreApplication
+DOS_API void dos_qcoreapplication_application_dir_path(char** result);
+
 // QGuiApplication
 DOS_API void dos_qguiapplication_create();
 DOS_API void dos_qguiapplication_exec();
