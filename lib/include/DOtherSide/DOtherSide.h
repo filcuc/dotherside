@@ -29,6 +29,8 @@ DOS_API void dos_qapplication_delete();
 // QQmlApplicationEngine
 DOS_API void dos_qqmlapplicationengine_create(void** vptr);
 DOS_API void dos_qqmlapplicationengine_load(void* vptr, const char* filename);
+DOS_API void dos_qqmlapplicationengine_load_url(void* vptr, void* url);
+DOS_API void dos_qqmlapplicationengine_add_import_path(void* vptr, const char* path);
 DOS_API void dos_qqmlapplicationengine_context(void* vptr, void** context);
 DOS_API void dos_qqmlapplicationengine_delete(void* vptr);
 
@@ -135,6 +137,13 @@ DOS_API void dos_qabstractlistmodel_beginResetModel(void* vptr);
 DOS_API void dos_qabstractlistmodel_endResetModel(void* vptr);
 DOS_API void dos_qabstractlistmodel_dataChanged(void* vptr, void* topLeft, void* bottomRight, int* rolesPtr, int rolesLength);
 DOS_API void dos_qabstractlistmodel_delete(void* vptr);
+
+// QResource
+DOS_API void dos_qresource_register(const char* filename);
+
+// QUrl
+DOS_API void dos_qurl_create(void** vptr, const char* url, int parsingMode);
+DOS_API void dos_qurl_delete(void* vptr);
 
 #ifdef __cplusplus
 }
