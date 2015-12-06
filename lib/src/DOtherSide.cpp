@@ -6,6 +6,7 @@
 #include <QtCore/QDebug>
 #include <QtCore/QModelIndex>
 #include <QtCore/QHash>
+#include <QtCore/QResource>
 #include <QtGui/QGuiApplication>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlApplicationEngine>
@@ -21,6 +22,11 @@ void convert_to_cstring(const QString& source, char** destination)
 {
     QByteArray array = source.toUtf8();
     *destination = qstrdup(array.data());
+}
+
+void dos_qcoreapplication_application_dir_path(char** result)
+{
+    convert_to_cstring(QCoreApplication::applicationDirPath(), result);
 }
 
 void dos_qguiapplication_create()
@@ -78,6 +84,19 @@ void dos_qqmlapplicationengine_load(void* vptr, const char* filename)
 {
     QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
     engine->load(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + QDir::separator() + QString(filename)));
+}
+
+void dos_qqmlapplicationengine_load_url(void* vptr, void* url)
+{
+    QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
+    QUrl* qurl = reinterpret_cast<QUrl*>(url);
+    engine->load(*qurl);
+}
+
+void dos_qqmlapplicationengine_add_import_path(void* vptr, const char* path)
+{
+    QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
+    engine->addImportPath(QString(path));
 }
 
 void dos_qqmlapplicationengine_context(void* vptr, void** context)
@@ -529,5 +548,21 @@ void dos_qhash_int_qbytearray_value(QHashIntQByteArrayVoidPtr vptr, int key, cha
     auto qHash = reinterpret_cast<QHash<int, QByteArray>*>(vptr);
     QByteArray value = qHash->value(key);
     *result = qstrdup(value.data());
+}
+
+void dos_qresource_register(const char* filename)
+{
+    QResource::registerResource(QString::fromUtf8(filename));
+}
+
+void dos_qurl_create(void** vptr, const char* url, int parsingMode)
+{
+    *vptr = new QUrl(QString::fromUtf8(url), (QUrl::ParsingMode) parsingMode);
+}
+
+void dos_qurl_delete(void* vptr)
+{
+    QUrl* url = reinterpret_cast<QUrl*>(vptr);
+    delete url;
 }
 
