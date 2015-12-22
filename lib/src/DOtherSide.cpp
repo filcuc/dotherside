@@ -142,6 +142,19 @@ void dos_qquickview_set_source(void* vptr, const char* filename)
     view->setSource(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + QDir::separator() + QString(filename)));
 }
 
+void dos_qquickview_set_source_url(void* vptr, void* url)
+{
+    QQuickView* view = reinterpret_cast<QQuickView*>(vptr);
+    QUrl* _url = reinterpret_cast<QUrl*>(url);
+    view->setSource(*_url);
+}
+
+void dos_qquickview_set_resize_mode(void* vptr, int resizeMode)
+{
+    QQuickView* view = reinterpret_cast<QQuickView*>(vptr);
+    view->setResizeMode((QQuickView::ResizeMode) resizeMode);
+}
+
 void dos_qquickview_rootContext(void* vptr, void** context)
 {
     QQuickView* view = reinterpret_cast<QQuickView*>(vptr);

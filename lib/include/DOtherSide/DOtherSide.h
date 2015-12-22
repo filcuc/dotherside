@@ -41,7 +41,9 @@ DOS_API void dos_qqmlapplicationengine_delete(void* vptr);
 DOS_API void dos_qquickview_create(void** vptr);
 DOS_API void dos_qquickview_show(void* vptr);
 DOS_API void dos_qquickview_source(void* vptr, char** result);
+DOS_API void dos_qquickview_set_source_url(void* vptr, void* url);
 DOS_API void dos_qquickview_set_source(void* vptr, const char* filename);
+DOS_API void dos_qquickview_set_resize_mode(void* vptr, int resizeMode);
 DOS_API void dos_qquickview_delete(void* vptr);
 DOS_API void dos_qquickview_rootContext(void* vptr, void** result);
  
