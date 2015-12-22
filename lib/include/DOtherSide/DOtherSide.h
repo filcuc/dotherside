@@ -147,6 +147,7 @@ DOS_API void dos_qresource_register(const char* filename);
 // QUrl
 DOS_API void dos_qurl_create(void** vptr, const char* url, int parsingMode);
 DOS_API void dos_qurl_delete(void* vptr);
+DOS_API void dos_qurl_to_string(void* vptr, char** result);
 
 #ifdef __cplusplus
 }

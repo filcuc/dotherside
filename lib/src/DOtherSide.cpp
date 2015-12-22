@@ -566,3 +566,9 @@ void dos_qurl_delete(void* vptr)
     delete url;
 }
 
+void dos_qurl_to_string(void* vptr, char** result)
+{
+    QUrl* url = reinterpret_cast<QUrl*>(vptr);
+    convert_to_cstring(url->toString(), result);
+}
+
