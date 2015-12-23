@@ -106,6 +106,20 @@ void dos_qqmlapplicationengine_context(void* vptr, void** context)
     *context = engine->rootContext();
 }
 
+void dos_qqmlapplicationengine_rootObjects(void* vptr, void*** array, int* array_length)
+{
+    QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
+    auto list = engine->rootObjects();
+    // Note: On fringe architectures where `8 < CHAR_BIT` this may not allocate enough memory,
+    //       as sizeof returns the number of chars required, while calloc/malloc expects
+    //       the number of octets required.
+    QObject** objects = reinterpret_cast<QObject**>(calloc(list.length(), sizeof(QObject*)));
+    if (objects == NULL) return;
+    for (int i = 0; i < list.length(); i += 1) objects[i] = list.at(i);
+    *array = reinterpret_cast<void**>(objects);
+    *array_length = list.length();
+}
+
 void dos_qqmlapplicationengine_delete(void* vptr)
 {
     QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
@@ -399,6 +413,18 @@ void dos_qobject_property_create(void* vptr,
                                      QString(readSlot),
                                      QString(writeSlot),
                                      QString(notifySignal));
+}
+
+void dos_qobject_objectName(void* vptr, char** result)
+{
+    QObject* object = reinterpret_cast<QObject*>(vptr);
+    convert_to_cstring(object->objectName(), result);
+}
+
+void dos_qobject_findChild(void* vptr, const char* name, int options, void** child)
+{
+    QObject* object = reinterpret_cast<QObject*>(vptr);
+    *child = object->findChild<QObject*>(QString::fromUtf8(name), (Qt::FindChildOptions) options);
 }
 
 void dos_qmodelindex_create(void** vptr)
