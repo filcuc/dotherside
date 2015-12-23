@@ -270,6 +270,12 @@ void dos_qvariant_toString(void* vptr, char** ptr)
     convert_to_cstring(variant->toString(), ptr);
 }
 
+void dos_qvariant_toQObject(void* vptr, void** value)
+{
+    auto variant = reinterpret_cast<QVariant*>(vptr);
+    *value = variant->value<QObject*>();
+}
+
 void dos_qvariant_setInt(void* vptr, int value)
 {
     auto variant = reinterpret_cast<QVariant*>(vptr);
@@ -370,6 +376,36 @@ void dos_qobject_signal_emit(void* vptr, const char* name, int parametersCount, 
         arguments << *(reinterpret_cast<QVariant*>(parameters[i]));
 
     dynamicQObject->emitSignal(QString::fromStdString(name), arguments);
+}
+
+void dos_qobject_signal_connect(void* senderVPtr,
+                                const char* signal,
+                                void* receiverVPtr,
+                                const char* method,
+                                int type,
+                                bool* result)
+{
+    auto sender = reinterpret_cast<QObject*>(senderVPtr);
+    auto receiver = reinterpret_cast<QObject*>(receiverVPtr);
+    *result = QObject::connect(sender,
+                               signal,
+                               receiver,
+                               method,
+                               (Qt::ConnectionType) type);
+}
+
+void dos_qobject_signal_disconnect(void* senderVPtr,
+                                   const char* signal,
+                                   void* receiverVPtr,
+                                   const char* method,
+                                   bool* result)
+{
+    auto sender = reinterpret_cast<QObject*>(senderVPtr);
+    auto receiver = reinterpret_cast<QObject*>(receiverVPtr);
+    *result = QObject::disconnect(sender,
+                                  signal,
+                                  receiver,
+                                  method);
 }
 
 void dos_qobject_property_create(void* vptr,
