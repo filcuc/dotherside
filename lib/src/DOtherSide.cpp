@@ -110,10 +110,7 @@ void dos_qqmlapplicationengine_rootObjects(void* vptr, void*** array, int* array
 {
     QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
     QList<QObject*> list = engine->rootObjects();
-    // Note: On fringe architectures where `8 < CHAR_BIT` this may not allocate enough memory,
-    //       as sizeof returns the number of chars required, while calloc/malloc expects
-    //       the number of octets required.
-    QObject** objects = reinterpret_cast<QObject**>(calloc(list.length(), sizeof(QObject*)));
+    auto objects = new QObject*[list.size()];
     if (objects == nullptr) return;
     for (int i = 0; i < list.length(); i += 1) objects[i] = list.at(i);
     *array = reinterpret_cast<void**>(objects);
@@ -176,6 +173,11 @@ void dos_qquickview_rootContext(void* vptr, void** context)
 }
 
 void dos_chararray_delete(char* ptr)
+{
+    if (ptr) delete[] ptr;
+}
+
+void dos_qobjectptr_array_delete(void** ptr)
 {
     if (ptr) delete[] ptr;
 }

@@ -55,6 +55,9 @@ DOS_API void dos_qqmlcontext_setcontextproperty(void* vptr, const char* name, vo
 // CharArray
 DOS_API void dos_chararray_delete(char* ptr);
 
+// QObjectPtrArray
+DOS_API void dos_qobjectptr_array_delete(void** ptr);
+
 // QVariant
 DOS_API void dos_qvariant_create(void** vptr);
 DOS_API void dos_qvariant_create_int(void** vptr, int value);
