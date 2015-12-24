@@ -72,6 +72,7 @@ DOS_API void dos_qvariant_toDouble(void* vptr, double* result);
 DOS_API void dos_qvariant_setDouble(void* vptr, double value);
 DOS_API void dos_qvariant_toString(void* vptr, char** result);
 DOS_API void dos_qvariant_setString(void* vptr, const char* value);
+DOS_API void dos_qvariant_toQObject(void* vptr, void** value);
 DOS_API void dos_qvariant_setQObject(void* vptr, void* value);
 DOS_API void dos_qvariant_setQAbstractListModel(void* vptr, void* value);
 DOS_API void dos_qvariant_isnull(void* vptr, bool* result);
@@ -96,6 +97,17 @@ DOS_API void dos_qobject_signal_emit(void* vptr,
                                      const char* name,
                                      int parametersCount,
                                      void** parameters);
+DOS_API void dos_qobject_signal_connect(void* senderVPtr,
+                                        const char* signal,
+                                        void* receiverVPtr,
+                                        const char* method,
+                                        int type,
+                                        bool* result);
+DOS_API void dos_qobject_signal_disconnect(void* senderVPtr,
+                                           const char* signal,
+                                           void* receiverVPtr,
+                                           const char* method,
+                                           bool* result);
 DOS_API void dos_qobject_property_create(void* vptr,
                                          const char* name,
                                          int propertyMetaType,
