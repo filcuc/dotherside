@@ -34,7 +34,7 @@ private slots:
         DynamicQObject<QObject> dynamicQObject;
         int index;
         dynamicQObject.registerSignal("fooSignal", {}, index);
-        QCOMPARE(index != -1, true);
+        QVERIFY(index != -1);
 
         QSignalSpy signalSpy(&dynamicQObject, SIGNAL(fooSignal()));
         dynamicQObject.emitSignal("fooSignal", {});
@@ -53,16 +53,16 @@ private slots:
         int index = -1;
         bool result = false;
         result = dynamicQObject.registerSlot("foo", QMetaType::Int, {}, index);
-        QCOMPARE(index != -1, true);
-        QCOMPARE(result, true);
+        QVERIFY(index != -1);
+        QVERIFY(result);
         result = dynamicQObject.registerSlot("setFoo", QMetaType::Void, {QMetaType::Int}, index);
-        QCOMPARE(index != -1, true);
-        QCOMPARE(result, true);
+        QVERIFY(index != -1);
+        QVERIFY(result);
         result = dynamicQObject.registerSignal("fooChanged", {QMetaType::Int}, index);
-        QCOMPARE(index != -1, true);
-        QCOMPARE(result, true);
+        QVERIFY(index != -1);
+        QVERIFY(result);
         result = dynamicQObject.registerProperty("foo", QMetaType::Int, "foo", "setFoo", "fooChanged");
-        QCOMPARE(result, true);
+        QVERIFY(result);;
 
         int propertyValue = -1;
 
@@ -89,19 +89,30 @@ private:
     void testSlotExecutionForType(ReturnType expectedReturnValue) {
         DynamicQObject<QObject> dynamicQObject;
         int index;
-        dynamicQObject.registerSlot("fooSlot", (QMetaType::Type)qMetaTypeId<ReturnType>(), {}, index);
-        QCOMPARE(index != -1, true);
+        auto type = static_cast<QMetaType::Type>(qMetaTypeId<ReturnType>());
+        dynamicQObject.registerSlot("fooSlot", type, {type}, index);
+        QVERIFY(index != -1);
 
         // Call the slot and check return value
         bool called = false;
-        auto handler = [&called, expectedReturnValue](const DynamicSlot &slot, const std::vector<QVariant> &args) -> QVariant {
+        bool obtainedArgument = false;
+        bool argumentMatch = false;
+        auto handler = [&called, expectedReturnValue, &obtainedArgument, &argumentMatch]
+                (const DynamicSlot &, const std::vector<QVariant> &args) -> QVariant
+        {
+            obtainedArgument = args.size() == 1;
+            argumentMatch = (!args.empty() && args.front().value<ReturnType>() == expectedReturnValue);
             called = true;
             return expectedReturnValue;
         };
         dynamicQObject.setOnSlotExecutedHandler(handler);
         ReturnType result;
-        QMetaObject::invokeMethod(&dynamicQObject, "fooSlot", QReturnArgument<ReturnType>(TypeName<ReturnType>::Get(), result));
-        QCOMPARE(called, true);
+        QMetaObject::invokeMethod(&dynamicQObject, "fooSlot",
+                                  QGenericReturnArgument(TypeName<ReturnType>::Get(), &result),
+                                  QGenericArgument(TypeName<ReturnType>::Get(), &expectedReturnValue));
+        QVERIFY(called);
+        QVERIFY(obtainedArgument);
+        QVERIFY(argumentMatch);
         QCOMPARE(result, expectedReturnValue);
     }
 };
