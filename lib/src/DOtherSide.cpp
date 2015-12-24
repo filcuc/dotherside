@@ -109,12 +109,12 @@ void dos_qqmlapplicationengine_context(void* vptr, void** context)
 void dos_qqmlapplicationengine_rootObjects(void* vptr, void*** array, int* array_length)
 {
     QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
-    auto list = engine->rootObjects();
+    QList<QObject*> list = engine->rootObjects();
     // Note: On fringe architectures where `8 < CHAR_BIT` this may not allocate enough memory,
     //       as sizeof returns the number of chars required, while calloc/malloc expects
     //       the number of octets required.
     QObject** objects = reinterpret_cast<QObject**>(calloc(list.length(), sizeof(QObject*)));
-    if (objects == NULL) return;
+    if (objects == nullptr) return;
     for (int i = 0; i < list.length(); i += 1) objects[i] = list.at(i);
     *array = reinterpret_cast<void**>(objects);
     *array_length = list.length();
