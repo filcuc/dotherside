@@ -106,6 +106,17 @@ void dos_qqmlapplicationengine_context(void* vptr, void** context)
     *context = engine->rootContext();
 }
 
+void dos_qqmlapplicationengine_rootObjects(void* vptr, void*** array, int* array_length)
+{
+    QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
+    QList<QObject*> list = engine->rootObjects();
+    auto objects = new QObject*[list.size()];
+    if (objects == nullptr) return;
+    for (int i = 0; i < list.length(); i += 1) objects[i] = list.at(i);
+    *array = reinterpret_cast<void**>(objects);
+    *array_length = list.length();
+}
+
 void dos_qqmlapplicationengine_delete(void* vptr)
 {
     QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
@@ -142,6 +153,19 @@ void dos_qquickview_set_source(void* vptr, const char* filename)
     view->setSource(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + QDir::separator() + QString(filename)));
 }
 
+void dos_qquickview_set_source_url(void* vptr, void* url)
+{
+    QQuickView* view = reinterpret_cast<QQuickView*>(vptr);
+    QUrl* _url = reinterpret_cast<QUrl*>(url);
+    view->setSource(*_url);
+}
+
+void dos_qquickview_set_resize_mode(void* vptr, int resizeMode)
+{
+    QQuickView* view = reinterpret_cast<QQuickView*>(vptr);
+    view->setResizeMode((QQuickView::ResizeMode) resizeMode);
+}
+
 void dos_qquickview_rootContext(void* vptr, void** context)
 {
     QQuickView* view = reinterpret_cast<QQuickView*>(vptr);
@@ -149,6 +173,11 @@ void dos_qquickview_rootContext(void* vptr, void** context)
 }
 
 void dos_chararray_delete(char* ptr)
+{
+    if (ptr) delete[] ptr;
+}
+
+void dos_qobjectptr_array_delete(void** ptr)
 {
     if (ptr) delete[] ptr;
 }
@@ -424,6 +453,18 @@ void dos_qobject_property_create(void* vptr,
                                      QString(notifySignal));
 }
 
+void dos_qobject_objectName(void* vptr, char** result)
+{
+    QObject* object = reinterpret_cast<QObject*>(vptr);
+    convert_to_cstring(object->objectName(), result);
+}
+
+void dos_qobject_findChild(void* vptr, const char* name, int options, void** child)
+{
+    QObject* object = reinterpret_cast<QObject*>(vptr);
+    *child = object->findChild<QObject*>(QString::fromUtf8(name), (Qt::FindChildOptions) options);
+}
+
 void dos_qmodelindex_create(void** vptr)
 {
     auto index = new QModelIndex();
@@ -600,5 +641,11 @@ void dos_qurl_delete(void* vptr)
 {
     QUrl* url = reinterpret_cast<QUrl*>(vptr);
     delete url;
+}
+
+void dos_qurl_to_string(void* vptr, char** result)
+{
+    QUrl* url = reinterpret_cast<QUrl*>(vptr);
+    convert_to_cstring(url->toString(), result);
 }
 
