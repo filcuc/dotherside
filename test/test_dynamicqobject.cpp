@@ -8,6 +8,8 @@
 // DOtherSide
 #include "DOtherSide/BaseQObject.h"
 #include "DOtherSide/DynamicQObject.h"
+#include "DOtherSide/DynamicQObject2.h"
+#include "DOtherSide/DynamicQObjectFactory.h"
 
 // Templates that convers a T to a string
 template <typename T>
@@ -82,6 +84,42 @@ private slots:
         // Test property write and signal emittion
         dynamicQObject.setProperty("foo", 10);
         QCOMPARE(propertyValue, 10);
+    }
+
+    void benchmarkDynamicQObjectPerformance() {
+        QBENCHMARK {
+            for (int i = 0; i < 1000; ++i) {
+                DynamicQObject<QObject> dynamicQObject;
+                int index = -1;
+                dynamicQObject.registerSlot("foo", QMetaType::Int, {}, index);
+                dynamicQObject.registerSlot("setFoo", QMetaType::Void, {QMetaType::Int}, index);
+                dynamicQObject.registerSignal("fooChanged", {QMetaType::Int}, index);
+                dynamicQObject.registerProperty("foo", QMetaType::Int, "foo", "setFoo", "fooChanged");
+            }
+        }
+    }
+
+    void benchmarkDynamicQObject2Performance() {
+        QBENCHMARK {
+            DynamicQObjectFactory factory {{SignalDefinition{"fooChanged", {QMetaType::Int}}},
+                                           {SlotDefinition{"foo", QMetaType::Int, {}}, SlotDefinition{"setFoo", QMetaType::Void, {QMetaType::Int}}},
+                                           {PropertyDefinition{"foo",  QMetaType::Int, "foo", "setFoo", "fooChanged"}}};
+            for (int i = 0; i < 1000; ++i) {
+                std::unique_ptr<DynamicQObject2> dynamicQObject(factory.create([](int, const QString&, const std::vector<QVariant>&)-> QVariant{}));
+            }
+        }
+    }
+
+    void testDynamicQObject2() {
+        DynamicQObjectFactory factory {{SignalDefinition{"fooChanged", {QMetaType::Int}}},
+                                       {SlotDefinition{"foo", QMetaType::Int, {}}, SlotDefinition{"setFoo", QMetaType::Void, {QMetaType::Int}}},
+                                       {PropertyDefinition{"foo",  QMetaType::Int, "foo", "setFoo", "fooChanged"}}};
+        std::unique_ptr<DynamicQObject2> dynamicQObject(factory.create([](int, const QString&, const std::vector<QVariant>&)-> QVariant{}));
+        QVERIFY(dynamicQObject != nullptr);
+
+        QSignalSpy signalSpy(dynamicQObject.get(), SIGNAL(fooChanged(int)));
+        dynamicQObject->emitSignal("fooChanged", {10});
+        QCOMPARE(signalSpy.count(), 1);
     }
 
 private:

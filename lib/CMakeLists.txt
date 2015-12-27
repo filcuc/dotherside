@@ -24,6 +24,8 @@ set(HEADERS_LIST
   include/DOtherSide/DynamicQObject.h
   include/DOtherSide/IDynamicQObject.h
   include/DOtherSide/OnSlotExecutedHandler.h
+  include/DOtherSide/DynamicQObjectFactory.h
+  include/DOtherSide/DynamicQObject2.h
   )
 
 set(SRC_LIST 
@@ -32,6 +34,8 @@ set(SRC_LIST
   src/DynamicSlot.cpp
   src/DynamicSignal.cpp
   src/DynamicProperty.cpp
+  src/DynamicQObjectFactory.cpp
+  src/DynamicQObject2.cpp
   )
 
 include_directories(include include/Qt)
