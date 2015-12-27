@@ -3,12 +3,15 @@
 #include <QObject>
 #include <functional>
 
+namespace DOS
+{
+
 class DynamicQObjectFactory;
 
 class DynamicQObject2 : public QObject
 {
 public:
-    using OnSlotExecuted = std::function<QVariant(int, const QString&, const std::vector<QVariant>&)>;
+    using OnSlotExecuted = std::function<QVariant(const QString&, const std::vector<QVariant>&)>;
 
     DynamicQObject2(const DynamicQObjectFactory* factory,
                     OnSlotExecuted handler);
@@ -25,3 +28,5 @@ private:
     const DynamicQObjectFactory* const m_factory;
     const OnSlotExecuted m_handler;
 };
+
+} // namespace DOS

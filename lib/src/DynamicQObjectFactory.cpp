@@ -6,23 +6,28 @@
 
 namespace
 {
-    template<class T>
-    QByteArray createSignature(const T& functionDefinition)
-    {
-        QString signature("%1(%2)");
-        QString arguments;
+template<class T>
+QByteArray createSignature(const T& functionDefinition)
+{
+    QString signature("%1(%2)");
+    QString arguments;
 
-        for (QMetaType::Type type : functionDefinition.argumentsTypes) {
-            if (type != functionDefinition.argumentsTypes.front())
-                arguments += QLatin1Char(',');
-            arguments += QMetaType::typeName(type);
-        }
-
-        return signature.arg(functionDefinition.name, arguments).toUtf8();
+    for (int type : functionDefinition.parameterTypes) {
+        if (type != functionDefinition.parameterTypes.front())
+            arguments += QLatin1Char(',');
+        arguments += QMetaType::typeName(type);
     }
+
+    return signature.arg(functionDefinition.name, arguments).toUtf8();
+}
 }
 
-DynamicQObjectFactory::DynamicQObjectFactory(DynamicQObjectFactory::SignalDefinitions signalDefinitions, DynamicQObjectFactory::SlotDefinitions slotDefinitions, DynamicQObjectFactory::PropertyDefinitions propertyDefinitions)
+namespace DOS
+{
+
+DynamicQObjectFactory::DynamicQObjectFactory(SignalDefinitions signalDefinitions,
+                                             SlotDefinitions slotDefinitions,
+                                             PropertyDefinitions propertyDefinitions)
     : m_metaObject(nullptr, ::free)
 {
     QMetaObjectBuilder builder;
@@ -34,7 +39,7 @@ DynamicQObjectFactory::DynamicQObjectFactory(DynamicQObjectFactory::SignalDefini
 
     for (const SignalDefinition& signal : signalDefinitions)
     {
-        QMetaMethodBuilder signalBuilder = builder.addSignal(createSignature(signal));
+        QMetaMethodBuilder signalBuilder = builder.addSignal(::createSignature(signal));
         signalBuilder.setReturnType(QMetaType::typeName(QMetaType::Void));
         signalBuilder.setAccess(QMetaMethod::Public);
         m_signalIndexByName[signal.name.toUtf8()] = signalBuilder.index();
@@ -43,7 +48,7 @@ DynamicQObjectFactory::DynamicQObjectFactory(DynamicQObjectFactory::SignalDefini
     QHash<QString, int> methodIndexByName;
     for (const SlotDefinition& slot : slotDefinitions)
     {
-        QMetaMethodBuilder methodBuilder = builder.addSlot(createSignature(slot));
+        QMetaMethodBuilder methodBuilder = builder.addSlot(::createSignature(slot));
         methodBuilder.setReturnType(QMetaType::typeName(slot.returnType));
         methodBuilder.setAttributes(QMetaMethod::Scriptable);
         methodIndexByName[slot.name] = methodBuilder.index();
@@ -68,3 +73,5 @@ DynamicQObject2* DynamicQObjectFactory::create(OnSlotExecuted handler) const
 {
     return new DynamicQObject2(this, std::move(handler));
 }
+
+} // namespace DOS

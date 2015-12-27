@@ -7,7 +7,7 @@ OnSlotExecutedHandler::OnSlotExecutedHandler(void *dObjectPointer,
     , m_dObjectCallback(dObjectCallback)
 {}
 
-QVariant OnSlotExecutedHandler::operator()(const DynamicSlot& slot, const std::vector<QVariant> &args)
+QVariant OnSlotExecutedHandler::operator()(const QString &name, const std::vector<QVariant> &args)
 {
     QVariant result;
 
@@ -15,7 +15,7 @@ QVariant OnSlotExecutedHandler::operator()(const DynamicSlot& slot, const std::v
         return result;
 
     // prepare slot name
-    QVariant slotName(slot.name());
+    QVariant slotName(name);
 
     // prepare void* for the QVariants
     std::vector<void*> argumentsAsVoidPointers;
@@ -28,4 +28,9 @@ QVariant OnSlotExecutedHandler::operator()(const DynamicSlot& slot, const std::v
     m_dObjectCallback(m_dObjectPointer, &slotName, argumentsAsVoidPointers.size(), &argumentsAsVoidPointers[0]);
 
     return result;
+}
+
+QVariant OnSlotExecutedHandler::operator()(const DynamicSlot& slot, const std::vector<QVariant> &args)
+{
+    return operator ()(slot.name(), args);
 }

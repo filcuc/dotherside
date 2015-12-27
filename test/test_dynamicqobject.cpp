@@ -100,21 +100,22 @@ private slots:
     }
 
     void benchmarkDynamicQObject2Performance() {
+
         QBENCHMARK {
-            DynamicQObjectFactory factory {{SignalDefinition{"fooChanged", {QMetaType::Int}}},
-                                           {SlotDefinition{"foo", QMetaType::Int, {}}, SlotDefinition{"setFoo", QMetaType::Void, {QMetaType::Int}}},
-                                           {PropertyDefinition{"foo",  QMetaType::Int, "foo", "setFoo", "fooChanged"}}};
+            DOS::DynamicQObjectFactory factory {{DOS::SignalDefinition{"fooChanged", {QMetaType::Int}}},
+                                                {DOS::SlotDefinition{"foo", QMetaType::Int, {}}, DOS::SlotDefinition{"setFoo", QMetaType::Void, {QMetaType::Int}}},
+                                                {DOS::PropertyDefinition{"foo",  QMetaType::Int, "foo", "setFoo", "fooChanged"}}};
             for (int i = 0; i < 1000; ++i) {
-                std::unique_ptr<DynamicQObject2> dynamicQObject(factory.create([](int, const QString&, const std::vector<QVariant>&)-> QVariant{}));
+                std::unique_ptr<DOS::DynamicQObject2> dynamicQObject(factory.create([](const QString&, const std::vector<QVariant>&)-> QVariant{}));
             }
         }
     }
 
     void testDynamicQObject2() {
-        DynamicQObjectFactory factory {{SignalDefinition{"fooChanged", {QMetaType::Int}}},
-                                       {SlotDefinition{"foo", QMetaType::Int, {}}, SlotDefinition{"setFoo", QMetaType::Void, {QMetaType::Int}}},
-                                       {PropertyDefinition{"foo",  QMetaType::Int, "foo", "setFoo", "fooChanged"}}};
-        std::unique_ptr<DynamicQObject2> dynamicQObject(factory.create([](int, const QString&, const std::vector<QVariant>&)-> QVariant{}));
+        DOS::DynamicQObjectFactory factory {{DOS::SignalDefinition{"fooChanged", {QMetaType::Int}}},
+                                            {DOS::SlotDefinition{"foo", QMetaType::Int, {}}, DOS::SlotDefinition{"setFoo", QMetaType::Void, {QMetaType::Int}}},
+                                            {DOS::PropertyDefinition{"foo",  QMetaType::Int, "foo", "setFoo", "fooChanged"}}};
+        std::unique_ptr<DOS::DynamicQObject2> dynamicQObject(factory.create([](const QString&, const std::vector<QVariant>&)-> QVariant{}));
         QVERIFY(dynamicQObject != nullptr);
 
         QSignalSpy signalSpy(dynamicQObject.get(), SIGNAL(fooChanged(int)));
