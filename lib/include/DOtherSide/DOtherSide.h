@@ -169,6 +169,17 @@ DOS_API void dos_qurl_create(void** vptr, const char* url, int parsingMode);
 DOS_API void dos_qurl_delete(void* vptr);
 DOS_API void dos_qurl_to_string(void* vptr, char** result);
 
+// QObjectFactory
+DOS_API void dos_qobjectfactory_create(void** vptr,
+                                       SignalDefinitions signalDefinitions,
+                                       SlotDefinitions slotDefinitions,
+                                       PropertyDefinitions propertyDefinitions);
+DOS_API void dos_qobjectfactory_delete(void* vptr);
+DOS_API void dos_qobjectfactory_create_qobject(void* vptr,
+                                               void* dObjectPointer,
+                                               DObjectCallback dObjectCallback,
+                                               void** result);
+
 #ifdef __cplusplus
 }
 #endif

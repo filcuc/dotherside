@@ -14,7 +14,8 @@ class OnSlotExecutedHandler
 public:
     OnSlotExecutedHandler(void* dObjectPointer, IDynamicQObject::Callback dObjectCallback);
 
-    QVariant operator()(const DynamicSlot& slot, std::vector<QVariant> const& args);
+    QVariant operator()(const QString& name, const std::vector<QVariant>& args);
+    QVariant operator()(const DynamicSlot& slot, const std::vector<QVariant>& args);
 
 private:
     void* m_dObjectPointer;

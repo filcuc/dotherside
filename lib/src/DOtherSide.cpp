@@ -13,10 +13,14 @@
 #include <QtQuick/QQuickView>
 #include <QtWidgets/QApplication>
 
+#include "DOtherSide/DOtherSideTypesCpp.h"
 #include "DOtherSide/DynamicQObject.h"
 #include "DOtherSide/BaseQAbstractListModel.h"
 #include "DOtherSide/BaseQObject.h"
 #include "DOtherSide/OnSlotExecutedHandler.h"
+#include "DOtherSide/DynamicQObjectFactory.h"
+#include "DOtherSide/DynamicQObject2.h"
+
 
 void convert_to_cstring(const QString& source, char** destination)
 {
@@ -649,3 +653,25 @@ void dos_qurl_to_string(void* vptr, char** result)
     convert_to_cstring(url->toString(), result);
 }
 
+
+void dos_qobjectfactory_create(void **vptr,
+                               SignalDefinitions signalDefinitions,
+                               SlotDefinitions slotDefinitions,
+                               PropertyDefinitions propertyDefinitions)
+{
+    *vptr = new DOS::DynamicQObjectFactory(DOS::toVector(signalDefinitions),
+                                           DOS::toVector(slotDefinitions),
+                                           DOS::toVector(propertyDefinitions));
+}
+
+void dos_qobjectfactory_delete(void *vptr)
+{
+    auto factory = reinterpret_cast<DOS::DynamicQObjectFactory*>(vptr);
+    delete factory;
+}
+
+void dos_qobjectfactory_create_qobject(void *vptr, void* dObjectPointer, DObjectCallback dObjectCallback, void **result)
+{
+    auto factory = reinterpret_cast<DOS::DynamicQObjectFactory*>(vptr);
+    *result = factory->create(OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
+}

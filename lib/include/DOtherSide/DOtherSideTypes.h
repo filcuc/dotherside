@@ -30,6 +30,48 @@ typedef void(*RoleNamesCallback)(void* model, QHashIntQByteArrayVoidPtr result);
 typedef void(*FlagsCallback) (void* model, QModelIndexVoidPtr index, IntPtr result);
 typedef void(*HeaderDataCallback) (void* model, int section, int orientation, int role, QVariantVoidPtr result);
 
+struct SignalDefinition
+{
+    const char* name;
+    int parametersCount;
+    int* parametersMetaTypes;
+};
+
+struct SignalDefinitions
+{
+    int count;
+    SignalDefinition* definitions;
+};
+
+struct SlotDefinition
+{
+    const char* name;
+    int returnMetaType;
+    int parametersCount;
+    int* parametersMetaTypes;
+};
+
+struct SlotDefinitions
+{
+    int count;
+    SlotDefinition* definitions;
+};
+
+struct PropertyDefinition
+{
+    const char* name;
+    int propertyMetaType;
+    const char* readSlot;
+    const char* writeSlot;
+    const char* notifySignal;
+};
+
+struct PropertyDefinitions
+{
+    int count;
+    PropertyDefinition* definitions;
+};
+
 #ifdef __cplusplus
 }
 #endif

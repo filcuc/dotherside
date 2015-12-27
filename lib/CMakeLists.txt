@@ -16,6 +16,7 @@ find_package(Qt5Widgets)
 set(HEADERS_LIST
   include/DOtherSide/BaseQAbstractListModel.h
   include/DOtherSide/DOtherSideTypes.h
+  include/DOtherSide/DOtherSideTypesCpp.h
   include/DOtherSide/DynamicSignal.h
   include/DOtherSide/BaseQObject.h
   include/DOtherSide/DynamicProperty.h
@@ -26,6 +27,7 @@ set(HEADERS_LIST
   include/DOtherSide/OnSlotExecutedHandler.h
   include/DOtherSide/DynamicQObjectFactory.h
   include/DOtherSide/DynamicQObject2.h
+  include/DOtherSide/Utils.h
   )
 
 set(SRC_LIST 
@@ -36,6 +38,7 @@ set(SRC_LIST
   src/DynamicProperty.cpp
   src/DynamicQObjectFactory.cpp
   src/DynamicQObject2.cpp
+  src/DOtherSideTypesCpp.cpp
   )
 
 include_directories(include include/Qt)

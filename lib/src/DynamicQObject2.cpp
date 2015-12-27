@@ -3,6 +3,9 @@
 #include <QtCore/QMetaMethod>
 #include <QtCore/QDebug>
 
+namespace DOS
+{
+
 DynamicQObject2::DynamicQObject2(const DynamicQObjectFactory *factory,
                                  OnSlotExecuted handler)
     : m_factory(factory)
@@ -63,7 +66,7 @@ bool DynamicQObject2::executeSlot(int index, void **args)
         arguments.emplace_back(std::move(argument));
     }
 
-    QVariant result = m_handler(index, method.name(), arguments); // Execute method
+    QVariant result = m_handler(method.name(), arguments); // Execute method
 
     if (method.returnType() != QMetaType::Void && result.isValid()) {
         QMetaType::construct(method.returnType(), args[0], result.constData());
@@ -91,3 +94,5 @@ bool DynamicQObject2::writeProperty(int index, void **args)
     }
     return executeSlot(m_factory->writeSlotIndex(property.name()), args);
 }
+
+} // namespace DOS
