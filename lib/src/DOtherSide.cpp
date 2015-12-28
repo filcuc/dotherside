@@ -382,7 +382,7 @@ void dos_qobject_slot_create(void* vptr, const char* name, int parametersCount, 
 
 void dos_qobject_signal_create(void* vptr, const char* name, int parametersCount, int* parametersMetaTypes, int* signalIndex)
 {
-    if (parametersCount <= 0)
+    if (parametersCount < 0)
         return;
 
     auto qobject = reinterpret_cast<QObject*>(vptr);
