@@ -1,5 +1,5 @@
 #include "DOtherSide/DynamicQObjectFactory.h"
-#include "DOtherSide/DynamicQObject2.h"
+#include "DOtherSide/DynamicQObject.h"
 #include "private/qmetaobjectbuilder_p.h"
 #include "private/qmetaobject_p.h"
 #include "private/qobject_p.h"
@@ -69,9 +69,9 @@ DynamicQObjectFactory::DynamicQObjectFactory(SignalDefinitions signalDefinitions
     m_metaObject.reset(builder.toMetaObject());
 }
 
-DynamicQObject2* DynamicQObjectFactory::create(OnSlotExecuted handler) const
+DynamicQObject* DynamicQObjectFactory::create(OnSlotExecuted handler) const
 {
-    return new DynamicQObject2(this, std::move(handler));
+    return new DynamicQObject(this, std::move(handler));
 }
 
 } // namespace DOS

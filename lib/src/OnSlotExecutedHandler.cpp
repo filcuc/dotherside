@@ -2,7 +2,7 @@
 #include "DOtherSide/DynamicSlot.h"
 
 OnSlotExecutedHandler::OnSlotExecutedHandler(void *dObjectPointer,
-                                             IDynamicQObject::Callback dObjectCallback)
+                                             Callback dObjectCallback)
     : m_dObjectPointer(dObjectPointer)
     , m_dObjectCallback(dObjectCallback)
 {}
@@ -28,9 +28,4 @@ QVariant OnSlotExecutedHandler::operator()(const QString &name, const std::vecto
     m_dObjectCallback(m_dObjectPointer, &slotName, argumentsAsVoidPointers.size(), &argumentsAsVoidPointers[0]);
 
     return result;
-}
-
-QVariant OnSlotExecutedHandler::operator()(const DynamicSlot& slot, const std::vector<QVariant> &args)
-{
-    return operator ()(slot.name(), args);
 }

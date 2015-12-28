@@ -85,20 +85,18 @@ DOS_API void dos_qvariant_isnull(void* vptr, bool* result);
 DOS_API void dos_qvariant_delete(void* vptr);
 DOS_API void dos_qvariant_assign(void* vptr, void* other);
 
+// QObjectFactory
+DOS_API void dos_qobjectfactory_create(void** vptr,
+                                       SignalDefinitions signalDefinitions,
+                                       SlotDefinitions slotDefinitions,
+                                       PropertyDefinitions propertyDefinitions);
+DOS_API void dos_qobjectfactory_delete(void* vptr);
+DOS_API void dos_qobjectfactory_create_qobject(void* vptr,
+                                               void* dObjectPointer,
+                                               DObjectCallback dObjectCallback,
+                                               void** result);
+
 // QObject
-DOS_API void dos_qobject_create(void** vptr,
-                                void* dObjectPointer,
-                                DObjectCallback dObjectCallback);
-DOS_API void dos_qobject_slot_create(void* vptr,
-                                     const char* name,
-                                     int parametersCount,
-                                     int* parametersMetaTypes,
-                                     int* slotIndex);
-DOS_API void dos_qobject_signal_create(void* vptr,
-                                       const char* name,
-                                       int parametersCount,
-                                       int* parametersMetaTypes,
-                                       int* signalIndex);
 DOS_API void dos_qobject_signal_emit(void* vptr,
                                      const char* name,
                                      int parametersCount,
@@ -114,12 +112,6 @@ DOS_API void dos_qobject_signal_disconnect(void* senderVPtr,
                                            void* receiverVPtr,
                                            const char* method,
                                            bool* result);
-DOS_API void dos_qobject_property_create(void* vptr,
-                                         const char* name,
-                                         int propertyMetaType,
-                                         const char* readSlot,
-                                         const char* writeSlot,
-                                         const char* notifySignal);
 DOS_API void dos_qobject_objectName(void* vptr, char** result);
 DOS_API void dos_qobject_findChild(void* vptr, const char* name, int options, void** child);
 DOS_API void dos_qobject_delete(void* vptr);
@@ -141,26 +133,6 @@ DOS_API void dos_qhash_int_qbytearray_delete(QHashIntQByteArrayVoidPtr vptr);
 DOS_API void dos_qhash_int_qbytearray_insert(QHashIntQByteArrayVoidPtr vptr, int key, const char* value);
 DOS_API void dos_qhash_int_qbytearray_value(QHashIntQByteArrayVoidPtr vptr, int key, char** result);
 
-// QAbstractListModel
-DOS_API void dos_qabstractlistmodel_create(void** vptr,
-                                           void* callbackObject,
-                                           DObjectCallback dObjectCallback,
-                                           RowCountCallback rowCountCallback,
-                                           ColumnCountCallback columnCountCallback,
-                                           DataCallback dataCallback,
-                                           SetDataCallback setDataCallback,
-                                           RoleNamesCallback roleNamesCallback,
-                                           FlagsCallback flagsCallback,
-                                           HeaderDataCallback headerDataCallback);
-DOS_API void dos_qabstractlistmodel_beginInsertRows(void* vptr, void* parent, int first, int last);
-DOS_API void dos_qabstractlistmodel_endInsertRows(void* vptr);
-DOS_API void dos_qabstractlistmodel_beginRemoveRows(void* vptr, void* parent, int first, int last);
-DOS_API void dos_qabstractlistmodel_endRemoveRows(void* vptr);
-DOS_API void dos_qabstractlistmodel_beginResetModel(void* vptr);
-DOS_API void dos_qabstractlistmodel_endResetModel(void* vptr);
-DOS_API void dos_qabstractlistmodel_dataChanged(void* vptr, void* topLeft, void* bottomRight, int* rolesPtr, int rolesLength);
-DOS_API void dos_qabstractlistmodel_delete(void* vptr);
-
 // QResource
 DOS_API void dos_qresource_register(const char* filename);
 
@@ -168,17 +140,6 @@ DOS_API void dos_qresource_register(const char* filename);
 DOS_API void dos_qurl_create(void** vptr, const char* url, int parsingMode);
 DOS_API void dos_qurl_delete(void* vptr);
 DOS_API void dos_qurl_to_string(void* vptr, char** result);
-
-// QObjectFactory
-DOS_API void dos_qobjectfactory_create(void** vptr,
-                                       SignalDefinitions signalDefinitions,
-                                       SlotDefinitions slotDefinitions,
-                                       PropertyDefinitions propertyDefinitions);
-DOS_API void dos_qobjectfactory_delete(void* vptr);
-DOS_API void dos_qobjectfactory_create_qobject(void* vptr,
-                                               void* dObjectPointer,
-                                               DObjectCallback dObjectCallback,
-                                               void** result);
 
 #ifdef __cplusplus
 }

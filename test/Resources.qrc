@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>CMakeLists.txt</file>
+        <file>main.qml</file>
+    </qresource>
+</RCC>

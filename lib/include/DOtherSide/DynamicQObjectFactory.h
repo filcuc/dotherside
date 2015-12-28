@@ -13,7 +13,7 @@
 namespace DOS
 {
 
-class DynamicQObject2;
+class DynamicQObject;
 
 class DynamicQObjectFactory
 {
@@ -25,7 +25,7 @@ public:
                           SlotDefinitions slotDefinitions,
                           PropertyDefinitions propertyDefinitions);
 
-    DynamicQObject2* create(OnSlotExecuted handler) const;
+    DynamicQObject* create(OnSlotExecuted handler) const;
     inline const QMetaObject* metaObject() const;
     inline int signalSlotIndex(const QString& signalName) const;
     inline int readSlotIndex(const char* propertyName) const;

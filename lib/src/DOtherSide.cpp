@@ -14,12 +14,9 @@
 #include <QtWidgets/QApplication>
 
 #include "DOtherSide/DOtherSideTypesCpp.h"
-#include "DOtherSide/DynamicQObject.h"
-#include "DOtherSide/BaseQAbstractListModel.h"
-#include "DOtherSide/BaseQObject.h"
 #include "DOtherSide/OnSlotExecutedHandler.h"
 #include "DOtherSide/DynamicQObjectFactory.h"
-#include "DOtherSide/DynamicQObject2.h"
+#include "DOtherSide/DynamicQObject.h"
 
 
 void convert_to_cstring(const QString& source, char** destination)
@@ -353,50 +350,11 @@ void dos_qvariant_setQAbstractListModel(void* vptr, void* value)
     variant->setValue<QObject*>(qobject);
 }
 
-void dos_qobject_create(void** vptr, void* dObjectPointer, DObjectCallback dObjectCallback)
-{
-    auto dynamicQObject = new BaseQObject();
-    QQmlEngine::setObjectOwnership(dynamicQObject, QQmlEngine::CppOwnership);
-    dynamicQObject->setOnSlotExecutedHandler(OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
-    *vptr = dynamicQObject;
-}
-
 void dos_qobject_delete(void* vptr)
 {
-    auto dynamicQObject = reinterpret_cast<BaseQObject*>(vptr);
-    dynamicQObject->disconnect();
-    delete dynamicQObject;
-}
-
-void dos_qobject_slot_create(void* vptr, const char* name, int parametersCount, int* parametersMetaTypes, int* slotIndex)
-{
-    if (parametersCount <= 0)
-        return;
-
     auto qobject = reinterpret_cast<QObject*>(vptr);
-    auto dynamicQObject = dynamic_cast<IDynamicQObject*>(qobject);
-
-    QMetaType::Type returnType = static_cast<QMetaType::Type>(parametersMetaTypes[0]);
-    QList<QMetaType::Type> argumentsTypes;
-    for (int i = 1; i < parametersCount; ++i)
-        argumentsTypes << static_cast<QMetaType::Type>(parametersMetaTypes[i]);
-
-    dynamicQObject->registerSlot(QString::fromStdString(name), returnType, argumentsTypes, *slotIndex);
-}
-
-void dos_qobject_signal_create(void* vptr, const char* name, int parametersCount, int* parametersMetaTypes, int* signalIndex)
-{
-    if (parametersCount <= 0)
-        return;
-
-    auto qobject = reinterpret_cast<QObject*>(vptr);
-    auto dynamicQObject = dynamic_cast<IDynamicQObject*>(qobject);
-
-    QList<QMetaType::Type> argumentsTypes;
-    for (int i = 0; i < parametersCount; ++i)
-        argumentsTypes << static_cast<QMetaType::Type>(parametersMetaTypes[i]);
-
-    dynamicQObject->registerSignal(QString::fromStdString(name), argumentsTypes, *signalIndex);
+    qobject->disconnect();
+    delete qobject;
 }
 
 void dos_qobject_signal_emit(void* vptr, const char* name, int parametersCount, void** parameters)
@@ -404,12 +362,11 @@ void dos_qobject_signal_emit(void* vptr, const char* name, int parametersCount, 
     auto qobject = reinterpret_cast<QObject*>(vptr);
     auto dynamicQObject = dynamic_cast<IDynamicQObject*>(qobject);
 
-    QVariantList arguments;
-    for (int i = 0; i < parametersCount; ++i)
-        arguments << *(reinterpret_cast<QVariant*>(parameters[i]));
-
-    dynamicQObject->emitSignal(QString::fromStdString(name), arguments);
+    auto transformation = [](void* vptr)->QVariant{return *(reinterpret_cast<QVariant*>(vptr));};
+    const std::vector<QVariant> variants = DOS::toVector(parameters, parametersCount, transformation);
+    dynamicQObject->emitSignal(QString::fromStdString(name), variants);
 }
+
 
 void dos_qobject_signal_connect(void* senderVPtr,
                                 const char* signal,
@@ -420,11 +377,7 @@ void dos_qobject_signal_connect(void* senderVPtr,
 {
     auto sender = reinterpret_cast<QObject*>(senderVPtr);
     auto receiver = reinterpret_cast<QObject*>(receiverVPtr);
-    *result = QObject::connect(sender,
-                               signal,
-                               receiver,
-                               method,
-                               (Qt::ConnectionType) type);
+    *result = QObject::connect(sender, signal, receiver, method, (Qt::ConnectionType) type);
 }
 
 void dos_qobject_signal_disconnect(void* senderVPtr,
@@ -435,26 +388,7 @@ void dos_qobject_signal_disconnect(void* senderVPtr,
 {
     auto sender = reinterpret_cast<QObject*>(senderVPtr);
     auto receiver = reinterpret_cast<QObject*>(receiverVPtr);
-    *result = QObject::disconnect(sender,
-                                  signal,
-                                  receiver,
-                                  method);
-}
-
-void dos_qobject_property_create(void* vptr,
-                                 const char* name,
-                                 int type,
-                                 const char* readSlot,
-                                 const char* writeSlot,
-                                 const char* notifySignal)
-{
-    auto qobject = reinterpret_cast<QObject*>(vptr);
-    auto dynamicQObject = dynamic_cast<IDynamicQObject*>(qobject);
-    dynamicQObject->registerProperty(QString(name),
-                                     QMetaType::Type(type),
-                                     QString(readSlot),
-                                     QString(writeSlot),
-                                     QString(notifySignal));
+    *result = QObject::disconnect(sender, signal, receiver, method);
 }
 
 void dos_qobject_objectName(void* vptr, char** result)
@@ -525,86 +459,6 @@ void dos_qmodelindex_sibling(void* vptr, int row, int column, void* sibling)
     auto index = reinterpret_cast<QModelIndex*>(vptr);
     auto siblingIndex = reinterpret_cast<QModelIndex*>(sibling);
     *siblingIndex = index->sibling(row, column);
-}
-
-void dos_qabstractlistmodel_create(void** vptr,
-                                   void* dObjectPointer,
-                                   DObjectCallback dObjectCallback,
-                                   RowCountCallback rowCountCallback,
-                                   ColumnCountCallback columnCountCallback,
-                                   DataCallback dataCallback,
-                                   SetDataCallback setDataCallback,
-                                   RoleNamesCallback roleNamesCallaback,
-                                   FlagsCallback flagsCallback,
-                                   HeaderDataCallback headerDataCallback)
-{
-    auto model = new BaseQAbstractListModel(dObjectPointer,
-                                            rowCountCallback,
-                                            columnCountCallback,
-                                            dataCallback,
-                                            setDataCallback,
-                                            roleNamesCallaback,
-                                            flagsCallback,
-                                            headerDataCallback);
-    model->setOnSlotExecutedHandler(OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
-    *vptr = model;
-}
-
-void dos_qabstractlistmodel_delete(void* vptr)
-{
-    auto model = reinterpret_cast<BaseQAbstractListModel*>(vptr);
-    delete model;
-}
-
-void dos_qabstractlistmodel_beginInsertRows(void* vptr, QModelIndexVoidPtr parentIndex, int first, int last)
-{
-    auto model = reinterpret_cast<BaseQAbstractListModel*>(vptr);
-    auto index = reinterpret_cast<QModelIndex*>(parentIndex);
-    model->publicBeginInsertRows(*index, first, last);
-}
-
-void dos_qabstractlistmodel_endInsertRows(void* vptr)
-{
-    auto model = reinterpret_cast<BaseQAbstractListModel*>(vptr);
-    model->publicEndInsertRows();
-}
-
-void dos_qabstractlistmodel_beginRemoveRows(void* vptr, QModelIndexVoidPtr parentIndex, int first, int last)
-{
-    auto model = reinterpret_cast<BaseQAbstractListModel*>(vptr);
-    auto index = reinterpret_cast<QModelIndex*>(parentIndex);
-    model->publicBeginRemoveRows(*index, first, last);
-}
-
-void dos_qabstractlistmodel_endRemoveRows(void* vptr)
-{
-    auto model = reinterpret_cast<BaseQAbstractListModel*>(vptr);
-    model->publicEndRemoveRows();
-}
-
-void dos_qabstractlistmodel_beginResetModel(void* vptr)
-{
-    auto model = reinterpret_cast<BaseQAbstractListModel*>(vptr);
-    model->publicBeginResetModel();
-}
-
-void dos_qabstractlistmodel_endResetModel(void* vptr)
-{
-    auto model = reinterpret_cast<BaseQAbstractListModel*>(vptr);
-    model->publicEndResetModel();
-}
-
-void dos_qabstractlistmodel_dataChanged(void* vptr,
-                                        QModelIndexVoidPtr topLeftIndex,
-                                        QModelIndexVoidPtr bottomRightIndex,
-                                        int* rolesArrayPtr,
-                                        int rolesArrayLength)
-{
-    auto model = reinterpret_cast<BaseQAbstractListModel*>(vptr);
-    auto topLeft = reinterpret_cast<QModelIndex*>(topLeftIndex);
-    auto bottomRight = reinterpret_cast<QModelIndex*>(bottomRightIndex);
-    auto roles = QVector<int>::fromStdVector(std::vector<int>(rolesArrayPtr, rolesArrayPtr + rolesArrayLength));
-    model->publicDataChanged(*topLeft, *bottomRight, roles);
 }
 
 void dos_qhash_int_qbytearray_create(QHashIntQByteArrayVoidPtr* vptr)
