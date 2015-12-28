@@ -1,4 +1,4 @@
-#include "DOtherSide/DynamicQObject2.h"
+#include "DOtherSide/DynamicQObject.h"
 #include "DOtherSide/DynamicQObjectFactory.h"
 #include <QtCore/QMetaMethod>
 #include <QtCore/QDebug>
@@ -6,19 +6,19 @@
 namespace DOS
 {
 
-DynamicQObject2::DynamicQObject2(const DynamicQObjectFactory *factory,
+DynamicQObject::DynamicQObject(const DynamicQObjectFactory *factory,
                                  OnSlotExecuted handler)
     : m_factory(factory)
     , m_handler(std::move(handler))
 {}
 
-void DynamicQObject2::emitSignal(const QString &name, const std::vector<QVariant> &args)
+bool DynamicQObject::emitSignal(const QString &name, const std::vector<QVariant> &args)
 {
     const int index = metaObject()->methodOffset() + m_factory->signalSlotIndex(name);
     const QMetaMethod method = metaObject()->method(index);
     if (!method.isValid()) {
         qDebug() << "Cannot emit signal from invalid method";
-        return;
+        return false;
     }
     Q_ASSERT(name.toUtf8() == method.name());
 
@@ -27,14 +27,15 @@ void DynamicQObject2::emitSignal(const QString &name, const std::vector<QVariant
     auto func = [](const QVariant& arg) -> void* { return (void*)(&arg); };
     std::transform(args.begin(), args.end(), arguments.begin() + 1, func);
     QMetaObject::activate(this, method.methodIndex(), arguments.data());
+    return true;
 }
 
-const QMetaObject *DynamicQObject2::metaObject() const
+const QMetaObject *DynamicQObject::metaObject() const
 {
     return m_factory->metaObject();
 }
 
-int DynamicQObject2::qt_metacall(QMetaObject::Call callType, int index, void** args)
+int DynamicQObject::qt_metacall(QMetaObject::Call callType, int index, void** args)
 {
     switch (callType)
     {
@@ -51,7 +52,7 @@ int DynamicQObject2::qt_metacall(QMetaObject::Call callType, int index, void** a
     return -1;
 }
 
-bool DynamicQObject2::executeSlot(int index, void **args)
+bool DynamicQObject::executeSlot(int index, void **args)
 {
     const QMetaMethod method = metaObject()->method(index);
     if (!method.isValid()) {
@@ -75,7 +76,7 @@ bool DynamicQObject2::executeSlot(int index, void **args)
     return true;
 }
 
-bool DynamicQObject2::readProperty(int index, void **args)
+bool DynamicQObject::readProperty(int index, void **args)
 {
     const QMetaProperty property = metaObject()->property(index);
     if (!property.isValid() || !property.isReadable()) {
@@ -85,7 +86,7 @@ bool DynamicQObject2::readProperty(int index, void **args)
     return executeSlot(m_factory->readSlotIndex(property.name()), args);
 }
 
-bool DynamicQObject2::writeProperty(int index, void **args)
+bool DynamicQObject::writeProperty(int index, void **args)
 {
     const QMetaProperty property = metaObject()->property(index);
     if (!property.isValid() || !property.isWritable()) {
