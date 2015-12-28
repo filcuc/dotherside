@@ -14,7 +14,6 @@
 #include "DOtherSide/DynamicQObject.h"
 #include "DOtherSide/DynamicQObjectFactory.h"
 
-
 template<typename Test>
 bool ExecuteTest(int argc, char* argv[]) {
     Test test;
@@ -34,6 +33,7 @@ bool ExecuteGuiTest(int argc, char* argv[]) {
 class TestQGuiApplication : public QObject
 {
     Q_OBJECT
+
 private slots:
     void testExecution() {
         bool quit = false;
@@ -51,6 +51,7 @@ private slots:
 class TestQApplication : public QObject
 {
     Q_OBJECT
+
 private slots:
     void testExecution() {
         bool quit = false;
@@ -68,9 +69,14 @@ private slots:
 class TestQQmlApplicationEngine : public QObject
 {
     Q_OBJECT
+
 private slots:
     void initTestCase() {
         m_engine = nullptr;
+    }
+
+    void cleanupTestCase() {
+        QVERIFY(m_engine == nullptr);
     }
 
     void init() {
@@ -117,8 +123,37 @@ private:
 /*
  * Test QQmlContext
  */
-class TestQQmlContext {
+class TestQQmlContext : public QObject
+{
+    Q_OBJECT
 
+private slots:
+    void initTestCase() {
+        m_engine = nullptr;
+        m_context = nullptr;
+    }
+
+    void cleanupTestCase() {
+        QVERIFY(m_engine == nullptr);
+        QVERIFY(m_context == nullptr);
+    }
+
+    void init() {
+        dos_qqmlapplicationengine_create(&m_engine);
+        dos_qqmlapplicationengine_context(m_engine, &m_context);
+        QVERIFY(m_engine != nullptr);
+        QVERIFY(m_context != nullptr);
+    }
+
+    void cleanup() {
+        m_context = nullptr;
+        dos_qqmlapplicationengine_delete(m_engine);
+        m_engine = nullptr;
+    }
+
+private:
+    void* m_engine;
+    void* m_context;
 };
 
 /*
@@ -166,4 +201,4 @@ int main(int argc, char* argv[])
     return success ? 0 : 1;
 }
 
-#include "test_dynamicqobject.moc"
+#include "test_dotherside.moc"

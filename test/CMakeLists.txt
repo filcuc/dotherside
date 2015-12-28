@@ -12,6 +12,6 @@ find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Test REQUIRED)
 find_package(Qt5Quick REQUIRED)
 
-add_executable(${PROJECT_NAME} Resources.qrc test_dynamicqobject.cpp main.qml)
+add_executable(${PROJECT_NAME} Resources.qrc test_dotherside.cpp main.qml)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 target_link_libraries(${PROJECT_NAME} DOtherSideStatic Qt5::Quick Qt5::Widgets Qt5::Test Qt5::Core)
