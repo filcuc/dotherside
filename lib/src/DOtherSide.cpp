@@ -94,6 +94,12 @@ void dos_qqmlapplicationengine_load_url(void* vptr, void* url)
     engine->load(*qurl);
 }
 
+void dos_qqmlapplicationengine_load_data(void *vptr, const char *data)
+{
+    QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
+    engine->loadData(data);
+}
+
 void dos_qqmlapplicationengine_add_import_path(void* vptr, const char* path)
 {
     QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
