@@ -33,6 +33,7 @@ DOS_API void dos_qapplication_delete();
 DOS_API void dos_qqmlapplicationengine_create(void** vptr);
 DOS_API void dos_qqmlapplicationengine_load(void* vptr, const char* filename);
 DOS_API void dos_qqmlapplicationengine_load_url(void* vptr, void* url);
+DOS_API void dos_qqmlapplicationengine_load_data(void* vptr, const char* data);
 DOS_API void dos_qqmlapplicationengine_add_import_path(void* vptr, const char* path);
 DOS_API void dos_qqmlapplicationengine_context(void* vptr, void** context);
 DOS_API void dos_qqmlapplicationengine_rootObjects(void* vptr, void*** array, int* array_length);
