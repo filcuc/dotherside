@@ -7,7 +7,8 @@
 // DOtherSide
 #include "DOtherSide/IDynamicQObject.h"
 
-class DynamicSlot;
+namespace DOS
+{
 
 class OnSlotExecutedHandler
 {
@@ -21,3 +22,5 @@ private:
     void* m_dObjectPointer;
     Callback m_dObjectCallback;
 };
+
+} // namespace DOS

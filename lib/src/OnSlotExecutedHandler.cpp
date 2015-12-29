@@ -1,5 +1,8 @@
 #include "DOtherSide/OnSlotExecutedHandler.h"
 
+namespace DOS
+{
+
 OnSlotExecutedHandler::OnSlotExecutedHandler(void *dObjectPointer,
                                              Callback dObjectCallback)
     : m_dObjectPointer(dObjectPointer)
@@ -28,3 +31,5 @@ QVariant OnSlotExecutedHandler::operator()(const QString &name, const std::vecto
 
     return result;
 }
+
+} // namespace DOS

@@ -360,7 +360,7 @@ void dos_qobject_delete(void* vptr)
 void dos_qobject_signal_emit(void* vptr, const char* name, int parametersCount, void** parameters)
 {
     auto qobject = reinterpret_cast<QObject*>(vptr);
-    auto dynamicQObject = dynamic_cast<IDynamicQObject*>(qobject);
+    auto dynamicQObject = dynamic_cast<DOS::IDynamicQObject*>(qobject);
 
     auto transformation = [](void* vptr)->QVariant{return *(reinterpret_cast<QVariant*>(vptr));};
     const std::vector<QVariant> variants = DOS::toVector(parameters, parametersCount, transformation);
@@ -527,5 +527,5 @@ void dos_qobjectfactory_delete(void *vptr)
 void dos_qobjectfactory_create_qobject(void *vptr, void* dObjectPointer, DObjectCallback dObjectCallback, void **result)
 {
     auto factory = reinterpret_cast<DOS::DynamicQObjectFactory*>(vptr);
-    *result = factory->create(OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
+    *result = factory->create(DOS::OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
 }
