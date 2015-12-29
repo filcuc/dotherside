@@ -28,7 +28,7 @@ namespace DOS
 DynamicQObjectFactory::DynamicQObjectFactory(SignalDefinitions signalDefinitions,
                                              SlotDefinitions slotDefinitions,
                                              PropertyDefinitions propertyDefinitions)
-    : m_metaObject(nullptr, ::free)
+    : m_metaObject(nullptr)
 {
     QMetaObjectBuilder builder;
     builder.setFlags(QMetaObjectBuilder::DynamicMetaObject);

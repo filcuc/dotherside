@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <QtCore/QString>
 #include <QtCore/QMetaType>
 
@@ -91,5 +93,25 @@ SlotDefinitions toVector(const ::SlotDefinitions& cType);
 PropertyDefinitions toVector(const ::PropertyDefinitions& cType);
 
 using OnSlotExecuted = std::function<QVariant(const QString&, const std::vector<QVariant>&)>;
+
+class SafeQMetaObjectPtr
+{
+public:
+    SafeQMetaObjectPtr(QMetaObject* ptr)
+        : m_d(ptr, ::free)
+    {}
+
+    SafeQMetaObjectPtr(SafeQMetaObjectPtr&&) = delete;
+    SafeQMetaObjectPtr(const SafeQMetaObjectPtr&) = delete;
+    SafeQMetaObjectPtr& operator=(const SafeQMetaObjectPtr&) = delete;
+
+    operator QMetaObject*() { return m_d.get(); }
+    operator const QMetaObject*() const { return m_d.get(); }
+
+    void reset(QMetaObject* other) { m_d.reset(other); }
+
+private:
+    std::unique_ptr<QMetaObject, void(*)(void*)> m_d;
+};
 
 } // namespace DOS
