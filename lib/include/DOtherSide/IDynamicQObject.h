@@ -1,5 +1,8 @@
 #pragma once
 
+namespace DOS
+{
+
 class IDynamicQObject
 {
 public:
@@ -9,3 +12,5 @@ public:
     /// Emit the signal with the given name and arguments
     virtual bool emitSignal(const QString& name, const std::vector<QVariant>& argumentsValues) = 0;
 };
+
+} // namespace DOS
