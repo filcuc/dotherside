@@ -8,6 +8,8 @@
 #include <QTimer>
 #include <QApplication>
 #include <QQuickWindow>
+#include <QQmlApplicationEngine>
+#include <QQuickItem>
 
 // DOtherSide
 #include "DOtherSide/DOtherSide.h"
@@ -91,7 +93,7 @@ private slots:
     }
 
     void testCreateAndDelete() {
-
+        // Implicit by invoking init and cleanup
     }
 
     void testLoadUrl() {
@@ -99,7 +101,17 @@ private slots:
         dos_qurl_create(&url, "qrc:///main.qml", QUrl::TolerantMode);
         QVERIFY(url != nullptr);
         dos_qqmlapplicationengine_load_url(m_engine, url);
+        QCOMPARE(engine()->rootObjects().size(), 1);
+        QCOMPARE(engine()->rootObjects().front()->objectName(), QString::fromLocal8Bit("testWindow"));
+        QVERIFY(engine()->rootObjects().front()->isWindowType());
         dos_qurl_delete(url);
+    }
+
+    void testLoadData() {
+        dos_qqmlapplicationengine_load_data(m_engine, "import QtQuick.Controls 1.4; ApplicationWindow { objectName: \"testWindow\"}");
+        QCOMPARE(engine()->rootObjects().size(), 1);
+        QCOMPARE(engine()->rootObjects().front()->objectName(), QString::fromLocal8Bit("testWindow"));
+        QVERIFY(engine()->rootObjects().front()->isWindowType());
     }
 
     void testRootObjects() {
@@ -117,6 +129,8 @@ private slots:
     }
 
 private:
+    QQmlApplicationEngine* engine() { return static_cast<QQmlApplicationEngine*>(m_engine); }
+
     void* m_engine;
 };
 
@@ -151,7 +165,24 @@ private slots:
         m_engine = nullptr;
     }
 
+    void testCreateAndDelete() {
+        // Implicit by invoking init and cleanup
+    }
+
+    void testSetContextProperty() {
+        QVariant testData("Test Message");
+        dos_qqmlcontext_setcontextproperty(m_context, "testData", &testData);
+        engine()->loadData("import QtQuick 2.5; Text { objectName: \"label\"; text: testData } ");
+        QObject* label = engine()->rootObjects().first();
+        QVERIFY(label != nullptr);
+        QCOMPARE(label->objectName(), QString::fromLocal8Bit("label"));
+        QCOMPARE(label->property("text").toString(), testData.toString());
+    }
+
 private:
+    QQmlApplicationEngine* engine() { return static_cast<QQmlApplicationEngine*>(m_engine); }
+    QQmlContext* context() { return static_cast<QQmlContext*>(m_context); }
+
     void* m_engine;
     void* m_context;
 };
@@ -197,6 +228,7 @@ int main(int argc, char* argv[])
     success &= ExecuteTest<TestQGuiApplication>(argc, argv);
     success &= ExecuteTest<TestQApplication>(argc, argv);
     success &= ExecuteGuiTest<TestQQmlApplicationEngine>(argc, argv);
+    success &= ExecuteGuiTest<TestQQmlContext>(argc, argv);
     success &= ExecuteTest<TestDynamicQObject>(argc, argv);
     return success ? 0 : 1;
 }
