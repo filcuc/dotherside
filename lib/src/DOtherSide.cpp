@@ -83,39 +83,39 @@ void dos_qqmlapplicationengine_create(void** vptr)
 
 void dos_qqmlapplicationengine_load(void* vptr, const char* filename)
 {
-    QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
+    auto engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
     engine->load(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + QDir::separator() + QString(filename)));
 }
 
 void dos_qqmlapplicationengine_load_url(void* vptr, void* url)
 {
-    QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
-    QUrl* qurl = reinterpret_cast<QUrl*>(url);
+    auto engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
+    auto qurl = reinterpret_cast<QUrl*>(url);
     engine->load(*qurl);
 }
 
 void dos_qqmlapplicationengine_load_data(void *vptr, const char *data)
 {
-    QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
+    auto engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
     engine->loadData(data);
 }
 
 void dos_qqmlapplicationengine_add_import_path(void* vptr, const char* path)
 {
-    QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
+    auto engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
     engine->addImportPath(QString(path));
 }
 
 void dos_qqmlapplicationengine_context(void* vptr, void** context)
 {
-    QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
+    auto engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
     engine->rootContext();
     *context = engine->rootContext();
 }
 
 void dos_qqmlapplicationengine_rootObjects(void* vptr, void*** array, int* array_length)
 {
-    QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
+    auto engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
     QList<QObject*> list = engine->rootObjects();
     auto objects = new QObject*[list.size()];
     if (objects == nullptr) return;
@@ -126,7 +126,7 @@ void dos_qqmlapplicationengine_rootObjects(void* vptr, void*** array, int* array
 
 void dos_qqmlapplicationengine_delete(void* vptr)
 {
-    QQmlApplicationEngine* engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
+    auto engine = reinterpret_cast<QQmlApplicationEngine*>(vptr);
     delete engine;
 }
 
@@ -137,45 +137,45 @@ void dos_qquickview_create(void** vptr)
 
 void dos_qquickview_show(void* vptr)
 {
-    QQuickView* view = reinterpret_cast<QQuickView*>(vptr);
+    auto view = reinterpret_cast<QQuickView*>(vptr);
     view->show();
 }
 
 void dos_qquickview_delete(void* vptr)
 {
-    QQuickView* view = reinterpret_cast<QQuickView*>(vptr);
+    auto view = reinterpret_cast<QQuickView*>(vptr);
     delete view;
 }
 
 void dos_qquickview_source(void* vptr, char** result)
 {
-    QQuickView* view = reinterpret_cast<QQuickView*>(vptr);
+    auto view = reinterpret_cast<QQuickView*>(vptr);
     QUrl url = view->source();
     convert_to_cstring(url.toString(), result);
 }
 
 void dos_qquickview_set_source(void* vptr, const char* filename)
 {
-    QQuickView* view = reinterpret_cast<QQuickView*>(vptr);
+    auto view = reinterpret_cast<QQuickView*>(vptr);
     view->setSource(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + QDir::separator() + QString(filename)));
 }
 
 void dos_qquickview_set_source_url(void* vptr, void* url)
 {
-    QQuickView* view = reinterpret_cast<QQuickView*>(vptr);
-    QUrl* _url = reinterpret_cast<QUrl*>(url);
+    auto view = reinterpret_cast<QQuickView*>(vptr);
+    auto _url = reinterpret_cast<QUrl*>(url);
     view->setSource(*_url);
 }
 
 void dos_qquickview_set_resize_mode(void* vptr, int resizeMode)
 {
-    QQuickView* view = reinterpret_cast<QQuickView*>(vptr);
+    auto view = reinterpret_cast<QQuickView*>(vptr);
     view->setResizeMode((QQuickView::ResizeMode) resizeMode);
 }
 
 void dos_qquickview_rootContext(void* vptr, void** context)
 {
-    QQuickView* view = reinterpret_cast<QQuickView*>(vptr);
+    auto view = reinterpret_cast<QQuickView*>(vptr);
     *context = view->rootContext();
 }
 
@@ -191,14 +191,14 @@ void dos_qobjectptr_array_delete(void** ptr)
 
 void dos_qqmlcontext_baseUrl(void* vptr, char** result)
 {
-    QQmlContext* context = reinterpret_cast<QQmlContext*>(vptr);
+    auto context = reinterpret_cast<QQmlContext*>(vptr);
     QUrl url = context->baseUrl();
     convert_to_cstring(url.toString(), result);
 }
 
 void dos_qqmlcontext_setcontextproperty(void* vptr, const char* name, void* value)
 {
-    QQmlContext* context = reinterpret_cast<QQmlContext*>(vptr);
+    auto context = reinterpret_cast<QQmlContext*>(vptr);
     auto variant = reinterpret_cast<QVariant*>(value);
     context->setContextProperty(QString::fromUtf8(name), *variant);
 }
@@ -399,13 +399,13 @@ void dos_qobject_signal_disconnect(void* senderVPtr,
 
 void dos_qobject_objectName(void* vptr, char** result)
 {
-    QObject* object = reinterpret_cast<QObject*>(vptr);
+    auto object = reinterpret_cast<QObject*>(vptr);
     convert_to_cstring(object->objectName(), result);
 }
 
 void dos_qobject_findChild(void* vptr, const char* name, int options, void** child)
 {
-    QObject* object = reinterpret_cast<QObject*>(vptr);
+    auto object = reinterpret_cast<QObject*>(vptr);
     *child = object->findChild<QObject*>(QString::fromUtf8(name), (Qt::FindChildOptions) options);
 }
 
@@ -503,13 +503,13 @@ void dos_qurl_create(void** vptr, const char* url, int parsingMode)
 
 void dos_qurl_delete(void* vptr)
 {
-    QUrl* url = reinterpret_cast<QUrl*>(vptr);
+    auto url = reinterpret_cast<QUrl*>(vptr);
     delete url;
 }
 
 void dos_qurl_to_string(void* vptr, char** result)
 {
-    QUrl* url = reinterpret_cast<QUrl*>(vptr);
+    auto url = reinterpret_cast<QUrl*>(vptr);
     convert_to_cstring(url->toString(), result);
 }
 
