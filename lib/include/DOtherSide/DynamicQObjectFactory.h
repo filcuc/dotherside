@@ -17,9 +17,6 @@ class DynamicQObject;
 
 class DynamicQObjectFactory
 {
-    using SafeQMetaObjectPtr = std::unique_ptr<QMetaObject, void(*)(void*)>;
-    using OnSlotExecuted = std::function<QVariant(const QString&, const std::vector<QVariant>&)>;
-
 public:
     DynamicQObjectFactory(SignalDefinitions signalDefinitions,
                           SlotDefinitions slotDefinitions,
@@ -39,7 +36,7 @@ private:
 
 const QMetaObject *DynamicQObjectFactory::metaObject() const
 {
-    return m_metaObject.get();
+    return m_metaObject;
 }
 
 inline int DynamicQObjectFactory::signalSlotIndex(const QString &signalName) const
