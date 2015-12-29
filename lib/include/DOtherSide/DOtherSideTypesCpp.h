@@ -105,10 +105,12 @@ public:
     SafeQMetaObjectPtr(const SafeQMetaObjectPtr&) = delete;
     SafeQMetaObjectPtr& operator=(const SafeQMetaObjectPtr&) = delete;
 
-    operator QMetaObject*() { return m_d.get(); }
-    operator const QMetaObject*() const { return m_d.get(); }
-
-    void reset(QMetaObject* other) { m_d.reset(other); }
+    operator bool() const noexcept { return m_d != nullptr; }
+    operator QMetaObject*() noexcept { return m_d.get(); }
+    operator const QMetaObject*() const noexcept { return m_d.get(); }
+    QMetaObject* operator->() noexcept { return m_d.get(); }
+    const QMetaObject* operator->() const noexcept { return m_d.get(); }
+    void reset(QMetaObject* other) noexcept { m_d.reset(other); }
 
 private:
     std::unique_ptr<QMetaObject, void(*)(void*)> m_d;
