@@ -4,7 +4,7 @@
 #ifdef WIN32
 #define DOS_API   __declspec( dllexport )
 #else
-#define DOS_API  
+#define DOS_API
 #endif
 
 #include <DOtherSide/DOtherSideTypes.h>
@@ -48,7 +48,7 @@ DOS_API void dos_qquickview_set_source(void* vptr, const char* filename);
 DOS_API void dos_qquickview_set_resize_mode(void* vptr, int resizeMode);
 DOS_API void dos_qquickview_delete(void* vptr);
 DOS_API void dos_qquickview_rootContext(void* vptr, void** result);
- 
+
 // QQmlContext
 DOS_API void dos_qqmlcontext_baseUrl(void* vptr, char** result);
 DOS_API void dos_qqmlcontext_setcontextproperty(void* vptr, const char* name, void* value);
@@ -87,15 +87,11 @@ DOS_API void dos_qvariant_delete(void* vptr);
 DOS_API void dos_qvariant_assign(void* vptr, void* other);
 
 // QObjectFactory
-DOS_API void dos_qobjectfactory_create(void** vptr,
+DOS_API void dos_qmetaobjectfactory_create(void** vptr,
                                        SignalDefinitions signalDefinitions,
                                        SlotDefinitions slotDefinitions,
                                        PropertyDefinitions propertyDefinitions);
-DOS_API void dos_qobjectfactory_delete(void* vptr);
-DOS_API void dos_qobjectfactory_create_qobject(void* vptr,
-                                               void* dObjectPointer,
-                                               DObjectCallback dObjectCallback,
-                                               void** result);
+DOS_API void dos_qmetaobjectfactory_delete(void* vptr);
 
 // QObject
 DOS_API void dos_qobject_signal_emit(void* vptr,
