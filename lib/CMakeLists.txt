@@ -22,14 +22,16 @@ set(HEADERS_LIST
   include/DOtherSide/DynamicQObjectFactory.h
   include/DOtherSide/DynamicQObject.h
   include/DOtherSide/Utils.h
+  include/DOtherSide/QMetaObjectFactory.h
   )
 
-set(SRC_LIST 
+set(SRC_LIST
   src/DOtherSide.cpp
   src/OnSlotExecutedHandler.cpp
   src/DynamicQObjectFactory.cpp
   src/DynamicQObject.cpp
   src/DOtherSideTypesCpp.cpp
+  src/QMetaObjectFactory.cpp
   )
 
 include_directories(include include/Qt)

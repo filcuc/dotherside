@@ -514,7 +514,7 @@ void dos_qurl_to_string(void* vptr, char** result)
 }
 
 
-void dos_qobjectfactory_create(void **vptr,
+void dos_qmetaobjectfactory_create(void **vptr,
                                SignalDefinitions signalDefinitions,
                                SlotDefinitions slotDefinitions,
                                PropertyDefinitions propertyDefinitions)
@@ -524,14 +524,8 @@ void dos_qobjectfactory_create(void **vptr,
                                            DOS::toVector(propertyDefinitions));
 }
 
-void dos_qobjectfactory_delete(void *vptr)
+void dos_qmetaobjectfactory_delete(void *vptr)
 {
     auto factory = reinterpret_cast<DOS::DynamicQObjectFactory*>(vptr);
     delete factory;
-}
-
-void dos_qobjectfactory_create_qobject(void *vptr, void* dObjectPointer, DObjectCallback dObjectCallback, void **result)
-{
-    auto factory = reinterpret_cast<DOS::DynamicQObjectFactory*>(vptr);
-    *result = factory->create(DOS::OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
 }

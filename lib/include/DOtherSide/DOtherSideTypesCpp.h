@@ -22,9 +22,8 @@ struct SignalDefinition
     SignalDefinition(::SignalDefinition cType)
         : name(QString::fromUtf8(cType.name))
     {
-        auto wrapped = wrap_array(cType.parametersMetaTypes, cType.parametersCount);
-        auto conversion = [](int type)->QMetaType::Type { return static_cast<QMetaType::Type>(type);};
-        std::transform(wrapped.begin(), wrapped.end(), parameterTypes.begin(), conversion);
+        for (int type : wrap_array(cType.parametersMetaTypes, cType.parametersCount))
+            parameterTypes.emplace_back(QMetaType::Type(type));
     }
 
     QString name;
@@ -43,11 +42,10 @@ struct SlotDefinition
 
     SlotDefinition(::SlotDefinition cType)
         : name(QString::fromUtf8(cType.name))
-        , returnType(static_cast<QMetaType::Type>(cType.returnMetaType))
+        , returnType(QMetaType::Type(cType.returnMetaType))
     {
-        auto wrapped = wrap_array(cType.parametersMetaTypes, cType.parametersCount);
-        auto conversion = [](int type)->QMetaType::Type { return static_cast<QMetaType::Type>(type);};
-        std::transform(wrapped.begin(), wrapped.end(), parameterTypes.begin(), conversion);
+        for (int type : wrap_array(cType.parametersMetaTypes, cType.parametersCount))
+            parameterTypes.emplace_back(QMetaType::Type(type));
     }
 
     QString name;

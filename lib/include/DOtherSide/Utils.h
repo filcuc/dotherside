@@ -29,7 +29,8 @@ std::vector<T> toVector(G* first, std::ptrdiff_t size) noexcept
 {
     const wrapped_array<G> array = wrap_array(first, size);
     std::vector<T> result;
-    std::copy(array.begin(), array.end(), result.begin());
+    for (auto it = array.begin(); it != array.end(); ++it)
+        result.emplace_back(T(*it));
     return result;
 }
 
@@ -38,7 +39,8 @@ std::vector<R> toVector(T* first, std::ptrdiff_t size, K f) noexcept
 {
     wrapped_array<T> array = wrap_array<T>(first, size);
     std::vector<R> result;
-    std::transform(array.begin(), array.end(), result.begin(), f);
+    for (auto it = array.begin(); it != array.end(); ++it)
+        result.emplace_back(R(f(*it)));
     return result;
 }
 }
