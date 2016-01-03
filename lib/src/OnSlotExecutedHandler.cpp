@@ -4,7 +4,7 @@ namespace DOS
 {
 
 OnSlotExecutedHandler::OnSlotExecutedHandler(void *dObjectPointer,
-                                             Callback dObjectCallback)
+                                             DObjectCallback dObjectCallback)
     : m_dObjectPointer(dObjectPointer)
     , m_dObjectCallback(dObjectCallback)
 {}
@@ -29,6 +29,18 @@ QVariant OnSlotExecutedHandler::operator()(const QString &name, const std::vecto
     // send them to the binding handler
     m_dObjectCallback(m_dObjectPointer, &slotName, argumentsAsVoidPointers.size(), &argumentsAsVoidPointers[0]);
 
+    return result;
+}
+
+OnMetaObjectHandler::OnMetaObjectHandler(void *dObjectPointer, MetaObjectCallback dMetaObjectCallback)
+    : m_dObjectPointer(dObjectPointer)
+    , m_dMetaObjectCallback(dMetaObjectCallback)
+{}
+
+DynamicQObjectFactory* OnMetaObjectHandler::operator()()
+{
+    DynamicQObjectFactory* result = nullptr;
+    m_dMetaObjectCallback(m_dObjectPointer, reinterpret_cast<void**>(&result));
     return result;
 }
 

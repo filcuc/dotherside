@@ -25,7 +25,7 @@ QByteArray createSignature(const T& functionDefinition)
 namespace DOS
 {
 
-DynamicQObjectFactory::DynamicQObjectFactory(SignalDefinitions signalDefinitions,
+DynamicQObjectFactoryData::DynamicQObjectFactoryData(SignalDefinitions signalDefinitions,
                                              SlotDefinitions slotDefinitions,
                                              PropertyDefinitions propertyDefinitions)
     : m_metaObject(nullptr)
@@ -67,11 +67,6 @@ DynamicQObjectFactory::DynamicQObjectFactory(SignalDefinitions signalDefinitions
     }
 
     m_metaObject.reset(builder.toMetaObject());
-}
-
-DynamicQObject* DynamicQObjectFactory::create(OnSlotExecuted handler) const
-{
-    return new DynamicQObject(this, std::move(handler));
 }
 
 } // namespace DOS

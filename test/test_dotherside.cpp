@@ -187,40 +187,6 @@ private:
     void* m_context;
 };
 
-/*
- * Test DynamicQObject
- */
-class TestDynamicQObject : public QObject
-{
-    Q_OBJECT
-
-private slots:
-    void benchmarkDynamicQObject2Performance() {
-
-        QBENCHMARK {
-            DOS::DynamicQObjectFactory factory {{DOS::SignalDefinition{"fooChanged", {QMetaType::Int}}},
-                                                {DOS::SlotDefinition{"foo", QMetaType::Int, {}}, DOS::SlotDefinition{"setFoo", QMetaType::Void, {QMetaType::Int}}},
-                                                {DOS::PropertyDefinition{"foo",  QMetaType::Int, "foo", "setFoo", "fooChanged"}}};
-            for (int i = 0; i < 1000; ++i) {
-                std::unique_ptr<DOS::DynamicQObject> dynamicQObject(factory.create([](const QString&, const std::vector<QVariant>&)-> QVariant{}));
-            }
-        }
-    }
-
-    void testDynamicQObject2() {
-        DOS::DynamicQObjectFactory factory {{DOS::SignalDefinition{"fooChanged", {QMetaType::Int}}},
-                                            {DOS::SlotDefinition{"foo", QMetaType::Int, {}}, DOS::SlotDefinition{"setFoo", QMetaType::Void, {QMetaType::Int}}},
-                                            {DOS::PropertyDefinition{"foo",  QMetaType::Int, "foo", "setFoo", "fooChanged"}}};
-        std::unique_ptr<DOS::DynamicQObject> dynamicQObject(factory.create([](const QString&, const std::vector<QVariant>&)-> QVariant{}));
-        QVERIFY(dynamicQObject != nullptr);
-
-        QSignalSpy signalSpy(dynamicQObject.get(), SIGNAL(fooChanged(int)));
-        dynamicQObject->emitSignal("fooChanged", {10});
-        QCOMPARE(signalSpy.count(), 1);
-    }
-};
-
-
 int main(int argc, char* argv[])
 {
     Q_INIT_RESOURCE(Resources);
@@ -229,7 +195,6 @@ int main(int argc, char* argv[])
     success &= ExecuteTest<TestQApplication>(argc, argv);
     success &= ExecuteGuiTest<TestQQmlApplicationEngine>(argc, argv);
     success &= ExecuteGuiTest<TestQQmlContext>(argc, argv);
-    success &= ExecuteTest<TestDynamicQObject>(argc, argv);
     return success ? 0 : 1;
 }
 

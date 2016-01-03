@@ -90,6 +90,9 @@ SignalDefinitions toVector(const ::SignalDefinitions& cType);
 SlotDefinitions toVector(const ::SlotDefinitions& cType);
 PropertyDefinitions toVector(const ::PropertyDefinitions& cType);
 
+class DynamicQObjectFactory;
+
+using OnMetaObject = std::function<DynamicQObjectFactory*()>;
 using OnSlotExecuted = std::function<QVariant(const QString&, const std::vector<QVariant>&)>;
 
 class SafeQMetaObjectPtr
