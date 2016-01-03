@@ -94,6 +94,9 @@ DOS_API void dos_qmetaobjectfactory_create(void** vptr,
 DOS_API void dos_qmetaobjectfactory_delete(void* vptr);
 
 // QObject
+DOS_API void dos_qobject_create(void** vptr, void* dObjectPointer,
+                                MetaObjectCallback metaObjectCallback,
+                                DObjectCallback dObjectCallback);
 DOS_API void dos_qobject_signal_emit(void* vptr,
                                      const char* name,
                                      int parametersCount,

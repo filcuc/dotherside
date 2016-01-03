@@ -356,6 +356,16 @@ void dos_qvariant_setQAbstractListModel(void* vptr, void* value)
     variant->setValue<QObject*>(qobject);
 }
 
+void dos_qobject_create(void** vptr, void* dObjectPointer,
+                        MetaObjectCallback dMetaObjectCallback,
+                        DObjectCallback dObjectCallback)
+{
+    auto dynamicQObject = new DOS::DynamicQObject(DOS::OnMetaObjectHandler(dObjectPointer, dMetaObjectCallback),
+                                                  DOS::OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
+    QQmlEngine::setObjectOwnership(dynamicQObject, QQmlEngine::CppOwnership);
+    *vptr = dynamicQObject;
+}
+
 void dos_qobject_delete(void* vptr)
 {
     auto qobject = reinterpret_cast<QObject*>(vptr);
@@ -372,7 +382,6 @@ void dos_qobject_signal_emit(void* vptr, const char* name, int parametersCount, 
     const std::vector<QVariant> variants = DOS::toVector(parameters, parametersCount, transformation);
     dynamicQObject->emitSignal(QString::fromStdString(name), variants);
 }
-
 
 void dos_qobject_signal_connect(void* senderVPtr,
                                 const char* signal,
@@ -513,11 +522,10 @@ void dos_qurl_to_string(void* vptr, char** result)
     convert_to_cstring(url->toString(), result);
 }
 
-
 void dos_qmetaobjectfactory_create(void **vptr,
-                               SignalDefinitions signalDefinitions,
-                               SlotDefinitions slotDefinitions,
-                               PropertyDefinitions propertyDefinitions)
+                                   SignalDefinitions signalDefinitions,
+                                   SlotDefinitions slotDefinitions,
+                                   PropertyDefinitions propertyDefinitions)
 {
     *vptr = new DOS::DynamicQObjectFactory(DOS::toVector(signalDefinitions),
                                            DOS::toVector(slotDefinitions),
