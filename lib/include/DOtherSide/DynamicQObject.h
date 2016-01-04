@@ -9,26 +9,27 @@
 namespace DOS
 {
 
-class DynamicQObjectFactoryData;
-
+/// This class model a QObject
 class DynamicQObject : public QObject, public IDynamicQObject
 {
 public:
-    DynamicQObject(OnMetaObject onMetaObject, OnSlotExecuted onSlotExecuted);
+    /// Constructor
+    DynamicQObject();
 
+    /// Emit a signal
     bool emitSignal(const QString& name, const std::vector<QVariant>& arguments) override;
+
+    /// Return the metaobject
     const QMetaObject* metaObject() const override;
+
+    /// qt metacall
     int qt_metacall(QMetaObject::Call callType, int index, void**args) override;
 
+    /// Set the implementation
+    void setImpl(std::unique_ptr<IDynamicQObject> impl);
+
 private:
-    std::shared_ptr<const DynamicQObjectFactoryData> factory() const;
-
-    bool executeSlot(int index, void** args);
-    bool readProperty(int index, void** args);
-    bool writeProperty(int index, void** args);
-
-    const OnMetaObject m_onMetaObject;
-    const OnSlotExecuted m_onSlotExecuted;
+    std::unique_ptr<IDynamicQObject> m_impl;
 };
 
 } // namespace DOS

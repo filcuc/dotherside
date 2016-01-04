@@ -17,6 +17,7 @@
 #include "DOtherSide/OnSlotExecutedHandler.h"
 #include "DOtherSide/DynamicQObjectFactory.h"
 #include "DOtherSide/DynamicQObject.h"
+#include "DOtherSide/DynamicQObjectImpl.h"
 
 
 void convert_to_cstring(const QString& source, char** destination)
@@ -360,8 +361,12 @@ void dos_qobject_create(void** vptr, void* dObjectPointer,
                         MetaObjectCallback dMetaObjectCallback,
                         DObjectCallback dObjectCallback)
 {
-    auto dynamicQObject = new DOS::DynamicQObject(DOS::OnMetaObjectHandler(dObjectPointer, dMetaObjectCallback),
-                                                  DOS::OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
+
+    auto dynamicQObject = new DOS::DynamicQObject();
+    auto impl = std::make_unique<DOS::DynamicQObjectImpl>(dynamicQObject,
+                DOS::OnMetaObjectHandler(dObjectPointer, dMetaObjectCallback),
+                DOS::OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
+    dynamicQObject->setImpl(std::move(impl));
     QQmlEngine::setObjectOwnership(dynamicQObject, QQmlEngine::CppOwnership);
     *vptr = dynamicQObject;
 }

@@ -91,6 +91,7 @@ SlotDefinitions toVector(const ::SlotDefinitions& cType);
 PropertyDefinitions toVector(const ::PropertyDefinitions& cType);
 
 class DynamicQObjectFactory;
+class DynamicQObjectFactoryData;
 
 using OnMetaObject = std::function<DynamicQObjectFactory*()>;
 using OnSlotExecuted = std::function<QVariant(const QString&, const std::vector<QVariant>&)>;
