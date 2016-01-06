@@ -87,11 +87,11 @@ DOS_API void dos_qvariant_delete(void* vptr);
 DOS_API void dos_qvariant_assign(void* vptr, void* other);
 
 // QObjectFactory
-DOS_API void dos_qmetaobjectfactory_create(void** vptr,
-                                           SignalDefinitions signalDefinitions,
-                                           SlotDefinitions slotDefinitions,
-                                           PropertyDefinitions propertyDefinitions);
-DOS_API void dos_qmetaobjectfactory_delete(void* vptr);
+DOS_API void dos_qmetaobject_create(void** vptr,
+                                    SignalDefinitions signalDefinitions,
+                                    SlotDefinitions slotDefinitions,
+                                    PropertyDefinitions propertyDefinitions);
+DOS_API void dos_qmetaobject_delete(void* vptr);
 
 // QObject
 DOS_API void dos_qobject_create(void** vptr, void* dObjectPointer,

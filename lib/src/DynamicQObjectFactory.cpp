@@ -26,8 +26,8 @@ namespace DOS
 {
 
 DynamicQObjectFactoryData::DynamicQObjectFactoryData(SignalDefinitions signalDefinitions,
-                                             SlotDefinitions slotDefinitions,
-                                             PropertyDefinitions propertyDefinitions)
+                                                     SlotDefinitions slotDefinitions,
+                                                     PropertyDefinitions propertyDefinitions)
     : m_metaObject(nullptr)
 {
     QMetaObjectBuilder builder;
@@ -63,7 +63,7 @@ DynamicQObjectFactoryData::DynamicQObjectFactoryData(SignalDefinitions signalDef
         if (notifier == -1)
             propertyBuilder.setConstant(true);
         m_propertySlots[propertyBuilder.name()] = { methodIndexByName.value(property.readSlot, -1)
-                                                  , methodIndexByName.value(property.writeSlot, -1)};
+                , methodIndexByName.value(property.writeSlot, -1)};
     }
 
     m_metaObject.reset(builder.toMetaObject());

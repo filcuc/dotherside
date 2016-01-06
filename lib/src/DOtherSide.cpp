@@ -527,7 +527,7 @@ void dos_qurl_to_string(void* vptr, char** result)
     convert_to_cstring(url->toString(), result);
 }
 
-void dos_qmetaobjectfactory_create(void **vptr,
+void dos_qmetaobject_create(void **vptr,
                                    SignalDefinitions signalDefinitions,
                                    SlotDefinitions slotDefinitions,
                                    PropertyDefinitions propertyDefinitions)
@@ -537,7 +537,7 @@ void dos_qmetaobjectfactory_create(void **vptr,
                                            DOS::toVector(propertyDefinitions));
 }
 
-void dos_qmetaobjectfactory_delete(void *vptr)
+void dos_qmetaobject_delete(void *vptr)
 {
     auto factory = reinterpret_cast<DOS::DynamicQObjectFactory*>(vptr);
     delete factory;
