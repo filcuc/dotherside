@@ -33,7 +33,7 @@ Value valueOrDefault(std::unordered_map<Key,Value> const& map, const Key& k, Val
 QMetaObject* createDynamicQObjectMetaObject()
 {
     QMetaObjectBuilder builder;
-    builder.setClassName("DynamicQObject");
+    builder.setClassName("DosQObject");
     builder.setFlags(QMetaObjectBuilder::DynamicMetaObject);
     builder.setSuperClass(&QObject::staticMetaObject);
     return builder.toMetaObject();
@@ -43,7 +43,7 @@ QMetaObject* createDynamicQAbstractListModelMetaObject()
 {
     QMetaObjectBuilder builder;
     builder.setFlags(QMetaObjectBuilder::DynamicMetaObject);
-    builder.setClassName("DynamicQAbstractListModel");
+    builder.setClassName("DosQAbstractListModel");
     builder.setSuperClass(&QAbstractListModel::staticMetaObject);
     return builder.toMetaObject();
 }
@@ -61,18 +61,17 @@ DosQAbstractListModelMetaObject::DosQAbstractListModelMetaObject()
     : BaseDosQMetaObject(::createDynamicQAbstractListModelMetaObject())
 {}
 
-DosQMetaObject::DosQMetaObject(const IDosQMetaObject &superClassMetaObject,
+DosQMetaObject::DosQMetaObject(std::shared_ptr<const IDosQMetaObject> superClassMetaObject,
                                const QString &className,
                                const SignalDefinitions& signalDefinitions,
                                const SlotDefinitions& slotDefinitions,
                                const PropertyDefinitions& propertyDefinitions)
-    : m_metaObject(nullptr)
+    : m_superClassDosMetaObject(std::move(superClassMetaObject))
+    , m_metaObject(createMetaObject(className, signalDefinitions, slotDefinitions, propertyDefinitions))
 {
-    m_metaObject.reset(createMetaObject(superClassMetaObject, className, signalDefinitions, slotDefinitions, propertyDefinitions));
 }
 
-QMetaObject *DosQMetaObject::createMetaObject(const IDosQMetaObject &superClassMetaObject,
-                                              const QString &className,
+QMetaObject *DosQMetaObject::createMetaObject(const QString &className,
                                               const SignalDefinitions& signalDefinitions,
                                               const SlotDefinitions& slotDefinitions,
                                               const PropertyDefinitions& propertyDefinitions)
@@ -80,58 +79,78 @@ QMetaObject *DosQMetaObject::createMetaObject(const IDosQMetaObject &superClassM
     QMetaObjectBuilder builder;
     builder.setClassName(className.toUtf8());
     builder.setFlags(QMetaObjectBuilder::DynamicMetaObject);
-    builder.setSuperClass(superClassMetaObject.metaObject());
+    builder.setSuperClass(m_superClassDosMetaObject->metaObject());
 
     for (const SignalDefinition& signal : signalDefinitions)
     {
         QMetaMethodBuilder signalBuilder = builder.addSignal(::createSignature(signal));
         signalBuilder.setReturnType(QMetaType::typeName(QMetaType::Void));
         signalBuilder.setAccess(QMetaMethod::Public);
-        m_signalIndexByName[signal.name.toStdString()] = signalBuilder.index();
+        m_signalIndexByName[signal.name] = signalBuilder.index();
     }
 
-    std::unordered_map<std::string, int> methodIndexByName;
+    QHash<QString, int> methodIndexByName;
     for (const SlotDefinition& slot : slotDefinitions)
     {
         QMetaMethodBuilder methodBuilder = builder.addSlot(::createSignature(slot));
         methodBuilder.setReturnType(QMetaType::typeName(slot.returnType));
         methodBuilder.setAttributes(QMetaMethod::Scriptable);
-        methodIndexByName[slot.name.toStdString()] = methodBuilder.index();
+        methodIndexByName[slot.name] = methodBuilder.index();
     }
 
     for (const PropertyDefinition& property : propertyDefinitions)
     {
-        const int notifier = ::valueOrDefault(m_signalIndexByName, property.notifySignal.toStdString(), -1);
+        const int notifier = m_signalIndexByName.value(property.notifySignal, -1);
         const QByteArray name = property.name.toUtf8();
         const QByteArray typeName = QMetaObject::normalizedType(QMetaType::typeName(property.type));
         QMetaPropertyBuilder propertyBuilder = builder.addProperty(name, typeName, notifier);
         if (notifier == -1)
             propertyBuilder.setConstant(true);
-        m_propertySlots[propertyBuilder.name().toStdString()] = std::make_pair(::valueOrDefault(methodIndexByName, property.readSlot.toStdString(), -1),
-                                                                               ::valueOrDefault(methodIndexByName, property.writeSlot.toStdString(), -1));
+        m_propertySlots[property.name] = qMakePair(methodIndexByName.value(property.readSlot, -1),
+                                                   methodIndexByName.value(property.writeSlot, -1));
     }
 
     return builder.toMetaObject();
 }
 
-int DosQMetaObject::signalSlotIndex(const QString &signalName) const
-{
-    return metaObject()->methodOffset() + ::valueOrDefault(m_signalIndexByName, signalName.toStdString(), -1);
+QMetaMethod DosQMetaObject::signal(const QString &signalName) const
+{   
+    const int index = m_signalIndexByName.value(signalName, -1);
+    if (index != -1)
+        return metaObject()->method(metaObject()->methodOffset() + index);
+    if (auto superMetaObject = superClassDosMetaObject())
+        return superMetaObject->signal(signalName);
+    return QMetaMethod();
 }
 
-int DosQMetaObject::readSlotIndex(const char *propertyName) const
+QMetaMethod DosQMetaObject::readSlot(const char *propertyName) const
 {
-    return metaObject()->methodOffset() + ::valueOrDefault(m_propertySlots, std::string(propertyName), std::make_pair(-1,-1)).first;
+    const auto index = m_propertySlots.value(QString::fromUtf8(propertyName), qMakePair(-1,-1)).first;
+    if (index != -1)
+        return metaObject()->method(metaObject()->methodOffset() + index);
+    if (auto superMetaObject = superClassDosMetaObject())
+        return superMetaObject->readSlot(propertyName);
+    return QMetaMethod();
 }
 
-int DosQMetaObject::writeSlotIndex(const char *propertyName) const
+QMetaMethod DosQMetaObject::writeSlot(const char *propertyName) const
 {
-    return metaObject()->methodOffset() + valueOrDefault(m_propertySlots, std::string(propertyName), std::make_pair(-1,-1)).second;
+    const auto index = m_propertySlots.value(QString::fromUtf8(propertyName), qMakePair(-1,-1)).second;
+    if (index != -1)
+        return metaObject()->method(metaObject()->methodOffset() + index);
+    if (auto superMetaObject = superClassDosMetaObject())
+        return superMetaObject->writeSlot(propertyName);
+    return QMetaMethod();
 }
 
 const QMetaObject *DosQMetaObject::metaObject() const
 {
     return m_metaObject;
+}
+
+const IDosQMetaObject *DosQMetaObject::superClassDosMetaObject() const
+{
+    return m_superClassDosMetaObject.get();
 }
 
 } // namespace DOS

@@ -2,6 +2,7 @@
 #include "DOtherSide/DosQMetaObject.h"
 #include <QtCore/QMetaObject>
 #include <QtCore/QMetaMethod>
+#include <QtCore/QDebug>
 
 namespace DOS
 {
@@ -17,23 +18,23 @@ DynamicQObjectImpl::DynamicQObjectImpl(QObject* parent,
 
 bool DynamicQObjectImpl::emitSignal(const QString &name, const std::vector<QVariant> &args)
 {
-    const int index = factory()->signalSlotIndex(name);
-    const QMetaMethod method = metaObject()->method(index);
+    const QMetaMethod method = dosMetaObject()->signal(name);
     if (!method.isValid())
         return false;
+
     Q_ASSERT(name.toUtf8() == method.name());
 
     std::vector<void*> arguments(args.size() + 1, nullptr);
     arguments.front() = nullptr;
     auto func = [](const QVariant& arg) -> void* { return (void*)(&arg); };
     std::transform(args.begin(), args.end(), arguments.begin() + 1, func);
-    QMetaObject::activate(m_parent, index, arguments.data());
+    QMetaObject::activate(m_parent, method.methodIndex(), arguments.data());
     return true;
 }
 
 const QMetaObject *DynamicQObjectImpl::metaObject() const
 {
-    return factory()->metaObject();
+    return dosMetaObject()->metaObject();
 }
 
 int DynamicQObjectImpl::qt_metacall(QMetaObject::Call callType, int index, void **args)
@@ -55,7 +56,7 @@ int DynamicQObjectImpl::qt_metacall(QMetaObject::Call callType, int index, void 
     return -1;
 }
 
-std::shared_ptr<const IDosQMetaObject> DynamicQObjectImpl::factory() const
+std::shared_ptr<const IDosQMetaObject> DynamicQObjectImpl::dosMetaObject() const
 {
     static std::shared_ptr<const IDosQMetaObject> result = m_onMetaObject()->data();
     return result;
@@ -64,8 +65,16 @@ std::shared_ptr<const IDosQMetaObject> DynamicQObjectImpl::factory() const
 bool DynamicQObjectImpl::executeSlot(int index, void **args)
 {
     const QMetaMethod method = metaObject()->method(index);
-    if (!method.isValid())
+    if (!method.isValid()) {
+        qDebug() << "C++: executeSlot: invalid method";
         return false;
+    }
+    executeSlot(method, args);
+}
+
+bool DynamicQObjectImpl::executeSlot(const QMetaMethod &method, void **args)
+{
+    Q_ASSERT(method.isValid());
 
     const bool hasReturnType = method.returnType() != QMetaType::Void;
 
@@ -90,7 +99,12 @@ bool DynamicQObjectImpl::readProperty(int index, void **args)
     const QMetaProperty property = metaObject()->property(index);
     if (!property.isValid() || !property.isReadable())
         return false;
-    return executeSlot(factory()->readSlotIndex(property.name()), args);
+    QMetaMethod method = dosMetaObject()->readSlot(property.name());
+    if (!method.isValid()) {
+        qDebug() << "C++: readProperty: invalid read method for property " << property.name();
+        return false;
+    }
+    return executeSlot(method, args);
 }
 
 bool DynamicQObjectImpl::writeProperty(int index, void **args)
@@ -98,7 +112,12 @@ bool DynamicQObjectImpl::writeProperty(int index, void **args)
     const QMetaProperty property = metaObject()->property(index);
     if (!property.isValid() || !property.isWritable())
         return false;
-    return executeSlot(factory()->writeSlotIndex(property.name()), args);
+    QMetaMethod method = dosMetaObject()->writeSlot(property.name());
+    if (!method.isValid()) {
+        qDebug() << "C++: writeProperty: invalid write method for property " << property.name();
+        return false;
+    }
+    return executeSlot(method, args);
 }
 
 }

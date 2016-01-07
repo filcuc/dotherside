@@ -8,6 +8,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QString>
 #include <QtCore/QHash>
+#include <QtCore/QMetaMethod>
 // DOtherSide
 #include "DOtherSide/DOtherSideTypesCpp.h"
 
@@ -20,9 +21,10 @@ class IDosQMetaObject
 public:
     virtual ~IDosQMetaObject() = default;
     virtual const QMetaObject* metaObject() const = 0;
-    virtual int signalSlotIndex(const QString& signalName) const = 0;
-    virtual int readSlotIndex(const char* propertyName) const = 0;
-    virtual int writeSlotIndex(const char* propertyName) const = 0;
+    virtual QMetaMethod signal(const QString& signalName) const = 0;
+    virtual QMetaMethod readSlot(const char* propertyName) const = 0;
+    virtual QMetaMethod writeSlot(const char* propertyName) const = 0;
+    virtual const IDosQMetaObject* superClassDosMetaObject() const = 0;
 };
 
 /// Base class for any IDosQMetaObject
@@ -33,9 +35,10 @@ public:
         : m_metaObject(metaObject)
     {}
     const QMetaObject *metaObject() const override { return m_metaObject; }
-    int signalSlotIndex(const QString &signalName) const override { return -1; }
-    int readSlotIndex(const char *propertyName) const override { return -1; }
-    int writeSlotIndex(const char *propertyName) const override { return -1; }
+    QMetaMethod signal(const QString &signalName) const override { return QMetaMethod(); }
+    QMetaMethod readSlot(const char *propertyName) const override { return QMetaMethod(); }
+    QMetaMethod writeSlot(const char *propertyName) const override { return QMetaMethod(); }
+    const IDosQMetaObject* superClassDosMetaObject() const { return nullptr; }
 
 private:
     SafeQMetaObjectPtr m_metaObject;
@@ -59,27 +62,28 @@ public:
 class DosQMetaObject : public IDosQMetaObject
 {
 public:
-    DosQMetaObject(const IDosQMetaObject& superClassMetaObject,
+    DosQMetaObject(std::shared_ptr<const IDosQMetaObject> superClassDosMetaObject,
                    const QString& className,
                    const SignalDefinitions &signalDefinitions,
                    const SlotDefinitions &slotDefinitions,
                    const PropertyDefinitions &propertyDefinitions);
 
-    int signalSlotIndex(const QString& signalName) const override;
-    int readSlotIndex(const char* propertyName) const override;
-    int writeSlotIndex(const char* propertyName) const override;
+    QMetaMethod signal(const QString& signalName) const override;
+    QMetaMethod readSlot(const char* propertyName) const override;
+    QMetaMethod writeSlot(const char* propertyName) const override;
     const QMetaObject *metaObject() const override;
+    const IDosQMetaObject *superClassDosMetaObject() const override;
 
 private:
-    QMetaObject *createMetaObject(const IDosQMetaObject &superClassMetaObject,
-                                  const QString& className,
+    QMetaObject *createMetaObject(const QString& className,
                                   const SignalDefinitions &signalDefinitions,
                                   const SlotDefinitions &slotDefinitions,
                                   const PropertyDefinitions &propertyDefinitions);
 
+    std::shared_ptr<const IDosQMetaObject> m_superClassDosMetaObject;
+    QHash<QString, int> m_signalIndexByName;
+    QHash<QString, QPair<int,int>> m_propertySlots;
     SafeQMetaObjectPtr m_metaObject;
-    std::unordered_map<std::string, int> m_signalIndexByName;
-    std::unordered_map<std::string, std::pair<int,int>> m_propertySlots;
 };
 
 /// This class simply holds a ptr to a IDosQMetaObject
