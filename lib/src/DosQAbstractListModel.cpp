@@ -1,18 +1,28 @@
 #include "DOtherSide/DosQAbstractListModel.h"
+#include "DOtherSide/DosQObjectImpl.h"
 
 namespace DOS
 {
 
-DosQAbstractListModel::DosQAbstractListModel(void *modelObject, RowCountCallback rowCountCallback, ColumnCountCallback columnCountCallback, DataCallback dataCallback, SetDataCallback setDataCallback, RoleNamesCallback roleNamesCallback, FlagsCallback flagsCallback, HeaderDataCallback headerDataCallback)
-    : m_impl(nullptr)
-    , m_modelObject(modelObject)
-    , m_rowCountCallback(rowCountCallback)
-    , m_columnCountCallback(columnCountCallback)
-    , m_dataCallback(dataCallback)
-    , m_setDataCallback(setDataCallback)
-    , m_roleNamesCallback(roleNamesCallback)
-    , m_flagsCallback(flagsCallback)
-    , m_headerDataCallback(headerDataCallback)
+DosQAbstractListModel::DosQAbstractListModel(void *modelObject,
+                                             OnMetaObject onMetaObject,
+                                             OnSlotExecuted onSlotExecuted,
+                                             RowCountCallback rowCountCallback,
+                                             ColumnCountCallback columnCountCallback,
+                                             DataCallback dataCallback,
+                                             SetDataCallback setDataCallback,
+                                             RoleNamesCallback roleNamesCallback,
+                                             FlagsCallback flagsCallback,
+                                             HeaderDataCallback headerDataCallback)
+    : m_impl(std::make_unique<DosQObjectImpl>(this, std::move(onMetaObject), std::move(onSlotExecuted)))
+    , m_modelObject(std::move(modelObject))
+    , m_rowCountCallback(std::move(rowCountCallback))
+    , m_columnCountCallback(std::move(columnCountCallback))
+    , m_dataCallback(std::move(dataCallback))
+    , m_setDataCallback(std::move(setDataCallback))
+    , m_roleNamesCallback(std::move(roleNamesCallback))
+    , m_flagsCallback(std::move(flagsCallback))
+    , m_headerDataCallback(std::move(headerDataCallback))
 {
 }
 
@@ -130,11 +140,6 @@ void DosQAbstractListModel::publicEndResetModel()
 void DosQAbstractListModel::publicDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
 {
     emit dataChanged(topLeft, bottomRight, roles);
-}
-
-void DosQAbstractListModel::setImpl(std::unique_ptr<IDosQObject> impl)
-{
-    m_impl = std::move(impl);
 }
 
 } // namespace DOS

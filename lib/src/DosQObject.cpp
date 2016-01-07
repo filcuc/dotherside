@@ -1,13 +1,14 @@
 #include "DOtherSide/DosQObject.h"
 #include "DOtherSide/DosQMetaObject.h"
+#include "DOtherSide/DosQObjectImpl.h"
 #include <QtCore/QMetaMethod>
 #include <QtCore/QDebug>
 
 namespace DOS
 {
 
-DosQObject::DosQObject()
-    : m_impl(nullptr)
+DosQObject::DosQObject(OnMetaObject onMetaObject, OnSlotExecuted onSlotExecuted)
+    : m_impl(std::make_unique<DosQObjectImpl>(this, std::move(onMetaObject), std::move(onSlotExecuted)))
 {
 }
 
@@ -27,11 +28,6 @@ int DosQObject::qt_metacall(QMetaObject::Call callType, int index, void** args)
 {
     Q_ASSERT(m_impl);
     return m_impl->qt_metacall(callType, index, args);
-}
-
-void DosQObject::setImpl(std::unique_ptr<IDosQObject> impl)
-{
-    m_impl = std::move(impl);
 }
 
 } // namespace DOS

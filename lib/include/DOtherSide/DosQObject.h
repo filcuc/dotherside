@@ -15,7 +15,8 @@ class DosQObject : public QObject, public IDosQObject
 {
 public:
     /// Constructor
-    DosQObject();
+    DosQObject(OnMetaObject onMetaObject,
+               OnSlotExecuted onSlotExecuted);
 
     /// Emit a signal
     bool emitSignal(const QString& name, const std::vector<QVariant>& arguments) override;

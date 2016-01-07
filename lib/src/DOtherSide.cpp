@@ -364,13 +364,10 @@ void dos_qobject_create(void** vptr, void* dObjectPointer,
                         DObjectCallback dObjectCallback)
 {
 
-    auto dynamicQObject = new DosQObject();
-    auto impl = std::make_unique<DosQObjectImpl>(dynamicQObject,
-                                                 OnMetaObjectHandler(dObjectPointer, dMetaObjectCallback),
-                                                 OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
-    dynamicQObject->setImpl(std::move(impl));
-    QQmlEngine::setObjectOwnership(dynamicQObject, QQmlEngine::CppOwnership);
-    *vptr = dynamicQObject;
+    auto dosQObject = new DosQObject(OnMetaObjectHandler(dObjectPointer, dMetaObjectCallback),
+                                     OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
+    QQmlEngine::setObjectOwnership(dosQObject, QQmlEngine::CppOwnership);
+    *vptr = dosQObject;
 }
 
 void dos_qobject_delete(void* vptr)
