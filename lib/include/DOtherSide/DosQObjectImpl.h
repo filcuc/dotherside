@@ -24,7 +24,8 @@ public:
     int qt_metacall(QMetaObject::Call callType, int index, void**args) override;
 
 private:
-    std::shared_ptr<const DOS::IDosQMetaObject> factory() const;
+    std::shared_ptr<const DOS::IDosQMetaObject> dosMetaObject() const;
+    bool executeSlot(const QMetaMethod& method, void** args);
     bool executeSlot(int index, void** args);
     bool readProperty(int index, void** args);
     bool writeProperty(int index, void** args);
