@@ -15,9 +15,11 @@
 
 #include "DOtherSide/DOtherSideTypesCpp.h"
 #include "DOtherSide/OnSlotExecutedHandler.h"
-#include "DOtherSide/DynamicQObjectFactory.h"
-#include "DOtherSide/DynamicQObject.h"
-#include "DOtherSide/DynamicQObjectImpl.h"
+#include "DOtherSide/DosQMetaObject.h"
+#include "DOtherSide/DosQObject.h"
+#include "DOtherSide/DosQObjectImpl.h"
+
+using namespace DOS;
 
 
 void convert_to_cstring(const QString& source, char** destination)
@@ -362,10 +364,10 @@ void dos_qobject_create(void** vptr, void* dObjectPointer,
                         DObjectCallback dObjectCallback)
 {
 
-    auto dynamicQObject = new DOS::DynamicQObject();
-    auto impl = std::make_unique<DOS::DynamicQObjectImpl>(dynamicQObject,
-                DOS::OnMetaObjectHandler(dObjectPointer, dMetaObjectCallback),
-                DOS::OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
+    auto dynamicQObject = new DosQObject();
+    auto impl = std::make_unique<DynamicQObjectImpl>(dynamicQObject,
+                                                     OnMetaObjectHandler(dObjectPointer, dMetaObjectCallback),
+                                                     OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
     dynamicQObject->setImpl(std::move(impl));
     QQmlEngine::setObjectOwnership(dynamicQObject, QQmlEngine::CppOwnership);
     *vptr = dynamicQObject;
@@ -381,10 +383,10 @@ void dos_qobject_delete(void* vptr)
 void dos_qobject_signal_emit(void* vptr, const char* name, int parametersCount, void** parameters)
 {
     auto qobject = reinterpret_cast<QObject*>(vptr);
-    auto dynamicQObject = dynamic_cast<DOS::IDynamicQObject*>(qobject);
+    auto dynamicQObject = dynamic_cast<IDosQObject*>(qobject);
 
     auto transformation = [](void* vptr)->QVariant{return *(reinterpret_cast<QVariant*>(vptr));};
-    const std::vector<QVariant> variants = DOS::toVector(parameters, parametersCount, transformation);
+    const std::vector<QVariant> variants = toVector(parameters, parametersCount, transformation);
     dynamicQObject->emitSignal(QString::fromStdString(name), variants);
 }
 
@@ -528,17 +530,34 @@ void dos_qurl_to_string(void* vptr, char** result)
 }
 
 void dos_qmetaobject_create(void **vptr,
-                                   SignalDefinitions signalDefinitions,
-                                   SlotDefinitions slotDefinitions,
-                                   PropertyDefinitions propertyDefinitions)
+                            void* superClassVPtr,
+                            const char* className,
+                            ::SignalDefinitions signalDefinitions,
+                            ::SlotDefinitions slotDefinitions,
+                            ::PropertyDefinitions propertyDefinitions)
 {
-    *vptr = new DOS::DynamicQObjectFactory(DOS::toVector(signalDefinitions),
-                                           DOS::toVector(slotDefinitions),
-                                           DOS::toVector(propertyDefinitions));
+    auto superClassHolder = static_cast<DosIQMetaObjectHolder*>(superClassVPtr);
+
+    auto metaObject = std::make_shared<DosQMetaObject>(*superClassHolder->data(),
+                                                       QString::fromUtf8(className),
+                                                       toVector(signalDefinitions),
+                                                       toVector(slotDefinitions),
+                                                       toVector(propertyDefinitions));
+    *vptr = new DosIQMetaObjectHolder(std::move(metaObject));
 }
 
 void dos_qmetaobject_delete(void *vptr)
 {
-    auto factory = reinterpret_cast<DOS::DynamicQObjectFactory*>(vptr);
+    auto factory = reinterpret_cast<DosIQMetaObjectHolder*>(vptr);
     delete factory;
+}
+
+void dos_qobject_qmetaobject(void **vptr)
+{
+    *vptr = new DosIQMetaObjectHolder(std::make_shared<DosQObjectMetaObject>());
+}
+
+void dos_qabstractlistmodel_qmetaobject(void **vptr)
+{
+    *vptr = new DosIQMetaObjectHolder(std::make_shared<DosQAbstractListModelMetaObject>());
 }

@@ -5,11 +5,11 @@ class QMetaObject;
 namespace DOS
 {
 
-class IDynamicQObject
+class IDosQObject
 {
 public:
     /// Destructor
-    virtual ~IDynamicQObject() = default;
+    virtual ~IDosQObject() = default;
 
     /// Emit the signal with the given name and arguments
     virtual bool emitSignal(const QString& name, const std::vector<QVariant>& argumentsValues) = 0;
