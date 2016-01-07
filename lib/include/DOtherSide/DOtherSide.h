@@ -86,8 +86,10 @@ DOS_API void dos_qvariant_isnull(void* vptr, bool* result);
 DOS_API void dos_qvariant_delete(void* vptr);
 DOS_API void dos_qvariant_assign(void* vptr, void* other);
 
-// QObjectFactory
-DOS_API void dos_qmetaobject_create(void** vptr, void *superClassMetaObject, const char *className,
+// QMetaObject
+DOS_API void dos_qmetaobject_create(void** vptr,
+                                    void *superClassMetaObject,
+                                    const char *className,
                                     SignalDefinitions signalDefinitions,
                                     SlotDefinitions slotDefinitions,
                                     PropertyDefinitions propertyDefinitions);

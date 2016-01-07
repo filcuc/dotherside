@@ -536,9 +536,13 @@ void dos_qmetaobject_create(void **vptr,
                             ::SlotDefinitions slotDefinitions,
                             ::PropertyDefinitions propertyDefinitions)
 {
+    Q_ASSERT(superClassVPtr);
     auto superClassHolder = static_cast<DosIQMetaObjectHolder*>(superClassVPtr);
+    Q_ASSERT(superClassHolder);
+    auto data = superClassHolder->data();
+    Q_ASSERT(data);
 
-    auto metaObject = std::make_shared<DosQMetaObject>(*superClassHolder->data(),
+    auto metaObject = std::make_shared<DosQMetaObject>(*data,
                                                        QString::fromUtf8(className),
                                                        toVector(signalDefinitions),
                                                        toVector(slotDefinitions),

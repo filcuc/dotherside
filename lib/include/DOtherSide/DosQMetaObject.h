@@ -56,7 +56,7 @@ public:
 };
 
 /// This the generic version used by subclasses of QObject or QAbstractListModels
-class DosQMetaObject : public BaseDosQMetaObject
+class DosQMetaObject : public IDosQMetaObject
 {
 public:
     DosQMetaObject(const IDosQMetaObject& superClassMetaObject,
@@ -68,6 +68,7 @@ public:
     int signalSlotIndex(const QString& signalName) const override;
     int readSlotIndex(const char* propertyName) const override;
     int writeSlotIndex(const char* propertyName) const override;
+    const QMetaObject *metaObject() const override;
 
 private:
     QMetaObject *createMetaObject(const IDosQMetaObject &superClassMetaObject,
@@ -76,8 +77,9 @@ private:
                                   const SlotDefinitions &slotDefinitions,
                                   const PropertyDefinitions &propertyDefinitions);
 
-    QHash<QByteArray, int> m_signalIndexByName;
-    QHash<QByteArray, QPair<int,int>> m_propertySlots;
+    SafeQMetaObjectPtr m_metaObject;
+    std::unordered_map<std::string, int> m_signalIndexByName;
+    std::unordered_map<std::string, std::pair<int,int>> m_propertySlots;
 };
 
 /// This class simply holds a ptr to a IDosQMetaObject
