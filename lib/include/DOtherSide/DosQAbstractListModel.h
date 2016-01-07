@@ -14,13 +14,13 @@ class DosQAbstractListModel : public QAbstractListModel, public IDosQObject
 public:
     /// Constructor
     DosQAbstractListModel(void* modelObject,
-                              RowCountCallback rowCountCallback,
-                              ColumnCountCallback columnCountCallback,
-                              DataCallback dataCallback,
-                              SetDataCallback setDataCallback,
-                              RoleNamesCallback roleNamesCallback,
-                              FlagsCallback flagsCallback,
-                              HeaderDataCallback headerDataCallback);
+                          RowCountCallback rowCountCallback,
+                          ColumnCountCallback columnCountCallback,
+                          DataCallback dataCallback,
+                          SetDataCallback setDataCallback,
+                          RoleNamesCallback roleNamesCallback,
+                          FlagsCallback flagsCallback,
+                          HeaderDataCallback headerDataCallback);
 
     /// @see IDynamicQObject::emitSignal
     bool emitSignal(const QString &name, const std::vector<QVariant> &argumentsValues) override;
