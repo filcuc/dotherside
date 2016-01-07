@@ -14,6 +14,8 @@ class DosQAbstractListModel : public QAbstractListModel, public IDosQObject
 public:
     /// Constructor
     DosQAbstractListModel(void* modelObject,
+                          OnMetaObject onMetaObject,
+                          OnSlotExecuted onSlotExecuted,
                           RowCountCallback rowCountCallback,
                           ColumnCountCallback columnCountCallback,
                           DataCallback dataCallback,
@@ -77,9 +79,6 @@ public:
     void publicDataChanged(const QModelIndex& topLeft,
                            const QModelIndex& bottomRight,
                            const QVector<int>& roles = QVector<int>());
-
-    /// Set the implementation
-    void setImpl(std::unique_ptr<IDosQObject> impl);
 
 private:
     std::unique_ptr<IDosQObject> m_impl;
