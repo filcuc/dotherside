@@ -12,15 +12,23 @@
 namespace DOS
 {
 
-class DynamicQObjectImpl : public IDosQObject
+/// This class implement the interface IDosQObject
+/// and it's injected in DosQObject
+class DosQObjectImpl : public IDosQObject
 {
 public:
-    DynamicQObjectImpl(QObject* parent,
-                       OnMetaObject onMetaObject,
-                       OnSlotExecuted onSlotExecuted);
+    /// Constructor
+    DosQObjectImpl(QObject* parent,
+                   OnMetaObject onMetaObject,
+                   OnSlotExecuted onSlotExecuted);
 
+    /// @see IDosObject::emitSignal
     bool emitSignal(const QString& name, const std::vector<QVariant>& arguments) override;
+
+    /// @see IDosObject::metaObject
     const QMetaObject* metaObject() const override;
+
+    /// @see IDosObject::qt_metacall
     int qt_metacall(QMetaObject::Call callType, int index, void**args) override;
 
 private:

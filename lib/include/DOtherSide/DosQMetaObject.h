@@ -87,6 +87,7 @@ private:
 };
 
 /// This class simply holds a ptr to a IDosQMetaObject
+/// It's created and passed to the binded language
 class DosIQMetaObjectHolder
 {
 public:

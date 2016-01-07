@@ -365,9 +365,9 @@ void dos_qobject_create(void** vptr, void* dObjectPointer,
 {
 
     auto dynamicQObject = new DosQObject();
-    auto impl = std::make_unique<DynamicQObjectImpl>(dynamicQObject,
-                                                     OnMetaObjectHandler(dObjectPointer, dMetaObjectCallback),
-                                                     OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
+    auto impl = std::make_unique<DosQObjectImpl>(dynamicQObject,
+                                                 OnMetaObjectHandler(dObjectPointer, dMetaObjectCallback),
+                                                 OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
     dynamicQObject->setImpl(std::move(impl));
     QQmlEngine::setObjectOwnership(dynamicQObject, QQmlEngine::CppOwnership);
     *vptr = dynamicQObject;
