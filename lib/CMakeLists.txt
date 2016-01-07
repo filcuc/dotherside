@@ -17,23 +17,23 @@ set(HEADERS_LIST
   include/DOtherSide/DOtherSideTypes.h
   include/DOtherSide/DOtherSideTypesCpp.h
   include/DOtherSide/DOtherSide.h
-  include/DOtherSide/IDynamicQObject.h
+  include/DOtherSide/IDosQObject.h
   include/DOtherSide/OnSlotExecutedHandler.h
-  include/DOtherSide/DynamicQObjectFactory.h
-  include/DOtherSide/DynamicQObject.h
+  include/DOtherSide/DosQMetaObject.h
+  include/DOtherSide/DosQObject.h
+  include/DOtherSide/DosQObjectImpl.h
+  include/DOtherSide/DosQAbstractListModel.h
   include/DOtherSide/Utils.h
-  include/DOtherSide/DynamicQObjectImpl.h
-  include/DOtherSide/DynamicQAbstractListModel.h
   )
 
 set(SRC_LIST
   src/DOtherSide.cpp
   src/OnSlotExecutedHandler.cpp
-  src/DynamicQObjectFactory.cpp
-  src/DynamicQObject.cpp
+  src/DosQMetaObject.cpp
+  src/DosQObject.cpp
   src/DOtherSideTypesCpp.cpp
-  src/DynamicQObjectImpl.cpp
-  src/DynamicQAbstractListModel.cpp
+  src/DosQObjectImpl.cpp
+  src/DosQAbstractListModel.cpp
   )
 
 include_directories(include include/Qt)

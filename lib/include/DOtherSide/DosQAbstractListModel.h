@@ -4,16 +4,16 @@
 #include <QAbstractListModel>
 // DOtherSide
 #include "DOtherSide/DOtherSideTypes.h"
-#include "DOtherSide/DynamicQObject.h"
+#include "DOtherSide/DosQObject.h"
 
 namespace DOS
 {
 
-class DynamicQAbstractListModel : public QAbstractListModel, public IDynamicQObject
+class DosQAbstractListModel : public QAbstractListModel, public IDosQObject
 {
 public:
     /// Constructor
-    DynamicQAbstractListModel(void* modelObject,
+    DosQAbstractListModel(void* modelObject,
                               RowCountCallback rowCountCallback,
                               ColumnCountCallback columnCountCallback,
                               DataCallback dataCallback,
@@ -79,10 +79,10 @@ public:
                            const QVector<int>& roles = QVector<int>());
 
     /// Set the implementation
-    void setImpl(std::unique_ptr<IDynamicQObject> impl);
+    void setImpl(std::unique_ptr<IDosQObject> impl);
 
 private:
-    std::unique_ptr<IDynamicQObject> m_impl;
+    std::unique_ptr<IDosQObject> m_impl;
     void* m_modelObject;
     RowCountCallback m_rowCountCallback;
     ColumnCountCallback m_columnCountCallback;
@@ -93,4 +93,4 @@ private:
     HeaderDataCallback m_headerDataCallback;
 };
 
-}
+} // namespace DOS

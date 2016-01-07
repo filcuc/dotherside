@@ -1,15 +1,18 @@
 #pragma once
 
+// std
 #include <vector>
+// Qt
 #include <QtCore/QString>
 #include <QtCore/QVariant>
-#include "DOtherSide/IDynamicQObject.h"
+// DOtherSide
+#include "DOtherSide/DosQObject.h"
 #include "DOtherSide/DOtherSideTypesCpp.h"
 
 namespace DOS
 {
 
-class DynamicQObjectImpl : public IDynamicQObject
+class DynamicQObjectImpl : public IDosQObject
 {
 public:
     DynamicQObjectImpl(QObject* parent,
@@ -21,7 +24,7 @@ public:
     int qt_metacall(QMetaObject::Call callType, int index, void**args) override;
 
 private:
-    std::shared_ptr<const DynamicQObjectFactoryData> factory() const;
+    std::shared_ptr<const DOS::IDosQMetaObject> factory() const;
     bool executeSlot(int index, void** args);
     bool readProperty(int index, void** args);
     bool writeProperty(int index, void** args);

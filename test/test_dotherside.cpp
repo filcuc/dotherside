@@ -13,8 +13,8 @@
 
 // DOtherSide
 #include "DOtherSide/DOtherSide.h"
-#include "DOtherSide/DynamicQObject.h"
-#include "DOtherSide/DynamicQObjectFactory.h"
+#include "DOtherSide/DosQObject.h"
+#include "DOtherSide/DosQMetaObject.h"
 
 template<typename Test>
 bool ExecuteTest(int argc, char* argv[]) {

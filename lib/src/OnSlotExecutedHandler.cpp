@@ -37,9 +37,9 @@ OnMetaObjectHandler::OnMetaObjectHandler(void *dObjectPointer, MetaObjectCallbac
     , m_dMetaObjectCallback(dMetaObjectCallback)
 {}
 
-DynamicQObjectFactory* OnMetaObjectHandler::operator()()
+DosIQMetaObjectHolder* OnMetaObjectHandler::operator()()
 {
-    DynamicQObjectFactory* result = nullptr;
+    DosIQMetaObjectHolder* result = nullptr;
     m_dMetaObjectCallback(m_dObjectPointer, reinterpret_cast<void**>(&result));
     return result;
 }

@@ -87,13 +87,18 @@ DOS_API void dos_qvariant_delete(void* vptr);
 DOS_API void dos_qvariant_assign(void* vptr, void* other);
 
 // QObjectFactory
-DOS_API void dos_qmetaobject_create(void** vptr,
+DOS_API void dos_qmetaobject_create(void** vptr, void *superClassMetaObject, const char *className,
                                     SignalDefinitions signalDefinitions,
                                     SlotDefinitions slotDefinitions,
                                     PropertyDefinitions propertyDefinitions);
 DOS_API void dos_qmetaobject_delete(void* vptr);
 
+// QAbstractListModel
+DOS_API void dos_qabstractlistmodel_qmetaobject(void** vptr);
+
 // QObject
+DOS_API void dos_qobject_qmetaobject(void** vptr);
+
 DOS_API void dos_qobject_create(void** vptr, void* dObjectPointer,
                                 MetaObjectCallback metaObjectCallback,
                                 DObjectCallback dObjectCallback);

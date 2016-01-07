@@ -1,10 +1,11 @@
 #pragma once
 
+// std
 #include <memory>
-
+// Qt
 #include <QtCore/QString>
 #include <QtCore/QMetaType>
-
+// DOtherSide
 #include "DOtherSide/DOtherSideTypes.h"
 #include "DOtherSide/Utils.h"
 
@@ -90,10 +91,11 @@ SignalDefinitions toVector(const ::SignalDefinitions& cType);
 SlotDefinitions toVector(const ::SlotDefinitions& cType);
 PropertyDefinitions toVector(const ::PropertyDefinitions& cType);
 
-class DynamicQObjectFactory;
-class DynamicQObjectFactoryData;
+class DosIQMetaObjectHolder;
+class IDosQMetaObject;
+class DosQMetaObject;
 
-using OnMetaObject = std::function<DynamicQObjectFactory*()>;
+using OnMetaObject = std::function<DosIQMetaObjectHolder*()>;
 using OnSlotExecuted = std::function<QVariant(const QString&, const std::vector<QVariant>&)>;
 
 class SafeQMetaObjectPtr

@@ -6,7 +6,7 @@
 #include <QVariant>
 // DOtherSide
 #include "DOtherSide/DOtherSideTypesCpp.h"
-#include "DOtherSide/IDynamicQObject.h"
+#include "DOtherSide/DosQObject.h"
 
 namespace DOS
 {
@@ -16,7 +16,7 @@ class OnMetaObjectHandler
 public:
     OnMetaObjectHandler(void* dObjectPointer, MetaObjectCallback dMetaObjectCallback);
 
-    DynamicQObjectFactory* operator()();
+    DosIQMetaObjectHolder* operator()();
 
 private:
     void* m_dObjectPointer;

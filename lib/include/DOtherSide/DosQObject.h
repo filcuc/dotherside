@@ -1,20 +1,21 @@
 #pragma once
 
+// Qt
 #include <QObject>
 #include <functional>
-
+// DOtherSide
 #include "DOtherSideTypesCpp.h"
-#include "DOtherSide/IDynamicQObject.h"
+#include "DOtherSide/IDosQObject.h"
 
 namespace DOS
 {
 
 /// This class model a QObject
-class DynamicQObject : public QObject, public IDynamicQObject
+class DosQObject : public QObject, public IDosQObject
 {
 public:
     /// Constructor
-    DynamicQObject();
+    DosQObject();
 
     /// Emit a signal
     bool emitSignal(const QString& name, const std::vector<QVariant>& arguments) override;
@@ -26,10 +27,10 @@ public:
     int qt_metacall(QMetaObject::Call callType, int index, void**args) override;
 
     /// Set the implementation
-    void setImpl(std::unique_ptr<IDynamicQObject> impl);
+    void setImpl(std::unique_ptr<IDosQObject> impl);
 
 private:
-    std::unique_ptr<IDynamicQObject> m_impl;
+    std::unique_ptr<IDosQObject> m_impl;
 };
 
 } // namespace DOS

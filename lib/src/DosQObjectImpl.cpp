@@ -1,5 +1,5 @@
-#include "DOtherSide/DynamicQObjectImpl.h"
-#include "DOtherSide/DynamicQObjectFactory.h"
+#include "DOtherSide/DosQObjectImpl.h"
+#include "DOtherSide/DosQMetaObject.h"
 #include <QtCore/QMetaObject>
 #include <QtCore/QMetaMethod>
 
@@ -55,9 +55,9 @@ int DynamicQObjectImpl::qt_metacall(QMetaObject::Call callType, int index, void 
     return -1;
 }
 
-std::shared_ptr<const DynamicQObjectFactoryData> DynamicQObjectImpl::factory() const
+std::shared_ptr<const IDosQMetaObject> DynamicQObjectImpl::factory() const
 {
-    static std::shared_ptr<const DynamicQObjectFactoryData> result = m_onMetaObject()->data();
+    static std::shared_ptr<const IDosQMetaObject> result = m_onMetaObject()->data();
     return result;
 }
 

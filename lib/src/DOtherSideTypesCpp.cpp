@@ -2,6 +2,7 @@
 
 namespace DOS
 {
+
 SignalDefinitions toVector(const ::SignalDefinitions& cType)
 {
     return toVector<SignalDefinition>(cType.definitions, cType.count);
@@ -16,4 +17,5 @@ PropertyDefinitions toVector(const ::PropertyDefinitions& cType)
 {
     return toVector<PropertyDefinition>(cType.definitions, cType.count);
 }
+
 } // namespace DOS
