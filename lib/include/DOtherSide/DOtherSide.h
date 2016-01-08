@@ -97,10 +97,28 @@ DOS_API void dos_qmetaobject_delete(void* vptr);
 
 // QAbstractListModel
 DOS_API void dos_qabstractlistmodel_qmetaobject(void** vptr);
+DOS_API void dos_qabstractlistmodel_create(void** vptr,
+                                           void* callbackObject,
+                                           MetaObjectCallback metaObjectCallback,
+                                           DObjectCallback dObjectCallback,
+                                           RowCountCallback rowCountCallback,
+                                           ColumnCountCallback columnCountCallback,
+                                           DataCallback dataCallback,
+                                           SetDataCallback setDataCallback,
+                                           RoleNamesCallback roleNamesCallback,
+                                           FlagsCallback flagsCallback,
+                                           HeaderDataCallback headerDataCallback);
+DOS_API void dos_qabstractlistmodel_beginInsertRows(void* vptr, void* parent, int first, int last);
+DOS_API void dos_qabstractlistmodel_endInsertRows(void* vptr);
+DOS_API void dos_qabstractlistmodel_beginRemoveRows(void* vptr, void* parent, int first, int last);
+DOS_API void dos_qabstractlistmodel_endRemoveRows(void* vptr);
+DOS_API void dos_qabstractlistmodel_beginResetModel(void* vptr);
+DOS_API void dos_qabstractlistmodel_endResetModel(void* vptr);
+DOS_API void dos_qabstractlistmodel_dataChanged(void* vptr, void* topLeft, void* bottomRight, int* rolesPtr, int rolesLength);
+DOS_API void dos_qabstractlistmodel_delete(void* vptr);
 
 // QObject
 DOS_API void dos_qobject_qmetaobject(void** vptr);
-
 DOS_API void dos_qobject_create(void** vptr, void* dObjectPointer,
                                 MetaObjectCallback metaObjectCallback,
                                 DObjectCallback dObjectCallback);

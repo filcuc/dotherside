@@ -31,7 +31,7 @@ public:
 class BaseDosQMetaObject : public IDosQMetaObject
 {
 public:
-    BaseDosQMetaObject(QMetaObject* metaObject)
+    BaseDosQMetaObject(const QMetaObject* metaObject)
         : m_metaObject(metaObject)
     {}
     const QMetaObject *metaObject() const override { return m_metaObject; }
@@ -41,7 +41,7 @@ public:
     const IDosQMetaObject* superClassDosMetaObject() const { return nullptr; }
 
 private:
-    SafeQMetaObjectPtr m_metaObject;
+    const QMetaObject* m_metaObject;
 };
 
 /// This is the DosQMetaObject for a QObject
