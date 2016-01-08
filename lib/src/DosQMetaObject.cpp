@@ -14,10 +14,12 @@ QByteArray createSignature(const T& functionDefinition)
     QString signature("%1(%2)");
     QString arguments;
 
-    for (int type : functionDefinition.parameterTypes) {
-        if (type != functionDefinition.parameterTypes.front())
-            arguments += QLatin1Char(',');
-        arguments += QMetaType::typeName(type);
+    const auto& parameters = functionDefinition.parameterTypes;
+
+    for (size_t i = 0; i < parameters.size(); ++i) {
+        if (i != 0)
+            arguments += ",";
+        arguments += QMetaType::typeName(parameters[i]);
     }
 
     return signature.arg(functionDefinition.name, arguments).toUtf8();
