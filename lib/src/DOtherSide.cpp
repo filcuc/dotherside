@@ -18,6 +18,7 @@
 #include "DOtherSide/DosQMetaObject.h"
 #include "DOtherSide/DosQObject.h"
 #include "DOtherSide/DosQObjectImpl.h"
+#include "DOtherSide/DosQAbstractListModel.h"
 
 using namespace DOS;
 
@@ -359,6 +360,11 @@ void dos_qvariant_setQAbstractListModel(void* vptr, void* value)
     variant->setValue<QObject*>(qobject);
 }
 
+void dos_qobject_qmetaobject(void **vptr)
+{
+    *vptr = new DosIQMetaObjectHolder(std::make_shared<DosQObjectMetaObject>());
+}
+
 void dos_qobject_create(void** vptr, void* dObjectPointer,
                         MetaObjectCallback dMetaObjectCallback,
                         DObjectCallback dObjectCallback)
@@ -553,12 +559,92 @@ void dos_qmetaobject_delete(void *vptr)
     delete factory;
 }
 
-void dos_qobject_qmetaobject(void **vptr)
-{
-    *vptr = new DosIQMetaObjectHolder(std::make_shared<DosQObjectMetaObject>());
-}
-
 void dos_qabstractlistmodel_qmetaobject(void **vptr)
 {
     *vptr = new DosIQMetaObjectHolder(std::make_shared<DosQAbstractListModelMetaObject>());
 }
+
+void dos_qabstractlistmodel_create(void** vptr,
+                                   void* dObjectPointer,
+                                   MetaObjectCallback dMetaObjectCallback,
+                                   DObjectCallback dObjectCallback,
+                                   RowCountCallback rowCountCallback,
+                                   ColumnCountCallback columnCountCallback,
+                                   DataCallback dataCallback,
+                                   SetDataCallback setDataCallback,
+                                   RoleNamesCallback roleNamesCallaback,
+                                   FlagsCallback flagsCallback,
+                                   HeaderDataCallback headerDataCallback)
+{
+    auto model = new DosQAbstractListModel(dObjectPointer,
+                                           OnMetaObjectHandler(dObjectPointer, dMetaObjectCallback),
+                                           OnSlotExecutedHandler(dObjectPointer, dObjectCallback),
+                                           rowCountCallback,
+                                           columnCountCallback,
+                                           dataCallback,
+                                           setDataCallback,
+                                           roleNamesCallaback,
+                                           flagsCallback,
+                                           headerDataCallback);
+    QQmlEngine::setObjectOwnership(model, QQmlEngine::CppOwnership);
+    *vptr = model;
+}
+
+void dos_qabstractlistmodel_delete(void* vptr)
+{
+    auto model = reinterpret_cast<DosQAbstractListModel*>(vptr);
+    delete model;
+}
+
+void dos_qabstractlistmodel_beginInsertRows(void* vptr, QModelIndexVoidPtr parentIndex, int first, int last)
+{
+    auto model = reinterpret_cast<DosQAbstractListModel*>(vptr);
+    auto index = reinterpret_cast<QModelIndex*>(parentIndex);
+    model->publicBeginInsertRows(*index, first, last);
+}
+
+void dos_qabstractlistmodel_endInsertRows(void* vptr)
+{
+    auto model = reinterpret_cast<DosQAbstractListModel*>(vptr);
+    model->publicEndInsertRows();
+}
+
+void dos_qabstractlistmodel_beginRemoveRows(void* vptr, QModelIndexVoidPtr parentIndex, int first, int last)
+{
+    auto model = reinterpret_cast<DosQAbstractListModel*>(vptr);
+    auto index = reinterpret_cast<QModelIndex*>(parentIndex);
+    model->publicBeginRemoveRows(*index, first, last);
+}
+
+void dos_qabstractlistmodel_endRemoveRows(void* vptr)
+{
+    auto model = reinterpret_cast<DosQAbstractListModel*>(vptr);
+    model->publicEndRemoveRows();
+}
+
+void dos_qabstractlistmodel_beginResetModel(void* vptr)
+{
+    auto model = reinterpret_cast<DosQAbstractListModel*>(vptr);
+    model->publicBeginResetModel();
+}
+
+void dos_qabstractlistmodel_endResetModel(void* vptr)
+{
+    auto model = reinterpret_cast<DosQAbstractListModel*>(vptr);
+    model->publicEndResetModel();
+}
+
+void dos_qabstractlistmodel_dataChanged(void* vptr,
+                                        QModelIndexVoidPtr topLeftIndex,
+                                        QModelIndexVoidPtr bottomRightIndex,
+                                        int* rolesArrayPtr,
+                                        int rolesArrayLength)
+{
+    auto model = reinterpret_cast<DosQAbstractListModel*>(vptr);
+    auto topLeft = reinterpret_cast<QModelIndex*>(topLeftIndex);
+    auto bottomRight = reinterpret_cast<QModelIndex*>(bottomRightIndex);
+    auto roles = QVector<int>::fromStdVector(std::vector<int>(rolesArrayPtr, rolesArrayPtr + rolesArrayLength));
+    model->publicDataChanged(*topLeft, *bottomRight, roles);
+}
+
+

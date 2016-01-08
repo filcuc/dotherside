@@ -17,6 +17,7 @@ struct SignalDefinition
     SignalDefinition(QString n,
                      std::vector<QMetaType::Type> v)
         : name(std::move(n))
+        , returnType(QMetaType::Void)
         , parameterTypes(std::move(v))
     {}
 
@@ -28,6 +29,7 @@ struct SignalDefinition
     }
 
     QString name;
+    QMetaType::Type returnType;
     std::vector<QMetaType::Type> parameterTypes;
 };
 

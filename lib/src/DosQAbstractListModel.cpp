@@ -14,7 +14,7 @@ DosQAbstractListModel::DosQAbstractListModel(void *modelObject,
                                              RoleNamesCallback roleNamesCallback,
                                              FlagsCallback flagsCallback,
                                              HeaderDataCallback headerDataCallback)
-    : m_impl(std::make_unique<DosQObjectImpl>(this, std::move(onMetaObject), std::move(onSlotExecuted)))
+    : m_impl(new DosQObjectImpl(this, std::move(onMetaObject), std::move(onSlotExecuted)))
     , m_modelObject(std::move(modelObject))
     , m_rowCountCallback(std::move(rowCountCallback))
     , m_columnCountCallback(std::move(columnCountCallback))
@@ -29,16 +29,6 @@ DosQAbstractListModel::DosQAbstractListModel(void *modelObject,
 bool DosQAbstractListModel::emitSignal(const QString &name, const std::vector<QVariant> &argumentsValues)
 {
     return m_impl->emitSignal(name, argumentsValues);
-}
-
-const QMetaObject *DosQAbstractListModel::metaObject() const
-{
-    return m_impl->metaObject();
-}
-
-int DosQAbstractListModel::qt_metacall(QMetaObject::Call callType, int index, void **args)
-{
-    return m_impl->qt_metacall(callType, index, args);
 }
 
 int DosQAbstractListModel::rowCount(const QModelIndex &parent) const

@@ -14,6 +14,8 @@ DosQObjectImpl::DosQObjectImpl(QObject* parent,
     , m_onMetaObject(std::move(onMetaObject))
     , m_onSlotExecuted(std::move(onSlotExecuted))
 {
+    *static_cast<QMetaObject*>(this) = *m_onMetaObject()->data()->metaObject();
+    QObjectPrivate::get(parent)->metaObject = this;
 }
 
 bool DosQObjectImpl::emitSignal(const QString &name, const std::vector<QVariant> &args)
@@ -32,25 +34,19 @@ bool DosQObjectImpl::emitSignal(const QString &name, const std::vector<QVariant>
     return true;
 }
 
-const QMetaObject *DosQObjectImpl::metaObject() const
+int DosQObjectImpl::metaCall(QMetaObject::Call callType, int index, void **args)
 {
-    return dosMetaObject()->metaObject();
-}
-
-int DosQObjectImpl::qt_metacall(QMetaObject::Call callType, int index, void **args)
-{
-    using Fuction = int (QObject::*)(QMetaObject::Call, int, void**);
-
     switch (callType)
     {
     case QMetaObject::InvokeMetaMethod:
-        return executeSlot(index, args) ? 1 : -1;
+        executeSlot(index, args);
+        break;
     case QMetaObject::ReadProperty:
-        return readProperty(index, args) ? 1 : -1;
+        readProperty(index, args);
+        break;
     case QMetaObject::WriteProperty:
-        return writeProperty(index, args) ? 1 : -1;
-    default:
-        return m_parent->QObject::qt_metacall(callType, index, args);
+        writeProperty(index, args);
+        break;
     }
 
     return -1;
@@ -64,7 +60,7 @@ std::shared_ptr<const IDosQMetaObject> DosQObjectImpl::dosMetaObject() const
 
 bool DosQObjectImpl::executeSlot(int index, void **args)
 {
-    const QMetaMethod method = metaObject()->method(index);
+    const QMetaMethod method = this->method(index);
     if (!method.isValid()) {
         qDebug() << "C++: executeSlot: invalid method";
         return false;
@@ -80,8 +76,8 @@ bool DosQObjectImpl::executeSlot(const QMetaMethod &method, void **args)
 
     std::vector<QVariant> arguments;
     arguments.reserve(method.parameterCount());
-    for (int i = 0, j = hasReturnType ? 1 : 0; i < method.parameterCount(); ++i, ++j) {
-        QVariant argument(method.parameterType(i), args[j]);
+    for (int i = 0; i < method.parameterCount(); ++i) {
+        QVariant argument(method.parameterType(i), args[i+1]);
         arguments.emplace_back(std::move(argument));
     }
 
@@ -96,7 +92,7 @@ bool DosQObjectImpl::executeSlot(const QMetaMethod &method, void **args)
 
 bool DosQObjectImpl::readProperty(int index, void **args)
 {
-    const QMetaProperty property = metaObject()->property(index);
+    const QMetaProperty property = this->property(index);
     if (!property.isValid() || !property.isReadable())
         return false;
     QMetaMethod method = dosMetaObject()->readSlot(property.name());
@@ -109,7 +105,7 @@ bool DosQObjectImpl::readProperty(int index, void **args)
 
 bool DosQObjectImpl::writeProperty(int index, void **args)
 {
-    const QMetaProperty property = metaObject()->property(index);
+    const QMetaProperty property = this->property(index);
     if (!property.isValid() || !property.isWritable())
         return false;
     QMetaMethod method = dosMetaObject()->writeSlot(property.name());

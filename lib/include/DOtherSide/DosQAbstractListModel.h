@@ -27,30 +27,24 @@ public:
     /// @see IDynamicQObject::emitSignal
     bool emitSignal(const QString &name, const std::vector<QVariant> &argumentsValues) override;
 
-    /// @see QObject::metaObject
-    const QMetaObject *metaObject() const override;
-
-    /// @sett QObject::qt_metacall
-    int qt_metacall(QMetaObject::Call callType, int index, void **args) override;
-
     /// Return the model's row count
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
-    
+
     /// Return the model's column count
     int columnCount(const QModelIndex& parent = QModelIndex()) const override;
-    
+
     /// Return the QVariant at the given index
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
     /// Sets the QVariant value at the given index and role
     bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) override;
-    
+
     /// Return the item flags for the given index
     Qt::ItemFlags flags(const QModelIndex& index) const override;
-    
+
     /// Return the data for the given role and section in the header with the specified orientation
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
-    
+
     /// Return the dModelPointer
     void* modelObject();
 
@@ -81,7 +75,7 @@ public:
                            const QVector<int>& roles = QVector<int>());
 
 private:
-    std::unique_ptr<IDosQObject> m_impl;
+    IDosQObject* m_impl;
     void* m_modelObject;
     RowCountCallback m_rowCountCallback;
     ColumnCountCallback m_columnCountCallback;
