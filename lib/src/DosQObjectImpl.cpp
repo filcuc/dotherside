@@ -36,6 +36,10 @@ bool DosQObjectImpl::emitSignal(const QString &name, const std::vector<QVariant>
 
 int DosQObjectImpl::metaCall(QMetaObject::Call callType, int index, void **args)
 {
+    index = m_parent->QObject::qt_metacall(callType, index, args);
+    if (index < 0)
+        return index;
+
     switch (callType)
     {
     case QMetaObject::InvokeMetaMethod:
