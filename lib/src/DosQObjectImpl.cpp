@@ -64,7 +64,7 @@ std::shared_ptr<const IDosQMetaObject> DosQObjectImpl::dosMetaObject() const
 
 bool DosQObjectImpl::executeSlot(int index, void **args)
 {
-    const QMetaMethod method = this->method(index);
+    const QMetaMethod method = this->method(methodOffset() + index);
     if (!method.isValid()) {
         qDebug() << "C++: executeSlot: invalid method";
         return false;
@@ -85,7 +85,7 @@ bool DosQObjectImpl::executeSlot(const QMetaMethod &method, void **args)
         arguments.emplace_back(std::move(argument));
     }
 
-    QVariant result = m_onSlotExecuted(method.name(), arguments); // Execute method
+    const QVariant result = m_onSlotExecuted(method.name(), arguments); // Execute method
 
     if (hasReturnType && result.isValid()) {
         QMetaType::construct(method.returnType(), args[0], result.constData());
@@ -96,10 +96,10 @@ bool DosQObjectImpl::executeSlot(const QMetaMethod &method, void **args)
 
 bool DosQObjectImpl::readProperty(int index, void **args)
 {
-    const QMetaProperty property = this->property(index);
+    const QMetaProperty property = this->property(propertyOffset() + index);
     if (!property.isValid() || !property.isReadable())
         return false;
-    QMetaMethod method = dosMetaObject()->readSlot(property.name());
+    const QMetaMethod method = dosMetaObject()->readSlot(property.name());
     if (!method.isValid()) {
         qDebug() << "C++: readProperty: invalid read method for property " << property.name();
         return false;
@@ -109,10 +109,10 @@ bool DosQObjectImpl::readProperty(int index, void **args)
 
 bool DosQObjectImpl::writeProperty(int index, void **args)
 {
-    const QMetaProperty property = this->property(index);
+    const QMetaProperty property = this->property(propertyOffset() + index);
     if (!property.isValid() || !property.isWritable())
         return false;
-    QMetaMethod method = dosMetaObject()->writeSlot(property.name());
+    const QMetaMethod method = dosMetaObject()->writeSlot(property.name());
     if (!method.isValid()) {
         qDebug() << "C++: writeProperty: invalid write method for property " << property.name();
         return false;
