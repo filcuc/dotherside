@@ -1,6 +1,7 @@
 // std
 #include <tuple>
 #include <iostream>
+#include <memory>
 // Qt
 #include <QDebug>
 #include <QTest>
@@ -15,6 +16,7 @@
 #include "DOtherSide/DOtherSide.h"
 #include "DOtherSide/DosQObject.h"
 #include "DOtherSide/DosQMetaObject.h"
+#include "DOtherSide/DosQObject.h"
 
 template<typename Test>
 bool ExecuteTest(int argc, char* argv[]) {
@@ -191,10 +193,37 @@ int main(int argc, char* argv[])
 {
     Q_INIT_RESOURCE(Resources);
     bool success = true;
-    success &= ExecuteTest<TestQGuiApplication>(argc, argv);
-    success &= ExecuteTest<TestQApplication>(argc, argv);
-    success &= ExecuteGuiTest<TestQQmlApplicationEngine>(argc, argv);
-    success &= ExecuteGuiTest<TestQQmlContext>(argc, argv);
+    //success &= ExecuteTest<TestQGuiApplication>(argc, argv);
+    //success &= ExecuteTest<TestQApplication>(argc, argv);
+    //success &= ExecuteGuiTest<TestQQmlApplicationEngine>(argc, argv);
+    //success &= ExecuteGuiTest<TestQQmlContext>(argc, argv);
+
+    using namespace DOS;
+
+
+
+    auto mo = std::make_shared<DosQMetaObject>(std::make_shared<DosQObjectMetaObject>(),
+                                               "TestClass",
+                                               DOS::SignalDefinitions(),
+                                               DOS::SlotDefinitions(),
+                                               DOS::PropertyDefinitions());
+
+//    auto mo = std::make_shared<DosQObjectMetaObject>();
+
+    auto moh = std::make_unique<DosIQMetaObjectHolder>(mo);
+
+    auto omo = [&]() -> DosIQMetaObjectHolder* { return moh.get(); };
+
+    auto ose = [](const QString& name, const std::vector<QVariant>& args) -> QVariant {
+        qDebug() << name;
+        return QVariant();
+    };
+
+    DosQObject testObject(omo, ose);
+    testObject.setObjectName("testObject");
+
+    qDebug() << testObject.property("objectName");
+
     return success ? 0 : 1;
 }
 
