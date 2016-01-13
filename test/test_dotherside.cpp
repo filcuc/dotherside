@@ -200,29 +200,46 @@ int main(int argc, char* argv[])
 
     using namespace DOS;
 
+    QString value = "";
 
+    DOS::SignalDefinitions signalDefinitions {DOS::SignalDefinition {"nameChanged", {}}};
+    DOS::SlotDefinitions slotDefinitions {DOS::SlotDefinition {"name", QMetaType::QString, {}}, DOS::SlotDefinition {"setName", QMetaType::Void, {QMetaType::QString}}};
+    DOS::PropertyDefinitions propertyDefinitions {DOS::PropertyDefinition{"name", QMetaType::QString, "name", "setName", "nameChanged"}};
 
     auto mo = std::make_shared<DosQMetaObject>(std::make_shared<DosQObjectMetaObject>(),
                                                "TestClass",
-                                               DOS::SignalDefinitions(),
-                                               DOS::SlotDefinitions(),
-                                               DOS::PropertyDefinitions());
+                                               signalDefinitions,
+                                               slotDefinitions,
+                                               propertyDefinitions);
 
-//    auto mo = std::make_shared<DosQObjectMetaObject>();
+    //    auto mo = std::make_shared<DosQObjectMetaObject>();
 
     auto moh = std::make_unique<DosIQMetaObjectHolder>(mo);
 
     auto omo = [&]() -> DosIQMetaObjectHolder* { return moh.get(); };
 
-    auto ose = [](const QString& name, const std::vector<QVariant>& args) -> QVariant {
-        qDebug() << name;
+    auto ose = [&value](const QString& name, const std::vector<QVariant>& args) -> QVariant {
+        if (name == "name")
+            return value;
+        else if (name == "setName")
+            value = args.front().toString();
         return QVariant();
     };
 
     DosQObject testObject(omo, ose);
     testObject.setObjectName("testObject");
+    testObject.setProperty("name", "pippo");
 
-    qDebug() << testObject.property("objectName");
+    std::cout  << testObject.property("objectName").toString().toStdString() << std::endl
+               << testObject.property("name").toString().toStdString() << std::endl
+               << value.toStdString() << std::endl;
+
+    QMetaObject::invokeMethod(&testObject, "setName", Q_ARG(QString, "pluto"));
+
+
+    std::cout  << testObject.property("objectName").toString().toStdString() << std::endl
+               << testObject.property("name").toString().toStdString() << std::endl
+               << value.toStdString() << std::endl;
 
     return success ? 0 : 1;
 }
