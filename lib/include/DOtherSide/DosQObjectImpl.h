@@ -17,8 +17,11 @@ namespace DOS
 class DosQObjectImpl : public QAbstractDynamicMetaObject, public IDosQObject
 {
 public:
+    using ParentMetaCall = std::function<int(QMetaObject::Call, int, void **)>;
+
     /// Constructor
     DosQObjectImpl(QObject* parent,
+                   ParentMetaCall parentMetaCall,
                    OnMetaObject onMetaObject,
                    OnSlotExecuted onSlotExecuted);
 
@@ -37,6 +40,7 @@ private:
     bool writeProperty(int index, void** args);
 
     QObject* m_parent;
+    const ParentMetaCall m_parentMetaCall;
     const OnMetaObject m_onMetaObject;
     const OnSlotExecuted m_onSlotExecuted;
 };

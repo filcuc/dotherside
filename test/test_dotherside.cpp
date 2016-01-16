@@ -11,7 +11,7 @@
 #include <QQuickWindow>
 #include <QQmlApplicationEngine>
 #include <QQuickItem>
-
+#include <QQmlContext>
 // DOtherSide
 #include "DOtherSide/DOtherSide.h"
 #include "DOtherSide/DosQObject.h"
@@ -212,8 +212,6 @@ int main(int argc, char* argv[])
                                                slotDefinitions,
                                                propertyDefinitions);
 
-    //    auto mo = std::make_shared<DosQObjectMetaObject>();
-
     auto moh = std::make_unique<DosIQMetaObjectHolder>(mo);
 
     auto omo = [&]() -> DosIQMetaObjectHolder* { return moh.get(); };
@@ -241,7 +239,14 @@ int main(int argc, char* argv[])
                << testObject.property("name").toString().toStdString() << std::endl
                << value.toStdString() << std::endl;
 
-    return success ? 0 : 1;
+
+    QApplication app(argc, argv);
+
+    QQmlApplicationEngine engine;
+    engine.rootContext()->setContextProperty("testObject", QVariant::fromValue<QObject*>(&testObject));
+    engine.load(QUrl("qrc:///main.qml"));
+
+    return app.exec();
 }
 
 #include "test_dotherside.moc"

@@ -8,9 +8,11 @@ namespace DOS
 {
 
 DosQObjectImpl::DosQObjectImpl(QObject* parent,
+                               ParentMetaCall parentMetaCall,
                                OnMetaObject onMetaObject,
                                OnSlotExecuted onSlotExecuted)
     : m_parent(std::move(parent))
+    , m_parentMetaCall(std::move(parentMetaCall))
     , m_onMetaObject(std::move(onMetaObject))
     , m_onSlotExecuted(std::move(onSlotExecuted))
 {
@@ -35,8 +37,8 @@ bool DosQObjectImpl::emitSignal(const QString &name, const std::vector<QVariant>
 }
 
 int DosQObjectImpl::metaCall(QMetaObject::Call callType, int index, void **args)
-{
-    index = m_parent->QObject::qt_metacall(callType, index, args);
+{   
+    index = m_parentMetaCall(callType, index, args);
     if (index < 0)
         return index;
 

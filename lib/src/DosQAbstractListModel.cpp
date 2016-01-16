@@ -1,6 +1,16 @@
 #include "DOtherSide/DosQAbstractListModel.h"
 #include "DOtherSide/DosQObjectImpl.h"
 
+namespace
+{
+    DOS::DosQObjectImpl::ParentMetaCall createParentMetaCall(QAbstractListModel* parent)
+    {
+        return [parent](QMetaObject::Call callType, int index, void** args)->int {
+            return parent->QAbstractListModel::qt_metacall(callType, index, args);
+        };
+    }
+}
+
 namespace DOS
 {
 
@@ -14,7 +24,7 @@ DosQAbstractListModel::DosQAbstractListModel(void *modelObject,
                                              RoleNamesCallback roleNamesCallback,
                                              FlagsCallback flagsCallback,
                                              HeaderDataCallback headerDataCallback)
-    : m_impl(new DosQObjectImpl(this, std::move(onMetaObject), std::move(onSlotExecuted)))
+    : m_impl(new DosQObjectImpl(this, ::createParentMetaCall(this), std::move(onMetaObject), std::move(onSlotExecuted)))
     , m_modelObject(std::move(modelObject))
     , m_rowCountCallback(std::move(rowCountCallback))
     , m_columnCountCallback(std::move(columnCountCallback))
