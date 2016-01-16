@@ -34,6 +34,7 @@ public:
     BaseDosQMetaObject(const QMetaObject* metaObject)
         : m_metaObject(metaObject)
     {}
+
     const QMetaObject *metaObject() const override { return m_metaObject; }
     QMetaMethod signal(const QString &signalName) const override { return QMetaMethod(); }
     QMetaMethod readSlot(const char *propertyName) const override { return QMetaMethod(); }

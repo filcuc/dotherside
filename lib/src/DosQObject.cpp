@@ -28,4 +28,16 @@ bool DosQObject::emitSignal(const QString &name, const std::vector<QVariant> &ar
     return m_impl->emitSignal(name, args);
 }
 
+const QMetaObject *DosQObject::metaObject() const
+{
+    Q_ASSERT(m_impl);
+    return m_impl->metaObject();
+}
+
+int DosQObject::qt_metacall(QMetaObject::Call call, int index, void** args)
+{
+    Q_ASSERT(m_impl);
+    return m_impl->qt_metacall(call, index, args);
+}
+
 } // namespace DOS

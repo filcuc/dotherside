@@ -36,7 +36,6 @@ QMetaObject* createDynamicQObjectMetaObject()
 {
     QMetaObjectBuilder builder;
     builder.setClassName("DosQObject");
-    builder.setFlags(QMetaObjectBuilder::DynamicMetaObject);
     builder.setSuperClass(&QObject::staticMetaObject);
     return builder.toMetaObject();
 }
@@ -44,7 +43,6 @@ QMetaObject* createDynamicQObjectMetaObject()
 QMetaObject* createDynamicQAbstractListModelMetaObject()
 {
     QMetaObjectBuilder builder;
-    builder.setFlags(QMetaObjectBuilder::DynamicMetaObject);
     builder.setClassName("DosQAbstractListModel");
     builder.setSuperClass(&QAbstractListModel::staticMetaObject);
     return builder.toMetaObject();
@@ -80,7 +78,6 @@ QMetaObject *DosQMetaObject::createMetaObject(const QString &className,
 {
     QMetaObjectBuilder builder;
     builder.setClassName(className.toUtf8());
-    builder.setFlags(QMetaObjectBuilder::DynamicMetaObject);
     builder.setSuperClass(m_superClassDosMetaObject->metaObject());
 
     for (const SignalDefinition& signal : signalDefinitions)
