@@ -5,11 +5,21 @@
 #include <QtCore/QMetaMethod>
 #include <QtCore/QDebug>
 
+namespace
+{
+    DOS::DosQObjectImpl::ParentMetaCall createParentMetaCall(QObject* parent)
+    {
+        return [parent](QMetaObject::Call callType, int index, void** args) -> int {
+            return parent->QObject::qt_metacall(callType, index, args);
+        };
+    }
+}
+
 namespace DOS
 {
 
 DosQObject::DosQObject(OnMetaObject onMetaObject, OnSlotExecuted onSlotExecuted)
-    : m_impl(new DosQObjectImpl(this, std::move(onMetaObject), std::move(onSlotExecuted)))
+    : m_impl(new DosQObjectImpl(this, ::createParentMetaCall(this), std::move(onMetaObject), std::move(onSlotExecuted)))
 {}
 
 bool DosQObject::emitSignal(const QString &name, const std::vector<QVariant> &args)
