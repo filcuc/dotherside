@@ -13,16 +13,14 @@ DosQObjectImpl::DosQObjectImpl(QObject* parent,
                                OnSlotExecuted onSlotExecuted)
     : m_parent(std::move(parent))
     , m_parentMetaCall(std::move(parentMetaCall))
-    , m_onMetaObject(std::move(onMetaObject))
     , m_onSlotExecuted(std::move(onSlotExecuted))
+    , m_metaObject(onMetaObject()->data())
 {
-    *static_cast<QMetaObject*>(this) = *m_onMetaObject()->data()->metaObject();
-    QObjectPrivate::get(parent)->metaObject = this;
 }
 
 bool DosQObjectImpl::emitSignal(const QString &name, const std::vector<QVariant> &args)
 {
-    const QMetaMethod method = dosMetaObject()->signal(name);
+    const QMetaMethod method = m_metaObject->signal(name);
     if (!method.isValid())
         return false;
 
@@ -36,8 +34,13 @@ bool DosQObjectImpl::emitSignal(const QString &name, const std::vector<QVariant>
     return true;
 }
 
-int DosQObjectImpl::metaCall(QMetaObject::Call callType, int index, void **args)
-{   
+const QMetaObject *DosQObjectImpl::metaObject() const
+{
+    return m_metaObject->metaObject();
+}
+
+int DosQObjectImpl::qt_metacall(QMetaObject::Call callType, int index, void ** args)
+{
     index = m_parentMetaCall(callType, index, args);
     if (index < 0)
         return index;
@@ -58,15 +61,10 @@ int DosQObjectImpl::metaCall(QMetaObject::Call callType, int index, void **args)
     return -1;
 }
 
-std::shared_ptr<const IDosQMetaObject> DosQObjectImpl::dosMetaObject() const
-{
-    static std::shared_ptr<const IDosQMetaObject> result = m_onMetaObject()->data();
-    return result;
-}
-
 bool DosQObjectImpl::executeSlot(int index, void **args)
 {
-    const QMetaMethod method = this->method(methodOffset() + index);
+    const QMetaObject* const mo = this->metaObject();
+    const QMetaMethod method = mo->method(mo->methodOffset() + index);
     if (!method.isValid()) {
         qDebug() << "C++: executeSlot: invalid method";
         return false;
@@ -98,10 +96,11 @@ bool DosQObjectImpl::executeSlot(const QMetaMethod &method, void **args)
 
 bool DosQObjectImpl::readProperty(int index, void **args)
 {
-    const QMetaProperty property = this->property(propertyOffset() + index);
+    const QMetaObject* const mo = metaObject();
+    const QMetaProperty property = mo->property(mo->propertyOffset() + index);
     if (!property.isValid() || !property.isReadable())
         return false;
-    const QMetaMethod method = dosMetaObject()->readSlot(property.name());
+    const QMetaMethod method = m_metaObject->readSlot(property.name());
     if (!method.isValid()) {
         qDebug() << "C++: readProperty: invalid read method for property " << property.name();
         return false;
@@ -111,10 +110,11 @@ bool DosQObjectImpl::readProperty(int index, void **args)
 
 bool DosQObjectImpl::writeProperty(int index, void **args)
 {
-    const QMetaProperty property = this->property(propertyOffset() + index);
+    const QMetaObject* const mo = metaObject();
+    const QMetaProperty property = mo->property(mo->propertyOffset() + index);
     if (!property.isValid() || !property.isWritable())
         return false;
-    const QMetaMethod method = dosMetaObject()->writeSlot(property.name());
+    const QMetaMethod method = m_metaObject->writeSlot(property.name());
     if (!method.isValid()) {
         qDebug() << "C++: writeProperty: invalid write method for property " << property.name();
         return false;

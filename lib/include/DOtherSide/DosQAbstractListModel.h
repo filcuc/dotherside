@@ -27,6 +27,12 @@ public:
     /// @see IDynamicQObject::emitSignal
     bool emitSignal(const QString &name, const std::vector<QVariant> &argumentsValues) override;
 
+    /// @see QAbstractListModel::metaObject()
+    const QMetaObject *metaObject() const override;
+
+    /// @see QAbstractListModel::qt_metacall
+    int qt_metacall(QMetaObject::Call, int, void **) override;
+
     /// Return the model's row count
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
 

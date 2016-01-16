@@ -17,6 +17,7 @@
 #include "DOtherSide/DosQObject.h"
 #include "DOtherSide/DosQMetaObject.h"
 #include "DOtherSide/DosQObject.h"
+#include "DOtherSide/DosQAbstractListModel.h"
 
 template<typename Test>
 bool ExecuteTest(int argc, char* argv[]) {
@@ -206,7 +207,7 @@ int main(int argc, char* argv[])
     DOS::SlotDefinitions slotDefinitions {DOS::SlotDefinition {"name", QMetaType::QString, {}}, DOS::SlotDefinition {"setName", QMetaType::Void, {QMetaType::QString}}};
     DOS::PropertyDefinitions propertyDefinitions {DOS::PropertyDefinition{"name", QMetaType::QString, "name", "setName", "nameChanged"}};
 
-    auto mo = std::make_shared<DosQMetaObject>(std::make_shared<DosQObjectMetaObject>(),
+    auto mo = std::make_shared<DosQMetaObject>(std::make_shared<DosQAbstractListModelMetaObject>(),
                                                "TestClass",
                                                signalDefinitions,
                                                slotDefinitions,
@@ -224,7 +225,17 @@ int main(int argc, char* argv[])
         return QVariant();
     };
 
-    DosQObject testObject(omo, ose);
+    void* dPointer = nullptr;
+
+    RowCountCallback rcc;
+    ColumnCountCallback ccc;
+    DataCallback dc;
+    SetDataCallback sdc;
+    RoleNamesCallback rnc;
+    FlagsCallback fc;
+    HeaderDataCallback hdc;
+
+    DosQAbstractListModel testObject(dPointer, omo, ose, rcc, ccc, dc, sdc, rnc, fc, hdc);
     testObject.setObjectName("testObject");
     testObject.setProperty("name", "pippo");
 

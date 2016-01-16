@@ -38,7 +38,20 @@ DosQAbstractListModel::DosQAbstractListModel(void *modelObject,
 
 bool DosQAbstractListModel::emitSignal(const QString &name, const std::vector<QVariant> &argumentsValues)
 {
+    Q_ASSERT(m_impl);
     return m_impl->emitSignal(name, argumentsValues);
+}
+
+const QMetaObject *DosQAbstractListModel::metaObject() const
+{
+    Q_ASSERT(m_impl);
+    return m_impl->metaObject();
+}
+
+int DosQAbstractListModel::qt_metacall(QMetaObject::Call call, int index, void** args)
+{
+    Q_ASSERT(m_impl);
+    return m_impl->qt_metacall(call, index, args);
 }
 
 int DosQAbstractListModel::rowCount(const QModelIndex &parent) const
