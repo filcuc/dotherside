@@ -12,34 +12,48 @@
 // DOtherSide
 #include "DOtherSide/DOtherSideTypesCpp.h"
 
-namespace DOS
-{
+namespace DOS {
 
 /// This the QMetaObject wrapper
 class DosIQMetaObject
 {
 public:
     virtual ~DosIQMetaObject() = default;
-    virtual const QMetaObject* metaObject() const = 0;
-    virtual QMetaMethod signal(const QString& signalName) const = 0;
-    virtual QMetaMethod readSlot(const char* propertyName) const = 0;
-    virtual QMetaMethod writeSlot(const char* propertyName) const = 0;
-    virtual const DosIQMetaObject* superClassDosMetaObject() const = 0;
+    virtual const QMetaObject *metaObject() const = 0;
+    virtual QMetaMethod signal(const QString &signalName) const = 0;
+    virtual QMetaMethod readSlot(const char *propertyName) const = 0;
+    virtual QMetaMethod writeSlot(const char *propertyName) const = 0;
+    virtual const DosIQMetaObject *superClassDosMetaObject() const = 0;
 };
 
 /// Base class for any DosIQMetaObject
 class BaseDosQMetaObject : public DosIQMetaObject
 {
 public:
-    BaseDosQMetaObject(QMetaObject* metaObject)
+    BaseDosQMetaObject(QMetaObject *metaObject)
         : m_metaObject(metaObject)
     {}
 
-    const QMetaObject *metaObject() const override { return m_metaObject; }
-    QMetaMethod signal(const QString &signalName) const override { return QMetaMethod(); }
-    QMetaMethod readSlot(const char *propertyName) const override { return QMetaMethod(); }
-    QMetaMethod writeSlot(const char *propertyName) const override { return QMetaMethod(); }
-    const DosIQMetaObject* superClassDosMetaObject() const { return nullptr; }
+    const QMetaObject *metaObject() const override
+    {
+        return m_metaObject;
+    }
+    QMetaMethod signal(const QString &signalName) const override
+    {
+        return QMetaMethod();
+    }
+    QMetaMethod readSlot(const char *propertyName) const override
+    {
+        return QMetaMethod();
+    }
+    QMetaMethod writeSlot(const char *propertyName) const override
+    {
+        return QMetaMethod();
+    }
+    const DosIQMetaObject *superClassDosMetaObject() const
+    {
+        return nullptr;
+    }
 
 protected:
     SafeQMetaObjectPtr m_metaObject;
@@ -64,25 +78,25 @@ class DosQMetaObject : public BaseDosQMetaObject
 {
 public:
     DosQMetaObject(DosIQMetaObjectPtr superClassDosMetaObject,
-                   const QString& className,
+                   const QString &className,
                    const SignalDefinitions &signalDefinitions,
                    const SlotDefinitions &slotDefinitions,
                    const PropertyDefinitions &propertyDefinitions);
 
-    QMetaMethod signal(const QString& signalName) const override;
-    QMetaMethod readSlot(const char* propertyName) const override;
-    QMetaMethod writeSlot(const char* propertyName) const override;
+    QMetaMethod signal(const QString &signalName) const override;
+    QMetaMethod readSlot(const char *propertyName) const override;
+    QMetaMethod writeSlot(const char *propertyName) const override;
     const DosIQMetaObject *superClassDosMetaObject() const override;
 
 private:
-    QMetaObject *createMetaObject(const QString& className,
+    QMetaObject *createMetaObject(const QString &className,
                                   const SignalDefinitions &signalDefinitions,
                                   const SlotDefinitions &slotDefinitions,
                                   const PropertyDefinitions &propertyDefinitions);
 
     const DosIQMetaObjectPtr m_superClassDosMetaObject;
     QHash<QString, int> m_signalIndexByName;
-    QHash<QString, QPair<int,int>> m_propertySlots;
+    QHash<QString, QPair<int, int>> m_propertySlots;
 };
 
 /// This class simply holds a ptr to a IDosQMetaObject
@@ -94,7 +108,10 @@ public:
         : m_data(std::move(ptr))
     {}
 
-    const DosIQMetaObjectPtr& data() const { return m_data; }
+    const DosIQMetaObjectPtr &data() const
+    {
+        return m_data;
+    }
 
 private:
     const DosIQMetaObjectPtr m_data;

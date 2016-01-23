@@ -20,13 +20,15 @@
 #include "DOtherSide/DosQAbstractListModel.h"
 
 template<typename Test>
-bool ExecuteTest(int argc, char* argv[]) {
+bool ExecuteTest(int argc, char *argv[])
+{
     Test test;
     return QTest::qExec(&test, argc, argv) == 0;
 }
 
 template<typename Test>
-bool ExecuteGuiTest(int argc, char* argv[]) {
+bool ExecuteGuiTest(int argc, char *argv[])
+{
     QApplication app(argc, argv);
     Test test;
     return QTest::qExec(&test, argc, argv) == 0;
@@ -40,10 +42,14 @@ class TestQGuiApplication : public QObject
     Q_OBJECT
 
 private slots:
-    void testExecution() {
+    void testExecution()
+    {
         bool quit = false;
         dos_qguiapplication_create();
-        QTimer::singleShot(100, [&quit](){ quit = true; dos_qguiapplication_quit(); });
+        QTimer::singleShot(100, [&quit]() {
+            quit = true;
+            dos_qguiapplication_quit();
+        });
         dos_qguiapplication_exec();
         QVERIFY(quit);
         dos_qguiapplication_delete();
@@ -58,10 +64,14 @@ class TestQApplication : public QObject
     Q_OBJECT
 
 private slots:
-    void testExecution() {
+    void testExecution()
+    {
         bool quit = false;
         dos_qapplication_create();
-        QTimer::singleShot(100, [&quit](){ quit = true; dos_qapplication_quit(); });
+        QTimer::singleShot(100, [&quit]() {
+            quit = true;
+            dos_qapplication_quit();
+        });
         dos_qapplication_exec();
         QVERIFY(quit);
         dos_qapplication_delete();
@@ -76,31 +86,37 @@ class TestQQmlApplicationEngine : public QObject
     Q_OBJECT
 
 private slots:
-    void initTestCase() {
+    void initTestCase()
+    {
         m_engine = nullptr;
     }
 
-    void cleanupTestCase() {
+    void cleanupTestCase()
+    {
         QVERIFY(m_engine == nullptr);
     }
 
-    void init() {
+    void init()
+    {
         QVERIFY(m_engine == nullptr);
         dos_qqmlapplicationengine_create(&m_engine);
         QVERIFY(m_engine != nullptr);
     }
 
-    void cleanup() {
+    void cleanup()
+    {
         dos_qqmlapplicationengine_delete(m_engine);
         m_engine = nullptr;
     }
 
-    void testCreateAndDelete() {
+    void testCreateAndDelete()
+    {
         // Implicit by invoking init and cleanup
     }
 
-    void testLoadUrl() {
-        void* url = nullptr;
+    void testLoadUrl()
+    {
+        void *url = nullptr;
         dos_qurl_create(&url, "qrc:///main.qml", QUrl::TolerantMode);
         QVERIFY(url != nullptr);
         dos_qqmlapplicationengine_load_url(m_engine, url);
@@ -110,31 +126,36 @@ private slots:
         dos_qurl_delete(url);
     }
 
-    void testLoadData() {
+    void testLoadData()
+    {
         dos_qqmlapplicationengine_load_data(m_engine, "import QtQuick.Controls 1.4; ApplicationWindow { objectName: \"testWindow\"}");
         QCOMPARE(engine()->rootObjects().size(), 1);
         QCOMPARE(engine()->rootObjects().front()->objectName(), QString::fromLocal8Bit("testWindow"));
         QVERIFY(engine()->rootObjects().front()->isWindowType());
     }
 
-    void testRootObjects() {
-        void** rootObjects = nullptr;
+    void testRootObjects()
+    {
+        void **rootObjects = nullptr;
         int length = 0;
-        void* url = nullptr;
+        void *url = nullptr;
         dos_qurl_create(&url, "qrc:///main.qml", QUrl::TolerantMode);
         dos_qqmlapplicationengine_load_url(m_engine, url);
         dos_qurl_delete(url);
         dos_qqmlapplicationengine_rootObjects(m_engine, &rootObjects, &length);
         QCOMPARE(length, 1);
-        QObject* window = reinterpret_cast<QObject*>(rootObjects[0]);
+        QObject *window = reinterpret_cast<QObject *>(rootObjects[0]);
         QVERIFY(window->isWindowType());
         dos_qobjectptr_array_delete(rootObjects);
     }
 
 private:
-    QQmlApplicationEngine* engine() { return static_cast<QQmlApplicationEngine*>(m_engine); }
+    QQmlApplicationEngine *engine()
+    {
+        return static_cast<QQmlApplicationEngine *>(m_engine);
+    }
 
-    void* m_engine;
+    void *m_engine;
 };
 
 /*
@@ -145,52 +166,64 @@ class TestQQmlContext : public QObject
     Q_OBJECT
 
 private slots:
-    void initTestCase() {
+    void initTestCase()
+    {
         m_engine = nullptr;
         m_context = nullptr;
     }
 
-    void cleanupTestCase() {
+    void cleanupTestCase()
+    {
         QVERIFY(m_engine == nullptr);
         QVERIFY(m_context == nullptr);
     }
 
-    void init() {
+    void init()
+    {
         dos_qqmlapplicationengine_create(&m_engine);
         dos_qqmlapplicationengine_context(m_engine, &m_context);
         QVERIFY(m_engine != nullptr);
         QVERIFY(m_context != nullptr);
     }
 
-    void cleanup() {
+    void cleanup()
+    {
         m_context = nullptr;
         dos_qqmlapplicationengine_delete(m_engine);
         m_engine = nullptr;
     }
 
-    void testCreateAndDelete() {
+    void testCreateAndDelete()
+    {
         // Implicit by invoking init and cleanup
     }
 
-    void testSetContextProperty() {
+    void testSetContextProperty()
+    {
         QVariant testData("Test Message");
         dos_qqmlcontext_setcontextproperty(m_context, "testData", &testData);
         engine()->loadData("import QtQuick 2.5; Text { objectName: \"label\"; text: testData } ");
-        QObject* label = engine()->rootObjects().first();
+        QObject *label = engine()->rootObjects().first();
         QVERIFY(label != nullptr);
         QCOMPARE(label->objectName(), QString::fromLocal8Bit("label"));
         QCOMPARE(label->property("text").toString(), testData.toString());
     }
 
 private:
-    QQmlApplicationEngine* engine() { return static_cast<QQmlApplicationEngine*>(m_engine); }
-    QQmlContext* context() { return static_cast<QQmlContext*>(m_context); }
+    QQmlApplicationEngine *engine()
+    {
+        return static_cast<QQmlApplicationEngine *>(m_engine);
+    }
+    QQmlContext *context()
+    {
+        return static_cast<QQmlContext *>(m_context);
+    }
 
-    void* m_engine;
-    void* m_context;
+    void *m_engine;
+    void *m_context;
 };
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     using namespace DOS;
 
@@ -214,7 +247,7 @@ int main(int argc, char* argv[])
 
     auto moh = std::make_unique<DosIQMetaObjectHolder>(mo);
 
-    auto ose = [&value](const QString& name, const std::vector<QVariant>& args) -> QVariant {
+    auto ose = [&value](const QString & name, const std::vector<QVariant> &args) -> QVariant {
         if (name == "name")
             return value;
         else if (name == "setName")
@@ -222,7 +255,7 @@ int main(int argc, char* argv[])
         return QVariant();
     };
 
-    void* dPointer = nullptr;
+    void *dPointer = nullptr;
 
     RowCountCallback rcc;
     ColumnCountCallback ccc;
@@ -251,7 +284,7 @@ int main(int argc, char* argv[])
     QApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
-    engine.rootContext()->setContextProperty("testObject", QVariant::fromValue<QObject*>(&testObject));
+    engine.rootContext()->setContextProperty("testObject", QVariant::fromValue<QObject *>(&testObject));
     engine.load(QUrl("qrc:///main.qml"));
 
     return app.exec();

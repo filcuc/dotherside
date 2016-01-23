@@ -5,16 +5,15 @@
 #include "private/qobject_p.h"
 #include <QtCore/QAbstractListModel>
 
-namespace
-{
+namespace {
 
 template<class T>
-QByteArray createSignature(const T& functionDefinition)
+QByteArray createSignature(const T &functionDefinition)
 {
     QString signature("%1(%2)");
     QString arguments;
 
-    const auto& parameters = functionDefinition.parameterTypes;
+    const auto &parameters = functionDefinition.parameterTypes;
 
     for (size_t i = 0; i < parameters.size(); ++i) {
         if (i != 0)
@@ -26,13 +25,13 @@ QByteArray createSignature(const T& functionDefinition)
 }
 
 template<class Key, class Value>
-Value valueOrDefault(std::unordered_map<Key,Value> const& map, const Key& k, Value value)
+Value valueOrDefault(std::unordered_map<Key, Value> const &map, const Key &k, Value value)
 {
     auto it = map.find(k);
     return it != std::end(map) ? it->second : std::move(value);
 }
 
-QMetaObject* createDynamicQObjectMetaObject()
+QMetaObject *createDynamicQObjectMetaObject()
 {
     QMetaObjectBuilder builder;
     builder.setClassName("DosQObject");
@@ -40,7 +39,7 @@ QMetaObject* createDynamicQObjectMetaObject()
     return builder.toMetaObject();
 }
 
-QMetaObject* createDynamicQAbstractListModelMetaObject()
+QMetaObject *createDynamicQAbstractListModelMetaObject()
 {
     QMetaObjectBuilder builder;
     builder.setClassName("DosQAbstractListModel");
@@ -50,8 +49,7 @@ QMetaObject* createDynamicQAbstractListModelMetaObject()
 
 }
 
-namespace DOS
-{
+namespace DOS {
 
 DosQObjectMetaObject::DosQObjectMetaObject()
     : BaseDosQMetaObject(::createDynamicQObjectMetaObject())
@@ -63,13 +61,13 @@ DosQAbstractListModelMetaObject::DosQAbstractListModelMetaObject()
 
 DosQMetaObject::DosQMetaObject(DosIQMetaObjectPtr superClassMetaObject,
                                const QString &className,
-                               const SignalDefinitions& signalDefinitions,
-                               const SlotDefinitions& slotDefinitions,
-                               const PropertyDefinitions& propertyDefinitions)
+                               const SignalDefinitions &signalDefinitions,
+                               const SlotDefinitions &slotDefinitions,
+                               const PropertyDefinitions &propertyDefinitions)
     : BaseDosQMetaObject(nullptr)
     , m_superClassDosMetaObject(std::move(superClassMetaObject))
     , m_signalIndexByName(QHash<QString, int>())
-    , m_propertySlots(QHash<QString, QPair<int,int>>())
+    , m_propertySlots(QHash<QString, QPair<int, int>>())
 {
     // We do the metaobject initialization here because
     // we must wait for both maps to be initialized before filling them
@@ -77,16 +75,15 @@ DosQMetaObject::DosQMetaObject(DosIQMetaObjectPtr superClassMetaObject,
 }
 
 QMetaObject *DosQMetaObject::createMetaObject(const QString &className,
-                                              const SignalDefinitions& signalDefinitions,
-                                              const SlotDefinitions& slotDefinitions,
-                                              const PropertyDefinitions& propertyDefinitions)
+                                              const SignalDefinitions &signalDefinitions,
+                                              const SlotDefinitions &slotDefinitions,
+                                              const PropertyDefinitions &propertyDefinitions)
 {
     QMetaObjectBuilder builder;
     builder.setClassName(className.toUtf8());
     builder.setSuperClass(m_superClassDosMetaObject->metaObject());
 
-    for (const SignalDefinition& signal : signalDefinitions)
-    {
+    for (const SignalDefinition &signal : signalDefinitions) {
         QMetaMethodBuilder signalBuilder = builder.addSignal(::createSignature(signal));
         signalBuilder.setReturnType(QMetaType::typeName(QMetaType::Void));
         signalBuilder.setAccess(QMetaMethod::Public);
@@ -94,16 +91,14 @@ QMetaObject *DosQMetaObject::createMetaObject(const QString &className,
     }
 
     QHash<QString, int> methodIndexByName;
-    for (const SlotDefinition& slot : slotDefinitions)
-    {
+    for (const SlotDefinition &slot : slotDefinitions) {
         QMetaMethodBuilder methodBuilder = builder.addSlot(::createSignature(slot));
         methodBuilder.setReturnType(QMetaType::typeName(slot.returnType));
         methodBuilder.setAttributes(QMetaMethod::Scriptable);
         methodIndexByName[slot.name] = methodBuilder.index();
     }
 
-    for (const PropertyDefinition& property : propertyDefinitions)
-    {
+    for (const PropertyDefinition &property : propertyDefinitions) {
         const int notifier = m_signalIndexByName.value(property.notifySignal, -1);
         const QByteArray name = property.name.toUtf8();
         const QByteArray typeName = QMetaObject::normalizedType(QMetaType::typeName(property.type));
@@ -118,7 +113,7 @@ QMetaObject *DosQMetaObject::createMetaObject(const QString &className,
 }
 
 QMetaMethod DosQMetaObject::signal(const QString &signalName) const
-{   
+{
     const int index = m_signalIndexByName.value(signalName, -1);
     if (index != -1)
         return metaObject()->method(metaObject()->methodOffset() + index);
@@ -129,7 +124,7 @@ QMetaMethod DosQMetaObject::signal(const QString &signalName) const
 
 QMetaMethod DosQMetaObject::readSlot(const char *propertyName) const
 {
-    const auto index = m_propertySlots.value(QString::fromUtf8(propertyName), qMakePair(-1,-1)).first;
+    const auto index = m_propertySlots.value(QString::fromUtf8(propertyName), qMakePair(-1, -1)).first;
     if (index != -1)
         return metaObject()->method(metaObject()->methodOffset() + index);
     if (auto superMetaObject = superClassDosMetaObject())
@@ -139,7 +134,7 @@ QMetaMethod DosQMetaObject::readSlot(const char *propertyName) const
 
 QMetaMethod DosQMetaObject::writeSlot(const char *propertyName) const
 {
-    const auto index = m_propertySlots.value(QString::fromUtf8(propertyName), qMakePair(-1,-1)).second;
+    const auto index = m_propertySlots.value(QString::fromUtf8(propertyName), qMakePair(-1, -1)).second;
     if (index != -1)
         return metaObject()->method(metaObject()->methodOffset() + index);
     if (auto superMetaObject = superClassDosMetaObject())

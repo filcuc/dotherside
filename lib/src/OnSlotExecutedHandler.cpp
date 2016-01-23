@@ -1,7 +1,6 @@
 #include "DOtherSide/OnSlotExecutedHandler.h"
 
-namespace DOS
-{
+namespace DOS {
 
 OnSlotExecutedHandler::OnSlotExecutedHandler(void *dObjectPointer,
                                              DObjectCallback dObjectCallback)
@@ -20,11 +19,11 @@ QVariant OnSlotExecutedHandler::operator()(const QString &name, const std::vecto
     QVariant slotName(name);
 
     // prepare void* for the QVariants
-    std::vector<void*> argumentsAsVoidPointers;
+    std::vector<void *> argumentsAsVoidPointers;
     argumentsAsVoidPointers.reserve(args.size() + 1);
     argumentsAsVoidPointers.emplace_back(&result);
     for (size_t i = 0; i < args.size(); ++i)
-        argumentsAsVoidPointers.emplace_back((void*)(&args[i]));
+        argumentsAsVoidPointers.emplace_back((void *)(&args[i]));
 
     // send them to the binding handler
     m_dObjectCallback(m_dObjectPointer, &slotName, argumentsAsVoidPointers.size(), &argumentsAsVoidPointers[0]);
@@ -37,10 +36,10 @@ OnMetaObjectHandler::OnMetaObjectHandler(void *dObjectPointer, MetaObjectCallbac
     , m_dMetaObjectCallback(dMetaObjectCallback)
 {}
 
-DosIQMetaObjectHolder* OnMetaObjectHandler::operator()()
+DosIQMetaObjectHolder *OnMetaObjectHandler::operator()()
 {
-    DosIQMetaObjectHolder* result = nullptr;
-    m_dMetaObjectCallback(m_dObjectPointer, reinterpret_cast<void**>(&result));
+    DosIQMetaObjectHolder *result = nullptr;
+    m_dMetaObjectCallback(m_dObjectPointer, reinterpret_cast<void **>(&result));
     return result;
 }
 
