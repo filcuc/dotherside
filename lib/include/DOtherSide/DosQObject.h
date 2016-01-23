@@ -5,17 +5,17 @@
 #include <functional>
 // DOtherSide
 #include "DOtherSideTypesCpp.h"
-#include "DOtherSide/IDosQObject.h"
+#include "DOtherSide/DosIQObjectImpl.h"
 
 namespace DOS
 {
 
 /// This class model a QObject
-class DosQObject : public QObject, public IDosQObject
+class DosQObject : public QObject, public DosIQObjectImpl
 {
 public:
     /// Constructor
-    DosQObject(std::shared_ptr<const IDosQMetaObject> metaObject,
+    DosQObject(DosIQMetaObjectPtr metaObject,
                OnSlotExecuted onSlotExecuted);
 
     /// Emit a signal
@@ -28,7 +28,7 @@ public:
     int qt_metacall(QMetaObject::Call, int, void **) override;
 
 private:
-    IDosQObject* m_impl;
+    std::unique_ptr<DosIQObjectImpl> m_impl;
 };
 
 } // namespace DOS

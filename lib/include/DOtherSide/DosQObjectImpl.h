@@ -15,7 +15,7 @@ namespace DOS
 
 /// This class implement the interface IDosQObject
 /// and it's injected in DosQObject
-class DosQObjectImpl : public IDosQObject
+class DosQObjectImpl : public DosIQObjectImpl
 {
 public:
     using ParentMetaCall = std::function<int(QMetaObject::Call, int, void **)>;
@@ -23,7 +23,7 @@ public:
     /// Constructor
     DosQObjectImpl(QObject* parent,
                    ParentMetaCall parentMetaCall,
-                   std::shared_ptr<const IDosQMetaObject> metaObject,
+                   std::shared_ptr<const DosIQMetaObject> metaObject,
                    OnSlotExecuted onSlotExecuted);
 
 
@@ -45,7 +45,7 @@ private:
     QObject* m_parent;
     const ParentMetaCall m_parentMetaCall;
     const OnSlotExecuted m_onSlotExecuted;
-    mutable std::shared_ptr<const IDosQMetaObject> m_metaObject;
+    mutable std::shared_ptr<const DosIQMetaObject> m_metaObject;
 };
 
 } // namespace DOS

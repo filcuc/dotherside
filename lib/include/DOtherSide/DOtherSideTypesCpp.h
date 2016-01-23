@@ -94,8 +94,10 @@ SlotDefinitions toVector(const ::SlotDefinitions& cType);
 PropertyDefinitions toVector(const ::PropertyDefinitions& cType);
 
 class DosIQMetaObjectHolder;
-class IDosQMetaObject;
+class DosIQMetaObject;
+using DosIQMetaObjectPtr = std::shared_ptr<const DosIQMetaObject>;
 class DosQMetaObject;
+
 
 using OnMetaObject = std::function<DosIQMetaObjectHolder*()>;
 using OnSlotExecuted = std::function<QVariant(const QString&, const std::vector<QVariant>&)>;
@@ -112,9 +114,7 @@ public:
     SafeQMetaObjectPtr& operator=(const SafeQMetaObjectPtr&) = delete;
 
     operator bool() const noexcept { return m_d != nullptr; }
-    operator QMetaObject*() noexcept { return m_d.get(); }
     operator const QMetaObject*() const noexcept { return m_d.get(); }
-    QMetaObject* operator->() noexcept { return m_d.get(); }
     const QMetaObject* operator->() const noexcept { return m_d.get(); }
     void reset(QMetaObject* other) noexcept { m_d.reset(other); }
 

@@ -15,7 +15,7 @@ namespace DOS
 {
 
 DosQAbstractListModel::DosQAbstractListModel(void *modelObject,
-                                             std::shared_ptr<const IDosQMetaObject> metaObject,
+                                             DosIQMetaObjectPtr metaObject,
                                              OnSlotExecuted onSlotExecuted,
                                              RowCountCallback rowCountCallback,
                                              ColumnCountCallback columnCountCallback,

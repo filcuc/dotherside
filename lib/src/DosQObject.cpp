@@ -1,7 +1,6 @@
 #include "DOtherSide/DosQObject.h"
 #include "DOtherSide/DosQMetaObject.h"
 #include "DOtherSide/DosQObjectImpl.h"
-#include <QtCore/QDebug>
 
 namespace
 {
@@ -16,7 +15,7 @@ namespace
 namespace DOS
 {
 
-DosQObject::DosQObject(std::shared_ptr<const IDosQMetaObject> metaObject, OnSlotExecuted onSlotExecuted)
+DosQObject::DosQObject(DosIQMetaObjectPtr metaObject, OnSlotExecuted onSlotExecuted)
     : m_impl(new DosQObjectImpl(this, ::createParentMetaCall(this), std::move(metaObject), std::move(onSlotExecuted)))
 {}
 

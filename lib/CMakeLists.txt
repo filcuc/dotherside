@@ -17,11 +17,11 @@ set(HEADERS_LIST
   include/DOtherSide/DOtherSideTypes.h
   include/DOtherSide/DOtherSideTypesCpp.h
   include/DOtherSide/DOtherSide.h
-  include/DOtherSide/IDosQObject.h
-  include/DOtherSide/OnSlotExecutedHandler.h
-  include/DOtherSide/DosQMetaObject.h
   include/DOtherSide/DosQObject.h
   include/DOtherSide/DosQObjectImpl.h
+  include/DOtherSide/DosIQObjectImpl.h
+  include/DOtherSide/OnSlotExecutedHandler.h
+  include/DOtherSide/DosQMetaObject.h
   include/DOtherSide/DosQAbstractListModel.h
   include/DOtherSide/Utils.h
   )

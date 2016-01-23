@@ -5,11 +5,11 @@
 namespace DOS
 {
 
-class IDosQObject
+class DosIQObjectImpl
 {
 public:
     /// Destructor
-    virtual ~IDosQObject() = default;
+    virtual ~DosIQObjectImpl() = default;
 
     /// Emit the signal with the given name and arguments
     virtual bool emitSignal(const QString& name, const std::vector<QVariant>& argumentsValues) = 0;

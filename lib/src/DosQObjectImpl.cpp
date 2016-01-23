@@ -9,7 +9,7 @@ namespace DOS
 
 DosQObjectImpl::DosQObjectImpl(QObject* parent,
                                ParentMetaCall parentMetaCall,
-                               std::shared_ptr<const IDosQMetaObject> metaObject,
+                               std::shared_ptr<const DosIQMetaObject> metaObject,
                                OnSlotExecuted onSlotExecuted)
     : m_parent(std::move(parent))
     , m_parentMetaCall(std::move(parentMetaCall))
