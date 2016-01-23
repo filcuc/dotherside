@@ -1,18 +1,16 @@
 #include "DOtherSide/DosQAbstractListModel.h"
 #include "DOtherSide/DosQObjectImpl.h"
 
-namespace
+namespace {
+DOS::DosQObjectImpl::ParentMetaCall createParentMetaCall(QAbstractListModel *parent)
 {
-    DOS::DosQObjectImpl::ParentMetaCall createParentMetaCall(QAbstractListModel* parent)
-    {
-        return [parent](QMetaObject::Call callType, int index, void** args)->int {
-            return parent->QAbstractListModel::qt_metacall(callType, index, args);
-        };
-    }
+    return [parent](QMetaObject::Call callType, int index, void **args)->int {
+        return parent->QAbstractListModel::qt_metacall(callType, index, args);
+    };
+}
 }
 
-namespace DOS
-{
+namespace DOS {
 
 DosQAbstractListModel::DosQAbstractListModel(void *modelObject,
                                              DosIQMetaObjectPtr metaObject,
@@ -48,7 +46,7 @@ const QMetaObject *DosQAbstractListModel::metaObject() const
     return m_impl->metaObject();
 }
 
-int DosQAbstractListModel::qt_metacall(QMetaObject::Call call, int index, void** args)
+int DosQAbstractListModel::qt_metacall(QMetaObject::Call call, int index, void **args)
 {
     Q_ASSERT(m_impl);
     return m_impl->qt_metacall(call, index, args);

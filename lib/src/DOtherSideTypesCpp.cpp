@@ -1,19 +1,18 @@
 #include "DOtherSide/DOtherSideTypesCpp.h"
 
-namespace DOS
-{
+namespace DOS {
 
-SignalDefinitions toVector(const ::SignalDefinitions& cType)
+SignalDefinitions toVector(const ::SignalDefinitions &cType)
 {
     return toVector<SignalDefinition>(cType.definitions, cType.count);
 }
 
-SlotDefinitions toVector(const ::SlotDefinitions& cType)
+SlotDefinitions toVector(const ::SlotDefinitions &cType)
 {
     return toVector<SlotDefinition>(cType.definitions, cType.count);
 }
 
-PropertyDefinitions toVector(const ::PropertyDefinitions& cType)
+PropertyDefinitions toVector(const ::PropertyDefinitions &cType)
 {
     return toVector<PropertyDefinition>(cType.definitions, cType.count);
 }

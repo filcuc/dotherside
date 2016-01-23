@@ -2,18 +2,16 @@
 #include "DOtherSide/DosQMetaObject.h"
 #include "DOtherSide/DosQObjectImpl.h"
 
-namespace
+namespace {
+DOS::DosQObjectImpl::ParentMetaCall createParentMetaCall(QObject *parent)
 {
-    DOS::DosQObjectImpl::ParentMetaCall createParentMetaCall(QObject* parent)
-    {
-        return [parent](QMetaObject::Call callType, int index, void** args) -> int {
-            return parent->QObject::qt_metacall(callType, index, args);
-        };
-    }
+    return [parent](QMetaObject::Call callType, int index, void **args) -> int {
+        return parent->QObject::qt_metacall(callType, index, args);
+    };
+}
 }
 
-namespace DOS
-{
+namespace DOS {
 
 DosQObject::DosQObject(DosIQMetaObjectPtr metaObject, OnSlotExecuted onSlotExecuted)
     : m_impl(new DosQObjectImpl(this, ::createParentMetaCall(this), std::move(metaObject), std::move(onSlotExecuted)))
@@ -31,7 +29,7 @@ const QMetaObject *DosQObject::metaObject() const
     return m_impl->metaObject();
 }
 
-int DosQObject::qt_metacall(QMetaObject::Call call, int index, void** args)
+int DosQObject::qt_metacall(QMetaObject::Call call, int index, void **args)
 {
     Q_ASSERT(m_impl);
     return m_impl->qt_metacall(call, index, args);
