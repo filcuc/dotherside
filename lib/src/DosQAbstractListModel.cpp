@@ -15,7 +15,7 @@ namespace DOS
 {
 
 DosQAbstractListModel::DosQAbstractListModel(void *modelObject,
-                                             OnMetaObject onMetaObject,
+                                             std::shared_ptr<const IDosQMetaObject> metaObject,
                                              OnSlotExecuted onSlotExecuted,
                                              RowCountCallback rowCountCallback,
                                              ColumnCountCallback columnCountCallback,
@@ -24,7 +24,7 @@ DosQAbstractListModel::DosQAbstractListModel(void *modelObject,
                                              RoleNamesCallback roleNamesCallback,
                                              FlagsCallback flagsCallback,
                                              HeaderDataCallback headerDataCallback)
-    : m_impl(new DosQObjectImpl(this, ::createParentMetaCall(this), std::move(onMetaObject), std::move(onSlotExecuted)))
+    : m_impl(new DosQObjectImpl(this, ::createParentMetaCall(this), std::move(metaObject), std::move(onSlotExecuted)))
     , m_modelObject(std::move(modelObject))
     , m_rowCountCallback(std::move(rowCountCallback))
     , m_columnCountCallback(std::move(columnCountCallback))

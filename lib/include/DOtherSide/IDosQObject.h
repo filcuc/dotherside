@@ -21,4 +21,4 @@ public:
     virtual int qt_metacall(QMetaObject::Call, int, void**) = 0;
 };
 
-} // namespace DOS
+} // namespace dos
