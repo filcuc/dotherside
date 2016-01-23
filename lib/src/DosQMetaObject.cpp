@@ -61,14 +61,19 @@ DosQAbstractListModelMetaObject::DosQAbstractListModelMetaObject()
     : BaseDosQMetaObject(::createDynamicQAbstractListModelMetaObject())
 {}
 
-DosQMetaObject::DosQMetaObject(std::shared_ptr<const DosIQMetaObject> superClassMetaObject,
+DosQMetaObject::DosQMetaObject(DosIQMetaObjectPtr superClassMetaObject,
                                const QString &className,
                                const SignalDefinitions& signalDefinitions,
                                const SlotDefinitions& slotDefinitions,
                                const PropertyDefinitions& propertyDefinitions)
-    : m_superClassDosMetaObject(std::move(superClassMetaObject))
-    , m_metaObject(createMetaObject(className, signalDefinitions, slotDefinitions, propertyDefinitions))
+    : BaseDosQMetaObject(nullptr)
+    , m_superClassDosMetaObject(std::move(superClassMetaObject))
+    , m_signalIndexByName(QHash<QString, int>())
+    , m_propertySlots(QHash<QString, QPair<int,int>>())
 {
+    // We do the metaobject initialization here because
+    // we must wait for both maps to be initialized before filling them
+    m_metaObject.reset(createMetaObject(className, signalDefinitions, slotDefinitions, propertyDefinitions));
 }
 
 QMetaObject *DosQMetaObject::createMetaObject(const QString &className,
@@ -140,11 +145,6 @@ QMetaMethod DosQMetaObject::writeSlot(const char *propertyName) const
     if (auto superMetaObject = superClassDosMetaObject())
         return superMetaObject->writeSlot(propertyName);
     return QMetaMethod();
-}
-
-const QMetaObject *DosQMetaObject::metaObject() const
-{
-    return m_metaObject;
 }
 
 const DosIQMetaObject *DosQMetaObject::superClassDosMetaObject() const
