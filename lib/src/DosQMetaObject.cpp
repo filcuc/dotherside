@@ -51,6 +51,35 @@ QMetaObject *createDynamicQAbstractListModelMetaObject()
 
 namespace DOS {
 
+BaseDosQMetaObject::BaseDosQMetaObject(QMetaObject *metaObject)
+    : m_metaObject(metaObject)
+{}
+
+const QMetaObject *BaseDosQMetaObject::metaObject() const
+{
+    return m_metaObject;
+}
+
+QMetaMethod BaseDosQMetaObject::signal(const QString &signalName) const
+{
+    return QMetaMethod();
+}
+
+QMetaMethod BaseDosQMetaObject::readSlot(const char *propertyName) const
+{
+    return QMetaMethod();
+}
+
+QMetaMethod BaseDosQMetaObject::writeSlot(const char *propertyName) const
+{
+    return QMetaMethod();
+}
+
+const DosIQMetaObject *BaseDosQMetaObject::superClassDosMetaObject() const
+{
+    return nullptr;
+}
+
 DosQObjectMetaObject::DosQObjectMetaObject()
     : BaseDosQMetaObject(::createDynamicQObjectMetaObject())
 {}

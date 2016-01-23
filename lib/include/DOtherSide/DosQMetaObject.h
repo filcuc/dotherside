@@ -30,30 +30,13 @@ public:
 class BaseDosQMetaObject : public DosIQMetaObject
 {
 public:
-    BaseDosQMetaObject(QMetaObject *metaObject)
-        : m_metaObject(metaObject)
-    {}
+    BaseDosQMetaObject(QMetaObject *metaObject);
 
-    const QMetaObject *metaObject() const override
-    {
-        return m_metaObject;
-    }
-    QMetaMethod signal(const QString &signalName) const override
-    {
-        return QMetaMethod();
-    }
-    QMetaMethod readSlot(const char *propertyName) const override
-    {
-        return QMetaMethod();
-    }
-    QMetaMethod writeSlot(const char *propertyName) const override
-    {
-        return QMetaMethod();
-    }
-    const DosIQMetaObject *superClassDosMetaObject() const
-    {
-        return nullptr;
-    }
+    const QMetaObject *metaObject() const override;
+    QMetaMethod signal(const QString &signalName) const override;
+    QMetaMethod readSlot(const char *propertyName) const override;
+    QMetaMethod writeSlot(const char *propertyName) const override;
+    const DosIQMetaObject *superClassDosMetaObject() const;
 
 protected:
     SafeQMetaObjectPtr m_metaObject;
