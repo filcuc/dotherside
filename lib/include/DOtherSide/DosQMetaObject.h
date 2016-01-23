@@ -27,7 +27,7 @@ public:
     virtual const DosIQMetaObject* superClassDosMetaObject() const = 0;
 };
 
-/// Base class for
+/// Base class for any DosIQMetaObject
 class BaseDosQMetaObject : public DosIQMetaObject
 {
 public:
@@ -41,7 +41,7 @@ public:
     QMetaMethod writeSlot(const char *propertyName) const override { return QMetaMethod(); }
     const DosIQMetaObject* superClassDosMetaObject() const { return nullptr; }
 
-private:
+protected:
     SafeQMetaObjectPtr m_metaObject;
 };
 
@@ -60,10 +60,10 @@ public:
 };
 
 /// This the generic version used by subclasses of QObject or QAbstractListModels
-class DosQMetaObject : public DosIQMetaObject
+class DosQMetaObject : public BaseDosQMetaObject
 {
 public:
-    DosQMetaObject(std::shared_ptr<const DosIQMetaObject> superClassDosMetaObject,
+    DosQMetaObject(DosIQMetaObjectPtr superClassDosMetaObject,
                    const QString& className,
                    const SignalDefinitions &signalDefinitions,
                    const SlotDefinitions &slotDefinitions,
@@ -72,7 +72,6 @@ public:
     QMetaMethod signal(const QString& signalName) const override;
     QMetaMethod readSlot(const char* propertyName) const override;
     QMetaMethod writeSlot(const char* propertyName) const override;
-    const QMetaObject *metaObject() const override;
     const DosIQMetaObject *superClassDosMetaObject() const override;
 
 private:
@@ -81,10 +80,9 @@ private:
                                   const SlotDefinitions &slotDefinitions,
                                   const PropertyDefinitions &propertyDefinitions);
 
-    std::shared_ptr<const DosIQMetaObject> m_superClassDosMetaObject;
+    const DosIQMetaObjectPtr m_superClassDosMetaObject;
     QHash<QString, int> m_signalIndexByName;
     QHash<QString, QPair<int,int>> m_propertySlots;
-    SafeQMetaObjectPtr m_metaObject;
 };
 
 /// This class simply holds a ptr to a IDosQMetaObject
