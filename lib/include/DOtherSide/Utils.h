@@ -44,4 +44,5 @@ std::vector<R> toVector(T* first, std::ptrdiff_t size, K f) noexcept
         result.emplace_back(R(f(*it)));
     return result;
 }
+
 }

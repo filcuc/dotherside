@@ -6,7 +6,6 @@
 #include <QVariant>
 // DOtherSide
 #include "DOtherSide/DOtherSideTypesCpp.h"
-#include "DOtherSide/DosQObject.h"
 
 namespace DOS
 {

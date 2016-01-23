@@ -4,17 +4,18 @@
 #include <QAbstractListModel>
 // DOtherSide
 #include "DOtherSide/DOtherSideTypes.h"
-#include "DOtherSide/DosQObject.h"
+#include "DOtherSide/DosIQObjectImpl.h"
+#include "DOtherSide/OnSlotExecutedHandler.h"
 
 namespace DOS
 {
 
-class DosQAbstractListModel : public QAbstractListModel, public IDosQObject
+class DosQAbstractListModel : public QAbstractListModel, public DosIQObjectImpl
 {
 public:
     /// Constructor
     DosQAbstractListModel(void* modelObject,
-                          std::shared_ptr<const IDosQMetaObject> metaObject,
+                          DosIQMetaObjectPtr metaObject,
                           OnSlotExecuted onSlotExecuted,
                           RowCountCallback rowCountCallback,
                           ColumnCountCallback columnCountCallback,
@@ -81,7 +82,7 @@ public:
                            const QVector<int>& roles = QVector<int>());
 
 private:
-    IDosQObject* m_impl;
+    std::unique_ptr<DosIQObjectImpl> m_impl;
     void* m_modelObject;
     RowCountCallback m_rowCountCallback;
     ColumnCountCallback m_columnCountCallback;

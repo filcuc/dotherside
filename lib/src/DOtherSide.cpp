@@ -385,7 +385,7 @@ void dos_qobject_delete(void* vptr)
 void dos_qobject_signal_emit(void* vptr, const char* name, int parametersCount, void** parameters)
 {
     auto qobject = reinterpret_cast<QObject*>(vptr);
-    auto dynamicQObject = dynamic_cast<IDosQObject*>(qobject);
+    auto dynamicQObject = dynamic_cast<DosIQObjectImpl*>(qobject);
 
     auto transformation = [](void* vptr)->QVariant{return *(reinterpret_cast<QVariant*>(vptr));};
     const std::vector<QVariant> variants = toVector(parameters, parametersCount, transformation);

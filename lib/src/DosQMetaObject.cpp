@@ -61,7 +61,7 @@ DosQAbstractListModelMetaObject::DosQAbstractListModelMetaObject()
     : BaseDosQMetaObject(::createDynamicQAbstractListModelMetaObject())
 {}
 
-DosQMetaObject::DosQMetaObject(std::shared_ptr<const IDosQMetaObject> superClassMetaObject,
+DosQMetaObject::DosQMetaObject(std::shared_ptr<const DosIQMetaObject> superClassMetaObject,
                                const QString &className,
                                const SignalDefinitions& signalDefinitions,
                                const SlotDefinitions& slotDefinitions,
@@ -147,7 +147,7 @@ const QMetaObject *DosQMetaObject::metaObject() const
     return m_metaObject;
 }
 
-const IDosQMetaObject *DosQMetaObject::superClassDosMetaObject() const
+const DosIQMetaObject *DosQMetaObject::superClassDosMetaObject() const
 {
     return m_superClassDosMetaObject.get();
 }
