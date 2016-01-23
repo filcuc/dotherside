@@ -8,3 +8,4 @@ nimcache
 *.kdev4
 *.user
 .idea
+*.orig
