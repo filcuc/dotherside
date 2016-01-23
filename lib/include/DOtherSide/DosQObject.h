@@ -15,7 +15,7 @@ class DosQObject : public QObject, public IDosQObject
 {
 public:
     /// Constructor
-    DosQObject(OnMetaObject onMetaObject,
+    DosQObject(std::shared_ptr<const IDosQMetaObject> metaObject,
                OnSlotExecuted onSlotExecuted);
 
     /// Emit a signal

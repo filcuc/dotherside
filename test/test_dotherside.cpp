@@ -192,14 +192,13 @@ private:
 
 int main(int argc, char* argv[])
 {
-    Q_INIT_RESOURCE(Resources);
+    using namespace DOS;
+
     bool success = true;
     //success &= ExecuteTest<TestQGuiApplication>(argc, argv);
     //success &= ExecuteTest<TestQApplication>(argc, argv);
     //success &= ExecuteGuiTest<TestQQmlApplicationEngine>(argc, argv);
     //success &= ExecuteGuiTest<TestQQmlContext>(argc, argv);
-
-    using namespace DOS;
 
     QString value = "";
 
@@ -214,8 +213,6 @@ int main(int argc, char* argv[])
                                                propertyDefinitions);
 
     auto moh = std::make_unique<DosIQMetaObjectHolder>(mo);
-
-    auto omo = [&]() -> DosIQMetaObjectHolder* { return moh.get(); };
 
     auto ose = [&value](const QString& name, const std::vector<QVariant>& args) -> QVariant {
         if (name == "name")
@@ -235,7 +232,7 @@ int main(int argc, char* argv[])
     FlagsCallback fc;
     HeaderDataCallback hdc;
 
-    DosQAbstractListModel testObject(dPointer, omo, ose, rcc, ccc, dc, sdc, rnc, fc, hdc);
+    DosQAbstractListModel testObject(dPointer, moh->data(), ose, rcc, ccc, dc, sdc, rnc, fc, hdc);
     testObject.setObjectName("testObject");
     testObject.setProperty("name", "pippo");
 

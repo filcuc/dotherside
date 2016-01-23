@@ -23,7 +23,7 @@ public:
     /// Constructor
     DosQObjectImpl(QObject* parent,
                    ParentMetaCall parentMetaCall,
-                   OnMetaObject onMetaObject,
+                   std::shared_ptr<const IDosQMetaObject> metaObject,
                    OnSlotExecuted onSlotExecuted);
 
 

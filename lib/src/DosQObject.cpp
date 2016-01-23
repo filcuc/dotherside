@@ -16,8 +16,8 @@ namespace
 namespace DOS
 {
 
-DosQObject::DosQObject(OnMetaObject onMetaObject, OnSlotExecuted onSlotExecuted)
-    : m_impl(new DosQObjectImpl(this, ::createParentMetaCall(this), std::move(onMetaObject), std::move(onSlotExecuted)))
+DosQObject::DosQObject(std::shared_ptr<const IDosQMetaObject> metaObject, OnSlotExecuted onSlotExecuted)
+    : m_impl(new DosQObjectImpl(this, ::createParentMetaCall(this), std::move(metaObject), std::move(onSlotExecuted)))
 {}
 
 bool DosQObject::emitSignal(const QString &name, const std::vector<QVariant> &args)

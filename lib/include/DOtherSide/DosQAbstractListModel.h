@@ -14,7 +14,7 @@ class DosQAbstractListModel : public QAbstractListModel, public IDosQObject
 public:
     /// Constructor
     DosQAbstractListModel(void* modelObject,
-                          OnMetaObject onMetaObject,
+                          std::shared_ptr<const IDosQMetaObject> metaObject,
                           OnSlotExecuted onSlotExecuted,
                           RowCountCallback rowCountCallback,
                           ColumnCountCallback columnCountCallback,

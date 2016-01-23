@@ -365,12 +365,11 @@ void dos_qobject_qmetaobject(void **vptr)
     *vptr = new DosIQMetaObjectHolder(std::make_shared<DosQObjectMetaObject>());
 }
 
-void dos_qobject_create(void** vptr, void* dObjectPointer,
-                        MetaObjectCallback dMetaObjectCallback,
+void dos_qobject_create(void** vptr, void* dObjectPointer, void *metaObject,
                         DObjectCallback dObjectCallback)
 {
-
-    auto dosQObject = new DosQObject(OnMetaObjectHandler(dObjectPointer, dMetaObjectCallback),
+    auto metaObjectHolder = reinterpret_cast<DosIQMetaObjectHolder*>(metaObject);
+    auto dosQObject = new DosQObject(metaObjectHolder->data(),
                                      OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
     QQmlEngine::setObjectOwnership(dosQObject, QQmlEngine::CppOwnership);
     *vptr = dosQObject;
@@ -566,7 +565,7 @@ void dos_qabstractlistmodel_qmetaobject(void **vptr)
 
 void dos_qabstractlistmodel_create(void** vptr,
                                    void* dObjectPointer,
-                                   MetaObjectCallback dMetaObjectCallback,
+                                   void* metaObjectPointer,
                                    DObjectCallback dObjectCallback,
                                    RowCountCallback rowCountCallback,
                                    ColumnCountCallback columnCountCallback,
@@ -576,8 +575,9 @@ void dos_qabstractlistmodel_create(void** vptr,
                                    FlagsCallback flagsCallback,
                                    HeaderDataCallback headerDataCallback)
 {
+    auto metaObjectHolder = reinterpret_cast<DosIQMetaObjectHolder*>(metaObjectPointer);
     auto model = new DosQAbstractListModel(dObjectPointer,
-                                           OnMetaObjectHandler(dObjectPointer, dMetaObjectCallback),
+                                           metaObjectHolder->data(),
                                            OnSlotExecutedHandler(dObjectPointer, dObjectCallback),
                                            rowCountCallback,
                                            columnCountCallback,

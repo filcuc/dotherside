@@ -99,7 +99,7 @@ DOS_API void dos_qmetaobject_delete(void* vptr);
 DOS_API void dos_qabstractlistmodel_qmetaobject(void** vptr);
 DOS_API void dos_qabstractlistmodel_create(void** vptr,
                                            void* callbackObject,
-                                           MetaObjectCallback metaObjectCallback,
+                                           void* metaObject,
                                            DObjectCallback dObjectCallback,
                                            RowCountCallback rowCountCallback,
                                            ColumnCountCallback columnCountCallback,
@@ -120,7 +120,7 @@ DOS_API void dos_qabstractlistmodel_delete(void* vptr);
 // QObject
 DOS_API void dos_qobject_qmetaobject(void** vptr);
 DOS_API void dos_qobject_create(void** vptr, void* dObjectPointer,
-                                MetaObjectCallback metaObjectCallback,
+                                void* metaObject,
                                 DObjectCallback dObjectCallback);
 DOS_API void dos_qobject_signal_emit(void* vptr,
                                      const char* name,
