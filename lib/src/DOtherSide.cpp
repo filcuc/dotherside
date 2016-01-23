@@ -646,5 +646,3 @@ void dos_qabstractlistmodel_dataChanged(void* vptr,
     auto roles = QVector<int>::fromStdVector(std::vector<int>(rolesArrayPtr, rolesArrayPtr + rolesArrayLength));
     model->publicDataChanged(*topLeft, *bottomRight, roles);
 }
-
-

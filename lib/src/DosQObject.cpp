@@ -1,8 +1,6 @@
 #include "DOtherSide/DosQObject.h"
 #include "DOtherSide/DosQMetaObject.h"
 #include "DOtherSide/DosQObjectImpl.h"
-#include "DOtherSide/DosQMetaObject.h"
-#include <QtCore/QMetaMethod>
 #include <QtCore/QDebug>
 
 namespace
