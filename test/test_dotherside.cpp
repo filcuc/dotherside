@@ -19,6 +19,8 @@
 #include "DOtherSide/DosQObject.h"
 #include "DOtherSide/DosQAbstractListModel.h"
 
+using namespace DOS;
+
 template<typename Test>
 bool ExecuteTest(int argc, char *argv[])
 {
@@ -223,71 +225,120 @@ private:
     void *m_context;
 };
 
+/*
+ * Test QQmlContext
+ */
+class TestQObject : public QObject
+{
+    Q_OBJECT
+
+private slots:
+    void testPropertyInheritance()
+    {
+        DOS::SignalDefinitions signalDefinitions {DOS::SignalDefinition {"nameChanged", {}}};
+        DOS::SlotDefinitions slotDefinitions {DOS::SlotDefinition {"name", QMetaType::QString, {}},
+                                              DOS::SlotDefinition {"setName", QMetaType::Void, {QMetaType::QString}}};
+        DOS::PropertyDefinitions propertyDefinitions {DOS::PropertyDefinition{"name", QMetaType::QString, "name", "setName", "nameChanged"}};
+
+        auto mo = std::make_shared<DosQMetaObject>(std::make_shared<DosQObjectMetaObject>(),
+                                                   "TestClass",
+                                                   signalDefinitions,
+                                                   slotDefinitions,
+                                                   propertyDefinitions);
+
+        QString value = "";
+        auto ose = [&value](const QString & name, const std::vector<QVariant> &args) -> QVariant {
+            if (name == "name")
+                return value;
+            else if (name == "setName")
+                value = args.front().toString();
+            return QVariant();
+        };
+
+        DosQObject testObject(mo, ose);
+        testObject.setObjectName("testObject");
+        testObject.setProperty("name", "foo");
+
+        /// Test property read
+        QCOMPARE(testObject.property("objectName").toString(), QString("testObject"));
+        QCOMPARE(testObject.property("name").toString(), QString("foo"));
+
+        /// Test slot invokation
+        QMetaObject::invokeMethod(&testObject, "setName", Q_ARG(QString, "bar"));
+        QCOMPARE(testObject.property("name").toString(), QString("bar"));
+    }
+};
+
+/*
+ * Test QQmlContext
+ */
+class TestQAbstractListModel : public QObject
+{
+    Q_OBJECT
+
+private slots:
+    void testPropertyInheritance()
+    {
+        DOS::SignalDefinitions signalDefinitions {DOS::SignalDefinition {"nameChanged", {}}};
+        DOS::SlotDefinitions slotDefinitions {DOS::SlotDefinition {"name", QMetaType::QString, {}},
+                                              DOS::SlotDefinition {"setName", QMetaType::Void, {QMetaType::QString}}};
+        DOS::PropertyDefinitions propertyDefinitions {DOS::PropertyDefinition{"name", QMetaType::QString, "name", "setName", "nameChanged"}};
+
+        auto mo = std::make_shared<DosQMetaObject>(std::make_shared<DosQAbstractListModelMetaObject>(),
+                                                   "TestClass",
+                                                   signalDefinitions,
+                                                   slotDefinitions,
+                                                   propertyDefinitions);
+
+        auto moh = std::make_unique<DosIQMetaObjectHolder>(mo);
+
+        QString value = "";
+        auto ose = [&value](const QString & name, const std::vector<QVariant> &args) -> QVariant {
+            if (name == "name")
+                return value;
+            else if (name == "setName")
+                value = args.front().toString();
+            return QVariant();
+        };
+
+        void *dPointer = nullptr;
+
+        RowCountCallback rcc;
+        ColumnCountCallback ccc;
+        DataCallback dc;
+        SetDataCallback sdc;
+        RoleNamesCallback rnc;
+        FlagsCallback fc;
+        HeaderDataCallback hdc;
+
+        DosQAbstractListModel testObject(dPointer, moh->data(), ose, rcc, ccc, dc, sdc, rnc, fc, hdc);
+        testObject.setObjectName("testObject");
+        testObject.setProperty("name", "foo");
+
+        /// Test property read
+        QCOMPARE(testObject.property("objectName").toString(), QString("testObject"));
+        QCOMPARE(testObject.property("name").toString(), QString("foo"));
+
+        /// Test slot invokation
+        QMetaObject::invokeMethod(&testObject, "setName", Q_ARG(QString, "bar"));
+        QCOMPARE(testObject.property("name").toString(), QString("bar"));
+    }
+};
+
+
 int main(int argc, char *argv[])
 {
     using namespace DOS;
 
     bool success = true;
-    //success &= ExecuteTest<TestQGuiApplication>(argc, argv);
-    //success &= ExecuteTest<TestQApplication>(argc, argv);
-    //success &= ExecuteGuiTest<TestQQmlApplicationEngine>(argc, argv);
-    //success &= ExecuteGuiTest<TestQQmlContext>(argc, argv);
+    success &= ExecuteTest<TestQGuiApplication>(argc, argv);
+    success &= ExecuteTest<TestQApplication>(argc, argv);
+    success &= ExecuteGuiTest<TestQQmlApplicationEngine>(argc, argv);
+    success &= ExecuteGuiTest<TestQQmlContext>(argc, argv);
+    success &= ExecuteGuiTest<TestQObject>(argc, argv);
+    success &= ExecuteGuiTest<TestQAbstractListModel>(argc, argv);
 
-    QString value = "";
-
-    DOS::SignalDefinitions signalDefinitions {DOS::SignalDefinition {"nameChanged", {}}};
-    DOS::SlotDefinitions slotDefinitions {DOS::SlotDefinition {"name", QMetaType::QString, {}}, DOS::SlotDefinition {"setName", QMetaType::Void, {QMetaType::QString}}};
-    DOS::PropertyDefinitions propertyDefinitions {DOS::PropertyDefinition{"name", QMetaType::QString, "name", "setName", "nameChanged"}};
-
-    auto mo = std::make_shared<DosQMetaObject>(std::make_shared<DosQAbstractListModelMetaObject>(),
-                                               "TestClass",
-                                               signalDefinitions,
-                                               slotDefinitions,
-                                               propertyDefinitions);
-
-    auto moh = std::make_unique<DosIQMetaObjectHolder>(mo);
-
-    auto ose = [&value](const QString & name, const std::vector<QVariant> &args) -> QVariant {
-        if (name == "name")
-            return value;
-        else if (name == "setName")
-            value = args.front().toString();
-        return QVariant();
-    };
-
-    void *dPointer = nullptr;
-
-    RowCountCallback rcc;
-    ColumnCountCallback ccc;
-    DataCallback dc;
-    SetDataCallback sdc;
-    RoleNamesCallback rnc;
-    FlagsCallback fc;
-    HeaderDataCallback hdc;
-
-    DosQAbstractListModel testObject(dPointer, moh->data(), ose, rcc, ccc, dc, sdc, rnc, fc, hdc);
-    testObject.setObjectName("testObject");
-    testObject.setProperty("name", "pippo");
-
-    std::cout  << testObject.property("objectName").toString().toStdString() << std::endl
-               << testObject.property("name").toString().toStdString() << std::endl
-               << value.toStdString() << std::endl;
-
-    QMetaObject::invokeMethod(&testObject, "setName", Q_ARG(QString, "pluto"));
-
-
-    std::cout  << testObject.property("objectName").toString().toStdString() << std::endl
-               << testObject.property("name").toString().toStdString() << std::endl
-               << value.toStdString() << std::endl;
-
-
-    QApplication app(argc, argv);
-
-    QQmlApplicationEngine engine;
-    engine.rootContext()->setContextProperty("testObject", QVariant::fromValue<QObject *>(&testObject));
-    engine.load(QUrl("qrc:///main.qml"));
-
-    return app.exec();
+    return success ? 0 : 1;
 }
 
 #include "test_dotherside.moc"
