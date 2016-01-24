@@ -70,7 +70,7 @@ bool DosQObjectImpl::executeSlot(int index, void **args)
     executeSlot(method, args);
 }
 
-bool DosQObjectImpl::executeSlot(const QMetaMethod &method, void **args)
+bool DosQObjectImpl::executeSlot(const QMetaMethod &method, void **args, int argumentsOffset)
 {
     Q_ASSERT(method.isValid());
 
@@ -78,8 +78,8 @@ bool DosQObjectImpl::executeSlot(const QMetaMethod &method, void **args)
 
     std::vector<QVariant> arguments;
     arguments.reserve(method.parameterCount());
-    for (int i = 0; i < method.parameterCount(); ++i) {
-        QVariant argument(method.parameterType(i), args[i + 1]);
+    for (int i = 0, j = argumentsOffset; i < method.parameterCount(); ++i, ++j) {
+        QVariant argument(method.parameterType(i), args[j]);
         arguments.emplace_back(std::move(argument));
     }
 
@@ -117,7 +117,7 @@ bool DosQObjectImpl::writeProperty(int index, void **args)
         qDebug() << "C++: writeProperty: invalid write method for property " << property.name();
         return false;
     }
-    return executeSlot(method, args);
+    return executeSlot(method, args, 0);
 }
 
 }
