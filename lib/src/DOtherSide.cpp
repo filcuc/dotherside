@@ -19,6 +19,7 @@
 #include "DOtherSide/DosQObject.h"
 #include "DOtherSide/DosQObjectImpl.h"
 #include "DOtherSide/DosQAbstractListModel.h"
+#include "DOtherSide/DosQObjectWrapper.h"
 
 using namespace DOS;
 
@@ -645,4 +646,20 @@ void dos_qabstractlistmodel_dataChanged(void *vptr,
     auto bottomRight = reinterpret_cast<QModelIndex *>(bottomRightIndex);
     auto roles = QVector<int>::fromStdVector(std::vector<int>(rolesArrayPtr, rolesArrayPtr + rolesArrayLength));
     model->publicDataChanged(*topLeft, *bottomRight, roles);
+}
+
+void dos_qdeclarative_qmlregistertype(const char *uri, int major, int minor,
+                                      const char *qml, int *result,
+                                      CreateDObject createDObject,
+                                      DeleteDObject deleteDObject)
+{
+    static int i = 0;
+
+    if (i == 0) {
+        *result = qmlRegisterType<DosQObjectWrapper>(uri, major, minor, qml);
+        DosQObjectWrapper::setCreateDObject(createDObject);
+        DosQObjectWrapper::setDeleteDObject(deleteDObject);
+    }
+
+    ++i;
 }
