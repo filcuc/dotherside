@@ -166,6 +166,12 @@ DOS_API void dos_qurl_create(void** vptr, const char* url, int parsingMode);
 DOS_API void dos_qurl_delete(void* vptr);
 DOS_API void dos_qurl_to_string(void* vptr, char** result);
 
+// QDeclarative
+DOS_API void dos_qdeclarative_qmlregistertype(const char* uri, int major, int minor,
+                                              const char* qmlName, int* result,
+                                              CreateDObject createDObject,
+                                              DeleteDObject deleteDObject);
+
 #ifdef __cplusplus
 }
 #endif
