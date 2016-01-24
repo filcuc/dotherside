@@ -37,7 +37,7 @@ public:
     int qt_metacall(QMetaObject::Call, int, void **) override;
 
 private:
-    bool executeSlot(const QMetaMethod& method, void** args);
+    bool executeSlot(const QMetaMethod& method, void** args, int argumentsOffset = 1);
     bool executeSlot(int index, void** args);
     bool readProperty(int index, void** args);
     bool writeProperty(int index, void** args);
