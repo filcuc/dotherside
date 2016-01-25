@@ -11,6 +11,8 @@ namespace DOS {
     class DosQObjectWrapper : public QObject
     {
     public:
+        static const QMetaObject staticMetaObject;
+
         DosQObjectWrapper(QObject *parent = nullptr);
         ~DosQObjectWrapper();
 
@@ -21,6 +23,7 @@ namespace DOS {
         static DeleteDObject deleteDObject();
         static void setCreateDObject(CreateDObject createDObject);
         static void setDeleteDObject(DeleteDObject deleteDObject);
+        static void setStaticMetaObject(const QMetaObject& metaObject);
 
     private:
         void* m_dObject;
