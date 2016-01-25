@@ -650,15 +650,19 @@ void dos_qabstractlistmodel_dataChanged(void *vptr,
 
 void dos_qdeclarative_qmlregistertype(const char *uri, int major, int minor,
                                       const char *qml, int *result,
+                                      void *staticMetaObject,
                                       CreateDObject createDObject,
                                       DeleteDObject deleteDObject)
 {
     static int i = 0;
 
+    auto holder = static_cast<DosIQMetaObjectHolder*>(staticMetaObject);
+
     if (i == 0) {
-        *result = qmlRegisterType<DosQObjectWrapper>(uri, major, minor, qml);
         DosQObjectWrapper::setCreateDObject(createDObject);
         DosQObjectWrapper::setDeleteDObject(deleteDObject);
+        DosQObjectWrapper::setStaticMetaObject(*(holder->data()->metaObject()));
+        *result = qmlRegisterType<DosQObjectWrapper>(uri, major, minor, qml);
     }
 
     ++i;

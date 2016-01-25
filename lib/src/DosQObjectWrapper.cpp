@@ -5,6 +5,7 @@
 
 namespace DOS {
 
+const QMetaObject DosQObjectWrapper::staticMetaObject = QObject::staticMetaObject;
 CreateDObject DosQObjectWrapper::m_createDObject;
 DeleteDObject DosQObjectWrapper::m_deleteDObject;
 
@@ -46,5 +47,10 @@ DeleteDObject DosQObjectWrapper::deleteDObject() { return m_deleteDObject; }
 void DosQObjectWrapper::setCreateDObject(CreateDObject createDObject) { m_createDObject = createDObject; }
 
 void DosQObjectWrapper::setDeleteDObject(DeleteDObject deleteDObject) { m_deleteDObject = deleteDObject; }
+
+void DosQObjectWrapper::setStaticMetaObject(const QMetaObject &metaObject)
+{
+    *(const_cast<QMetaObject*>(&staticMetaObject)) = metaObject;
+}
 
 }
