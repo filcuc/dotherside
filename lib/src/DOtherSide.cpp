@@ -654,16 +654,6 @@ void dos_qdeclarative_qmlregistertype(const char *uri, int major, int minor,
                                       CreateDObject createDObject,
                                       DeleteDObject deleteDObject)
 {
-    static int i = 0;
-
     auto holder = static_cast<DosIQMetaObjectHolder*>(staticMetaObject);
-
-    if (i == 0) {
-        DosQObjectWrapper::setCreateDObject(createDObject);
-        DosQObjectWrapper::setDeleteDObject(deleteDObject);
-        DosQObjectWrapper::setStaticMetaObject(*(holder->data()->metaObject()));
-        *result = qmlRegisterType<DosQObjectWrapper>(uri, major, minor, qml);
-    }
-
-    ++i;
+    dosQmlRegisterType(uri, major, minor, qml, *(holder->data()->metaObject()), createDObject, deleteDObject);
 }
