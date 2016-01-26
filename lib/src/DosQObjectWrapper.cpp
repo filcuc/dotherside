@@ -2,7 +2,7 @@
 #include "DOtherSide/DosIQObjectImpl.h"
 #include "DOtherSide/DosQObject.h"
 #include <QDebug>
-#include <QtQml>
+#include <QtQml/qqml.h>
 
 namespace DOS {
 
@@ -105,38 +105,44 @@ int dosQmlRegisterType(const char *uri, int major, int minor,
     return qmlRegisterType<DosQObjectWrapper<N>>(uri, major, minor, qmlName);
 }
 
+template<int N>
+struct DosQmlRegisterHelper
+{
+    static int Register(int i, const char *uri, int major, int minor,
+                 const char *qmlName, const QMetaObject& staticMetaObject,
+                 CreateDObject createDObject,
+                 DeleteDObject deleteDObject)
+    {
+        if (i == N)
+            return dosQmlRegisterType<N>(uri, major, minor, qmlName, staticMetaObject, std::move(createDObject), std::move(deleteDObject));
+        else
+            return DosQmlRegisterHelper<N-1>::Register(i, uri, major, minor, qmlName, staticMetaObject, std::move(createDObject), std::move(deleteDObject));
+    }
+};
+
+template<>
+struct DosQmlRegisterHelper<0>
+{
+    static int Register(int i, const char *uri, int major, int minor,
+                 const char *qmlName, const QMetaObject& staticMetaObject,
+                 CreateDObject createDObject,
+                 DeleteDObject deleteDObject)
+    {
+        if (i == 0)
+            return dosQmlRegisterType<0>(uri, major, minor, qmlName, staticMetaObject, std::move(createDObject), std::move(deleteDObject));
+        else
+            return -1;
+    }
+};
+
+
 int dosQmlRegisterType(const char *uri, int major, int minor,
                        const char *qmlName, const QMetaObject& staticMetaObject,
                        CreateDObject createDObject,
                        DeleteDObject deleteDObject)
 {
     static int i = 0;
-
-    switch (i++)
-    {
-    case 0: return dosQmlRegisterType<0>(uri, major, minor, qmlName, staticMetaObject, createDObject, deleteDObject);
-    case 1: return dosQmlRegisterType<1>(uri, major, minor, qmlName, staticMetaObject, createDObject, deleteDObject);
-    case 2: return dosQmlRegisterType<2>(uri, major, minor, qmlName, staticMetaObject, createDObject, deleteDObject);
-    case 3: return dosQmlRegisterType<3>(uri, major, minor, qmlName, staticMetaObject, createDObject, deleteDObject);
-    case 4: return dosQmlRegisterType<4>(uri, major, minor, qmlName, staticMetaObject, createDObject, deleteDObject);
-    case 5: return dosQmlRegisterType<5>(uri, major, minor, qmlName, staticMetaObject, createDObject, deleteDObject);
-    case 6: return dosQmlRegisterType<6>(uri, major, minor, qmlName, staticMetaObject, createDObject, deleteDObject);
-    case 7: return dosQmlRegisterType<7>(uri, major, minor, qmlName, staticMetaObject, createDObject, deleteDObject);
-    case 8: return dosQmlRegisterType<8>(uri, major, minor, qmlName, staticMetaObject, createDObject, deleteDObject);
-    case 9: return dosQmlRegisterType<9>(uri, major, minor, qmlName, staticMetaObject, createDObject, deleteDObject);
-    case 10: return dosQmlRegisterType<10>(uri, major, minor, qmlName, staticMetaObject, createDObject, deleteDObject);
-    case 11: return dosQmlRegisterType<11>(uri, major, minor, qmlName, staticMetaObject, createDObject, deleteDObject);
-    case 12: return dosQmlRegisterType<12>(uri, major, minor, qmlName, staticMetaObject, createDObject, deleteDObject);
-    case 13: return dosQmlRegisterType<13>(uri, major, minor, qmlName, staticMetaObject, createDObject, deleteDObject);
-    case 14: return dosQmlRegisterType<14>(uri, major, minor, qmlName, staticMetaObject, createDObject, deleteDObject);
-    case 15: return dosQmlRegisterType<15>(uri, major, minor, qmlName, staticMetaObject, createDObject, deleteDObject);
-    case 16: return dosQmlRegisterType<16>(uri, major, minor, qmlName, staticMetaObject, createDObject, deleteDObject);
-    case 17: return dosQmlRegisterType<17>(uri, major, minor, qmlName, staticMetaObject, createDObject, deleteDObject);
-    case 18: return dosQmlRegisterType<18>(uri, major, minor, qmlName, staticMetaObject, createDObject, deleteDObject);
-    case 19: return dosQmlRegisterType<19>(uri, major, minor, qmlName, staticMetaObject, createDObject, deleteDObject);
-    case 20: return dosQmlRegisterType<20>(uri, major, minor, qmlName, staticMetaObject, createDObject, deleteDObject);
-    default: return -1;
-    }
+    DosQmlRegisterHelper<50>::Register(i++, uri, major, minor, qmlName, staticMetaObject, std::move(createDObject), std::move(deleteDObject));
 }
 
 
