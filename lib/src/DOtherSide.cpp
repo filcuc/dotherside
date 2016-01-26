@@ -655,5 +655,7 @@ void dos_qdeclarative_qmlregistertype(const char *uri, int major, int minor,
                                       DeleteDObject deleteDObject)
 {
     auto holder = static_cast<DosIQMetaObjectHolder*>(staticMetaObject);
-    dosQmlRegisterType(uri, major, minor, qml, *(holder->data()->metaObject()), createDObject, deleteDObject);
+    *result = dosQmlRegisterType(uri, major, minor, qml,
+                                 *(holder->data()->metaObject()),
+                                 std::move(createDObject), std::move(deleteDObject));
 }
