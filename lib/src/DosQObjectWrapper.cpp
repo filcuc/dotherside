@@ -94,55 +94,42 @@ void DosQObjectWrapper<N>::setStaticMetaObject(const QMetaObject &metaObject)
 }
 
 template<int N>
-int dosQmlRegisterType(const char *uri, int major, int minor,
-                       const char *qmlName, const QMetaObject& staticMetaObject,
-                       CreateDObject createDObject,
-                       DeleteDObject deleteDObject)
+int dosQmlRegisterType(QmlRegisterType args)
 {
-    DosQObjectWrapper<N>::setCreateDObject(std::move(createDObject));
-    DosQObjectWrapper<N>::setDeleteDObject(std::move(deleteDObject));
-    DosQObjectWrapper<N>::setStaticMetaObject(staticMetaObject);
-    return qmlRegisterType<DosQObjectWrapper<N>>(uri, major, minor, qmlName);
+    DosQObjectWrapper<N>::setCreateDObject(args.createDObject);
+    DosQObjectWrapper<N>::setDeleteDObject(args.deleteDObject);
+    DosQObjectWrapper<N>::setStaticMetaObject(*args.staticMetaObject);
+    return qmlRegisterType<DosQObjectWrapper<N>>(args.uri, args.major, args.minor, args.qml);
 }
 
 template<int N>
 struct DosQmlRegisterHelper
 {
-    static int Register(int i, const char *uri, int major, int minor,
-                 const char *qmlName, const QMetaObject& staticMetaObject,
-                 CreateDObject createDObject,
-                 DeleteDObject deleteDObject)
+    static int Register(int i, QmlRegisterType args)
     {
-        if (i == N)
-            return dosQmlRegisterType<N>(uri, major, minor, qmlName, staticMetaObject, std::move(createDObject), std::move(deleteDObject));
+        if (i > N)
+            return -1;
+        else if (i == N)
+            return dosQmlRegisterType<N>(std::move(args));
         else
-            return DosQmlRegisterHelper<N-1>::Register(i, uri, major, minor, qmlName, staticMetaObject, std::move(createDObject), std::move(deleteDObject));
+            return DosQmlRegisterHelper<N-1>::Register(i, std::move(args));
     }
 };
 
 template<>
 struct DosQmlRegisterHelper<0>
 {
-    static int Register(int i, const char *uri, int major, int minor,
-                 const char *qmlName, const QMetaObject& staticMetaObject,
-                 CreateDObject createDObject,
-                 DeleteDObject deleteDObject)
+    static int Register(int i, QmlRegisterType args)
     {
-        if (i == 0)
-            return dosQmlRegisterType<0>(uri, major, minor, qmlName, staticMetaObject, std::move(createDObject), std::move(deleteDObject));
-        else
-            return -1;
+        return i == 0 ? dosQmlRegisterType<0>(std::move(args)) : -1;
     }
 };
 
 
-int dosQmlRegisterType(const char *uri, int major, int minor,
-                       const char *qmlName, const QMetaObject& staticMetaObject,
-                       CreateDObject createDObject,
-                       DeleteDObject deleteDObject)
+int dosQmlRegisterType(QmlRegisterType args)
 {
     static int i = 0;
-    DosQmlRegisterHelper<50>::Register(i++, uri, major, minor, qmlName, staticMetaObject, std::move(createDObject), std::move(deleteDObject));
+    DosQmlRegisterHelper<35>::Register(i++, std::move(args));
 }
 
 

@@ -648,14 +648,18 @@ void dos_qabstractlistmodel_dataChanged(void *vptr,
     model->publicDataChanged(*topLeft, *bottomRight, roles);
 }
 
-void dos_qdeclarative_qmlregistertype(const char *uri, int major, int minor,
-                                      const char *qml, int *result,
-                                      void *staticMetaObject,
-                                      CreateDObject createDObject,
-                                      DeleteDObject deleteDObject)
+void dos_qdeclarative_qmlregistertype(::QmlRegisterType cArgs, int* result)
 {
-    auto holder = static_cast<DosIQMetaObjectHolder*>(staticMetaObject);
-    *result = dosQmlRegisterType(uri, major, minor, qml,
-                                 *(holder->data()->metaObject()),
-                                 std::move(createDObject), std::move(deleteDObject));
+    auto holder = static_cast<DosIQMetaObjectHolder*>(cArgs.staticMetaObject);
+
+    DOS::QmlRegisterType args;
+    args.major = cArgs.major;
+    args.minor = cArgs.minor;
+    args.uri = cArgs.uri;
+    args.qml = cArgs.qml;
+    args.staticMetaObject = holder->data()->metaObject();
+    args.createDObject = cArgs.createDObject;
+    args.deleteDObject = cArgs.deleteDObject;
+
+    *result = dosQmlRegisterType(std::move(args));
 }
