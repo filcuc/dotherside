@@ -33,6 +33,16 @@ typedef void(*HeaderDataCallback) (void* model, int section, int orientation, in
 typedef void(*CreateDObject)(void**, void**);
 typedef void(*DeleteDObject)(void*);
 
+struct QmlRegisterType
+{
+    int major;
+    int minor;
+    const char *uri;
+    const char *qml;
+    void *staticMetaObject;
+    CreateDObject createDObject;
+    DeleteDObject deleteDObject;
+};
 
 struct SignalDefinition
 {
