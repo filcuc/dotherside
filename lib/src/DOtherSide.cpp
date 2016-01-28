@@ -123,7 +123,6 @@ void dos_qqmlapplicationengine_rootObjects(void *vptr, void *** array, int *arra
     auto engine = static_cast<QQmlApplicationEngine *>(vptr);
     QList<QObject *> list = engine->rootObjects();
     void** objects = new void*[list.size()];
-    if (objects == nullptr) return;
     for (int i = 0; i < list.size(); ++i)
         objects[i] = static_cast<QObject*>(list.at(i));
     *array = static_cast<void **>(objects);
