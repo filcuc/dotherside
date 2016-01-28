@@ -255,14 +255,6 @@ void dos_qvariant_create_double(void **vptr, double value)
     *vptr = new QVariant(value);
 }
 
-void dos_qvariant_create_qabstractlistmodel(void **vptr, void *value)
-{
-    auto qobject = static_cast<QObject *>(value);
-    auto variant = new QVariant();
-    variant->setValue<QObject *>(qobject);
-    *vptr = variant;
-}
-
 void dos_qvariant_isnull(void *vptr, bool *isNull)
 {
     auto variant = static_cast<QVariant *>(vptr);
@@ -349,13 +341,6 @@ void dos_qvariant_setString(void *vptr, const char *value)
 }
 
 void dos_qvariant_setQObject(void *vptr, void *value)
-{
-    auto variant = static_cast<QVariant *>(vptr);
-    auto qobject = static_cast<QObject *>(value);
-    variant->setValue<QObject *>(qobject);
-}
-
-void dos_qvariant_setQAbstractListModel(void *vptr, void *value)
 {
     auto variant = static_cast<QVariant *>(vptr);
     auto qobject = static_cast<QObject *>(value);
