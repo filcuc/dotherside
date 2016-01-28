@@ -1,3 +1,15 @@
+# Version 0.5.0
+* Added support qmlRegisterType
+* Added suppor for creating QObject in the binded language
+* Introduced the concept of QMetaObject in the binded language
+* Greatly reduced memory consumption of QObject by using QMetaObjects
+* Greatly improved creation speed of QObjects
+* Removed undefined behaviour when casting to void*
+* Lots of refactoring and code cleanups
+* New architecture for slots and signal invokation
+* Added support for building the project with meson build system
+* Improved the test suite
+
 # Version 0.4.5
 * Removed the D bindings
 * Removed the Nim bindings

@@ -8,6 +8,13 @@ Currently the DOtherSide library is used by the following bindings:
 * [nimqml](https://github.com/filcuc/nimqml), QML bindings for the Nim programming language
 * [dqml](https://github.com/filcuc/dqml), QML bindings for the D programming language
 
+## Supported features
+The following features are implementable from a binding language
+* Creating custom QObject
+* Creating custom QAbstractListModels
+* Creating custom properties, signals and slots
+* Creating from QML QObject defined in the binded language
+
 ## Prebuilt binaries
 Currently we provide the prebuilt binaries for the following
 Linux distributions through the [OpenSUSE OBS service](https://build.opensuse.org/package/show/home:filcuc/DOtherSide)
