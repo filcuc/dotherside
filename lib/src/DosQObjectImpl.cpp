@@ -67,7 +67,7 @@ bool DosQObjectImpl::executeSlot(int index, void **args)
         qDebug() << "C++: executeSlot: invalid method";
         return false;
     }
-    executeSlot(method, args);
+    return executeSlot(method, args);
 }
 
 bool DosQObjectImpl::executeSlot(const QMetaMethod &method, void **args, int argumentsOffset)
