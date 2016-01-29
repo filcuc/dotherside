@@ -129,7 +129,7 @@ struct DosQmlRegisterHelper<0>
 int dosQmlRegisterType(QmlRegisterType args)
 {
     static int i = 0;
-    DosQmlRegisterHelper<35>::Register(i++, std::move(args));
+    return DosQmlRegisterHelper<35>::Register(i++, std::move(args));
 }
 
 
