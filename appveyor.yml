@@ -10,3 +10,6 @@ build_script:
   - mkdir build && cd build
   - cmake .. -G"%CMAKE_GENERATOR%"
   - cmake --build . --config %CONFIGURATION%
+
+on_finish:
+- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
