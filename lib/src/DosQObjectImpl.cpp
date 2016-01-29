@@ -54,6 +54,8 @@ int DosQObjectImpl::qt_metacall(QMetaObject::Call callType, int index, void **ar
     case QMetaObject::WriteProperty:
         writeProperty(index, args);
         break;
+    default:
+        return -1;
     }
 
     return -1;

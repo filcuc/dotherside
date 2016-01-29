@@ -48,10 +48,12 @@ private slots:
     {
         bool quit = false;
         dos_qguiapplication_create();
-        QTimer::singleShot(100, [&quit]() {
+        QTimer timer;
+        QObject::connect(&timer, &QTimer::timeout, [&quit]() {
             quit = true;
             dos_qguiapplication_quit();
         });
+        timer.start(100);
         dos_qguiapplication_exec();
         QVERIFY(quit);
         dos_qguiapplication_delete();
@@ -70,10 +72,12 @@ private slots:
     {
         bool quit = false;
         dos_qapplication_create();
-        QTimer::singleShot(100, [&quit]() {
+        QTimer timer;
+        QObject::connect(&timer, &QTimer::timeout, [&quit]() {
             quit = true;
             dos_qapplication_quit();
         });
+        timer.start(100);
         dos_qapplication_exec();
         QVERIFY(quit);
         dos_qapplication_delete();
@@ -303,13 +307,13 @@ private slots:
 
         void *dPointer = nullptr;
 
-        RowCountCallback rcc;
-        ColumnCountCallback ccc;
-        DataCallback dc;
-        SetDataCallback sdc;
-        RoleNamesCallback rnc;
-        FlagsCallback fc;
-        HeaderDataCallback hdc;
+        RowCountCallback rcc = nullptr;
+        ColumnCountCallback ccc = nullptr;
+        DataCallback dc = nullptr;
+        SetDataCallback sdc = nullptr;
+        RoleNamesCallback rnc = nullptr;
+        FlagsCallback fc = nullptr;
+        HeaderDataCallback hdc = nullptr;
 
         DosQAbstractListModel testObject(dPointer, moh->data(), ose, rcc, ccc, dc, sdc, rnc, fc, hdc);
         testObject.setObjectName("testObject");
