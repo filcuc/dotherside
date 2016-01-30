@@ -3,8 +3,13 @@ clone_depth: 5
 environment:
   matrix:
     - CMAKE_GENERATOR: "Visual Studio 14 2015 Win64"
+      QTDIR: C:/Qt/5.3/msvc2013_64_opengl
       CMAKE_PREFIX_PATH: C:/Qt/5.3/msvc2013_64_opengl
       CONFIGURATION: Release
+      TEST_DIR: test\Release
+
+install:
+  - set PATH=%PATH%;%QTDIR%
 
 build_script:
   - mkdir build && cd build
