@@ -2,11 +2,14 @@ clone_depth: 5
 
 environment:
   matrix:
+    - CMAKE_GENERATOR: "Visual Studio 12 2013"
+      QTDIR: "C:/Qt/5.3/msvc2013_opengl/bin"
+      CMAKE_PREFIX_PATH: "C:/Qt/5.3/msvc2013_opengl/lib/cmake"
+      CONFIGURATION: Release
     - CMAKE_GENERATOR: "Visual Studio 12 2013 Win64"
       QTDIR: "C:/Qt/5.3/msvc2013_64_opengl/bin"
       CMAKE_PREFIX_PATH: "C:/Qt/5.3/msvc2013_64_opengl/lib/cmake"
       CONFIGURATION: Release
-      TEST_DIR: "test/Release/"
 
 install:
   - set PATH=%PATH%;%QTDIR%
@@ -17,9 +20,6 @@ build_script:
   - cmake --build . --config %CONFIGURATION%
 
 test_script:
-  - cd test\Release
-  - echo %PATH%
+  - cd test
+  - cd %CONFIGURATION%
   - TestDynamicQObject.exe
-
-on_finish:
-- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
