@@ -134,7 +134,7 @@ private slots:
 
     void testLoadData()
     {
-        dos_qqmlapplicationengine_load_data(m_engine, "import QtQuick.Controls 1.4; ApplicationWindow { objectName: \"testWindow\"}");
+        dos_qqmlapplicationengine_load_data(m_engine, "import QtQuick 2.3; import QtQuick.Controls 1.2; ApplicationWindow { objectName: \"testWindow\"}");
         QCOMPARE(engine()->rootObjects().size(), 1);
         QCOMPARE(engine()->rootObjects().front()->objectName(), QString::fromLocal8Bit("testWindow"));
         QVERIFY(engine()->rootObjects().front()->isWindowType());
@@ -208,7 +208,7 @@ private slots:
     {
         QVariant testData("Test Message");
         dos_qqmlcontext_setcontextproperty(m_context, "testData", &testData);
-        engine()->loadData("import QtQuick 2.5; Text { objectName: \"label\"; text: testData } ");
+        engine()->loadData("import QtQuick 2.3; Text { objectName: \"label\"; text: testData } ");
         QObject *label = engine()->rootObjects().first();
         QVERIFY(label != nullptr);
         QCOMPARE(label->objectName(), QString::fromLocal8Bit("label"));
