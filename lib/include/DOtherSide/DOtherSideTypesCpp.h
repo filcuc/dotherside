@@ -3,6 +3,7 @@
 // std
 #include <memory>
 // Qt
+#include <QtGlobal>
 #include <QtCore/QString>
 #include <QtCore/QMetaType>
 // DOtherSide
@@ -124,10 +125,10 @@ public:
     SafeQMetaObjectPtr(const SafeQMetaObjectPtr&) = delete;
     SafeQMetaObjectPtr& operator=(const SafeQMetaObjectPtr&) = delete;
 
-    operator bool() const noexcept { return m_d != nullptr; }
-    operator const QMetaObject*() const noexcept { return m_d.get(); }
-    const QMetaObject* operator->() const noexcept { return m_d.get(); }
-    void reset(QMetaObject* other) noexcept { m_d.reset(other); }
+    operator bool() const Q_DECL_NOEXCEPT { return m_d != nullptr; }
+    operator const QMetaObject*() const Q_DECL_NOEXCEPT { return m_d.get(); }
+    const QMetaObject* operator->() const Q_DECL_NOEXCEPT { return m_d.get(); }
+    void reset(QMetaObject* other) Q_DECL_NOEXCEPT { m_d.reset(other); }
 
 private:
     std::unique_ptr<QMetaObject, void(*)(void*)> m_d;
