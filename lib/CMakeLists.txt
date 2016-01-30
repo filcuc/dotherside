@@ -42,12 +42,12 @@ include_directories(include include/Qt)
 
 # Shared version for distributing
 add_library(${PROJECT_NAME} SHARED ${SRC_LIST} ${HEADERS_LIST})
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 14)
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick)
 
 # Static version for testing
 add_library("${PROJECT_NAME}Static" STATIC ${SRC_LIST} ${HEADERS_LIST})
-set_property(TARGET "${PROJECT_NAME}Static" PROPERTY CXX_STANDARD 14)
+set_property(TARGET "${PROJECT_NAME}Static" PROPERTY CXX_STANDARD 11)
 target_link_libraries("${PROJECT_NAME}Static" PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick)
 
 # Install directive for header files

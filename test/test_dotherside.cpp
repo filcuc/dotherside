@@ -294,7 +294,7 @@ private slots:
                                                    slotDefinitions,
                                                    propertyDefinitions);
 
-        auto moh = std::make_unique<DosIQMetaObjectHolder>(mo);
+        std::unique_ptr<DosIQMetaObjectHolder> moh(new DosIQMetaObjectHolder(mo));
 
         QString value = "";
         auto ose = [&value](const QString & name, const std::vector<QVariant> &args) -> QVariant {
