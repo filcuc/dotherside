@@ -27,15 +27,16 @@ test_script:
   - TestDynamicQObject.exe
 
 after_build:
-  - 7z a %ARTIFACT% %APPVEYOR_BUILD_FOLDER%\build\lib\%CONFIGURATION%\*.dll %APPVEYOR_BUILD_FOLDER%\README.md %APPVEYOR_BUILD_FOLDER%\CHANGELOG.md %APPVEYOR_BUILD_FOLDER%\LICENSE
+  - 7z a %ARTIFACT% %APPVEYOR_BUILD_FOLDER%\build\lib\%CONFIGURATION%\DOtherSide.dll %APPVEYOR_BUILD_FOLDER%\README.md %APPVEYOR_BUILD_FOLDER%\CHANGELOG.md %APPVEYOR_BUILD_FOLDER%\LICENSE
 
 artifacts:
   - path: $(ARTIFACT)
-    name: zip
+    name: libDOtherSide
+    type: zip
 
 deploy:
   description: 'My description'
   provider: GitHub
   auth_token:
     secure: Brw9CAHN/fULjHQtbrG8jlFkfQcj7NjEWUvUkRB0vrJP2T9glct2Zsrv0lE3H833
-  artifact: zip
+  artifact: libDOtherSide
