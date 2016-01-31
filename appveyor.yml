@@ -6,10 +6,12 @@ environment:
       QTDIR: "C:/Qt/5.3/msvc2013_opengl/bin"
       CMAKE_PREFIX_PATH: "C:/Qt/5.3/msvc2013_opengl/lib/cmake"
       CONFIGURATION: Release
+      ARTIFACT: libDOtherside_Qt5.3_x86_.zip
     - CMAKE_GENERATOR: "Visual Studio 12 2013 Win64"
       QTDIR: "C:/Qt/5.3/msvc2013_64_opengl/bin"
       CMAKE_PREFIX_PATH: "C:/Qt/5.3/msvc2013_64_opengl/lib/cmake"
       CONFIGURATION: Release
+      ARTIFACT: libDOtherside_Qt5.3_x64.zip
 
 install:
   - set PATH=%PATH%;%QTDIR%
@@ -23,3 +25,17 @@ test_script:
   - cd test
   - cd %CONFIGURATION%
   - TestDynamicQObject.exe
+
+after_build:
+  - 7z a %ARTIFACT% %APPVEYOR_BUILD_FOLDER%\build\lib\%CONFIGURATION%\*.dll %APPVEYOR_BUILD_FOLDER%\README.md %APPVEYOR_BUILD_FOLDER%\CHANGELOG.md %APPVEYOR_BUILD_FOLDER%\LICENSE
+
+artifacts:
+  - path: $(ARTIFACT)
+    name: zip
+
+deploy:
+  description: 'My description'
+  provider: GitHub
+  auth_token:
+    secure: Brw9CAHN/fULjHQtbrG8jlFkfQcj7NjEWUvUkRB0vrJP2T9glct2Zsrv0lE3H833
+  artifact: zip
