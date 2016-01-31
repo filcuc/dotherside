@@ -11,7 +11,7 @@ environment:
       QTDIR: "C:/Qt/5.3/msvc2013_64_opengl/bin"
       CMAKE_PREFIX_PATH: "C:/Qt/5.3/msvc2013_64_opengl/lib/cmake"
       CONFIGURATION: Release
-      ARTIFACT: libDOtherside-windows-x64-msvc2013-Qt5.3.zip
+      ARTIFACT: libDOtherside-windows-x64-msvc2013-qt-5.3.zip
     - CMAKE_GENERATOR: "Visual Studio 12 2013"
       QTDIR: "C:/Qt/5.4/msvc2013_opengl/bin"
       CMAKE_PREFIX_PATH: "C:/Qt/5.4/msvc2013_opengl/lib/cmake"
@@ -21,7 +21,7 @@ environment:
       QTDIR: "C:/Qt/5.4/msvc2013_64_opengl/bin"
       CMAKE_PREFIX_PATH: "C:/Qt/5.4/msvc2013_64_opengl/lib/cmake"
       CONFIGURATION: Release
-      ARTIFACT: libDOtherside-windows-x64-msvc2013-Qt5.4.zip
+      ARTIFACT: libDOtherside-windows-x64-msvc2013-qt-5.4.zip
     - CMAKE_GENERATOR: "Visual Studio 12 2013"
       QTDIR: "C:/Qt/5.5/msvc2013/bin"
       CMAKE_PREFIX_PATH: "C:/Qt/5.5/msvc2013/lib/cmake"
@@ -31,7 +31,7 @@ environment:
       QTDIR: "C:/Qt/5.5/msvc2013_64/bin"
       CMAKE_PREFIX_PATH: "C:/Qt/5.5/msvc2013_64/lib/cmake"
       CONFIGURATION: Release
-      ARTIFACT: libDOtherside-windows-x64-msvc2013-Qt5.5.zip
+      ARTIFACT: libDOtherside-windows-x64-msvc2013-qt-5.5.zip
 
 install:
   - set PATH=%PATH%;%QTDIR%
