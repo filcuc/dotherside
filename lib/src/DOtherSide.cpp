@@ -118,17 +118,6 @@ void dos_qqmlapplicationengine_context(void *vptr, void **context)
     *context = engine->rootContext();
 }
 
-void dos_qqmlapplicationengine_rootObjects(void *vptr, void *** array, int *array_length)
-{
-    auto engine = static_cast<QQmlApplicationEngine *>(vptr);
-    QList<QObject *> list = engine->rootObjects();
-    void** objects = new void*[list.size()];
-    for (int i = 0; i < list.size(); ++i)
-        objects[i] = static_cast<QObject*>(list.at(i));
-    *array = static_cast<void **>(objects);
-    *array_length = list.size();
-}
-
 void dos_qqmlapplicationengine_delete(void *vptr)
 {
     auto engine = static_cast<QQmlApplicationEngine *>(vptr);
@@ -185,11 +174,6 @@ void dos_qquickview_rootContext(void *vptr, void **context)
 }
 
 void dos_chararray_delete(char *ptr)
-{
-    if (ptr) delete[] ptr;
-}
-
-void dos_qobjectptr_array_delete(void **ptr)
 {
     if (ptr) delete[] ptr;
 }
@@ -405,12 +389,6 @@ void dos_qobject_objectName(void *vptr, char **result)
 {
     auto object = static_cast<QObject *>(vptr);
     convert_to_cstring(object->objectName(), result);
-}
-
-void dos_qobject_findChild(void *vptr, const char *name, int options, void **child)
-{
-    auto object = static_cast<QObject *>(vptr);
-    *child = object->findChild<QObject *>(QString::fromUtf8(name), (Qt::FindChildOptions) options);
 }
 
 void dos_qmodelindex_create(void **vptr)
