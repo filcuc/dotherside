@@ -7,6 +7,11 @@ environment:
       CMAKE_PREFIX_PATH: "C:/Qt/5.3/msvc2013_opengl/lib/cmake"
       CONFIGURATION: Release
       ARTIFACT: libDOtherside_Qt5.3_x86.zip
+    - CMAKE_GENERATOR: "Visual Studio 12 2013 Win64"
+      QTDIR: "C:/Qt/5.3/msvc2013_64_opengl/bin"
+      CMAKE_PREFIX_PATH: "C:/Qt/5.3/msvc2013_64_opengl/lib/cmake"
+      CONFIGURATION: Release
+      ARTIFACT: libDOtherside_Qt5.3_x64.zip
 
 install:
   - set PATH=%PATH%;%QTDIR%
@@ -21,7 +26,7 @@ test_script:
   - build\test\%CONFIGURATION%\TestDynamicQObject.exe
 
 after_build:
-  - 7z a %ARTIFACT% build\lib\%CONFIGURATION%\DOtherSide.dll README.md CHANGELOG.md LICENSE
+  - 7z a %ARTIFACT% %APPVEYOR_BUILD_FOLDER%\build\lib\%CONFIGURATION%\DOtherSide.dll README.md CHANGELOG.md LICENSE
 
 artifacts:
   - path: $(ARTIFACT)
