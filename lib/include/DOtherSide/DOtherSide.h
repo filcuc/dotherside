@@ -36,7 +36,6 @@ DOS_API void dos_qqmlapplicationengine_load_url(void* vptr, void* url);
 DOS_API void dos_qqmlapplicationengine_load_data(void* vptr, const char* data);
 DOS_API void dos_qqmlapplicationengine_add_import_path(void* vptr, const char* path);
 DOS_API void dos_qqmlapplicationengine_context(void* vptr, void** context);
-DOS_API void dos_qqmlapplicationengine_rootObjects(void* vptr, void*** array, int* array_length);
 DOS_API void dos_qqmlapplicationengine_delete(void* vptr);
 
 // QQuickView
@@ -55,9 +54,6 @@ DOS_API void dos_qqmlcontext_setcontextproperty(void* vptr, const char* name, vo
 
 // CharArray
 DOS_API void dos_chararray_delete(char* ptr);
-
-// QObjectPtrArray
-DOS_API void dos_qobjectptr_array_delete(void** ptr);
 
 // QVariant
 DOS_API void dos_qvariant_create(void** vptr);
@@ -136,7 +132,6 @@ DOS_API void dos_qobject_signal_disconnect(void* senderVPtr,
                                            const char* method,
                                            bool* result);
 DOS_API void dos_qobject_objectName(void* vptr, char** result);
-DOS_API void dos_qobject_findChild(void* vptr, const char* name, int options, void** child);
 DOS_API void dos_qobject_delete(void* vptr);
 
 // QModelIndex

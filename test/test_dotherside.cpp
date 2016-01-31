@@ -140,21 +140,6 @@ private slots:
         QVERIFY(engine()->rootObjects().front()->isWindowType());
     }
 
-    void testRootObjects()
-    {
-        void **rootObjects = nullptr;
-        int length = 0;
-        void *url = nullptr;
-        dos_qurl_create(&url, "qrc:///main.qml", QUrl::TolerantMode);
-        dos_qqmlapplicationengine_load_url(m_engine, url);
-        dos_qurl_delete(url);
-        dos_qqmlapplicationengine_rootObjects(m_engine, &rootObjects, &length);
-        QCOMPARE(length, 1);
-        QObject *window = reinterpret_cast<QObject *>(rootObjects[0]);
-        QVERIFY(window->isWindowType());
-        dos_qobjectptr_array_delete(rootObjects);
-    }
-
 private:
     QQmlApplicationEngine *engine()
     {
