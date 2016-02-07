@@ -132,6 +132,7 @@ DOS_API void dos_qobject_signal_disconnect(void* senderVPtr,
                                            const char* method,
                                            bool* result);
 DOS_API void dos_qobject_objectName(void* vptr, char** result);
+DOS_API void dos_qobject_setObjectName(void* vptr, const char* name);
 DOS_API void dos_qobject_delete(void* vptr);
 
 // QModelIndex
