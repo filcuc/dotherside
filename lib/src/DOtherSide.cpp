@@ -391,6 +391,12 @@ void dos_qobject_objectName(void *vptr, char **result)
     convert_to_cstring(object->objectName(), result);
 }
 
+void dos_qobject_setObjectName(void *vptr, const char* name)
+{
+    auto object = static_cast<QObject *>(vptr);
+    object->setObjectName(QString::fromUtf8(name));
+}
+
 void dos_qmodelindex_create(void **vptr)
 {
     auto index = new QModelIndex();
