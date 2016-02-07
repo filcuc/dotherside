@@ -10,18 +10,6 @@
 namespace DOS
 {
 
-class OnMetaObjectHandler
-{
-public:
-    OnMetaObjectHandler(void* dObjectPointer, MetaObjectCallback dMetaObjectCallback);
-
-    DosIQMetaObjectHolder* operator()();
-
-private:
-    void* m_dObjectPointer;
-    MetaObjectCallback m_dMetaObjectCallback;
-};
-
 class OnSlotExecutedHandler
 {
 public:
