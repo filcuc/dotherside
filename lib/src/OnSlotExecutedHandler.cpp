@@ -31,16 +31,4 @@ QVariant OnSlotExecutedHandler::operator()(const QString &name, const std::vecto
     return result;
 }
 
-OnMetaObjectHandler::OnMetaObjectHandler(void *dObjectPointer, MetaObjectCallback dMetaObjectCallback)
-    : m_dObjectPointer(dObjectPointer)
-    , m_dMetaObjectCallback(dMetaObjectCallback)
-{}
-
-DosIQMetaObjectHolder *OnMetaObjectHandler::operator()()
-{
-    DosIQMetaObjectHolder *result = nullptr;
-    m_dMetaObjectCallback(m_dObjectPointer, reinterpret_cast<void **>(&result));
-    return result;
-}
-
 } // namespace DOS

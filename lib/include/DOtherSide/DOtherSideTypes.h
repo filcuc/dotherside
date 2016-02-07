@@ -21,7 +21,6 @@ typedef void* QHashIntQByteArrayVoidPtr;
 
 // Raw function types
 typedef void(*Function)(void*);
-typedef void(*MetaObjectCallback)(void*, void**);
 typedef void(*DObjectCallback)(void*, void*, int, void**);
 typedef void(*RowCountCallback)(void* model, QModelIndexVoidPtr index, IntPtr result);
 typedef void(*ColumnCountCallback)(void* model, QModelIndexVoidPtr index, IntPtr result);
