@@ -40,9 +40,8 @@ const QMetaObject *DosQObjectImpl::metaObject() const
 
 int DosQObjectImpl::qt_metacall(QMetaObject::Call callType, int index, void **args)
 {
-    index = m_parentMetaCall(callType, index, args);
-    if (index < 0)
-        return index;
+    if (m_parentMetaCall(callType, index, args) < 0)
+        return -1;
 
     switch (callType) {
     case QMetaObject::InvokeMetaMethod:
@@ -64,7 +63,7 @@ int DosQObjectImpl::qt_metacall(QMetaObject::Call callType, int index, void **ar
 bool DosQObjectImpl::executeSlot(int index, void **args)
 {
     const QMetaObject *const mo = this->metaObject();
-    const QMetaMethod method = mo->method(mo->methodOffset() + index);
+    const QMetaMethod method = mo->method(index);
     if (!method.isValid()) {
         qDebug() << "C++: executeSlot: invalid method";
         return false;
@@ -97,7 +96,7 @@ bool DosQObjectImpl::executeSlot(const QMetaMethod &method, void **args, int arg
 bool DosQObjectImpl::readProperty(int index, void **args)
 {
     const QMetaObject *const mo = metaObject();
-    const QMetaProperty property = mo->property(mo->propertyOffset() + index);
+    const QMetaProperty property = mo->property(index);
     if (!property.isValid() || !property.isReadable())
         return false;
     const QMetaMethod method = m_metaObject->readSlot(property.name());
@@ -111,7 +110,7 @@ bool DosQObjectImpl::readProperty(int index, void **args)
 bool DosQObjectImpl::writeProperty(int index, void **args)
 {
     const QMetaObject *const mo = metaObject();
-    const QMetaProperty property = mo->property(mo->propertyOffset() + index);
+    const QMetaProperty property = mo->property(index);
     if (!property.isValid() || !property.isWritable())
         return false;
     const QMetaMethod method = m_metaObject->writeSlot(property.name());
