@@ -161,7 +161,7 @@ DOS_API void dos_qurl_delete(void* vptr);
 DOS_API void dos_qurl_to_string(void* vptr, char** result);
 
 // QDeclarative
-DOS_API void dos_qdeclarative_qmlregistertype(QmlRegisterType qmlRegisterType, int* result);
+DOS_API void dos_qdeclarative_qmlregistertype(QmlRegisterType* qmlRegisterType, int* result);
 
 #ifdef __cplusplus
 }

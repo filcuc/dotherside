@@ -13,17 +13,6 @@
 namespace DOS
 {
 
-struct QmlRegisterType
-{
-    int major;
-    int minor;
-    const char *uri;
-    const char *qml;
-    const QMetaObject* staticMetaObject;
-    CreateDObject createDObject;
-    DeleteDObject deleteDObject;
-};
-
 struct SignalDefinition
 {
     SignalDefinition(QString n,
@@ -133,5 +122,18 @@ public:
 private:
     std::unique_ptr<QMetaObject, void(*)(void*)> m_d;
 };
+
+
+struct QmlRegisterType
+{
+    int major;
+    int minor;
+    std::string uri;
+    std::string qml;
+    DosIQMetaObjectPtr staticMetaObject;
+    CreateDObject createDObject;
+    DeleteDObject deleteDObject;
+};
+
 
 } // namespace DOS

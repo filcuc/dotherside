@@ -1,5 +1,6 @@
 #include "DOtherSide/DosQObjectWrapper.h"
 #include "DOtherSide/DosIQObjectImpl.h"
+#include "DOtherSide/DosQMetaObject.h"
 #include "DOtherSide/DosQObject.h"
 #include <QDebug>
 #include <QtQml/qqml.h>
@@ -18,27 +19,26 @@ public:
     const QMetaObject* metaObject() const override;
     int qt_metacall(QMetaObject::Call, int, void **) override;
 
-    static CreateDObject createDObject();
-    static DeleteDObject deleteDObject();
-    static void setCreateDObject(CreateDObject createDObject);
-    static void setDeleteDObject(DeleteDObject deleteDObject);
+    static const QmlRegisterType& qmlRegisterType();
+    static void setQmlRegisterType(QmlRegisterType data);
     static void setStaticMetaObject(const QMetaObject& metaObject);
+    static void setId(int id);
 
 private:
     void* m_dObject;
     DosQObject* m_impl;
-    static CreateDObject m_createDObject;
-    static DeleteDObject m_deleteDObject;
+    static int m_id;
+    static QmlRegisterType m_data;
 };
 
 template<int N>
 const QMetaObject DosQObjectWrapper<N>::staticMetaObject = QObject::staticMetaObject;
 
 template<int N>
-CreateDObject DosQObjectWrapper<N>::m_createDObject;
+QmlRegisterType DosQObjectWrapper<N>::m_data;
 
 template<int N>
-DeleteDObject DosQObjectWrapper<N>::m_deleteDObject;
+int DosQObjectWrapper<N>::m_id = -1;
 
 template<int N>
 DosQObjectWrapper<N>::DosQObjectWrapper(QObject *parent)
@@ -47,7 +47,7 @@ DosQObjectWrapper<N>::DosQObjectWrapper(QObject *parent)
     , m_impl(nullptr)
 {
     void* impl = nullptr;
-    m_createDObject(&m_dObject, &impl);
+    m_data.createDObject(m_id, &m_dObject, &impl);
     m_impl = static_cast<DosQObject*>(impl);
     Q_ASSERT(m_dObject);
     Q_ASSERT(m_impl);
@@ -56,7 +56,7 @@ DosQObjectWrapper<N>::DosQObjectWrapper(QObject *parent)
 template<int N>
 DosQObjectWrapper<N>::~DosQObjectWrapper()
 {
-    m_deleteDObject(m_dObject);
+    m_data.deleteDObject(m_id, m_dObject);
     m_dObject = nullptr;
     m_impl = nullptr;
 }
@@ -76,16 +76,10 @@ int DosQObjectWrapper<N>::qt_metacall(QMetaObject::Call call, int index, void **
 }
 
 template<int N>
-CreateDObject DosQObjectWrapper<N>::createDObject() { return m_createDObject; }
-
-template<int N>
-DeleteDObject DosQObjectWrapper<N>::deleteDObject() { return m_deleteDObject; }
-
-template<int N>
-void DosQObjectWrapper<N>::setCreateDObject(CreateDObject createDObject) { m_createDObject = createDObject; }
-
-template<int N>
-void DosQObjectWrapper<N>::setDeleteDObject(DeleteDObject deleteDObject) { m_deleteDObject = deleteDObject; }
+void DosQObjectWrapper<N>::setQmlRegisterType(QmlRegisterType data)
+{
+    m_data = std::move(data);
+}
 
 template<int N>
 void DosQObjectWrapper<N>::setStaticMetaObject(const QMetaObject &metaObject)
@@ -94,12 +88,26 @@ void DosQObjectWrapper<N>::setStaticMetaObject(const QMetaObject &metaObject)
 }
 
 template<int N>
+void DosQObjectWrapper<N>::setId(int id)
+{
+    m_id = id;
+}
+
+template<int N>
+const QmlRegisterType& DosQObjectWrapper<N>::qmlRegisterType()
+{
+    return m_data;
+}
+
+template<int N>
 int dosQmlRegisterType(QmlRegisterType args)
 {
-    DosQObjectWrapper<N>::setCreateDObject(args.createDObject);
-    DosQObjectWrapper<N>::setDeleteDObject(args.deleteDObject);
-    DosQObjectWrapper<N>::setStaticMetaObject(*args.staticMetaObject);
-    return qmlRegisterType<DosQObjectWrapper<N>>(args.uri, args.major, args.minor, args.qml);
+    DosQObjectWrapper<N>::setQmlRegisterType(std::move(args));
+    const QmlRegisterType& type = DosQObjectWrapper<N>::qmlRegisterType();
+    DosQObjectWrapper<N>::setStaticMetaObject(*(type.staticMetaObject->metaObject()));
+    int result = qmlRegisterType<DosQObjectWrapper<N>>(type.uri.c_str(), type.major, type.minor, type.qml.c_str());
+    DosQObjectWrapper<N>::setId(result);
+    return result;
 }
 
 template<int N>
