@@ -617,7 +617,7 @@ void dos_qabstractlistmodel_dataChanged(void *vptr,
     model->publicDataChanged(*topLeft, *bottomRight, roles);
 }
 
-void dos_qdeclarative_qmlregistertype(::QmlRegisterType *cArgs, int* result)
+void dos_qdeclarative_qmlregistertype(const ::QmlRegisterType *cArgs, int* result)
 {
     auto holder = static_cast<DosIQMetaObjectHolder*>(cArgs->staticMetaObject);
 
