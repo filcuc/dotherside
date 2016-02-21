@@ -100,13 +100,16 @@ const QmlRegisterType& DosQObjectWrapper<N,M>::qmlRegisterType()
 }
 
 template<int N>
+using RegisterTypeQObject = DosQObjectWrapper<N, 0>;
+
+template<int N>
 int dosQmlRegisterType(QmlRegisterType args)
 {
-    DosQObjectWrapper<N,0>::setQmlRegisterType(std::move(args));
-    const QmlRegisterType& type = DosQObjectWrapper<N, 0>::qmlRegisterType();
-    DosQObjectWrapper<N,0>::setStaticMetaObject(*(type.staticMetaObject->metaObject()));
-    int result = qmlRegisterType<DosQObjectWrapper<N,0>>(type.uri.c_str(), type.major, type.minor, type.qml.c_str());
-    DosQObjectWrapper<N,0>::setId(result);
+    RegisterTypeQObject<N>::setQmlRegisterType(std::move(args));
+    const QmlRegisterType& type = RegisterTypeQObject<N>::qmlRegisterType();
+    RegisterTypeQObject<N>::setStaticMetaObject(*(type.staticMetaObject->metaObject()));
+    int result = qmlRegisterType<RegisterTypeQObject<N>>(type.uri.c_str(), type.major, type.minor, type.qml.c_str());
+    RegisterTypeQObject<N>::setId(result);
     return result;
 }
 
@@ -140,9 +143,12 @@ int dosQmlRegisterType(QmlRegisterType args)
 }
 
 template<int N>
+using RegisterSingletonTypeQObject = DosQObjectWrapper<N, 1>;
+
+template<int N>
 QObject *singletontype_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
-    return new DosQObjectWrapper<N,1>();
+    return new RegisterSingletonTypeQObject<N>();
 }
 
 template<int N>
@@ -151,11 +157,11 @@ int dosQmlRegisterSingletonType(QmlRegisterType args)
     using Func = QObject*(*)(QQmlEngine*, QJSEngine*);
     Func f = singletontype_provider<N>;
 
-    DosQObjectWrapper<N,1>::setQmlRegisterType(std::move(args));
-    const QmlRegisterType& type = DosQObjectWrapper<N,1>::qmlRegisterType();
-    DosQObjectWrapper<N,1>::setStaticMetaObject(*(type.staticMetaObject->metaObject()));
-    int result = qmlRegisterSingletonType<DosQObjectWrapper<N,1>>(type.uri.c_str(), type.major, type.minor, type.qml.c_str(), f);
-    DosQObjectWrapper<N,1>::setId(result);
+    RegisterSingletonTypeQObject<N>::setQmlRegisterType(std::move(args));
+    const QmlRegisterType& type = RegisterSingletonTypeQObject<N>::qmlRegisterType();
+    RegisterSingletonTypeQObject<N>::setStaticMetaObject(*(type.staticMetaObject->metaObject()));
+    int result = qmlRegisterSingletonType<RegisterSingletonTypeQObject<N>>(type.uri.c_str(), type.major, type.minor, type.qml.c_str(), f);
+    RegisterSingletonTypeQObject<N>::setId(result);
     return result;
 }
 
