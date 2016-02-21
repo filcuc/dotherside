@@ -29,8 +29,8 @@ typedef void(*SetDataCallback) (void* model, QModelIndexVoidPtr index, QVariantV
 typedef void(*RoleNamesCallback)(void* model, QHashIntQByteArrayVoidPtr result);
 typedef void(*FlagsCallback) (void* model, QModelIndexVoidPtr index, IntPtr result);
 typedef void(*HeaderDataCallback) (void* model, int section, int orientation, int role, QVariantVoidPtr result);
-typedef void(*CreateDObject)(void**, void**);
-typedef void(*DeleteDObject)(void*);
+typedef void(*CreateDObject)(int, void**, void**);
+typedef void(*DeleteDObject)(int, void*);
 
 struct QmlRegisterType
 {
