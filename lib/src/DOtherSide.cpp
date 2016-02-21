@@ -504,9 +504,9 @@ void dos_qurl_to_string(void *vptr, char **result)
 void dos_qmetaobject_create(void **vptr,
                             void *superClassVPtr,
                             const char *className,
-                            ::SignalDefinitions signalDefinitions,
-                            ::SlotDefinitions slotDefinitions,
-                            ::PropertyDefinitions propertyDefinitions)
+                            const ::SignalDefinitions *signalDefinitions,
+                            const ::SlotDefinitions *slotDefinitions,
+                            const ::PropertyDefinitions *propertyDefinitions)
 {
     Q_ASSERT(superClassVPtr);
     auto superClassHolder = static_cast<DosIQMetaObjectHolder *>(superClassVPtr);
@@ -516,9 +516,9 @@ void dos_qmetaobject_create(void **vptr,
 
     auto metaObject = std::make_shared<DosQMetaObject>(data,
                                                        QString::fromUtf8(className),
-                                                       toVector(signalDefinitions),
-                                                       toVector(slotDefinitions),
-                                                       toVector(propertyDefinitions));
+                                                       toVector(*signalDefinitions),
+                                                       toVector(*slotDefinitions),
+                                                       toVector(*propertyDefinitions));
     *vptr = new DosIQMetaObjectHolder(std::move(metaObject));
 }
 

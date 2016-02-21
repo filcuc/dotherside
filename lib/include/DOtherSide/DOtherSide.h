@@ -84,9 +84,9 @@ DOS_API void dos_qvariant_assign(void* vptr, void* other);
 DOS_API void dos_qmetaobject_create(void** vptr,
                                     void *superClassMetaObject,
                                     const char *className,
-                                    SignalDefinitions signalDefinitions,
-                                    SlotDefinitions slotDefinitions,
-                                    PropertyDefinitions propertyDefinitions);
+                                    const SignalDefinitions *signalDefinitions,
+                                    const SlotDefinitions *slotDefinitions,
+                                    const PropertyDefinitions *propertyDefinitions);
 DOS_API void dos_qmetaobject_delete(void* vptr);
 
 // QAbstractListModel
