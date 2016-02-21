@@ -7,7 +7,7 @@
 
 namespace DOS {
 
-template<int>
+template<int, int>
 class DosQObjectWrapper : public QObject
 {
 public:
@@ -31,17 +31,17 @@ private:
     static QmlRegisterType m_data;
 };
 
-template<int N>
-const QMetaObject DosQObjectWrapper<N>::staticMetaObject = QObject::staticMetaObject;
+template<int N, int M>
+const QMetaObject DosQObjectWrapper<N,M>::staticMetaObject = QObject::staticMetaObject;
 
-template<int N>
-QmlRegisterType DosQObjectWrapper<N>::m_data;
+template<int N, int M>
+QmlRegisterType DosQObjectWrapper<N,M>::m_data;
 
-template<int N>
-int DosQObjectWrapper<N>::m_id = -1;
+template<int N, int M>
+int DosQObjectWrapper<N,M>::m_id = -1;
 
-template<int N>
-DosQObjectWrapper<N>::DosQObjectWrapper(QObject *parent)
+template<int N, int M>
+DosQObjectWrapper<N,M>::DosQObjectWrapper(QObject *parent)
     : QObject(parent)
     , m_dObject(nullptr)
     , m_impl(nullptr)
@@ -53,48 +53,48 @@ DosQObjectWrapper<N>::DosQObjectWrapper(QObject *parent)
     Q_ASSERT(m_impl);
 }
 
-template<int N>
-DosQObjectWrapper<N>::~DosQObjectWrapper()
+template<int N, int M>
+DosQObjectWrapper<N,M>::~DosQObjectWrapper()
 {
     m_data.deleteDObject(m_id, m_dObject);
     m_dObject = nullptr;
     m_impl = nullptr;
 }
 
-template<int N>
-const QMetaObject *DosQObjectWrapper<N>::metaObject() const
+template<int N, int M>
+const QMetaObject *DosQObjectWrapper<N,M>::metaObject() const
 {
     Q_ASSERT(m_impl);
     return m_impl->metaObject();
 }
 
-template<int N>
-int DosQObjectWrapper<N>::qt_metacall(QMetaObject::Call call, int index, void **args)
+template<int N, int M>
+int DosQObjectWrapper<N,M>::qt_metacall(QMetaObject::Call call, int index, void **args)
 {
     Q_ASSERT(m_impl);
     return m_impl->qt_metacall(call, index, args);
 }
 
-template<int N>
-void DosQObjectWrapper<N>::setQmlRegisterType(QmlRegisterType data)
+template<int N, int M>
+void DosQObjectWrapper<N,M>::setQmlRegisterType(QmlRegisterType data)
 {
     m_data = std::move(data);
 }
 
-template<int N>
-void DosQObjectWrapper<N>::setStaticMetaObject(const QMetaObject &metaObject)
+template<int N, int M>
+void DosQObjectWrapper<N,M>::setStaticMetaObject(const QMetaObject &metaObject)
 {
     *(const_cast<QMetaObject*>(&staticMetaObject)) = metaObject;
 }
 
-template<int N>
-void DosQObjectWrapper<N>::setId(int id)
+template<int N, int M>
+void DosQObjectWrapper<N,M>::setId(int id)
 {
     m_id = id;
 }
 
-template<int N>
-const QmlRegisterType& DosQObjectWrapper<N>::qmlRegisterType()
+template<int N, int M>
+const QmlRegisterType& DosQObjectWrapper<N,M>::qmlRegisterType()
 {
     return m_data;
 }
@@ -102,11 +102,11 @@ const QmlRegisterType& DosQObjectWrapper<N>::qmlRegisterType()
 template<int N>
 int dosQmlRegisterType(QmlRegisterType args)
 {
-    DosQObjectWrapper<N>::setQmlRegisterType(std::move(args));
-    const QmlRegisterType& type = DosQObjectWrapper<N>::qmlRegisterType();
-    DosQObjectWrapper<N>::setStaticMetaObject(*(type.staticMetaObject->metaObject()));
-    int result = qmlRegisterType<DosQObjectWrapper<N>>(type.uri.c_str(), type.major, type.minor, type.qml.c_str());
-    DosQObjectWrapper<N>::setId(result);
+    DosQObjectWrapper<N,0>::setQmlRegisterType(std::move(args));
+    const QmlRegisterType& type = DosQObjectWrapper<N, 0>::qmlRegisterType();
+    DosQObjectWrapper<N,0>::setStaticMetaObject(*(type.staticMetaObject->metaObject()));
+    int result = qmlRegisterType<DosQObjectWrapper<N,0>>(type.uri.c_str(), type.major, type.minor, type.qml.c_str());
+    DosQObjectWrapper<N,0>::setId(result);
     return result;
 }
 
@@ -133,8 +133,56 @@ struct DosQmlRegisterHelper<0>
     }
 };
 
-
 int dosQmlRegisterType(QmlRegisterType args)
+{
+    static int i = 0;
+    return DosQmlRegisterHelper<35>::Register(i++, std::move(args));
+}
+
+template<int N>
+QObject *singletontype_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    return new DosQObjectWrapper<N,1>();
+}
+
+template<int N>
+int dosQmlRegisterSingletonType(QmlRegisterType args)
+{
+    using Func = QObject*(*)(QQmlEngine*, QJSEngine*);
+    Func f = singletontype_provider<N>;
+
+    DosQObjectWrapper<N,1>::setQmlRegisterType(std::move(args));
+    const QmlRegisterType& type = DosQObjectWrapper<N,1>::qmlRegisterType();
+    DosQObjectWrapper<N,1>::setStaticMetaObject(*(type.staticMetaObject->metaObject()));
+    int result = qmlRegisterSingletonType<DosQObjectWrapper<N,1>>(type.uri.c_str(), type.major, type.minor, type.qml.c_str(), f);
+    DosQObjectWrapper<N,1>::setId(result);
+    return result;
+}
+
+template<int N>
+struct DosQmlRegisterSingletonHelper
+{
+    static int Register(int i, QmlRegisterType args)
+    {
+        if (i > N)
+            return -1;
+        else if (i == N)
+            return dosQmlRegisterSingletonType<N>(std::move(args));
+        else
+            return DosQmlRegisterSingletonHelper<N-1>::Register(i, std::move(args));
+    }
+};
+
+template<>
+struct DosQmlRegisterSingletonHelper<0>
+{
+    static int Register(int i, QmlRegisterType args)
+    {
+        return i == 0 ? dosQmlRegisterSingletonType<0>(std::move(args)) : -1;
+    }
+};
+
+int dosQmlRegisterSingletonType(QmlRegisterType args)
 {
     static int i = 0;
     return DosQmlRegisterHelper<35>::Register(i++, std::move(args));

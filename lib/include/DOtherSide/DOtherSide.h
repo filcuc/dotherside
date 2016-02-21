@@ -162,6 +162,7 @@ DOS_API void dos_qurl_to_string(void* vptr, char** result);
 
 // QDeclarative
 DOS_API void dos_qdeclarative_qmlregistertype(const QmlRegisterType* qmlRegisterType, int* result);
+DOS_API void dos_qdeclarative_qmlregistersingletontype(const QmlRegisterType* qmlRegisterType, int* result);
 
 #ifdef __cplusplus
 }

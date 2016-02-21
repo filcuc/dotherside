@@ -6,4 +6,5 @@
 
 namespace DOS {
     int dosQmlRegisterType(QmlRegisterType args);
+    int dosQmlRegisterSingletonType(QmlRegisterType args);
 }

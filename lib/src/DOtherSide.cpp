@@ -632,3 +632,19 @@ void dos_qdeclarative_qmlregistertype(const ::QmlRegisterType *cArgs, int* resul
 
     *result = dosQmlRegisterType(std::move(args));
 }
+
+void dos_qdeclarative_qmlregistersingletontype(const ::QmlRegisterType *cArgs, int *result)
+{
+    auto holder = static_cast<DosIQMetaObjectHolder*>(cArgs->staticMetaObject);
+
+    DOS::QmlRegisterType args;
+    args.major = cArgs->major;
+    args.minor = cArgs->minor;
+    args.uri = cArgs->uri;
+    args.qml = cArgs->qml;
+    args.staticMetaObject = holder->data();
+    args.createDObject = cArgs->createDObject;
+    args.deleteDObject = cArgs->deleteDObject;
+
+    *result = dosQmlRegisterSingletonType(std::move(args));
+}
