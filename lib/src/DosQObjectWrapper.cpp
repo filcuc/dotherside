@@ -191,7 +191,7 @@ struct DosQmlRegisterSingletonHelper<0>
 int dosQmlRegisterSingletonType(QmlRegisterType args)
 {
     static int i = 0;
-    return DosQmlRegisterHelper<35>::Register(i++, std::move(args));
+    return DosQmlRegisterSingletonHelper<35>::Register(i++, std::move(args));
 }
 
 
