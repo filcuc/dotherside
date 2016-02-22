@@ -4,6 +4,71 @@
 #include "DOtherSide/DosQObject.h"
 #include <QDebug>
 #include <QtQml/qqml.h>
+#include <private/qmetaobjectbuilder_p.h>
+
+QMetaObject* createMetaObject()
+{
+    QMetaObjectBuilder builder;
+    builder.setSuperClass(&QObject::staticMetaObject);
+    builder.setClassName("DosQObjectWrapper");
+    builder.setFlags(QMetaObjectBuilder::DynamicMetaObject);
+
+    QMetaMethodBuilder signal = builder.addSignal("nameChanged()");
+    QMetaPropertyBuilder property = builder.addProperty("name", "QString", signal.index());
+    property.setWritable(true);
+    property.setConstant(false);
+    property.setReadable(true);
+
+    return builder.toMetaObject();
+}
+
+class WrapperMetaObject : public QAbstractDynamicMetaObject
+{
+public:
+    WrapperMetaObject(QObject* parent);
+
+protected:
+    int metaCall(QMetaObject::Call c, int id, void **a) override;
+
+private:
+    QObject* m_parent;
+};
+
+WrapperMetaObject::WrapperMetaObject(QObject* parent)
+    : m_parent(parent)
+{
+    *static_cast<QMetaObject *>(this) = *createMetaObject();
+    QObjectPrivate *objPriv = QObjectPrivate::get(m_parent);
+    objPriv->metaObject = this;
+}
+
+int WrapperMetaObject::metaCall(QMetaObject::Call c, int idx, void **args)
+{
+    switch (c) {
+    case QMetaObject::ReadProperty: {
+        if (idx < propertyOffset())
+            return m_parent->qt_metacall(c, idx, args);
+        QVariant temp("Filippo Cucchetto");
+        QMetaType::construct(QMetaType::QString, args[0], temp.constData());
+        break;
+    }
+    case QMetaObject::WriteProperty: {
+        if (idx < propertyOffset())
+            return m_parent->qt_metacall(c, idx, args);
+        int index = indexOfSignal("nameChanged()");
+        activate(m_parent, index, args);
+        break;
+    }
+    case QMetaObject::InvokeMetaMethod: {
+        if (idx < methodOffset())
+            return m_parent->qt_metacall(c, idx, args);
+        break;
+    }
+    default:
+        break;
+    }
+    return -1;
+}
 
 namespace DOS {
 
@@ -11,28 +76,24 @@ template<int, int>
 class DosQObjectWrapper : public QObject
 {
 public:
-    static const QMetaObject staticMetaObject;
-
     DosQObjectWrapper(QObject *parent = nullptr);
-    ~DosQObjectWrapper();
 
-    const QMetaObject* metaObject() const override;
-    int qt_metacall(QMetaObject::Call, int, void **) override;
+    ~DosQObjectWrapper();
 
     static const QmlRegisterType& qmlRegisterType();
     static void setQmlRegisterType(QmlRegisterType data);
     static void setStaticMetaObject(const QMetaObject& metaObject);
     static void setId(int id);
 
+    static QMetaObject staticMetaObject;
+
 private:
-    void* m_dObject;
-    DosQObject* m_impl;
     static int m_id;
     static QmlRegisterType m_data;
 };
 
 template<int N, int M>
-const QMetaObject DosQObjectWrapper<N,M>::staticMetaObject = QObject::staticMetaObject;
+QMetaObject DosQObjectWrapper<N,M>::staticMetaObject = QMetaObject();
 
 template<int N, int M>
 QmlRegisterType DosQObjectWrapper<N,M>::m_data;
@@ -43,37 +104,13 @@ int DosQObjectWrapper<N,M>::m_id = -1;
 template<int N, int M>
 DosQObjectWrapper<N,M>::DosQObjectWrapper(QObject *parent)
     : QObject(parent)
-    , m_dObject(nullptr)
-    , m_impl(nullptr)
 {
-    void* impl = nullptr;
-    m_data.createDObject(m_id, &m_dObject, &impl);
-    m_impl = static_cast<DosQObject*>(impl);
-    Q_ASSERT(m_dObject);
-    Q_ASSERT(m_impl);
+    new WrapperMetaObject(this);
 }
 
 template<int N, int M>
 DosQObjectWrapper<N,M>::~DosQObjectWrapper()
-{
-    m_data.deleteDObject(m_id, m_dObject);
-    m_dObject = nullptr;
-    m_impl = nullptr;
-}
-
-template<int N, int M>
-const QMetaObject *DosQObjectWrapper<N,M>::metaObject() const
-{
-    Q_ASSERT(m_impl);
-    return m_impl->metaObject();
-}
-
-template<int N, int M>
-int DosQObjectWrapper<N,M>::qt_metacall(QMetaObject::Call call, int index, void **args)
-{
-    Q_ASSERT(m_impl);
-    return m_impl->qt_metacall(call, index, args);
-}
+{}
 
 template<int N, int M>
 void DosQObjectWrapper<N,M>::setQmlRegisterType(QmlRegisterType data)
@@ -84,7 +121,7 @@ void DosQObjectWrapper<N,M>::setQmlRegisterType(QmlRegisterType data)
 template<int N, int M>
 void DosQObjectWrapper<N,M>::setStaticMetaObject(const QMetaObject &metaObject)
 {
-    *(const_cast<QMetaObject*>(&staticMetaObject)) = metaObject;
+    staticMetaObject = *createMetaObject();
 }
 
 template<int N, int M>
