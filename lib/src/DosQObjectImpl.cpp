@@ -25,10 +25,9 @@ bool DosQObjectImpl::emitSignal(const QString &name, const std::vector<QVariant>
 
     Q_ASSERT(name.toUtf8() == method.name());
 
-    std::vector<void *> arguments(args.size() + 1, nullptr);
-    arguments.front() = nullptr;
+    std::vector<void *> arguments(args.size(), nullptr);
     auto func = [](const QVariant & arg) -> void * { return (void *)(&arg); };
-    std::transform(args.begin(), args.end(), arguments.begin() + 1, func);
+    std::transform(args.begin(), args.end(), arguments.begin(), func);
     QMetaObject::activate(m_parent, method.methodIndex(), arguments.data());
     return true;
 }
