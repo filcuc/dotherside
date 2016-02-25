@@ -54,48 +54,36 @@ int DosQAbstractListModel::qt_metacall(QMetaObject::Call call, int index, void *
 
 int DosQAbstractListModel::rowCount(const QModelIndex &parent) const
 {
-    auto parentIndex = new QModelIndex();
-    *parentIndex = parent;
     int result;
-    m_rowCountCallback(m_modelObject, parentIndex, &result);
+    m_rowCountCallback(m_modelObject, &parent, &result);
     return result;
 }
 
 int DosQAbstractListModel::columnCount(const QModelIndex &parent) const
 {
-    auto parentIndex = new QModelIndex();
-    *parentIndex = parent;
     int result;
-    m_columnCountCallback(m_modelObject, parentIndex, &result);
+    m_columnCountCallback(m_modelObject, &parent, &result);
     return result;
 }
 
 QVariant DosQAbstractListModel::data(const QModelIndex &index, int role) const
 {
-    auto newIndex = new QModelIndex();
-    *newIndex = index;
     QVariant result;
-    m_dataCallback(m_modelObject, newIndex, role, &result);
+    m_dataCallback(m_modelObject, &index, role, &result);
     return result;
 }
 
 bool DosQAbstractListModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    auto newIndex = new QModelIndex(index);
-    *newIndex = index;
-    auto newValue = new QVariant();
-    *newValue = value;
     bool result = false;
-    m_setDataCallback(m_modelObject, newIndex, newValue, role, &result);
+    m_setDataCallback(m_modelObject, &index, &value, role, &result);
     return result;
 }
 
 Qt::ItemFlags DosQAbstractListModel::flags(const QModelIndex &index) const
 {
-    auto newIndex = new QModelIndex(index);
-    *newIndex = index;
     int result;
-    m_flagsCallback(m_modelObject, newIndex, &result);
+    m_flagsCallback(m_modelObject, &index, &result);
     return Qt::ItemFlags(result);
 }
 
