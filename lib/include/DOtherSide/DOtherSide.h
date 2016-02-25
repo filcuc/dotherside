@@ -109,7 +109,6 @@ DOS_API void dos_qabstractlistmodel_endRemoveRows(void* vptr);
 DOS_API void dos_qabstractlistmodel_beginResetModel(void* vptr);
 DOS_API void dos_qabstractlistmodel_endResetModel(void* vptr);
 DOS_API void dos_qabstractlistmodel_dataChanged(void* vptr, void* topLeft, void* bottomRight, int* rolesPtr, int rolesLength);
-DOS_API void dos_qabstractlistmodel_delete(void* vptr);
 
 // QObject
 DOS_API void dos_qobject_qmetaobject(void** vptr);
