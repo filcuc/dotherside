@@ -403,6 +403,14 @@ void dos_qmodelindex_create(void **vptr)
     *vptr = index;
 }
 
+void dos_qmodelindex_create_qmodelindex(void **vptr, void* other_vptr)
+{
+    auto index = new QModelIndex();
+    auto other = static_cast<QModelIndex*>(other_vptr);
+    *index = *other;
+    *vptr = index;
+}
+
 void dos_qmodelindex_delete(void *vptr)
 {
     auto index = static_cast<QModelIndex *>(vptr);

@@ -136,6 +136,7 @@ DOS_API void dos_qobject_delete(void* vptr);
 
 // QModelIndex
 DOS_API void dos_qmodelindex_create(void** vptr);
+DOS_API void dos_qmodelindex_create_qmodelindex(void** vptr, void* index);
 DOS_API void dos_qmodelindex_delete(void* vptr);
 DOS_API void dos_qmodelindex_row(void* vptr, int* row);
 DOS_API void dos_qmodelindex_column(void* vptr, int* column);
