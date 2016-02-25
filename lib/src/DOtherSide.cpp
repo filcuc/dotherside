@@ -455,6 +455,13 @@ void dos_qmodelindex_sibling(void *vptr, int row, int column, void *sibling)
     *siblingIndex = index->sibling(row, column);
 }
 
+void dos_qmodelindex_assign(void* l, void* r)
+{
+    auto li = static_cast<QModelIndex *>(l);
+    auto ri = static_cast<QModelIndex *>(r);
+    *li = *ri;
+}
+
 void dos_qhash_int_qbytearray_create(QHashIntQByteArrayVoidPtr *vptr)
 {
     *vptr = new QHash<int, QByteArray>();

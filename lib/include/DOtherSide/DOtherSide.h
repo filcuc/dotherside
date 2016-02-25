@@ -144,6 +144,7 @@ DOS_API void dos_qmodelindex_data(void* vptr, int role, void* data);
 DOS_API void dos_qmodelindex_parent(void* vptr, void* parent);
 DOS_API void dos_qmodelindex_child(void* vptr, int row, int column, void* child);
 DOS_API void dos_qmodelindex_sibling(void* vptr, int row, int column, void* sibling);
+DOS_API void dos_qmodelindex_assign(void* l, void* r);
 
 // QHash<int, QByteArray>
 DOS_API void dos_qhash_int_qbytearray_create(QHashIntQByteArrayVoidPtr* vptr);
