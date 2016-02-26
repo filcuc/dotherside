@@ -36,7 +36,7 @@ public:
     QMetaMethod signal(const QString &signalName) const override;
     QMetaMethod readSlot(const char *propertyName) const override;
     QMetaMethod writeSlot(const char *propertyName) const override;
-    const DosIQMetaObject *superClassDosMetaObject() const;
+    const DosIQMetaObject *superClassDosMetaObject() const override;
 
 protected:
     SafeQMetaObjectPtr m_metaObject;
