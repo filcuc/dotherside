@@ -7,10 +7,6 @@ extern "C"
 #endif
 
 // Raw data types
-typedef bool* BoolPtr;
-typedef int*  IntPtr;
-typedef char* CharPtr;
-typedef const char* ConstCharPtr;
 typedef void* QVariantVoidPtr;
 typedef void* QModelIndexVoidPtr;
 typedef void* QAbstractListModelVoidPtr;
@@ -22,12 +18,12 @@ typedef void* QHashIntQByteArrayVoidPtr;
 // Raw function types
 typedef void(*Function)(void*);
 typedef void(*DObjectCallback)(void*, void*, int, void**);
-typedef void(*RowCountCallback)(void* model, const void* index, IntPtr result);
-typedef void(*ColumnCountCallback)(void* model, const void* index, IntPtr result);
+typedef void(*RowCountCallback)(void* model, const void* index, int* result);
+typedef void(*ColumnCountCallback)(void* model, const void* index, int* result);
 typedef void(*DataCallback)(void* model, const void* index, int role, QVariantVoidPtr result);
-typedef void(*SetDataCallback) (void* model, const void* index, const void* value, int role, BoolPtr result);
+typedef void(*SetDataCallback) (void* model, const void* index, const void* value, int role, bool* result);
 typedef void(*RoleNamesCallback)(void* model, QHashIntQByteArrayVoidPtr result);
-typedef void(*FlagsCallback) (void* model, const void* index, IntPtr result);
+typedef void(*FlagsCallback) (void* model, const void* index, int* result);
 typedef void(*HeaderDataCallback) (void* model, int section, int orientation, int role, QVariantVoidPtr result);
 typedef void(*CreateDObject)(int, void**, void**);
 typedef void(*DeleteDObject)(int, void*);
