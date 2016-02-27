@@ -23,16 +23,19 @@
 
 using namespace DOS;
 
-
-void convert_to_cstring(const QString &source, char **destination)
+char *convert_to_cstring(const QByteArray &array)
 {
-    QByteArray array = source.toUtf8();
-    *destination = qstrdup(array.data());
+    return qstrdup(array.data());
 }
 
-void dos_qcoreapplication_application_dir_path(char **result)
+char *convert_to_cstring(const QString &source)
 {
-    convert_to_cstring(QCoreApplication::applicationDirPath(), result);
+    return convert_to_cstring(source.toUtf8());
+}
+
+char *dos_qcoreapplication_application_dir_path()
+{
+    return convert_to_cstring(QCoreApplication::applicationDirPath());
 }
 
 void dos_qguiapplication_create()
@@ -81,9 +84,9 @@ void dos_qapplication_quit()
     qApp->quit();
 }
 
-void dos_qqmlapplicationengine_create(void **vptr)
+void *dos_qqmlapplicationengine_create()
 {
-    *vptr = new QQmlApplicationEngine();
+    return new QQmlApplicationEngine();
 }
 
 void dos_qqmlapplicationengine_load(void *vptr, const char *filename)
@@ -111,11 +114,11 @@ void dos_qqmlapplicationengine_add_import_path(void *vptr, const char *path)
     engine->addImportPath(QString(path));
 }
 
-void dos_qqmlapplicationengine_context(void *vptr, void **context)
+void *dos_qqmlapplicationengine_context(void *vptr)
 {
     auto engine = static_cast<QQmlApplicationEngine *>(vptr);
     engine->rootContext();
-    *context = engine->rootContext();
+    return engine->rootContext();
 }
 
 void dos_qqmlapplicationengine_delete(void *vptr)
@@ -124,9 +127,9 @@ void dos_qqmlapplicationengine_delete(void *vptr)
     delete engine;
 }
 
-void dos_qquickview_create(void **vptr)
+void *dos_qquickview_create()
 {
-    *vptr = new QQuickView();
+    return new QQuickView();
 }
 
 void dos_qquickview_show(void *vptr)
@@ -141,11 +144,11 @@ void dos_qquickview_delete(void *vptr)
     delete view;
 }
 
-void dos_qquickview_source(void *vptr, char **result)
+char *dos_qquickview_source(void *vptr)
 {
     auto view = static_cast<QQuickView *>(vptr);
     QUrl url = view->source();
-    convert_to_cstring(url.toString(), result);
+    return convert_to_cstring(url.toString());
 }
 
 void dos_qquickview_set_source(void *vptr, const char *filename)
@@ -167,10 +170,10 @@ void dos_qquickview_set_resize_mode(void *vptr, int resizeMode)
     view->setResizeMode((QQuickView::ResizeMode) resizeMode);
 }
 
-void dos_qquickview_rootContext(void *vptr, void **context)
+void *dos_qquickview_rootContext(void *vptr)
 {
     auto view = static_cast<QQuickView *>(vptr);
-    *context = view->rootContext();
+    return view->rootContext();
 }
 
 void dos_chararray_delete(char *ptr)
@@ -178,11 +181,11 @@ void dos_chararray_delete(char *ptr)
     if (ptr) delete[] ptr;
 }
 
-void dos_qqmlcontext_baseUrl(void *vptr, char **result)
+char *dos_qqmlcontext_baseUrl(void *vptr)
 {
     auto context = static_cast<QQmlContext *>(vptr);
     QUrl url = context->baseUrl();
-    convert_to_cstring(url.toString(), result);
+    return convert_to_cstring(url.toString());
 }
 
 void dos_qqmlcontext_setcontextproperty(void *vptr, const char *name, void *value)
@@ -192,56 +195,56 @@ void dos_qqmlcontext_setcontextproperty(void *vptr, const char *name, void *valu
     context->setContextProperty(QString::fromUtf8(name), *variant);
 }
 
-void dos_qvariant_create(void **vptr)
+void *dos_qvariant_create()
 {
-    *vptr = new QVariant();
+    return new QVariant();
 }
 
-void dos_qvariant_create_int(void **vptr, int value)
+void *dos_qvariant_create_int(int value)
 {
-    *vptr = new QVariant(value);
+    return new QVariant(value);
 }
 
-void dos_qvariant_create_bool(void **vptr, bool value)
+void *dos_qvariant_create_bool(bool value)
 {
-    *vptr = new QVariant(value);
+    return new QVariant(value);
 }
 
-void dos_qvariant_create_string(void **vptr, const char *value)
+void *dos_qvariant_create_string(const char *value)
 {
-    *vptr = new QVariant(value);
+    return new QVariant(value);
 }
 
-void dos_qvariant_create_qvariant(void **vptr, void *other)
+void *dos_qvariant_create_qvariant(void *other)
 {
-    auto newQVariant = new QVariant();
     auto otherQVariant = static_cast<QVariant *>(other);
-    *newQVariant = *otherQVariant;
-    *vptr = newQVariant;
+    auto result = new QVariant();
+    *result = *otherQVariant;
+    return result;
 }
 
-void dos_qvariant_create_qobject(void **vptr, void *value)
+void *dos_qvariant_create_qobject(void *value)
 {
     auto qobject = static_cast<QObject *>(value);
-    auto variant = new QVariant();
-    variant->setValue<QObject *>(qobject);
-    *vptr = variant;
+    auto result = new QVariant();
+    result->setValue<QObject *>(qobject);
+    return result;
 }
 
-void dos_qvariant_create_float(void **vptr, float value)
+void *dos_qvariant_create_float(float value)
 {
-    *vptr = new QVariant(value);
+    return new QVariant(value);
 }
 
-void dos_qvariant_create_double(void **vptr, double value)
+void *dos_qvariant_create_double(double value)
 {
-    *vptr = new QVariant(value);
+    return new QVariant(value);
 }
 
-void dos_qvariant_isnull(void *vptr, bool *isNull)
+bool dos_qvariant_isnull(void *vptr)
 {
     auto variant = static_cast<QVariant *>(vptr);
-    *isNull = variant->isNull();
+    return variant->isNull();
 }
 
 void dos_qvariant_delete(void *vptr)
@@ -257,40 +260,40 @@ void dos_qvariant_assign(void *vptr, void *other)
     *leftQVariant = *rightQVariant;
 }
 
-void dos_qvariant_toInt(void *vptr, int *value)
+int dos_qvariant_toInt(void *vptr)
 {
     auto variant = static_cast<QVariant *>(vptr);
-    *value = variant->toInt();
+    return variant->toInt();
 }
 
-void dos_qvariant_toBool(void *vptr, bool *value)
+bool dos_qvariant_toBool(void *vptr)
 {
     auto variant = static_cast<QVariant *>(vptr);
-    *value = variant->toBool();
+    return variant->toBool();
 }
 
-void dos_qvariant_toFloat(void *vptr, float *value)
+float dos_qvariant_toFloat(void *vptr)
 {
     auto variant = static_cast<QVariant *>(vptr);
-    *value = variant->toFloat();
+    return variant->toFloat();
 }
 
-void dos_qvariant_toDouble(void *vptr, double *value)
+double dos_qvariant_toDouble(void *vptr)
 {
     auto variant = static_cast<QVariant *>(vptr);
-    *value = variant->toDouble();
+    return variant->toDouble();
 }
 
-void dos_qvariant_toString(void *vptr, char **ptr)
+char *dos_qvariant_toString(void *vptr)
 {
     auto variant = static_cast<QVariant *>(vptr);
-    convert_to_cstring(variant->toString(), ptr);
+    return convert_to_cstring(variant->toString());
 }
 
-void dos_qvariant_toQObject(void *vptr, void **value)
+void *dos_qvariant_toQObject(void *vptr)
 {
     auto variant = static_cast<QVariant *>(vptr);
-    *value = variant->value<QObject *>();
+    return variant->value<QObject *>();
 }
 
 void dos_qvariant_setInt(void *vptr, int value)
@@ -330,19 +333,18 @@ void dos_qvariant_setQObject(void *vptr, void *value)
     variant->setValue<QObject *>(qobject);
 }
 
-void dos_qobject_qmetaobject(void **vptr)
+void *dos_qobject_qmetaobject()
 {
-    *vptr = new DosIQMetaObjectHolder(std::make_shared<DosQObjectMetaObject>());
+    return new DosIQMetaObjectHolder(std::make_shared<DosQObjectMetaObject>());
 }
 
-void dos_qobject_create(void **vptr, void *dObjectPointer, void *metaObject,
-                        DObjectCallback dObjectCallback)
+void *dos_qobject_create(void *dObjectPointer, void *metaObject, DObjectCallback dObjectCallback)
 {
     auto metaObjectHolder = static_cast<DosIQMetaObjectHolder *>(metaObject);
     auto dosQObject = new DosQObject(metaObjectHolder->data(),
                                      OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
     QQmlEngine::setObjectOwnership(dosQObject, QQmlEngine::CppOwnership);
-    *vptr = static_cast<QObject *>(dosQObject);
+    return static_cast<QObject *>(dosQObject);
 }
 
 void dos_qobject_delete(void *vptr)
@@ -385,10 +387,10 @@ void dos_qobject_signal_disconnect(void *senderVPtr,
     *result = QObject::disconnect(sender, signal, receiver, method);
 }
 
-void dos_qobject_objectName(void *vptr, char **result)
+char *dos_qobject_objectName(void *vptr)
 {
     auto object = static_cast<QObject *>(vptr);
-    convert_to_cstring(object->objectName(), result);
+    return convert_to_cstring(object->objectName());
 }
 
 void dos_qobject_setObjectName(void *vptr, const char *name)
@@ -397,18 +399,17 @@ void dos_qobject_setObjectName(void *vptr, const char *name)
     object->setObjectName(QString::fromUtf8(name));
 }
 
-void dos_qmodelindex_create(void **vptr)
+void *dos_qmodelindex_create(void **vptr)
 {
-    auto index = new QModelIndex();
-    *vptr = index;
+    return new QModelIndex();
 }
 
-void dos_qmodelindex_create_qmodelindex(void **vptr, void *other_vptr)
+void *dos_qmodelindex_create_qmodelindex(void *other_vptr)
 {
-    auto index = new QModelIndex();
+    auto result = new QModelIndex();
     auto other = static_cast<QModelIndex *>(other_vptr);
-    *index = *other;
-    *vptr = index;
+    *result = *other;
+    return result;
 }
 
 void dos_qmodelindex_delete(void *vptr)
@@ -417,50 +418,50 @@ void dos_qmodelindex_delete(void *vptr)
     delete index;
 }
 
-void dos_qmodelindex_row(void *vptr, int *row)
+int dos_qmodelindex_row(void *vptr)
 {
     auto index = static_cast<QModelIndex *>(vptr);
-    *row = index->row();
+    return index->row();
 }
 
-void dos_qmodelindex_column(void *vptr, int *column)
+int dos_qmodelindex_column(void *vptr)
 {
     auto index = static_cast<QModelIndex *>(vptr);
-    *column = index->column();
+    return index->column();
 }
 
-void dos_qmodelindex_isValid(void *vptr, bool *isValid)
+bool dos_qmodelindex_isValid(void *vptr)
 {
     auto index = static_cast<QModelIndex *>(vptr);
-    *isValid = index->isValid();
+    return index->isValid();
 }
 
-void dos_qmodelindex_data(void *vptr, int role, void *data)
+void *dos_qmodelindex_data(void *vptr, int role)
 {
     auto index = static_cast<QModelIndex *>(vptr);
-    auto result = static_cast<QVariant *>(data);
-    *result = index->data(role);
+    auto result = new QVariant(index->data(role));
+    return static_cast<QVariant *>(result);
 }
 
-void dos_qmodelindex_parent(void *vptr, void *parent)
+void *dos_qmodelindex_parent(void *vptr)
 {
     auto index = static_cast<QModelIndex *>(vptr);
-    auto parentIndex = static_cast<QModelIndex *>(parent);
-    *parentIndex = index->parent();
+    auto result = new QModelIndex(index->parent());
+    return static_cast<QModelIndex *>(result);
 }
 
-void dos_qmodelindex_child(void *vptr, int row, int column, void *child)
+void *dos_qmodelindex_child(void *vptr, int row, int column)
 {
     auto index = static_cast<QModelIndex *>(vptr);
-    auto childIndex = static_cast<QModelIndex *>(child);
-    *childIndex = index->child(row, column);
+    auto result = new QModelIndex(index->child(row, column));
+    return static_cast<QModelIndex *>(result);
 }
 
-void dos_qmodelindex_sibling(void *vptr, int row, int column, void *sibling)
+void *dos_qmodelindex_sibling(void *vptr, int row, int column, void *sibling)
 {
     auto index = static_cast<QModelIndex *>(vptr);
-    auto siblingIndex = static_cast<QModelIndex *>(sibling);
-    *siblingIndex = index->sibling(row, column);
+    auto result = new QModelIndex(index->sibling(row, column));
+    return static_cast<QModelIndex *>(result);
 }
 
 void dos_qmodelindex_assign(void *l, void *r)
@@ -470,9 +471,9 @@ void dos_qmodelindex_assign(void *l, void *r)
     *li = *ri;
 }
 
-void dos_qhash_int_qbytearray_create(QHashIntQByteArrayVoidPtr *vptr)
+void *dos_qhash_int_qbytearray_create()
 {
-    *vptr = new QHash<int, QByteArray>();
+    return new QHash<int, QByteArray>();
 }
 
 void dos_qhash_int_qbytearray_delete(QHashIntQByteArrayVoidPtr vptr)
@@ -487,11 +488,10 @@ void dos_qhash_int_qbytearray_insert(QHashIntQByteArrayVoidPtr vptr, int key, co
     qHash->insert(key, QByteArray(value));
 }
 
-void dos_qhash_int_qbytearray_value(QHashIntQByteArrayVoidPtr vptr, int key, char **result)
+char *dos_qhash_int_qbytearray_value(QHashIntQByteArrayVoidPtr vptr, int key)
 {
     auto qHash = static_cast<QHash<int, QByteArray>*>(vptr);
-    QByteArray value = qHash->value(key);
-    *result = qstrdup(value.data());
+    return convert_to_cstring(qHash->value(key));
 }
 
 void dos_qresource_register(const char *filename)
@@ -499,9 +499,9 @@ void dos_qresource_register(const char *filename)
     QResource::registerResource(QString::fromUtf8(filename));
 }
 
-void dos_qurl_create(void **vptr, const char *url, int parsingMode)
+void *dos_qurl_create(const char *url, int parsingMode)
 {
-    *vptr = new QUrl(QString::fromUtf8(url), (QUrl::ParsingMode) parsingMode);
+    return new QUrl(QString::fromUtf8(url), (QUrl::ParsingMode) parsingMode);
 }
 
 void dos_qurl_delete(void *vptr)
@@ -510,18 +510,17 @@ void dos_qurl_delete(void *vptr)
     delete url;
 }
 
-void dos_qurl_to_string(void *vptr, char **result)
+char *dos_qurl_to_string(void *vptr)
 {
     auto url = static_cast<QUrl *>(vptr);
-    convert_to_cstring(url->toString(), result);
+    return convert_to_cstring(url->toString());
 }
 
-void dos_qmetaobject_create(void **vptr,
-                            void *superClassVPtr,
-                            const char *className,
-                            const ::SignalDefinitions *signalDefinitions,
-                            const ::SlotDefinitions *slotDefinitions,
-                            const ::PropertyDefinitions *propertyDefinitions)
+void *dos_qmetaobject_create(void *superClassVPtr,
+                             const char *className,
+                             const ::SignalDefinitions *signalDefinitions,
+                             const ::SlotDefinitions *slotDefinitions,
+                             const ::PropertyDefinitions *propertyDefinitions)
 {
     Q_ASSERT(superClassVPtr);
     auto superClassHolder = static_cast<DosIQMetaObjectHolder *>(superClassVPtr);
@@ -534,7 +533,7 @@ void dos_qmetaobject_create(void **vptr,
                                                        toVector(*signalDefinitions),
                                                        toVector(*slotDefinitions),
                                                        toVector(*propertyDefinitions));
-    *vptr = new DosIQMetaObjectHolder(std::move(metaObject));
+    return new DosIQMetaObjectHolder(std::move(metaObject));
 }
 
 void dos_qmetaobject_delete(void *vptr)
@@ -543,22 +542,21 @@ void dos_qmetaobject_delete(void *vptr)
     delete factory;
 }
 
-void dos_qabstractlistmodel_qmetaobject(void **vptr)
+void *dos_qabstractlistmodel_qmetaobject()
 {
-    *vptr = new DosIQMetaObjectHolder(std::make_shared<DosQAbstractListModelMetaObject>());
+    return new DosIQMetaObjectHolder(std::make_shared<DosQAbstractListModelMetaObject>());
 }
 
-void dos_qabstractlistmodel_create(void **vptr,
-                                   void *dObjectPointer,
-                                   void *metaObjectPointer,
-                                   DObjectCallback dObjectCallback,
-                                   RowCountCallback rowCountCallback,
-                                   ColumnCountCallback columnCountCallback,
-                                   DataCallback dataCallback,
-                                   SetDataCallback setDataCallback,
-                                   RoleNamesCallback roleNamesCallaback,
-                                   FlagsCallback flagsCallback,
-                                   HeaderDataCallback headerDataCallback)
+void *dos_qabstractlistmodel_create(void *dObjectPointer,
+                                    void *metaObjectPointer,
+                                    DObjectCallback dObjectCallback,
+                                    RowCountCallback rowCountCallback,
+                                    ColumnCountCallback columnCountCallback,
+                                    DataCallback dataCallback,
+                                    SetDataCallback setDataCallback,
+                                    RoleNamesCallback roleNamesCallaback,
+                                    FlagsCallback flagsCallback,
+                                    HeaderDataCallback headerDataCallback)
 {
     auto metaObjectHolder = static_cast<DosIQMetaObjectHolder *>(metaObjectPointer);
     auto model = new DosQAbstractListModel(dObjectPointer,
@@ -572,7 +570,7 @@ void dos_qabstractlistmodel_create(void **vptr,
                                            flagsCallback,
                                            headerDataCallback);
     QQmlEngine::setObjectOwnership(model, QQmlEngine::CppOwnership);
-    *vptr = static_cast<QObject *>(model);
+    return static_cast<QObject *>(model);
 }
 
 void dos_qabstractlistmodel_beginInsertRows(void *vptr, QModelIndexVoidPtr parentIndex, int first, int last)
@@ -633,7 +631,7 @@ void dos_qabstractlistmodel_dataChanged(void *vptr,
     model->publicDataChanged(*topLeft, *bottomRight, roles);
 }
 
-void dos_qdeclarative_qmlregistertype(const ::QmlRegisterType *cArgs, int *result)
+int dos_qdeclarative_qmlregistertype(const ::QmlRegisterType *cArgs)
 {
     auto holder = static_cast<DosIQMetaObjectHolder *>(cArgs->staticMetaObject);
 
@@ -646,10 +644,10 @@ void dos_qdeclarative_qmlregistertype(const ::QmlRegisterType *cArgs, int *resul
     args.createDObject = cArgs->createDObject;
     args.deleteDObject = cArgs->deleteDObject;
 
-    *result = dosQmlRegisterType(std::move(args));
+    return dosQmlRegisterType(std::move(args));
 }
 
-void dos_qdeclarative_qmlregistersingletontype(const ::QmlRegisterType *cArgs, int *result)
+int dos_qdeclarative_qmlregistersingletontype(const ::QmlRegisterType *cArgs)
 {
     auto holder = static_cast<DosIQMetaObjectHolder *>(cArgs->staticMetaObject);
 
@@ -662,5 +660,5 @@ void dos_qdeclarative_qmlregistersingletontype(const ::QmlRegisterType *cArgs, i
     args.createDObject = cArgs->createDObject;
     args.deleteDObject = cArgs->deleteDObject;
 
-    *result = dosQmlRegisterSingletonType(std::move(args));
+    return dosQmlRegisterSingletonType(std::move(args));
 }

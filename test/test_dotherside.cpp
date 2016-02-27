@@ -105,7 +105,7 @@ private slots:
     void init()
     {
         QVERIFY(m_engine == nullptr);
-        dos_qqmlapplicationengine_create(&m_engine);
+        m_engine = dos_qqmlapplicationengine_create();
         QVERIFY(m_engine != nullptr);
     }
 
@@ -122,8 +122,7 @@ private slots:
 
     void testLoadUrl()
     {
-        void *url = nullptr;
-        dos_qurl_create(&url, "qrc:///main.qml", QUrl::TolerantMode);
+        void *url = dos_qurl_create("qrc:///main.qml", QUrl::TolerantMode);
         QVERIFY(url != nullptr);
         dos_qqmlapplicationengine_load_url(m_engine, url);
         QCOMPARE(engine()->rootObjects().size(), 1);
@@ -171,8 +170,8 @@ private slots:
 
     void init()
     {
-        dos_qqmlapplicationengine_create(&m_engine);
-        dos_qqmlapplicationengine_context(m_engine, &m_context);
+        m_engine = dos_qqmlapplicationengine_create();
+        m_context = dos_qqmlapplicationengine_context(m_engine);
         QVERIFY(m_engine != nullptr);
         QVERIFY(m_context != nullptr);
     }
