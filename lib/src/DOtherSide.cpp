@@ -359,7 +359,7 @@ void dos_qobject_signal_emit(void *vptr, const char *name, int parametersCount, 
 
     auto transformation = [](void *vptr)->QVariant{return *(static_cast<QVariant *>(vptr));};
     const std::vector<QVariant> variants = toVector(parameters, parametersCount, transformation);
-    dynamicQObject->emitSignal(QString::fromStdString(name), variants);
+    dynamicQObject->emitSignal(qobject, QString::fromStdString(name), variants);
 }
 
 void dos_qobject_signal_connect(void *senderVPtr,

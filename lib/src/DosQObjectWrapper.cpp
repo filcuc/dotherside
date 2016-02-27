@@ -8,16 +8,25 @@
 namespace DOS {
 
 template<int, int>
-class DosQObjectWrapper : public QObject
+class DosQObjectWrapper : public QObject, public DosIQObjectImpl
 {
 public:
     static const QMetaObject staticMetaObject;
 
+    /// Constructor
     DosQObjectWrapper(QObject *parent = nullptr);
+
+    /// Destructor
     ~DosQObjectWrapper();
 
+    /// @see DosIQObjectImpl::metaObject
     const QMetaObject *metaObject() const override;
+
+    /// @see DosIQObjectImpl::qt_metacall
     int qt_metacall(QMetaObject::Call, int, void **) override;
+
+    /// @see DosIQObjectImpl::emitSignal
+    bool emitSignal(QObject* emitter, const QString &name, const std::vector<QVariant> &argumentsValues);
 
     static const QmlRegisterType &qmlRegisterType();
     static void setQmlRegisterType(QmlRegisterType data);
@@ -26,7 +35,7 @@ public:
 
 private:
     void *m_dObject;
-    DosQObject *m_impl;
+    DosIQObjectImpl *m_impl;
     static int m_id;
     static QmlRegisterType m_data;
 };
@@ -47,8 +56,8 @@ DosQObjectWrapper<N, M>::DosQObjectWrapper(QObject *parent)
     , m_impl(nullptr)
 {
     void *impl = nullptr;
-    m_data.createDObject(m_id, &m_dObject, &impl);
-    m_impl = static_cast<DosQObject *>(impl);
+    m_data.createDObject(m_id, static_cast<QObject*>(this), &m_dObject, &impl);
+    m_impl = dynamic_cast<DosIQObjectImpl *>(static_cast<QObject*>(impl));
     Q_ASSERT(m_dObject);
     Q_ASSERT(m_impl);
 }
@@ -58,6 +67,7 @@ DosQObjectWrapper<N, M>::~DosQObjectWrapper()
 {
     m_data.deleteDObject(m_id, m_dObject);
     m_dObject = nullptr;
+    delete dynamic_cast<QObject*>(m_impl);
     m_impl = nullptr;
 }
 
@@ -73,6 +83,13 @@ int DosQObjectWrapper<N, M>::qt_metacall(QMetaObject::Call call, int index, void
 {
     Q_ASSERT(m_impl);
     return m_impl->qt_metacall(call, index, args);
+}
+
+template<int N, int M>
+bool DosQObjectWrapper<N, M>::emitSignal(QObject* emitter, const QString &name, const std::vector<QVariant> &argumentsValues)
+{
+    Q_ASSERT(m_impl);
+    return m_impl->emitSignal(this, name, argumentsValues);
 }
 
 template<int N, int M>

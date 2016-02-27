@@ -17,10 +17,10 @@ DosQObject::DosQObject(DosIQMetaObjectPtr metaObject, OnSlotExecuted onSlotExecu
     : m_impl(new DosQObjectImpl(this, ::createParentMetaCall(this), std::move(metaObject), std::move(onSlotExecuted)))
 {}
 
-bool DosQObject::emitSignal(const QString &name, const std::vector<QVariant> &args)
+bool DosQObject::emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &args)
 {
     Q_ASSERT(m_impl);
-    return m_impl->emitSignal(name, args);
+    return m_impl->emitSignal(emitter, name, args);
 }
 
 const QMetaObject *DosQObject::metaObject() const

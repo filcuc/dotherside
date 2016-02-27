@@ -11,7 +11,7 @@ public:
     virtual ~DosIQObjectImpl() = default;
 
     /// Emit the signal with the given name and arguments
-    virtual bool emitSignal(const QString &name, const std::vector<QVariant> &argumentsValues) = 0;
+    virtual bool emitSignal(QObject* emitter, const QString &name, const std::vector<QVariant> &argumentsValues) = 0;
 
     /// Return the metaObject
     virtual const QMetaObject *metaObject() const = 0;

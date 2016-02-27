@@ -34,10 +34,10 @@ DosQAbstractListModel::DosQAbstractListModel(void *modelObject,
 {
 }
 
-bool DosQAbstractListModel::emitSignal(const QString &name, const std::vector<QVariant> &argumentsValues)
+bool DosQAbstractListModel::emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &argumentsValues)
 {
     Q_ASSERT(m_impl);
-    return m_impl->emitSignal(name, argumentsValues);
+    return m_impl->emitSignal(emitter, name, argumentsValues);
 }
 
 const QMetaObject *DosQAbstractListModel::metaObject() const

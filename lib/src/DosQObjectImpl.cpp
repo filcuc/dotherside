@@ -17,7 +17,7 @@ DosQObjectImpl::DosQObjectImpl(QObject *parent,
 {
 }
 
-bool DosQObjectImpl::emitSignal(const QString &name, const std::vector<QVariant> &args)
+bool DosQObjectImpl::emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &args)
 {
     const QMetaMethod method = m_metaObject->signal(name);
     if (!method.isValid())
@@ -28,7 +28,7 @@ bool DosQObjectImpl::emitSignal(const QString &name, const std::vector<QVariant>
     std::vector<void *> arguments(args.size(), nullptr);
     auto func = [](const QVariant & arg) -> void * { return (void *)(&arg); };
     std::transform(args.begin(), args.end(), arguments.begin(), func);
-    QMetaObject::activate(m_parent, method.methodIndex(), arguments.data());
+    QMetaObject::activate(emitter, method.methodIndex(), arguments.data());
     return true;
 }
 
