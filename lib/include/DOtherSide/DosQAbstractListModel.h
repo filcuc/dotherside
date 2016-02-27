@@ -7,14 +7,13 @@
 #include "DOtherSide/DosIQObjectImpl.h"
 #include "DOtherSide/OnSlotExecutedHandler.h"
 
-namespace DOS
-{
+namespace DOS {
 
 class DosQAbstractListModel : public QAbstractListModel, public DosIQObjectImpl
 {
 public:
     /// Constructor
-    DosQAbstractListModel(void* modelObject,
+    DosQAbstractListModel(void *modelObject,
                           DosIQMetaObjectPtr metaObject,
                           OnSlotExecuted onSlotExecuted,
                           RowCountCallback rowCountCallback,
@@ -35,37 +34,37 @@ public:
     int qt_metacall(QMetaObject::Call, int, void **) override;
 
     /// Return the model's row count
-    int rowCount(const QModelIndex& parent = QModelIndex()) const override;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
     /// Return the model's column count
-    int columnCount(const QModelIndex& parent = QModelIndex()) const override;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
     /// Return the QVariant at the given index
-    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     /// Sets the QVariant value at the given index and role
-    bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 
     /// Return the item flags for the given index
-    Qt::ItemFlags flags(const QModelIndex& index) const override;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
 
     /// Return the data for the given role and section in the header with the specified orientation
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
     /// Return the dModelPointer
-    void* modelObject();
+    void *modelObject();
 
     /// Return the roleNames
     QHash<int, QByteArray> roleNames() const override;
 
     /// Expose beginInsertRows
-    void publicBeginInsertRows(const QModelIndex& index, int first, int last);
+    void publicBeginInsertRows(const QModelIndex &index, int first, int last);
 
     /// Expose endInsertRows
     void publicEndInsertRows();
 
     /// Expose beginRemoveRows
-    void publicBeginRemoveRows(const QModelIndex& index, int first, int last);
+    void publicBeginRemoveRows(const QModelIndex &index, int first, int last);
 
     /// Expose endInsertRows
     void publicEndRemoveRows();
@@ -77,13 +76,13 @@ public:
     void publicEndResetModel();
 
     /// Expose dataChanged
-    void publicDataChanged(const QModelIndex& topLeft,
-                           const QModelIndex& bottomRight,
-                           const QVector<int>& roles = QVector<int>());
+    void publicDataChanged(const QModelIndex &topLeft,
+                           const QModelIndex &bottomRight,
+                           const QVector<int> &roles = QVector<int>());
 
 private:
     std::unique_ptr<DosIQObjectImpl> m_impl;
-    void* m_modelObject;
+    void *m_modelObject;
     RowCountCallback m_rowCountCallback;
     ColumnCountCallback m_columnCountCallback;
     DataCallback m_dataCallback;

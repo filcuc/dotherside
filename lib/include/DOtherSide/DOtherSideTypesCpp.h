@@ -10,11 +10,9 @@
 #include "DOtherSide/DOtherSideTypes.h"
 #include "DOtherSide/Utils.h"
 
-namespace DOS
-{
+namespace DOS {
 
-struct SignalDefinition
-{
+struct SignalDefinition {
     SignalDefinition(QString n,
                      std::vector<QMetaType::Type> v)
         : name(std::move(n))
@@ -34,8 +32,7 @@ struct SignalDefinition
     std::vector<QMetaType::Type> parameterTypes;
 };
 
-struct SlotDefinition
-{
+struct SlotDefinition {
     SlotDefinition(QString n,
                    QMetaType::Type t,
                    std::vector<QMetaType::Type> v)
@@ -57,8 +54,7 @@ struct SlotDefinition
     std::vector<QMetaType::Type> parameterTypes;
 };
 
-struct PropertyDefinition
-{
+struct PropertyDefinition {
     PropertyDefinition(QString n,
                        QMetaType::Type t,
                        QString r,
@@ -90,9 +86,9 @@ using SignalDefinitions = std::vector<SignalDefinition>;
 using SlotDefinitions = std::vector<SlotDefinition>;
 using PropertyDefinitions = std::vector<PropertyDefinition>;
 
-SignalDefinitions toVector(const ::SignalDefinitions& cType);
-SlotDefinitions toVector(const ::SlotDefinitions& cType);
-PropertyDefinitions toVector(const ::PropertyDefinitions& cType);
+SignalDefinitions toVector(const ::SignalDefinitions &cType);
+SlotDefinitions toVector(const ::SlotDefinitions &cType);
+PropertyDefinitions toVector(const ::PropertyDefinitions &cType);
 
 class DosIQMetaObjectHolder;
 class DosIQMetaObject;
@@ -101,31 +97,39 @@ class DosQMetaObject;
 
 
 using OnMetaObject = std::function<DosIQMetaObjectHolder*()>;
-using OnSlotExecuted = std::function<QVariant(const QString&, const std::vector<QVariant>&)>;
+using OnSlotExecuted = std::function<QVariant(const QString &, const std::vector<QVariant>&)>;
 
 class SafeQMetaObjectPtr
 {
 public:
-    SafeQMetaObjectPtr(QMetaObject* ptr)
+    SafeQMetaObjectPtr(QMetaObject *ptr)
         : m_d(ptr, ::free)
     {}
 
-    SafeQMetaObjectPtr(SafeQMetaObjectPtr&&) = delete;
-    SafeQMetaObjectPtr(const SafeQMetaObjectPtr&) = delete;
-    SafeQMetaObjectPtr& operator=(const SafeQMetaObjectPtr&) = delete;
+    SafeQMetaObjectPtr(SafeQMetaObjectPtr &&) = delete;
+    SafeQMetaObjectPtr(const SafeQMetaObjectPtr &) = delete;
+    SafeQMetaObjectPtr &operator=(const SafeQMetaObjectPtr &) = delete;
 
-    operator bool() const Q_DECL_NOEXCEPT { return m_d != nullptr; }
-    operator const QMetaObject*() const Q_DECL_NOEXCEPT { return m_d.get(); }
-    const QMetaObject* operator->() const Q_DECL_NOEXCEPT { return m_d.get(); }
-    void reset(QMetaObject* other) Q_DECL_NOEXCEPT { m_d.reset(other); }
+    operator bool() const Q_DECL_NOEXCEPT
+    {
+        return m_d != nullptr;
+    }
+    operator const QMetaObject *() const Q_DECL_NOEXCEPT
+    {
+        return m_d.get();
+    }
+    const QMetaObject *operator->() const Q_DECL_NOEXCEPT
+    {
+        return m_d.get();
+    }
+    void reset(QMetaObject *other) Q_DECL_NOEXCEPT { m_d.reset(other); }
 
 private:
-    std::unique_ptr<QMetaObject, void(*)(void*)> m_d;
+    std::unique_ptr<QMetaObject, void(*)(void *)> m_d;
 };
 
 
-struct QmlRegisterType
-{
+struct QmlRegisterType {
     int major;
     int minor;
     std::string uri;

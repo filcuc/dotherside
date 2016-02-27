@@ -5,6 +5,6 @@
 #include <QtCore/QObject>
 
 namespace DOS {
-    int dosQmlRegisterType(QmlRegisterType args);
-    int dosQmlRegisterSingletonType(QmlRegisterType args);
+int dosQmlRegisterType(QmlRegisterType args);
+int dosQmlRegisterSingletonType(QmlRegisterType args);
 }

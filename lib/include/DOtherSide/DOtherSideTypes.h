@@ -7,29 +7,28 @@ extern "C"
 #endif
 
 // Raw data types
-typedef void* QVariantVoidPtr;
-typedef void* QModelIndexVoidPtr;
-typedef void* QAbstractListModelVoidPtr;
-typedef void* QQmlApplicationEngineVoidPtr;
-typedef void* QQuickViewVoidPtr;
-typedef void* QQmlContextVoidPtr;
-typedef void* QHashIntQByteArrayVoidPtr;
+typedef void *QVariantVoidPtr;
+typedef void *QModelIndexVoidPtr;
+typedef void *QAbstractListModelVoidPtr;
+typedef void *QQmlApplicationEngineVoidPtr;
+typedef void *QQuickViewVoidPtr;
+typedef void *QQmlContextVoidPtr;
+typedef void *QHashIntQByteArrayVoidPtr;
 
 // Raw function types
-typedef void(*Function)(void*);
-typedef void(*DObjectCallback)(void*, void*, int, void**);
-typedef void(*RowCountCallback)(void* model, const void* index, int* result);
-typedef void(*ColumnCountCallback)(void* model, const void* index, int* result);
-typedef void(*DataCallback)(void* model, const void* index, int role, QVariantVoidPtr result);
-typedef void(*SetDataCallback) (void* model, const void* index, const void* value, int role, bool* result);
-typedef void(*RoleNamesCallback)(void* model, QHashIntQByteArrayVoidPtr result);
-typedef void(*FlagsCallback) (void* model, const void* index, int* result);
-typedef void(*HeaderDataCallback) (void* model, int section, int orientation, int role, QVariantVoidPtr result);
-typedef void(*CreateDObject)(int, void**, void**);
-typedef void(*DeleteDObject)(int, void*);
+typedef void(*Function)(void *);
+typedef void(*DObjectCallback)(void *, void *, int, void **);
+typedef void(*RowCountCallback)(void *model, const void *index, int *result);
+typedef void(*ColumnCountCallback)(void *model, const void *index, int *result);
+typedef void(*DataCallback)(void *model, const void *index, int role, QVariantVoidPtr result);
+typedef void(*SetDataCallback) (void *model, const void *index, const void *value, int role, bool *result);
+typedef void(*RoleNamesCallback)(void *model, QHashIntQByteArrayVoidPtr result);
+typedef void(*FlagsCallback) (void *model, const void *index, int *result);
+typedef void(*HeaderDataCallback) (void *model, int section, int orientation, int role, QVariantVoidPtr result);
+typedef void(*CreateDObject)(int, void **, void **);
+typedef void(*DeleteDObject)(int, void *);
 
-struct QmlRegisterType
-{
+struct QmlRegisterType {
     int major;
     int minor;
     const char *uri;
@@ -39,46 +38,40 @@ struct QmlRegisterType
     DeleteDObject deleteDObject;
 };
 
-struct SignalDefinition
-{
-    const char* name;
+struct SignalDefinition {
+    const char *name;
     int parametersCount;
-    int* parametersMetaTypes;
+    int *parametersMetaTypes;
 };
 
-struct SignalDefinitions
-{
+struct SignalDefinitions {
     int count;
-    SignalDefinition* definitions;
+    SignalDefinition *definitions;
 };
 
-struct SlotDefinition
-{
-    const char* name;
+struct SlotDefinition {
+    const char *name;
     int returnMetaType;
     int parametersCount;
-    int* parametersMetaTypes;
+    int *parametersMetaTypes;
 };
 
-struct SlotDefinitions
-{
+struct SlotDefinitions {
     int count;
-    SlotDefinition* definitions;
+    SlotDefinition *definitions;
 };
 
-struct PropertyDefinition
-{
-    const char* name;
+struct PropertyDefinition {
+    const char *name;
     int propertyMetaType;
-    const char* readSlot;
-    const char* writeSlot;
-    const char* notifySignal;
+    const char *readSlot;
+    const char *writeSlot;
+    const char *notifySignal;
 };
 
-struct PropertyDefinitions
-{
+struct PropertyDefinitions {
     int count;
-    PropertyDefinition* definitions;
+    PropertyDefinition *definitions;
 };
 
 #ifdef __cplusplus

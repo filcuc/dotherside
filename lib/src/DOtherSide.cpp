@@ -342,7 +342,7 @@ void dos_qobject_create(void **vptr, void *dObjectPointer, void *metaObject,
     auto dosQObject = new DosQObject(metaObjectHolder->data(),
                                      OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
     QQmlEngine::setObjectOwnership(dosQObject, QQmlEngine::CppOwnership);
-    *vptr = static_cast<QObject*>(dosQObject);
+    *vptr = static_cast<QObject *>(dosQObject);
 }
 
 void dos_qobject_delete(void *vptr)
@@ -391,7 +391,7 @@ void dos_qobject_objectName(void *vptr, char **result)
     convert_to_cstring(object->objectName(), result);
 }
 
-void dos_qobject_setObjectName(void *vptr, const char* name)
+void dos_qobject_setObjectName(void *vptr, const char *name)
 {
     auto object = static_cast<QObject *>(vptr);
     object->setObjectName(QString::fromUtf8(name));
@@ -403,10 +403,10 @@ void dos_qmodelindex_create(void **vptr)
     *vptr = index;
 }
 
-void dos_qmodelindex_create_qmodelindex(void **vptr, void* other_vptr)
+void dos_qmodelindex_create_qmodelindex(void **vptr, void *other_vptr)
 {
     auto index = new QModelIndex();
-    auto other = static_cast<QModelIndex*>(other_vptr);
+    auto other = static_cast<QModelIndex *>(other_vptr);
     *index = *other;
     *vptr = index;
 }
@@ -463,7 +463,7 @@ void dos_qmodelindex_sibling(void *vptr, int row, int column, void *sibling)
     *siblingIndex = index->sibling(row, column);
 }
 
-void dos_qmodelindex_assign(void* l, void* r)
+void dos_qmodelindex_assign(void *l, void *r)
 {
     auto li = static_cast<QModelIndex *>(l);
     auto ri = static_cast<QModelIndex *>(r);
@@ -572,27 +572,27 @@ void dos_qabstractlistmodel_create(void **vptr,
                                            flagsCallback,
                                            headerDataCallback);
     QQmlEngine::setObjectOwnership(model, QQmlEngine::CppOwnership);
-    *vptr = static_cast<QObject*>(model);
+    *vptr = static_cast<QObject *>(model);
 }
 
 void dos_qabstractlistmodel_beginInsertRows(void *vptr, QModelIndexVoidPtr parentIndex, int first, int last)
 {
-    auto object = static_cast<QObject*>(vptr);
-    auto model = dynamic_cast<DosQAbstractListModel*>(object);
+    auto object = static_cast<QObject *>(vptr);
+    auto model = dynamic_cast<DosQAbstractListModel *>(object);
     auto index = static_cast<QModelIndex *>(parentIndex);
     model->publicBeginInsertRows(*index, first, last);
 }
 
 void dos_qabstractlistmodel_endInsertRows(void *vptr)
 {
-    auto object = static_cast<QObject*>(vptr);
-    auto model = dynamic_cast<DosQAbstractListModel*>(object);
+    auto object = static_cast<QObject *>(vptr);
+    auto model = dynamic_cast<DosQAbstractListModel *>(object);
     model->publicEndInsertRows();
 }
 
 void dos_qabstractlistmodel_beginRemoveRows(void *vptr, QModelIndexVoidPtr parentIndex, int first, int last)
 {
-    auto object = static_cast<QObject*>(vptr);
+    auto object = static_cast<QObject *>(vptr);
     auto model = dynamic_cast<DosQAbstractListModel *>(object);
     auto index = static_cast<QModelIndex *>(parentIndex);
     model->publicBeginRemoveRows(*index, first, last);
@@ -600,22 +600,22 @@ void dos_qabstractlistmodel_beginRemoveRows(void *vptr, QModelIndexVoidPtr paren
 
 void dos_qabstractlistmodel_endRemoveRows(void *vptr)
 {
-    auto object = static_cast<QObject*>(vptr);
-    auto model = dynamic_cast<DosQAbstractListModel*>(object);
+    auto object = static_cast<QObject *>(vptr);
+    auto model = dynamic_cast<DosQAbstractListModel *>(object);
     model->publicEndRemoveRows();
 }
 
 void dos_qabstractlistmodel_beginResetModel(void *vptr)
 {
-    auto object = static_cast<QObject*>(vptr);
-    auto model = dynamic_cast<DosQAbstractListModel*>(object);
+    auto object = static_cast<QObject *>(vptr);
+    auto model = dynamic_cast<DosQAbstractListModel *>(object);
     model->publicBeginResetModel();
 }
 
 void dos_qabstractlistmodel_endResetModel(void *vptr)
 {
-    auto object = static_cast<QObject*>(vptr);
-    auto model = dynamic_cast<DosQAbstractListModel*>(object);
+    auto object = static_cast<QObject *>(vptr);
+    auto model = dynamic_cast<DosQAbstractListModel *>(object);
     model->publicEndResetModel();
 }
 
@@ -625,7 +625,7 @@ void dos_qabstractlistmodel_dataChanged(void *vptr,
                                         int *rolesArrayPtr,
                                         int rolesArrayLength)
 {
-    auto object = static_cast<QObject*>(vptr);
+    auto object = static_cast<QObject *>(vptr);
     auto model = dynamic_cast<DosQAbstractListModel *>(object);
     auto topLeft = static_cast<QModelIndex *>(topLeftIndex);
     auto bottomRight = static_cast<QModelIndex *>(bottomRightIndex);
@@ -633,9 +633,9 @@ void dos_qabstractlistmodel_dataChanged(void *vptr,
     model->publicDataChanged(*topLeft, *bottomRight, roles);
 }
 
-void dos_qdeclarative_qmlregistertype(const ::QmlRegisterType *cArgs, int* result)
+void dos_qdeclarative_qmlregistertype(const ::QmlRegisterType *cArgs, int *result)
 {
-    auto holder = static_cast<DosIQMetaObjectHolder*>(cArgs->staticMetaObject);
+    auto holder = static_cast<DosIQMetaObjectHolder *>(cArgs->staticMetaObject);
 
     DOS::QmlRegisterType args;
     args.major = cArgs->major;
@@ -651,7 +651,7 @@ void dos_qdeclarative_qmlregistertype(const ::QmlRegisterType *cArgs, int* resul
 
 void dos_qdeclarative_qmlregistersingletontype(const ::QmlRegisterType *cArgs, int *result)
 {
-    auto holder = static_cast<DosIQMetaObjectHolder*>(cArgs->staticMetaObject);
+    auto holder = static_cast<DosIQMetaObjectHolder *>(cArgs->staticMetaObject);
 
     DOS::QmlRegisterType args;
     args.major = cArgs->major;
