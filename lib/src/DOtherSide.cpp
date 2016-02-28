@@ -19,7 +19,7 @@
 #include "DOtherSide/DosQObject.h"
 #include "DOtherSide/DosQObjectImpl.h"
 #include "DOtherSide/DosQAbstractListModel.h"
-#include "DOtherSide/DosQObjectWrapper.h"
+#include "DOtherSide/DosQDeclarative.h"
 
 using namespace DOS;
 

@@ -17,6 +17,7 @@ set(HEADERS_LIST
   include/DOtherSide/DOtherSideTypes.h
   include/DOtherSide/DOtherSideTypesCpp.h
   include/DOtherSide/DOtherSide.h
+  include/DOtherSide/DosQDeclarative.h
   include/DOtherSide/DosQObjectWrapper.h
   include/DOtherSide/DosQObject.h
   include/DOtherSide/DosQObjectImpl.h
@@ -31,7 +32,7 @@ set(SRC_LIST
   src/DOtherSide.cpp
   src/OnSlotExecutedHandler.cpp
   src/DosQMetaObject.cpp
-  src/DosQObjectWrapper.cpp
+  src/DosQDeclarative.cpp
   src/DosQObject.cpp
   src/DOtherSideTypesCpp.cpp
   src/DosQObjectImpl.cpp
