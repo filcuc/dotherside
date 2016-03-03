@@ -1,8 +1,7 @@
 #pragma once
 
-#include "DOtherSide/DosIQObjectImpl.h"
-#include "DOtherSide/DosQMetaObject.h"
 #include "DOtherSide/DosQObject.h"
+#include "DOtherSide/DosQMetaObject.h"
 #include <QtQml/qqml.h>
 
 namespace DOS {
@@ -35,7 +34,7 @@ public:
 
 private:
     void *m_dObject;
-    DosIQObjectImpl *m_impl;
+    DosQObject *m_impl;
     static int m_id;
     static QmlRegisterType m_data;
 };
@@ -57,7 +56,7 @@ DosQObjectWrapper<N, M>::DosQObjectWrapper(QObject *parent)
 {
     void *impl = nullptr;
     m_data.createDObject(m_id, static_cast<QObject*>(this), &m_dObject, &impl);
-    m_impl = dynamic_cast<DosIQObjectImpl *>(static_cast<QObject*>(impl));
+    m_impl = dynamic_cast<DosQObject *>(static_cast<QObject*>(impl));
     Q_ASSERT(m_dObject);
     Q_ASSERT(m_impl);
 }
@@ -115,6 +114,8 @@ const QmlRegisterType &DosQObjectWrapper<N, M>::qmlRegisterType()
 {
     return m_data;
 }
+
+namespace DQOW {
 
 template<int N>
 using RegisterTypeQObject = DosQObjectWrapper<N, 0>;
@@ -195,4 +196,5 @@ struct DosQmlRegisterSingletonHelper<0> {
     }
 };
 
+}
 }

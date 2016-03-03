@@ -31,8 +31,7 @@ DosQAbstractListModel::DosQAbstractListModel(void *modelObject,
     , m_roleNamesCallback(std::move(roleNamesCallback))
     , m_flagsCallback(std::move(flagsCallback))
     , m_headerDataCallback(std::move(headerDataCallback))
-{
-}
+{}
 
 bool DosQAbstractListModel::emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &argumentsValues)
 {
@@ -106,37 +105,37 @@ QHash<int, QByteArray> DosQAbstractListModel::roleNames() const
     return result;
 }
 
-void DosQAbstractListModel::publicBeginInsertRows(const QModelIndex &index, int first, int last)
+void DOS::DosQAbstractListModel::publicBeginInsertRows(const QModelIndex &index, int first, int last)
 {
     beginInsertRows(index, first, last);
 }
 
-void DosQAbstractListModel::publicEndInsertRows()
+void DOS::DosQAbstractListModel::publicEndInsertRows()
 {
-    return endInsertRows();
+    endInsertRows();
 }
 
-void DosQAbstractListModel::publicBeginRemoveRows(const QModelIndex &index, int first, int last)
+void DOS::DosQAbstractListModel::publicBeginRemoveRows(const QModelIndex &index, int first, int last)
 {
     beginRemoveRows(index, first, last);
 }
 
-void DosQAbstractListModel::publicEndRemoveRows()
+void DOS::DosQAbstractListModel::publicEndRemoveRows()
 {
-    return endRemoveRows();
+    endRemoveRows();
 }
 
-void DosQAbstractListModel::publicBeginResetModel()
+void DOS::DosQAbstractListModel::publicBeginResetModel()
 {
     beginResetModel();
 }
 
-void DosQAbstractListModel::publicEndResetModel()
+void DOS::DosQAbstractListModel::publicEndResetModel()
 {
     endResetModel();
 }
 
-void DosQAbstractListModel::publicDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
+void DOS::DosQAbstractListModel::publicDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
 {
     emit dataChanged(topLeft, bottomRight, roles);
 }

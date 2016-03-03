@@ -4,12 +4,12 @@
 #include <QAbstractListModel>
 // DOtherSide
 #include "DOtherSide/DOtherSideTypes.h"
-#include "DOtherSide/DosIQObjectImpl.h"
+#include "DOtherSide/DosIQAbstractListModelImpl.h"
 #include "DOtherSide/OnSlotExecutedHandler.h"
 
 namespace DOS {
 
-class DosQAbstractListModel : public QAbstractListModel, public DosIQObjectImpl
+class DosQAbstractListModel : public QAbstractListModel, public DosIQAbstractListModelImpl
 {
 public:
     /// Constructor
@@ -58,28 +58,27 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     /// Expose beginInsertRows
-    void publicBeginInsertRows(const QModelIndex &index, int first, int last);
+    void publicBeginInsertRows(const QModelIndex &index, int first, int last) override;
 
     /// Expose endInsertRows
-    void publicEndInsertRows();
+    void publicEndInsertRows() override;
 
     /// Expose beginRemoveRows
-    void publicBeginRemoveRows(const QModelIndex &index, int first, int last);
+    void publicBeginRemoveRows(const QModelIndex &index, int first, int last) override;
 
     /// Expose endInsertRows
-    void publicEndRemoveRows();
+    void publicEndRemoveRows() override;
 
     /// Expose beginResetModel
-    void publicBeginResetModel();
+    void publicBeginResetModel() override;
 
     /// Expose endResetModel
-    void publicEndResetModel();
+    void publicEndResetModel() override;
 
     /// Expose dataChanged
     void publicDataChanged(const QModelIndex &topLeft,
                            const QModelIndex &bottomRight,
-                           const QVector<int> &roles = QVector<int>());
-
+                           const QVector<int> &roles = QVector<int>()) override;
 private:
     std::unique_ptr<DosIQObjectImpl> m_impl;
     void *m_modelObject;

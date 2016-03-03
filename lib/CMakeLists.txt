@@ -19,6 +19,7 @@ set(HEADERS_LIST
   include/DOtherSide/DOtherSide.h
   include/DOtherSide/DosQDeclarative.h
   include/DOtherSide/DosQObjectWrapper.h
+  include/DOtherSide/DosQAbstractListModelWrapper.h
   include/DOtherSide/DosQObject.h
   include/DOtherSide/DosQObjectImpl.h
   include/DOtherSide/DosIQObjectImpl.h

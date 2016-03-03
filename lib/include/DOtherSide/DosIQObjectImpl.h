@@ -1,6 +1,12 @@
 #pragma once
 
-#include "private/qobject_p.h"
+// std
+#include <vector>
+// Qt
+#include <QtCore/QObject>
+#include <QtCore/QString>
+#include <QtCore/QVariant>
+#include <QtCore/QMetaObject>
 
 namespace DOS {
 
