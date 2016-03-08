@@ -16,6 +16,8 @@ extern "C"
 
 // QCoreApplication
 DOS_API void dos_qcoreapplication_application_dir_path(char** result);
+DOS_API void dos_qcoreapplication_add_library_path(const char* path);
+
 
 // QGuiApplication
 DOS_API void dos_qguiapplication_create();

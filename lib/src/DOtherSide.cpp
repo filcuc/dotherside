@@ -29,6 +29,12 @@ void dos_qcoreapplication_application_dir_path(char** result)
     convert_to_cstring(QCoreApplication::applicationDirPath(), result);
 }
 
+void dos_qcoreapplication_add_library_path(const char* path)
+{
+	        QCoreApplication::addLibraryPath(QString(path));
+}
+
+
 void dos_qguiapplication_create()
 {
     static int argc = 1;
