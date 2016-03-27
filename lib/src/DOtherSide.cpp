@@ -31,7 +31,7 @@ void dos_qcoreapplication_application_dir_path(char** result)
 
 void dos_qcoreapplication_add_library_path(const char* path)
 {
-	        QCoreApplication::addLibraryPath(QString(path));
+    QCoreApplication::addLibraryPath(QString(path));
 }
 
 
