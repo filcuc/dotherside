@@ -7,24 +7,27 @@ extern "C"
 #endif
 
 // Raw data types
-typedef void *QVariantVoidPtr;
-typedef void *QModelIndexVoidPtr;
-typedef void *QAbstractListModelVoidPtr;
-typedef void *QQmlApplicationEngineVoidPtr;
-typedef void *QQuickViewVoidPtr;
-typedef void *QQmlContextVoidPtr;
-typedef void *QHashIntQByteArrayVoidPtr;
+typedef void DosQVariant;
+typedef void DosQModelIndex;
+typedef void DosQAbstractListModel;
+typedef void DosQQmlApplicationEngine;
+typedef void DosQQuickView;
+typedef void DosQQmlContext;
+typedef void DosQHashIntQByteArray;
+typedef void DosQUrl;
+typedef void DosQMetaObject;
+typedef void DosQObject;
 
 // Raw function types
 typedef void(*Function)(void *);
 typedef void(*DObjectCallback)(void *, void *, int, void **);
-typedef void(*RowCountCallback)(void *model, const void *index, int *result);
-typedef void(*ColumnCountCallback)(void *model, const void *index, int *result);
-typedef void(*DataCallback)(void *model, const void *index, int role, QVariantVoidPtr result);
-typedef void(*SetDataCallback) (void *model, const void *index, const void *value, int role, bool *result);
-typedef void(*RoleNamesCallback)(void *model, QHashIntQByteArrayVoidPtr result);
-typedef void(*FlagsCallback) (void *model, const void *index, int *result);
-typedef void(*HeaderDataCallback) (void *model, int section, int orientation, int role, QVariantVoidPtr result);
+typedef void(*RowCountCallback)     (DosQAbstractListModel* model, const DosQModelIndex *index, int *result);
+typedef void(*ColumnCountCallback)  (DosQAbstractListModel *model, const DosQModelIndex *index, int *result);
+typedef void(*DataCallback)         (DosQAbstractListModel *model, const DosQModelIndex *index, int role, DosQVariant* result);
+typedef void(*SetDataCallback)      (DosQAbstractListModel *model, const DosQModelIndex *index, const DosQVariant *value, int role, bool *result);
+typedef void(*RoleNamesCallback)    (DosQAbstractListModel *model, DosQHashIntQByteArray* result);
+typedef void(*FlagsCallback)        (DosQAbstractListModel *model, const DosQModelIndex *index, int *result);
+typedef void(*HeaderDataCallback)   (DosQAbstractListModel *model, int section, int orientation, int role, DosQVariant* result);
 typedef void(*CreateDObject)(int, void*, void **, void **);
 typedef void(*DeleteDObject)(int, void *);
 

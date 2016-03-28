@@ -228,11 +228,11 @@ private slots:
                                               DOS::SlotDefinition {"setName", QMetaType::Void, {QMetaType::QString}}};
         DOS::PropertyDefinitions propertyDefinitions {DOS::PropertyDefinition{"name", QMetaType::QString, "name", "setName", "nameChanged"}};
 
-        auto mo = std::make_shared<DosQMetaObject>(std::make_shared<DosQObjectMetaObject>(),
-                                                   "TestClass",
-                                                   signalDefinitions,
-                                                   slotDefinitions,
-                                                   propertyDefinitions);
+        auto mo = std::make_shared<DOS::DosQMetaObject>(std::make_shared<DosQObjectMetaObject>(),
+                                                        "TestClass",
+                                                        signalDefinitions,
+                                                        slotDefinitions,
+                                                        propertyDefinitions);
 
         QString value = "";
         auto ose = [&value](const QString & name, const std::vector<QVariant> &args) -> QVariant {
@@ -243,7 +243,7 @@ private slots:
             return QVariant();
         };
 
-        DosQObject testObject(mo, ose);
+        DOS::DosQObject testObject(mo, ose);
         testObject.setObjectName("testObject");
         testObject.setProperty("name", "foo");
 
@@ -272,11 +272,11 @@ private slots:
                                               DOS::SlotDefinition {"setName", QMetaType::Void, {QMetaType::QString}}};
         DOS::PropertyDefinitions propertyDefinitions {DOS::PropertyDefinition{"name", QMetaType::QString, "name", "setName", "nameChanged"}};
 
-        auto mo = std::make_shared<DosQMetaObject>(std::make_shared<DosQAbstractListModelMetaObject>(),
-                                                   "TestClass",
-                                                   signalDefinitions,
-                                                   slotDefinitions,
-                                                   propertyDefinitions);
+        auto mo = std::make_shared<DOS::DosQMetaObject>(std::make_shared<DosQAbstractListModelMetaObject>(),
+                                                        "TestClass",
+                                                        signalDefinitions,
+                                                        slotDefinitions,
+                                                        propertyDefinitions);
 
         std::unique_ptr<DosIQMetaObjectHolder> moh(new DosIQMetaObjectHolder(mo));
 
@@ -299,7 +299,7 @@ private slots:
         FlagsCallback fc = nullptr;
         HeaderDataCallback hdc = nullptr;
 
-        DosQAbstractListModel testObject(dPointer, moh->data(), ose, rcc, ccc, dc, sdc, rnc, fc, hdc);
+        DOS::DosQAbstractListModel testObject(dPointer, moh->data(), ose, rcc, ccc, dc, sdc, rnc, fc, hdc);
         testObject.setObjectName("testObject");
         testObject.setProperty("name", "foo");
 
