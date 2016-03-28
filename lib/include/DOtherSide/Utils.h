@@ -9,6 +9,29 @@
 
 namespace DOS {
 
+template<class Lambda>
+struct DeferHelper
+{
+    DeferHelper(Lambda lambda)
+        : m_lambda(std::move(lambda))
+    {}
+
+    ~DeferHelper()
+    {
+        try { m_lambda(); }
+        catch (...) {}
+    }
+
+    Lambda m_lambda;
+};
+
+template<typename Lambda>
+DeferHelper<Lambda> defer(Lambda l) {
+    return DeferHelper<Lambda>(std::move(l));
+}
+
+
+
 template <typename T>
 struct wrapped_array {
     wrapped_array(T *first, T *last) : begin_ {first}, end_ {last} {}

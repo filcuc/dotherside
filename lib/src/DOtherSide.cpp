@@ -399,17 +399,15 @@ void dos_qobject_setObjectName(void *vptr, const char *name)
     object->setObjectName(QString::fromUtf8(name));
 }
 
-void *dos_qmodelindex_create(void **vptr)
+void *dos_qmodelindex_create()
 {
     return new QModelIndex();
 }
 
 void *dos_qmodelindex_create_qmodelindex(void *other_vptr)
 {
-    auto result = new QModelIndex();
     auto other = static_cast<QModelIndex *>(other_vptr);
-    *result = *other;
-    return result;
+    return new QModelIndex(*other);
 }
 
 void dos_qmodelindex_delete(void *vptr)
@@ -457,7 +455,7 @@ void *dos_qmodelindex_child(void *vptr, int row, int column)
     return static_cast<QModelIndex *>(result);
 }
 
-void *dos_qmodelindex_sibling(void *vptr, int row, int column, void *sibling)
+void *dos_qmodelindex_sibling(void *vptr, int row, int column)
 {
     auto index = static_cast<QModelIndex *>(vptr);
     auto result = new QModelIndex(index->sibling(row, column));

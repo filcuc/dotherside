@@ -140,7 +140,7 @@ DOS_API int   dos_qmodelindex_row(void *vptr);
 DOS_API int   dos_qmodelindex_column(void *vptr);
 DOS_API bool  dos_qmodelindex_isValid(void *vptr);
 DOS_API void *dos_qmodelindex_data(void *vptr, int role);
-DOS_API void *dos_qmodelindex_parent(void *vptr, void *parent);
+DOS_API void *dos_qmodelindex_parent(void *vptr);
 DOS_API void *dos_qmodelindex_child(void *vptr, int row, int column);
 DOS_API void *dos_qmodelindex_sibling(void *vptr, int row, int column);
 DOS_API void  dos_qmodelindex_assign(void *l, void *r);
