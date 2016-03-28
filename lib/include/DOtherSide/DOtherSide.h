@@ -117,17 +117,15 @@ DOS_API void dos_qobject_signal_emit(DosQObject *vptr,
                                      const char *name,
                                      int parametersCount,
                                      void **parameters);
-DOS_API void dos_qobject_signal_connect(DosQObject *senderVPtr,
+DOS_API bool dos_qobject_signal_connect(DosQObject *senderVPtr,
                                         const char *signal,
                                         DosQObject *receiverVPtr,
                                         const char *method,
-                                        int type,
-                                        bool *result);
-DOS_API void dos_qobject_signal_disconnect(DosQObject *senderVPtr,
+                                        int type);
+DOS_API bool dos_qobject_signal_disconnect(DosQObject *senderVPtr,
                                            const char *signal,
                                            DosQObject *receiverVPtr,
-                                           const char *method,
-                                           bool *result);
+                                           const char *method);
 DOS_API char *dos_qobject_objectName(DosQObject *vptr);
 DOS_API void  dos_qobject_setObjectName(DosQObject *vptr, const char *name);
 DOS_API void  dos_qobject_delete(DosQObject *vptr);
