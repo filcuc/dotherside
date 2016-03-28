@@ -25,7 +25,7 @@ public:
                           HeaderDataCallback headerDataCallback);
 
     /// @see IDynamicQObject::emitSignal
-    bool emitSignal(QObject* emitter, const QString &name, const std::vector<QVariant> &argumentsValues) override;
+    bool emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &argumentsValues) override;
 
     /// @see QAbstractListModel::metaObject()
     const QMetaObject *metaObject() const override;

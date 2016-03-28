@@ -21,14 +21,14 @@ typedef void DosQObject;
 // Raw function types
 typedef void(*Function)(void *);
 typedef void(*DObjectCallback)(void *, void *, int, void **);
-typedef void(*RowCountCallback)     (DosQAbstractListModel* model, const DosQModelIndex *index, int *result);
+typedef void(*RowCountCallback)     (DosQAbstractListModel *model, const DosQModelIndex *index, int *result);
 typedef void(*ColumnCountCallback)  (DosQAbstractListModel *model, const DosQModelIndex *index, int *result);
-typedef void(*DataCallback)         (DosQAbstractListModel *model, const DosQModelIndex *index, int role, DosQVariant* result);
+typedef void(*DataCallback)         (DosQAbstractListModel *model, const DosQModelIndex *index, int role, DosQVariant *result);
 typedef void(*SetDataCallback)      (DosQAbstractListModel *model, const DosQModelIndex *index, const DosQVariant *value, int role, bool *result);
-typedef void(*RoleNamesCallback)    (DosQAbstractListModel *model, DosQHashIntQByteArray* result);
+typedef void(*RoleNamesCallback)    (DosQAbstractListModel *model, DosQHashIntQByteArray *result);
 typedef void(*FlagsCallback)        (DosQAbstractListModel *model, const DosQModelIndex *index, int *result);
-typedef void(*HeaderDataCallback)   (DosQAbstractListModel *model, int section, int orientation, int role, DosQVariant* result);
-typedef void(*CreateDObject)(int, void*, void **, void **);
+typedef void(*HeaderDataCallback)   (DosQAbstractListModel *model, int section, int orientation, int role, DosQVariant *result);
+typedef void(*CreateDObject)(int, void *, void **, void **);
 typedef void(*DeleteDObject)(int, void *);
 
 struct QmlRegisterType {

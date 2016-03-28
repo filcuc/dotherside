@@ -147,9 +147,9 @@ DOS_API void  dos_qmodelindex_assign (DosQModelIndex *l, DosQModelIndex *r);
 
 // QHash<int, QByteArray>
 DOS_API DosQHashIntQByteArray *dos_qhash_int_qbytearray_create();
-DOS_API void  dos_qhash_int_qbytearray_delete(DosQHashIntQByteArray* vptr);
-DOS_API void  dos_qhash_int_qbytearray_insert(DosQHashIntQByteArray* vptr, int key, const char *value);
-DOS_API char *dos_qhash_int_qbytearray_value (DosQHashIntQByteArray* vptr, int key);
+DOS_API void  dos_qhash_int_qbytearray_delete(DosQHashIntQByteArray *vptr);
+DOS_API void  dos_qhash_int_qbytearray_insert(DosQHashIntQByteArray *vptr, int key, const char *value);
+DOS_API char *dos_qhash_int_qbytearray_value (DosQHashIntQByteArray *vptr, int key);
 
 // QResource
 DOS_API void dos_qresource_register(const char *filename);

@@ -23,7 +23,7 @@ public:
     int qt_metacall(QMetaObject::Call, int, void **) override;
 
     /// @see DosIQObjectImpl::emitSignal
-    bool emitSignal(QObject* emitter, const QString &name, const std::vector<QVariant> &argumentsValues);
+    bool emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &argumentsValues);
 
     /// Return the qml registration type
     static const QmlRegisterType &qmlRegisterType();
@@ -104,9 +104,9 @@ DosQAbstractListModelWrapper<N, M>::DosQAbstractListModelWrapper(QObject *parent
     , m_impl(nullptr)
 {
     void *impl = nullptr;
-    m_data.createDObject(m_id, static_cast<QObject*>(this), &m_dObject, &impl);
+    m_data.createDObject(m_id, static_cast<QObject *>(this), &m_dObject, &impl);
     beginResetModel();
-    m_impl = dynamic_cast<DosQAbstractListModel *>(static_cast<QObject*>(impl));
+    m_impl = dynamic_cast<DosQAbstractListModel *>(static_cast<QObject *>(impl));
     QObject::connect(m_impl, &DosQAbstractListModel::rowsAboutToBeInserted, this, &DosQAbstractListModelWrapper::beginInsertRows);
     QObject::connect(m_impl, &DosQAbstractListModel::rowsInserted, this, &DosQAbstractListModelWrapper::endInsertRows);
     QObject::connect(m_impl, &DosQAbstractListModel::rowsAboutToBeRemoved, this, &DosQAbstractListModelWrapper::beginRemoveRows);
@@ -153,7 +153,7 @@ int DosQAbstractListModelWrapper<N, M>::qt_metacall(QMetaObject::Call call, int 
 }
 
 template<int N, int M>
-bool DosQAbstractListModelWrapper<N, M>::emitSignal(QObject* emitter, const QString &name, const std::vector<QVariant> &argumentsValues)
+bool DosQAbstractListModelWrapper<N, M>::emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &argumentsValues)
 {
     Q_ASSERT(m_impl);
     return m_impl->emitSignal(this, name, argumentsValues);

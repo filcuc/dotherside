@@ -25,7 +25,7 @@ public:
     int qt_metacall(QMetaObject::Call, int, void **) override;
 
     /// @see DosIQObjectImpl::emitSignal
-    bool emitSignal(QObject* emitter, const QString &name, const std::vector<QVariant> &argumentsValues);
+    bool emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &argumentsValues);
 
     static const QmlRegisterType &qmlRegisterType();
     static void setQmlRegisterType(QmlRegisterType data);
@@ -55,8 +55,8 @@ DosQObjectWrapper<N, M>::DosQObjectWrapper(QObject *parent)
     , m_impl(nullptr)
 {
     void *impl = nullptr;
-    m_data.createDObject(m_id, static_cast<QObject*>(this), &m_dObject, &impl);
-    m_impl = dynamic_cast<DosQObject *>(static_cast<QObject*>(impl));
+    m_data.createDObject(m_id, static_cast<QObject *>(this), &m_dObject, &impl);
+    m_impl = dynamic_cast<DosQObject *>(static_cast<QObject *>(impl));
     Q_ASSERT(m_dObject);
     Q_ASSERT(m_impl);
 }
@@ -66,7 +66,7 @@ DosQObjectWrapper<N, M>::~DosQObjectWrapper()
 {
     m_data.deleteDObject(m_id, m_dObject);
     m_dObject = nullptr;
-    delete dynamic_cast<QObject*>(m_impl);
+    delete dynamic_cast<QObject *>(m_impl);
     m_impl = nullptr;
 }
 
@@ -85,7 +85,7 @@ int DosQObjectWrapper<N, M>::qt_metacall(QMetaObject::Call call, int index, void
 }
 
 template<int N, int M>
-bool DosQObjectWrapper<N, M>::emitSignal(QObject* emitter, const QString &name, const std::vector<QVariant> &argumentsValues)
+bool DosQObjectWrapper<N, M>::emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &argumentsValues)
 {
     Q_ASSERT(m_impl);
     return m_impl->emitSignal(this, name, argumentsValues);

@@ -18,7 +18,7 @@ public:
                OnSlotExecuted onSlotExecuted);
 
     /// Emit a signal
-    bool emitSignal(QObject* emitter, const QString &name, const std::vector<QVariant> &arguments) override;
+    bool emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &arguments) override;
 
     /// Return the metaObject
     const QMetaObject *metaObject() const override;

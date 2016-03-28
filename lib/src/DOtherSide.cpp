@@ -340,7 +340,7 @@ void dos_qvariant_setQObject(::DosQVariant *vptr, ::DosQObject *value)
 {
     auto metaObjectHolder = static_cast<DOS::DosIQMetaObjectHolder *>(metaObject);
     auto dosQObject = new DOS::DosQObject(metaObjectHolder->data(),
-                                     DOS::OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
+                                          DOS::OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
     QQmlEngine::setObjectOwnership(dosQObject, QQmlEngine::CppOwnership);
     return static_cast<QObject *>(dosQObject);
 }
@@ -472,19 +472,19 @@ void dos_qmodelindex_assign(::DosQModelIndex *l, ::DosQModelIndex *r)
     return new QHash<int, QByteArray>();
 }
 
-void dos_qhash_int_qbytearray_delete(::DosQHashIntQByteArray* vptr)
+void dos_qhash_int_qbytearray_delete(::DosQHashIntQByteArray *vptr)
 {
     auto qHash = static_cast<QHash<int, QByteArray>*>(vptr);
     delete qHash;
 }
 
-void dos_qhash_int_qbytearray_insert(::DosQHashIntQByteArray* vptr, int key, const char *value)
+void dos_qhash_int_qbytearray_insert(::DosQHashIntQByteArray *vptr, int key, const char *value)
 {
     auto qHash = static_cast<QHash<int, QByteArray>*>(vptr);
     qHash->insert(key, QByteArray(value));
 }
 
-char *dos_qhash_int_qbytearray_value(::DosQHashIntQByteArray* vptr, int key)
+char *dos_qhash_int_qbytearray_value(::DosQHashIntQByteArray *vptr, int key)
 {
     auto qHash = static_cast<QHash<int, QByteArray>*>(vptr);
     return convert_to_cstring(qHash->value(key));
@@ -512,7 +512,7 @@ char *dos_qurl_to_string(::DosQUrl *vptr)
     return convert_to_cstring(url->toString());
 }
 
-::DosQMetaObject* dos_qmetaobject_create(::DosQMetaObject *superClassVPtr,
+::DosQMetaObject *dos_qmetaobject_create(::DosQMetaObject *superClassVPtr,
                                          const char *className,
                                          const ::SignalDefinitions *signalDefinitions,
                                          const ::SlotDefinitions *slotDefinitions,

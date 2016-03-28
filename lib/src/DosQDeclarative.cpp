@@ -4,15 +4,15 @@
 
 namespace DOS {
 
-bool isQAbstractListModel(const QMetaObject* metaObject)
+bool isQAbstractListModel(const QMetaObject *metaObject)
 {
-  const QMetaObject* current = metaObject;
-  while(current) {
-    if (&QAbstractListModel::staticMetaObject == current)
-      return true;
-    current = current->superClass();
-  }
-  return false;
+    const QMetaObject *current = metaObject;
+    while (current) {
+        if (&QAbstractListModel::staticMetaObject == current)
+            return true;
+        current = current->superClass();
+    }
+    return false;
 }
 
 int dosQmlRegisterType(QmlRegisterType args)

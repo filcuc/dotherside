@@ -10,23 +10,24 @@
 namespace DOS {
 
 template<class Lambda>
-struct DeferHelper
-{
+struct DeferHelper {
     DeferHelper(Lambda lambda)
         : m_lambda(std::move(lambda))
     {}
 
     ~DeferHelper()
     {
-        try { m_lambda(); }
-        catch (...) {}
+        try {
+            m_lambda();
+        } catch (...) {}
     }
 
     Lambda m_lambda;
 };
 
 template<typename Lambda>
-DeferHelper<Lambda> defer(Lambda l) {
+DeferHelper<Lambda> defer(Lambda l)
+{
     return DeferHelper<Lambda>(std::move(l));
 }
 
