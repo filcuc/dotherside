@@ -5,10 +5,10 @@ lib_sources = [
   'src/DosQMetaObject.cpp',
   'src/DosQObject.cpp',
   'src/DosQObjectImpl.cpp',
+  'src/DosQDeclarative.cpp',
   'src/DOtherSide.cpp',
   'src/DOtherSideTypesCpp.cpp',
   'src/OnSlotExecutedHandler.cpp',
-  'src/DosQObjectWrapper.cpp'
 ]
 lib_include_directories = ['include', 'include/Qt']
 lib_pch = '../pch/lib_pch.h'
