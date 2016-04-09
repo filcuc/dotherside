@@ -7,6 +7,16 @@
 
 namespace {
 
+QList<QByteArray> createParameterNames(const DOS::SignalDefinition& signal)
+{
+    QList<QByteArray> result;
+    size_t size = signal.parameterTypes.size();
+    result.reserve(size);
+    for (size_t i = 0; i < size; ++i)
+        result << QString("arg%1").arg(i).toUtf8();
+    return result;
+}
+
 template<class T>
 QByteArray createSignature(const T &functionDefinition)
 {
@@ -116,6 +126,7 @@ QMetaObject *DosQMetaObject::createMetaObject(const QString &className,
         QMetaMethodBuilder signalBuilder = builder.addSignal(::createSignature(signal));
         signalBuilder.setReturnType(QMetaType::typeName(QMetaType::Void));
         signalBuilder.setAccess(QMetaMethod::Public);
+        signalBuilder.setParameterNames(createParameterNames(signal));
         m_signalIndexByName[signal.name] = signalBuilder.index();
     }
 
