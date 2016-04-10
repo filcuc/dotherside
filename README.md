@@ -15,6 +15,7 @@ The following features are implementable from a binding language
 * Creating custom QAbstractListModels
 * Creating custom properties, signals and slots
 * Creating from QML QObject defined in the binded language
+* Creating from Singleton QML QObject defined in the binded language
 
 ## Prebuilt binaries
 Currently we provide the prebuilt binaries for the following
@@ -27,14 +28,13 @@ The project change log can be read [here](./CHANGELOG.md).
 ## Supported platforms
 Currently we support the following platforms/compilers:
 - Linux both 32/64bit with gcc
-- Windows 32/64bit with Visual Studio 2013 Community Edition
+- Windows 32/64bit with Visual Studio 2013|2015 Community Edition
 
 ## Build requirements
 You need the following software:
-* Qt 5.3 or higher
+* Qt 5.4 or higher
 * Linux: gcc 4.8 or later with c++11 support or higher
-* Windows: Visual Studio 2013 Community Edition (Windows) or higher
-* Windows: MingGW 4.9.2 or higher
+* Windows: Visual Studio 2013|2015 Community Edition (Windows) or higher
 
 ## Build instructions:
 1. Open a shell terminal inside the cloned repo
@@ -43,7 +43,7 @@ You need the following software:
 4. make
 
 ## Install Instructions
-Once you built the package just type 
+Once you built the package just type
 ```
 make install
 ```
