@@ -1,4 +1,4 @@
-# Version 0.5.0
+# Version 0.5.2
 * Added support qmlRegisterType
 * Added support qmlRegisterSingletonType
 * Added support for creating QObject in the binded language
