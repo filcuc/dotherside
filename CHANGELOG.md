@@ -1,6 +1,8 @@
 # Version 0.5.0
 * Added support qmlRegisterType
-* Added suppor for creating QObject in the binded language
+* Added support qmlRegisterSingletonType
+* Added support for creating QObject in the binded language
+* Added support for using signal arguments from qml with names arg0, arg1 etc
 * Introduced the concept of QMetaObject in the binded language
 * Greatly reduced memory consumption of QObject by using QMetaObjects
 * Greatly improved creation speed of QObjects
@@ -8,6 +10,7 @@
 * Lots of refactoring and code cleanups
 * New architecture for slots and signal invokation
 * Added support for building the project with meson build system
+* Added appveyor for creating pre built binaries for windows
 * Improved the test suite
 
 # Version 0.4.5
