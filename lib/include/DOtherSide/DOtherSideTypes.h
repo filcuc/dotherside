@@ -1,6 +1,13 @@
 #ifndef DOTHERSIDETYPES_H
 #define DOTHERSIDETYPES_H
 
+#ifdef WIN32
+#define DOS_CALL __cdecl
+#else
+#define DOS_CALL
+#endif
+
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -19,17 +26,17 @@ typedef void DosQMetaObject;
 typedef void DosQObject;
 
 // Raw function types
-typedef void(*Function)(void *);
-typedef void(*DObjectCallback)(void *, void *, int, void **);
-typedef void(*RowCountCallback)     (DosQAbstractListModel *model, const DosQModelIndex *index, int *result);
-typedef void(*ColumnCountCallback)  (DosQAbstractListModel *model, const DosQModelIndex *index, int *result);
-typedef void(*DataCallback)         (DosQAbstractListModel *model, const DosQModelIndex *index, int role, DosQVariant *result);
-typedef void(*SetDataCallback)      (DosQAbstractListModel *model, const DosQModelIndex *index, const DosQVariant *value, int role, bool *result);
-typedef void(*RoleNamesCallback)    (DosQAbstractListModel *model, DosQHashIntQByteArray *result);
-typedef void(*FlagsCallback)        (DosQAbstractListModel *model, const DosQModelIndex *index, int *result);
-typedef void(*HeaderDataCallback)   (DosQAbstractListModel *model, int section, int orientation, int role, DosQVariant *result);
-typedef void(*CreateDObject)(int, void *, void **, void **);
-typedef void(*DeleteDObject)(int, void *);
+typedef void (DOS_CALL *Function)(void *);
+typedef void (DOS_CALL *DObjectCallback)(void *, void *, int, void **);
+typedef void (DOS_CALL *RowCountCallback)     (DosQAbstractListModel *model, const DosQModelIndex *index, int *result);
+typedef void (DOS_CALL *ColumnCountCallback)  (DosQAbstractListModel *model, const DosQModelIndex *index, int *result);
+typedef void (DOS_CALL *DataCallback)         (DosQAbstractListModel *model, const DosQModelIndex *index, int role, DosQVariant *result);
+typedef void (DOS_CALL *SetDataCallback)      (DosQAbstractListModel *model, const DosQModelIndex *index, const DosQVariant *value, int role, bool *result);
+typedef void (DOS_CALL *RoleNamesCallback)    (DosQAbstractListModel *model, DosQHashIntQByteArray *result);
+typedef void (DOS_CALL *FlagsCallback)        (DosQAbstractListModel *model, const DosQModelIndex *index, int *result);
+typedef void (DOS_CALL *HeaderDataCallback)   (DosQAbstractListModel *model, int section, int orientation, int role, DosQVariant *result);
+typedef void (DOS_CALL *CreateDObject)(int, void *, void **, void **);
+typedef void (DOS_CALL *DeleteDObject)(int, void *);
 
 struct QmlRegisterType {
     int major;

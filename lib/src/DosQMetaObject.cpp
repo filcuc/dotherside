@@ -7,7 +7,7 @@
 
 namespace {
 
-QList<QByteArray> createParameterNames(const DOS::SignalDefinition& signal)
+QList<QByteArray> createParameterNames(const DOS::SignalDefinition &signal)
 {
     QList<QByteArray> result;
     size_t size = signal.parameterTypes.size();

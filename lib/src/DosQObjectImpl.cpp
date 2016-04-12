@@ -27,7 +27,7 @@ bool DosQObjectImpl::emitSignal(QObject *emitter, const QString &name, const std
 
     std::vector<void *> arguments(args.size() + 1, nullptr); // +1 for the result at pos 0
     for (size_t i = 0; i < args.size(); ++i)
-        arguments[i+1] = const_cast<void*>(args[i].constData()); // Extract inner void*
+        arguments[i + 1] = const_cast<void *>(args[i].constData()); // Extract inner void*
     QMetaObject::activate(emitter, method.methodIndex(), arguments.data());
     return true;
 }
