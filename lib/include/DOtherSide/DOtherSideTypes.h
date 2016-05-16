@@ -11,6 +11,8 @@
 #ifdef __cplusplus
 extern "C"
 {
+#else
+#include <stdbool.h>
 #endif
 
 // Raw data types
@@ -38,7 +40,7 @@ typedef void (DOS_CALL *HeaderDataCallback)   (DosQAbstractListModel *model, int
 typedef void (DOS_CALL *CreateDObject)(int, void *, void **, void **);
 typedef void (DOS_CALL *DeleteDObject)(int, void *);
 
-struct QmlRegisterType {
+typedef struct {
     int major;
     int minor;
     const char *uri;
@@ -46,43 +48,43 @@ struct QmlRegisterType {
     void *staticMetaObject;
     CreateDObject createDObject;
     DeleteDObject deleteDObject;
-};
+} QmlRegisterType;
 
-struct SignalDefinition {
+typedef struct {
     const char *name;
     int parametersCount;
     int *parametersMetaTypes;
-};
+} SignalDefinition;
 
-struct SignalDefinitions {
+typedef struct {
     int count;
     SignalDefinition *definitions;
-};
+} SignalDefinitions;
 
-struct SlotDefinition {
+typedef struct {
     const char *name;
     int returnMetaType;
     int parametersCount;
     int *parametersMetaTypes;
-};
+} SlotDefinition;
 
-struct SlotDefinitions {
+typedef struct {
     int count;
     SlotDefinition *definitions;
-};
+} SlotDefinitions;
 
-struct PropertyDefinition {
+typedef struct {
     const char *name;
     int propertyMetaType;
     const char *readSlot;
     const char *writeSlot;
     const char *notifySignal;
-};
+} PropertyDefinition;
 
-struct PropertyDefinitions {
+typedef struct {
     int count;
     PropertyDefinition *definitions;
-};
+} PropertyDefinitions;
 
 #ifdef __cplusplus
 }
