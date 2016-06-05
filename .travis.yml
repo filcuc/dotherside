@@ -1,36 +1,10 @@
-language: cpp
-compiler: gcc
 sudo: required
 
+services:
+- docker
+
 before_install:
-- sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-- sudo add-apt-repository ppa:beineri/opt-qt551 -y
-- sudo apt-get update
-
-install:
-- echo `pwd`
-- export PROJECT_DIR=`pwd`
-- echo "Installing Qt and GCC"
-- sudo apt-get -y install qt-latest gcc-5 g++-5
-- echo "Moving to /tmp"
-- cd /tmp
-- echo "Installing CMake"
-- wget --no-check-certificate https://cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz
-- tar xf cmake-3.3.2-Linux-x86_64.tar.gz
-- export CMAKE_EXECUTABLE=/tmp/cmake-3.3.2-Linux-x86_64/bin/cmake
-- cd -
-
-before_script:
-- export CXX=g++-5
-- export CC=gcc-5
-- source /opt/qt55/bin/qt55-env.sh
-- export DISPLAY=:99.0
-- sh -e /etc/init.d/xvfb start
-- sleep 3 # give xvfb some time to start
+- docker pull filcuc/dotherside
 
 script:
-- mkdir build
-- cd build
-- $CMAKE_EXECUTABLE ..
-- make
-- ./test/TestDynamicQObject
+- docker run -v `pwd`:/root/dotherside filcuc/dotherside /bin/bash /root/build.sh ${COVERALLS_REPO_TOKEN}
