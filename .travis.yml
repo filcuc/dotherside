@@ -8,10 +8,5 @@ services:
 before_install:
 - docker pull filcuc/dotherside
 
-install:
-- gem install coveralls-lcov
-
 script:
-- docker run -v `pwd`:/root/dotherside filcuc/dotherside /bin/bash /root/build.sh
-- sudo chmod -R a+rwx .
-- cd build && coveralls-lcov --repo-token ${COVERALLS_REPO_TOKEN} coverage.info
+- docker run -v `pwd`:/root/dotherside filcuc/dotherside /bin/bash /root/build.sh ${COVERALLS_REPO_TOKEN}
