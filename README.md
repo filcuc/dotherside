@@ -2,6 +2,7 @@
 [![License](https://img.shields.io/badge/license-LGPL-green.svg)](https://github.com/filcuc/DOtherSide/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/filcuc/DOtherSide.svg?branch=master)](https://travis-ci.org/filcuc/DOtherSide)
 [![Build status](https://ci.appveyor.com/api/projects/status/ufufhtv2h507sd96/branch/master?svg=true)](https://ci.appveyor.com/project/filcuc/dotherside/branch/master)
+[![Coverage Status](https://coveralls.io/repos/github/filcuc/DOtherSide/badge.svg?branch=master)](https://coveralls.io/github/filcuc/DOtherSide?branch=coveralls)
 
 C language library for creating bindings for the Qt QML language.
 
@@ -22,7 +23,7 @@ The following features are implementable from a binding language
 Currently we provide the prebuilt binaries for windows through the
 github [releases](https://github.com/filcuc/DOtherSide/releases) page
 
-###Linux 
+###Linux
 Currently we provide the prebuilt binaries for the following
 Linux distributions through the [OpenSUSE OBS service](https://build.opensuse.org/package/show/home:filcuc/DOtherSide)
 * ```Archlinux``` : [here](http://software.opensuse.org/download.html?project=home%3Afilcuc&package=DOtherSide)
