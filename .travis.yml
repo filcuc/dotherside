@@ -12,5 +12,5 @@ install:
 - gem install coveralls-lcov
 
 script:
-- ls
-- docker run filcuc/dotherside /bin/bash /root/build.sh
+- docker run -v `pwd`:/root/dotherside filcuc/dotherside /bin/bash /root/build.sh
+- coveralls-lcov --repo-token ${COVERALLS_REPO_TOKEN} coverage.info
