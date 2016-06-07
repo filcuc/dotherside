@@ -50,9 +50,9 @@ private slots:
         dos_qguiapplication_create();
         QTimer timer;
         QObject::connect(&timer, &QTimer::timeout, [&quit]() {
-            quit = true;
-            dos_qguiapplication_quit();
-        });
+                quit = true;
+                dos_qguiapplication_quit();
+            });
         timer.start(100);
         dos_qguiapplication_exec();
         QVERIFY(quit);
@@ -74,9 +74,9 @@ private slots:
         dos_qapplication_create();
         QTimer timer;
         QObject::connect(&timer, &QTimer::timeout, [&quit]() {
-            quit = true;
-            dos_qapplication_quit();
-        });
+                quit = true;
+                dos_qapplication_quit();
+            });
         timer.start(100);
         dos_qapplication_exec();
         QVERIFY(quit);
@@ -221,12 +221,13 @@ class TestQObject : public QObject
     Q_OBJECT
 
 private slots:
-    void testPropertyInheritance()
+    void init()
     {
-        DOS::SignalDefinitions signalDefinitions {DOS::SignalDefinition {"nameChanged", {}}};
+        DOS::SignalDefinitions signalDefinitions {DOS::SignalDefinition {"nameChanged", {QMetaType::QString}}};
         DOS::SlotDefinitions slotDefinitions {DOS::SlotDefinition {"name", QMetaType::QString, {}},
-                                              DOS::SlotDefinition {"setName", QMetaType::Void, {QMetaType::QString}}};
+                DOS::SlotDefinition {"setName", QMetaType::Void, {QMetaType::QString}}};
         DOS::PropertyDefinitions propertyDefinitions {DOS::PropertyDefinition{"name", QMetaType::QString, "name", "setName", "nameChanged"}};
+
 
         auto mo = std::make_shared<DOS::DosQMetaObject>(std::make_shared<DosQObjectMetaObject>(),
                                                         "TestClass",
@@ -234,27 +235,58 @@ private slots:
                                                         slotDefinitions,
                                                         propertyDefinitions);
 
-        QString value = "";
-        auto ose = [&value](const QString & name, const std::vector<QVariant> &args) -> QVariant {
+        auto ose = [this, value = QVariant("")](const QString & name, const std::vector<QVariant> &args) mutable -> QVariant {
             if (name == "name")
                 return value;
-            else if (name == "setName")
+            else if (name == "setName") {
                 value = args.front().toString();
+                testObject->emitSignal(testObject.get(), "nameChanged", {value});
+            }
             return QVariant();
         };
 
-        DOS::DosQObject testObject(mo, ose);
-        testObject.setObjectName("testObject");
-        testObject.setProperty("name", "foo");
-
-        /// Test property read
-        QCOMPARE(testObject.property("objectName").toString(), QString("testObject"));
-        QCOMPARE(testObject.property("name").toString(), QString("foo"));
-
-        /// Test slot invokation
-        QMetaObject::invokeMethod(&testObject, "setName", Q_ARG(QString, "bar"));
-        QCOMPARE(testObject.property("name").toString(), QString("bar"));
+        testObject.reset(new DOS::DosQObject(mo,ose));
+        testObject->setObjectName("testObject");
+        testObject->setProperty("name", "foo");
     }
+
+    void cleanup()
+    {
+        testObject.reset();
+    }
+
+    void testPropertyInheritance()
+    {
+        QCOMPARE(testObject->property("objectName").toString(), QString("testObject"));
+        QCOMPARE(testObject->property("name").toString(), QString("foo"));
+    }
+
+    void testPropertyReadAndWrite()
+    {
+        QCOMPARE(testObject->property("name").toString(), QString("foo"));
+        testObject->setProperty("name", QString("bar"));
+        QCOMPARE(testObject->property("name").toString(), QString("bar"));
+    }
+
+    void testSlotInvokation()
+    {
+        QMetaObject::invokeMethod(testObject.get(), "setName", Q_ARG(QString, "bar"));
+        QCOMPARE(testObject->property("name").toString(), QString("bar"));
+    }
+
+    void testSignalEmittion()
+    {
+        QSignalSpy signalSpy(testObject.get(), SIGNAL(nameChanged(QString)));
+        QCOMPARE(signalSpy.size(), 0);
+        QCOMPARE(testObject->property("name").toString(), QString("foo"));
+        testObject->setProperty("name", QString("bar"));
+        QCOMPARE(testObject->property("name").toString(), QString("bar"));
+        QCOMPARE(signalSpy.size(), 1);
+    }
+
+private:
+    QString value;
+    std::unique_ptr<DOS::DosQObject> testObject;
 };
 
 /*
@@ -269,7 +301,7 @@ private slots:
     {
         DOS::SignalDefinitions signalDefinitions {DOS::SignalDefinition {"nameChanged", {}}};
         DOS::SlotDefinitions slotDefinitions {DOS::SlotDefinition {"name", QMetaType::QString, {}},
-                                              DOS::SlotDefinition {"setName", QMetaType::Void, {QMetaType::QString}}};
+                DOS::SlotDefinition {"setName", QMetaType::Void, {QMetaType::QString}}};
         DOS::PropertyDefinitions propertyDefinitions {DOS::PropertyDefinition{"name", QMetaType::QString, "name", "setName", "nameChanged"}};
 
         auto mo = std::make_shared<DOS::DosQMetaObject>(std::make_shared<DosQAbstractListModelMetaObject>(),
