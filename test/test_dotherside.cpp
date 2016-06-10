@@ -297,9 +297,9 @@ class TestQAbstractListModel : public QObject
     Q_OBJECT
 
 private slots:
-    void testPropertyInheritance()
+    void init()
     {
-        DOS::SignalDefinitions signalDefinitions {DOS::SignalDefinition {"nameChanged", {}}};
+        DOS::SignalDefinitions signalDefinitions {DOS::SignalDefinition {"nameChanged", {QMetaType::QString}}};
         DOS::SlotDefinitions slotDefinitions {DOS::SlotDefinition {"name", QMetaType::QString, {}},
                 DOS::SlotDefinition {"setName", QMetaType::Void, {QMetaType::QString}}};
         DOS::PropertyDefinitions propertyDefinitions {DOS::PropertyDefinition{"name", QMetaType::QString, "name", "setName", "nameChanged"}};
@@ -312,16 +312,15 @@ private slots:
 
         std::unique_ptr<DosIQMetaObjectHolder> moh(new DosIQMetaObjectHolder(mo));
 
-        QString value = "";
-        auto ose = [&value](const QString & name, const std::vector<QVariant> &args) -> QVariant {
+        auto ose = [this, value = QString()](const QString & name, const std::vector<QVariant> &args) mutable -> QVariant {
             if (name == "name")
                 return value;
-            else if (name == "setName")
+            else if (name == "setName") {
                 value = args.front().toString();
+                testObject->emitSignal(testObject.get(), "nameChanged", {value});
+            }
             return QVariant();
         };
-
-        void *dPointer = nullptr;
 
         RowCountCallback rcc = nullptr;
         ColumnCountCallback ccc = nullptr;
@@ -331,18 +330,51 @@ private slots:
         FlagsCallback fc = nullptr;
         HeaderDataCallback hdc = nullptr;
 
-        DOS::DosQAbstractListModel testObject(dPointer, moh->data(), ose, rcc, ccc, dc, sdc, rnc, fc, hdc);
-        testObject.setObjectName("testObject");
-        testObject.setProperty("name", "foo");
+        void *dPointer = nullptr;
 
-        /// Test property read
-        QCOMPARE(testObject.property("objectName").toString(), QString("testObject"));
-        QCOMPARE(testObject.property("name").toString(), QString("foo"));
-
-        /// Test slot invokation
-        QMetaObject::invokeMethod(&testObject, "setName", Q_ARG(QString, "bar"));
-        QCOMPARE(testObject.property("name").toString(), QString("bar"));
+        testObject = std::make_unique<DOS::DosQAbstractListModel>(dPointer, moh->data(), ose, rcc, ccc, dc, sdc, rnc, fc, hdc);
+        testObject->setObjectName("testObject");
+        testObject->setProperty("name", "foo");
     }
+
+    void cleanup()
+    {
+        testObject.reset();
+    }
+
+    void testPropertyInheritance()
+    {
+        /// Test property read
+        QCOMPARE(testObject->property("objectName").toString(), QString("testObject"));
+        QCOMPARE(testObject->property("name").toString(), QString("foo"));
+    }
+
+    void testPropertyReadAndWrite()
+    {
+        QCOMPARE(testObject->property("name").toString(), QString("foo"));
+        testObject->setProperty("name", QString("bar"));
+        QCOMPARE(testObject->property("name").toString(), QString("bar"));
+    }
+
+    void testSlotInvokation()
+    {
+        QMetaObject::invokeMethod(testObject.get(), "setName", Q_ARG(QString, "bar"));
+        QCOMPARE(testObject->property("name").toString(), QString("bar"));
+    }
+
+    void testSignalEmittion()
+    {
+        QSignalSpy signalSpy(testObject.get(), SIGNAL(nameChanged(QString)));
+        QCOMPARE(signalSpy.size(), 0);
+        QCOMPARE(testObject->property("name").toString(), QString("foo"));
+        testObject->setProperty("name", QString("bar"));
+        QCOMPARE(testObject->property("name").toString(), QString("bar"));
+        QCOMPARE(signalSpy.size(), 1);
+    }
+
+private:
+    QString value;
+    std::unique_ptr<DOS::DosQAbstractListModel> testObject;
 };
 
 
