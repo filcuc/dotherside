@@ -27,7 +27,14 @@ typedef void DosQObject;
 
 // Raw function types
 typedef void (DOS_CALL *Function)(void *);
-typedef void (DOS_CALL *DObjectCallback)(void *, void *, int, void **);
+
+/// Called when a slot should be executed
+/// @param self the pointer to the QObject in the binded language
+/// @param slotName a reference to QVariant. It should not be deleted.
+/// @param argc the number of arguments
+/// @param argv an array of QVariant pointers. They should not be deleted
+typedef void (DOS_CALL *DObjectCallback)(void *self, DosQVariant *slotName, int argc, DosQVariant **argv);
+
 typedef void (DOS_CALL *RowCountCallback)     (DosQAbstractListModel *model, const DosQModelIndex *index, int *result);
 typedef void (DOS_CALL *ColumnCountCallback)  (DosQAbstractListModel *model, const DosQModelIndex *index, int *result);
 typedef void (DOS_CALL *DataCallback)         (DosQAbstractListModel *model, const DosQModelIndex *index, int role, DosQVariant *result);

@@ -52,9 +52,16 @@ DOS_API DosQQmlContext *DOS_CALL dos_qquickview_rootContext(DosQQuickView *vptr)
 
 // QQmlContext
 DOS_API char *DOS_CALL dos_qqmlcontext_baseUrl(DosQQmlContext *vptr);
+
+/// Sets a property inside the context
+/// @param vptr The DosQQmlContext
+/// @param name The property name. The string is owned by the caller thus it will not be deleted by the library
+/// @param value The property value. The DosQVariant is owned by the caller thus it will not be deleted by the library
 DOS_API void   DOS_CALL dos_qqmlcontext_setcontextproperty(DosQQmlContext *vptr, const char *name, DosQVariant *value);
 
 // CharArray
+/// Delete a string
+/// @param ptr The string
 DOS_API void DOS_CALL dos_chararray_delete(char *ptr);
 
 // QVariant
@@ -128,8 +135,20 @@ DOS_API bool DOS_CALL dos_qobject_signal_disconnect(DosQObject *senderVPtr,
                                                     const char *signal,
                                                     DosQObject *receiverVPtr,
                                                     const char *method);
+/// Return the DosQObject objectName
+/// @param vptr The DosQObject pointer
+/// @return A string in UTF8 format. The ownership is transferred to the caller thus
+/// it's his responsability to free the string
 DOS_API char *DOS_CALL dos_qobject_objectName(DosQObject *vptr);
+
+/// Sets the DosQObject objectName
+/// @param vptr the DosQObject pointer
+/// @param name a pointer to a UTF8 string. The string is owned by the caller thus
+/// it will not be deleted.
 DOS_API void   DOS_CALL dos_qobject_setObjectName(DosQObject *vptr, const char *name);
+
+/// Delete the DosQObject
+/// @param vptr the DosQObject pointer
 DOS_API void   DOS_CALL dos_qobject_delete(DosQObject *vptr);
 
 // QModelIndex
