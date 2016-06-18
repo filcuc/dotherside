@@ -12,6 +12,8 @@
 #include <QQmlApplicationEngine>
 #include <QQuickItem>
 #include <QQmlContext>
+#include <QtQuickTest/QtQuickTest>
+
 // DOtherSide
 #include "DOtherSide/DOtherSide.h"
 #include "DOtherSide/DosQObject.h"
@@ -50,9 +52,9 @@ private slots:
         dos_qguiapplication_create();
         QTimer timer;
         QObject::connect(&timer, &QTimer::timeout, [&quit]() {
-                quit = true;
-                dos_qguiapplication_quit();
-            });
+            quit = true;
+            dos_qguiapplication_quit();
+        });
         timer.start(100);
         dos_qguiapplication_exec();
         QVERIFY(quit);
@@ -74,9 +76,9 @@ private slots:
         dos_qapplication_create();
         QTimer timer;
         QObject::connect(&timer, &QTimer::timeout, [&quit]() {
-                quit = true;
-                dos_qapplication_quit();
-            });
+            quit = true;
+            dos_qapplication_quit();
+        });
         timer.start(100);
         dos_qapplication_exec();
         QVERIFY(quit);
@@ -225,7 +227,7 @@ private slots:
     {
         DOS::SignalDefinitions signalDefinitions {DOS::SignalDefinition {"nameChanged", {QMetaType::QString}}};
         DOS::SlotDefinitions slotDefinitions {DOS::SlotDefinition {"name", QMetaType::QString, {}},
-                DOS::SlotDefinition {"setName", QMetaType::Void, {QMetaType::QString}}};
+                                              DOS::SlotDefinition {"setName", QMetaType::Void, {QMetaType::QString}}};
         DOS::PropertyDefinitions propertyDefinitions {DOS::PropertyDefinition{"name", QMetaType::QString, "name", "setName", "nameChanged"}};
 
 
@@ -284,6 +286,32 @@ private slots:
         QCOMPARE(signalSpy.size(), 1);
     }
 
+    void testPropertyReadAndWriteFromQml()
+    {
+        QQmlApplicationEngine engine;
+        engine.rootContext()->setContextProperty("testObject", QVariant::fromValue<QObject*>(testObject.get()));
+        engine.load(QUrl("qrc:///testQObject.qml"));
+        QObject* testCase = engine.rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testPropertyReadAndWrite", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
+    }
+
+    void testSignalEmittionFromQml()
+    {
+        QQmlApplicationEngine engine;
+        engine.rootContext()->setContextProperty("testObject", QVariant::fromValue<QObject*>(testObject.get()));
+        engine.load(QUrl("qrc:///testQObject.qml"));
+        QObject* testCase = engine.rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testSignalEmittion", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
+    }
+
 private:
     QString value;
     std::unique_ptr<DOS::DosQObject> testObject;
@@ -301,7 +329,7 @@ private slots:
     {
         DOS::SignalDefinitions signalDefinitions {DOS::SignalDefinition {"nameChanged", {QMetaType::QString}}};
         DOS::SlotDefinitions slotDefinitions {DOS::SlotDefinition {"name", QMetaType::QString, {}},
-                DOS::SlotDefinition {"setName", QMetaType::Void, {QMetaType::QString}}};
+                                              DOS::SlotDefinition {"setName", QMetaType::Void, {QMetaType::QString}}};
         DOS::PropertyDefinitions propertyDefinitions {DOS::PropertyDefinition{"name", QMetaType::QString, "name", "setName", "nameChanged"}};
 
         auto mo = std::make_shared<DOS::DosQMetaObject>(std::make_shared<DosQAbstractListModelMetaObject>(),
@@ -376,7 +404,6 @@ private:
     QString value;
     std::unique_ptr<DOS::DosQAbstractListModel> testObject;
 };
-
 
 int main(int argc, char *argv[])
 {

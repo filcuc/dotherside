@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
-        <file>CMakeLists.txt</file>
         <file>main.qml</file>
+        <file>testQAbstractItemModel.qml</file>
+        <file>testQObject.qml</file>
     </qresource>
 </RCC>
