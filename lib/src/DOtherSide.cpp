@@ -412,56 +412,56 @@ void dos_qmodelindex_delete(::DosQModelIndex *vptr)
     delete index;
 }
 
-int dos_qmodelindex_row(::DosQModelIndex *vptr)
+int dos_qmodelindex_row(const ::DosQModelIndex *vptr)
 {
-    auto index = static_cast<QModelIndex *>(vptr);
+    auto index = static_cast<const QModelIndex *>(vptr);
     return index->row();
 }
 
-int dos_qmodelindex_column(::DosQModelIndex *vptr)
+int dos_qmodelindex_column(const ::DosQModelIndex *vptr)
 {
-    auto index = static_cast<QModelIndex *>(vptr);
+    auto index = static_cast<const QModelIndex *>(vptr);
     return index->column();
 }
 
-bool dos_qmodelindex_isValid(::DosQModelIndex *vptr)
+bool dos_qmodelindex_isValid(const ::DosQModelIndex *vptr)
 {
-    auto index = static_cast<QModelIndex *>(vptr);
+    auto index = static_cast<const QModelIndex *>(vptr);
     return index->isValid();
 }
 
-::DosQVariant *dos_qmodelindex_data(::DosQModelIndex *vptr, int role)
+::DosQVariant *dos_qmodelindex_data(const ::DosQModelIndex *vptr, int role)
 {
-    auto index = static_cast<QModelIndex *>(vptr);
+    auto index = static_cast<const QModelIndex *>(vptr);
     auto result = new QVariant(index->data(role));
     return static_cast<QVariant *>(result);
 }
 
-::DosQModelIndex *dos_qmodelindex_parent(::DosQModelIndex *vptr)
+::DosQModelIndex *dos_qmodelindex_parent(const ::DosQModelIndex *vptr)
 {
-    auto index = static_cast<QModelIndex *>(vptr);
+    auto index = static_cast<const QModelIndex *>(vptr);
     auto result = new QModelIndex(index->parent());
     return static_cast<QModelIndex *>(result);
 }
 
-::DosQModelIndex *dos_qmodelindex_child(::DosQModelIndex *vptr, int row, int column)
+::DosQModelIndex *dos_qmodelindex_child(const ::DosQModelIndex *vptr, int row, int column)
 {
-    auto index = static_cast<QModelIndex *>(vptr);
+    auto index = static_cast<const QModelIndex *>(vptr);
     auto result = new QModelIndex(index->child(row, column));
     return static_cast<QModelIndex *>(result);
 }
 
-::DosQModelIndex *dos_qmodelindex_sibling(::DosQModelIndex *vptr, int row, int column)
+::DosQModelIndex *dos_qmodelindex_sibling(const ::DosQModelIndex *vptr, int row, int column)
 {
-    auto index = static_cast<QModelIndex *>(vptr);
+    auto index = static_cast<const QModelIndex *>(vptr);
     auto result = new QModelIndex(index->sibling(row, column));
     return static_cast<QModelIndex *>(result);
 }
 
-void dos_qmodelindex_assign(::DosQModelIndex *l, ::DosQModelIndex *r)
+void dos_qmodelindex_assign(::DosQModelIndex *l, const ::DosQModelIndex *r)
 {
     auto li = static_cast<QModelIndex *>(l);
-    auto ri = static_cast<QModelIndex *>(r);
+    auto ri = static_cast<const QModelIndex *>(r);
     *li = *ri;
 }
 

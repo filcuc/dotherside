@@ -24,8 +24,6 @@ namespace
         slotDefinitions.definitions = nullptr;
 
         // Properties
-        ::PropertyDefinition propertyDefinitionArray[1];
-
         ::PropertyDefinitions propertyDefinitions;
         propertyDefinitions.count = 0;
         propertyDefinitions.definitions = nullptr;
@@ -39,6 +37,7 @@ MockQAbstractListModel::MockQAbstractListModel()
     : m_vptr(dos_qabstractlistmodel_create(this, metaObject(), &onSlotCalled, &onRowCountCalled,
                                            &onColumnCountCalled, &onDataCalled, &onSetDataCalled,
                                            &onRoleNamesCalled, &onFlagsCalled, &onHeaderDataCalled), &dos_qobject_delete)
+    , m_names({"John", "Mary", "Andy", "Anna"})
 {
 
 }
@@ -60,37 +59,40 @@ void MockQAbstractListModel::onSlotCalled(void *selfVPtr, DosQVariant *dosSlotNa
     string slotName = toStringFromQVariant(dosSlotNameVariant);
 }
 
-void MockQAbstractListModel::onRowCountCalled(DosQAbstractListModel *model, const DosQModelIndex *index, int *result)
+void MockQAbstractListModel::onRowCountCalled(void *selfVPtr, const DosQModelIndex *index, int *result)
+{
+    auto self = static_cast<MockQAbstractListModel*>(selfVPtr);
+    *result = self->m_names.size();
+}
+
+void MockQAbstractListModel::onColumnCountCalled(void *selfVPtr, const DosQModelIndex *index, int *result)
+{
+    auto self = static_cast<MockQAbstractListModel*>(selfVPtr);
+    *result = 0;
+}
+
+void MockQAbstractListModel::onDataCalled(void *selfVPtr, const DosQModelIndex *index, int role, DosQVariant *result)
+{
+    if (!dos_qmodelindex_isValid(index))
+        return;
+}
+
+void MockQAbstractListModel::onSetDataCalled(void *selfVPtr, const DosQModelIndex *index, const DosQVariant *value, int role, bool *result)
 {
 
 }
 
-void MockQAbstractListModel::onColumnCountCalled(DosQAbstractListModel *model, const DosQModelIndex *index, int *result)
+void MockQAbstractListModel::onRoleNamesCalled(void *selfVPtr, DosQHashIntQByteArray *result)
 {
 
 }
 
-void MockQAbstractListModel::onDataCalled(DosQAbstractListModel *model, const DosQModelIndex *index, int role, DosQVariant *result)
+void MockQAbstractListModel::onFlagsCalled(void *selfVPtr, const DosQModelIndex *index, int *result)
 {
 
 }
 
-void MockQAbstractListModel::onSetDataCalled(DosQAbstractListModel *model, const DosQModelIndex *index, const DosQVariant *value, int role, bool *result)
-{
-
-}
-
-void MockQAbstractListModel::onRoleNamesCalled(DosQAbstractListModel *model, DosQHashIntQByteArray *result)
-{
-
-}
-
-void MockQAbstractListModel::onFlagsCalled(DosQAbstractListModel *model, const DosQModelIndex *index, int *result)
-{
-
-}
-
-void MockQAbstractListModel::onHeaderDataCalled(DosQAbstractListModel *model, int section, int orientation, int role, DosQVariant *result)
+void MockQAbstractListModel::onHeaderDataCalled(void *selfVPtr, int section, int orientation, int role, DosQVariant *result)
 {
 
 }

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <Global.h>
+#include <vector>
+#include <string>
 
 class MockQAbstractListModel
 {
@@ -12,13 +14,14 @@ public:
 
 private:
     static void onSlotCalled(void *selfVPtr, DosQVariant *dosSlotNameVariant, int dosSlotArgc, DosQVariant **dosSlotArgv);
-    static void onRowCountCalled(DosQAbstractListModel *model, const DosQModelIndex *index, int *result);
-    static void onColumnCountCalled(DosQAbstractListModel *model, const DosQModelIndex *index, int *result);
-    static void onDataCalled(DosQAbstractListModel *model, const DosQModelIndex *index, int role, DosQVariant *result);
-    static void onSetDataCalled(DosQAbstractListModel *model, const DosQModelIndex *index, const DosQVariant *value, int role, bool *result);
-    static void onRoleNamesCalled(DosQAbstractListModel *model, DosQHashIntQByteArray *result);
-    static void onFlagsCalled(DosQAbstractListModel *model, const DosQModelIndex *index, int *result);
-    static void onHeaderDataCalled(DosQAbstractListModel *model, int section, int orientation, int role, DosQVariant *result);
+    static void onRowCountCalled(void *selfVPtr, const DosQModelIndex *index, int *result);
+    static void onColumnCountCalled(void *selfVPtr, const DosQModelIndex *index, int *result);
+    static void onDataCalled(void *selfVPtr, const DosQModelIndex *index, int role, DosQVariant *result);
+    static void onSetDataCalled(void *selfVPtr, const DosQModelIndex *index, const DosQVariant *value, int role, bool *result);
+    static void onRoleNamesCalled(void *selfVPtr, DosQHashIntQByteArray *result);
+    static void onFlagsCalled(void *selfVPtr, const DosQModelIndex *index, int *result);
+    static void onHeaderDataCalled(void *selfVPtr, int section, int orientation, int role, DosQVariant *result);
 
     VoidPointer m_vptr;
+    std::vector<std::string> m_names;
 };

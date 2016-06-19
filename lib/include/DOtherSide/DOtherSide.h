@@ -155,14 +155,14 @@ DOS_API void   DOS_CALL dos_qobject_delete(DosQObject *vptr);
 DOS_API DosQModelIndex *DOS_CALL dos_qmodelindex_create();
 DOS_API DosQModelIndex *DOS_CALL dos_qmodelindex_create_qmodelindex(DosQModelIndex *index);
 DOS_API void DOS_CALL dos_qmodelindex_delete (DosQModelIndex *vptr);
-DOS_API int  DOS_CALL dos_qmodelindex_row    (DosQModelIndex *vptr);
-DOS_API int  DOS_CALL dos_qmodelindex_column (DosQModelIndex *vptr);
-DOS_API bool DOS_CALL dos_qmodelindex_isValid(DosQModelIndex *vptr);
+DOS_API int  DOS_CALL dos_qmodelindex_row    (const DosQModelIndex *vptr);
+DOS_API int  DOS_CALL dos_qmodelindex_column (const DosQModelIndex *vptr);
+DOS_API bool DOS_CALL dos_qmodelindex_isValid(const DosQModelIndex *vptr);
 DOS_API DosQVariant *DOS_CALL dos_qmodelindex_data (DosQModelIndex *vptr, int role);
-DOS_API DosQModelIndex *DOS_CALL dos_qmodelindex_parent (DosQModelIndex *vptr);
-DOS_API DosQModelIndex *DOS_CALL dos_qmodelindex_child  (DosQModelIndex *vptr, int row, int column);
-DOS_API DosQModelIndex *DOS_CALL dos_qmodelindex_sibling(DosQModelIndex *vptr, int row, int column);
-DOS_API void DOS_CALL dos_qmodelindex_assign (DosQModelIndex *l, DosQModelIndex *r);
+DOS_API DosQModelIndex *DOS_CALL dos_qmodelindex_parent (const DosQModelIndex *vptr);
+DOS_API DosQModelIndex *DOS_CALL dos_qmodelindex_child  (const DosQModelIndex *vptr, int row, int column);
+DOS_API DosQModelIndex *DOS_CALL dos_qmodelindex_sibling(const DosQModelIndex *vptr, int row, int column);
+DOS_API void DOS_CALL dos_qmodelindex_assign (DosQModelIndex *l, const DosQModelIndex *r);
 
 // QHash<int, QByteArray>
 DOS_API DosQHashIntQByteArray *DOS_CALL dos_qhash_int_qbytearray_create();
