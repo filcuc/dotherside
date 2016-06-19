@@ -28,7 +28,7 @@ namespace
         propertyDefinitions.count = 0;
         propertyDefinitions.definitions = nullptr;
 
-        return VoidPointer(dos_qmetaobject_create(superClassMetaObject, "MockQObject", &signalDefinitions, &slotDefinitions, &propertyDefinitions),
+        return VoidPointer(dos_qmetaobject_create(superClassMetaObject, "MockQAbstractListModel", &signalDefinitions, &slotDefinitions, &propertyDefinitions),
                            &dos_qmetaobject_delete);
     }
 }

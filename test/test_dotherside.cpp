@@ -22,6 +22,7 @@
 #include <DOtherSide/DosQAbstractListModel.h>
 
 #include "MockQObject.h"
+#include "MockQAbstractListModel.h"
 
 using namespace std;
 using namespace DOS;
@@ -289,82 +290,50 @@ class TestQAbstractListModel : public QObject
 private slots:
     void init()
     {
-        DOS::SignalDefinitions signalDefinitions {DOS::SignalDefinition {"nameChanged", {QMetaType::QString}}};
-        DOS::SlotDefinitions slotDefinitions {DOS::SlotDefinition {"name", QMetaType::QString, {}},
-                                              DOS::SlotDefinition {"setName", QMetaType::Void, {QMetaType::QString}}};
-        DOS::PropertyDefinitions propertyDefinitions {DOS::PropertyDefinition{"name", QMetaType::QString, "name", "setName", "nameChanged"}};
-
-        auto mo = make_shared<DOS::DosQMetaObject>(make_shared<DosQAbstractListModelMetaObject>(),
-                                                        "TestClass",
-                                                        signalDefinitions,
-                                                        slotDefinitions,
-                                                        propertyDefinitions);
-
-        unique_ptr<DosIQMetaObjectHolder> moh(new DosIQMetaObjectHolder(mo));
-
-        auto ose = [this, value = QString()](const QString & name, const vector<QVariant> &args) mutable -> QVariant {
-            if (name == "name")
-                return value;
-            else if (name == "setName") {
-                value = args.front().toString();
-                testObject->emitSignal(testObject.get(), "nameChanged", {value});
-            }
-            return QVariant();
-        };
-
-        RowCountCallback rcc = nullptr;
-        ColumnCountCallback ccc = nullptr;
-        DataCallback dc = nullptr;
-        SetDataCallback sdc = nullptr;
-        RoleNamesCallback rnc = nullptr;
-        FlagsCallback fc = nullptr;
-        HeaderDataCallback hdc = nullptr;
-
-        void *dPointer = nullptr;
-
-        testObject = make_unique<DOS::DosQAbstractListModel>(dPointer, moh->data(), ose, rcc, ccc, dc, sdc, rnc, fc, hdc);
-        testObject->setObjectName("testObject");
-        testObject->setProperty("name", "foo");
+        testObject.reset(new MockQAbstractListModel());
+        engine.reset(new QQmlApplicationEngine());
+        engine->rootContext()->setContextProperty("testObject", QVariant::fromValue<QObject*>(static_cast<QObject*>(testObject->data())));
+        engine->load(QUrl("qrc:///testQAbstractItemModel.qml"));
     }
 
     void cleanup()
     {
+        engine.reset();
         testObject.reset();
     }
 
-    void testPropertyInheritance()
-    {
-        /// Test property read
-        QCOMPARE(testObject->property("objectName").toString(), QString("testObject"));
-        QCOMPARE(testObject->property("name").toString(), QString("foo"));
+    void testRowCount() {
+        QObject* testCase = engine->rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testRowCount", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
     }
 
-    void testPropertyReadAndWrite()
-    {
-        QCOMPARE(testObject->property("name").toString(), QString("foo"));
-        testObject->setProperty("name", QString("bar"));
-        QCOMPARE(testObject->property("name").toString(), QString("bar"));
+    void testColumnCount() {
+        QObject* testCase = engine->rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testColumnCount", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
     }
 
-    void testSlotInvokation()
-    {
-        QMetaObject::invokeMethod(testObject.get(), "setName", Q_ARG(QString, "bar"));
-        QCOMPARE(testObject->property("name").toString(), QString("bar"));
+    void testData() {
+        QObject* testCase = engine->rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testData", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
     }
 
-    void testSignalEmittion()
-    {
-        QSignalSpy signalSpy(testObject.get(), SIGNAL(nameChanged(QString)));
-        QCOMPARE(signalSpy.size(), 0);
-        QCOMPARE(testObject->property("name").toString(), QString("foo"));
-        testObject->setProperty("name", QString("bar"));
-        QCOMPARE(testObject->property("name").toString(), QString("bar"));
-        QCOMPARE(signalSpy.size(), 1);
-    }
 
 private:
     QString value;
-    unique_ptr<DOS::DosQAbstractListModel> testObject;
+    unique_ptr<MockQAbstractListModel> testObject;
+    unique_ptr<QQmlApplicationEngine> engine;
 };
 
 int main(int argc, char *argv[])
