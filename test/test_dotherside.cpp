@@ -15,11 +15,13 @@
 #include <QtQuickTest/QtQuickTest>
 
 // DOtherSide
-#include "DOtherSide/DOtherSide.h"
-#include "DOtherSide/DosQObject.h"
-#include "DOtherSide/DosQMetaObject.h"
-#include "DOtherSide/DosQObject.h"
-#include "DOtherSide/DosQAbstractListModel.h"
+#include <DOtherSide/DOtherSide.h>
+#include <DOtherSide/DosQObject.h>
+#include <DOtherSide/DosQMetaObject.h>
+#include <DOtherSide/DosQObject.h>
+#include <DOtherSide/DosQAbstractListModel.h>
+
+#include "MockQObject.h"
 
 using namespace std;
 using namespace DOS;
@@ -214,138 +216,6 @@ private:
 
     void *m_engine;
     void *m_context;
-};
-
-extern "C" {
-    typedef void DOS_CALL(*VoidDeleter)(void*);
-    typedef void DOS_CALL(*CharDeleter)(char*);
-}
-using VoidPointer = unique_ptr<void, VoidDeleter>;
-using CharPointer = unique_ptr<char, CharDeleter>;
-
-
-string toStringFromQVariant(DosQVariant* variant) {
-    CharPointer charArray(dos_qvariant_toString(variant), &dos_chararray_delete);
-    return string(charArray.get());
-}
-
-class MockQObject
-{
-
-public:
-    MockQObject()
-        : m_vptr(dos_qobject_create(this, metaObject(), &onSlotCalled), &dos_qobject_delete)
-    {}
-
-    std::string objectName() const {
-        CharPointer result (dos_qobject_objectName(m_vptr.get()), &dos_chararray_delete);
-        return string(result.get());
-    }
-
-    void setObjectName(const string& objectName) {
-        dos_qobject_setObjectName(m_vptr.get(), objectName.c_str());
-    }
-
-    ::DosQMetaObject *metaObject() {
-        static VoidPointer result = initializeMetaObject();
-        return result.get();
-    }
-
-    ::DosQObject *data() {
-        return m_vptr.get();
-    }
-
-    std::string name() const
-    {
-        return m_name;
-    }
-
-    void setName(const string& name)
-    {
-        if (name == m_name)
-            return;
-        m_name = name;
-
-    }
-
-    void nameChanged(const string& name)
-    {
-        int argc = 1;
-        DosQVariant* argv[1];
-        argv[0] = dos_qvariant_create_string(name.c_str());
-        dos_qobject_signal_emit(m_vptr.get(), "nameChanged", argc, argv);
-        dos_qvariant_delete(argv[0]);
-    }
-
-private:
-
-    static void onSlotCalled(void *selfVPtr, DosQVariant *dosSlotNameVariant, int dosSlotArgc, DosQVariant **dosSlotArgv) {
-        MockQObject* self = static_cast<MockQObject*>(selfVPtr);
-
-        string slotName = toStringFromQVariant(dosSlotNameVariant);
-        if (slotName == "name") {
-            VoidPointer name(dos_qvariant_create_string(self->name().c_str()), &dos_qvariant_delete);
-            dos_qvariant_assign(dosSlotArgv[0], name.get());
-            return;
-        }
-
-        if (slotName == "setName") {
-            self->setName(toStringFromQVariant(dosSlotArgv[1]));
-            return;
-        }
-    }
-
-    static VoidPointer initializeMetaObject() {
-        void* superClassMetaObject = dos_qobject_qmetaobject();
-        // Signals
-        ::SignalDefinition signalDefinitionArray[1];
-        signalDefinitionArray[0].name = "nameChanged";
-        signalDefinitionArray[0].parametersCount = 1;
-        int nameChanged[1];
-        nameChanged[0] = QMetaType::QString;
-        signalDefinitionArray[0].parametersMetaTypes = nameChanged;
-
-        ::SignalDefinitions signalDefinitions;
-        signalDefinitions.count = 1;
-        signalDefinitions.definitions = signalDefinitionArray;
-
-        // Slots
-        ::SlotDefinition slotDefinitionArray[2];
-
-        slotDefinitionArray[0].name = "name";
-        slotDefinitionArray[0].returnMetaType = QMetaType::QString;
-        slotDefinitionArray[0].parametersCount = 0;
-        slotDefinitionArray[0].parametersMetaTypes = nullptr;
-
-        slotDefinitionArray[1].name = "setName";
-        slotDefinitionArray[1].returnMetaType = QMetaType::Void;
-        int setNameParameters[1];
-        setNameParameters[0] = QMetaType::QString;
-        slotDefinitionArray[1].parametersCount = 1;
-        slotDefinitionArray[1].parametersMetaTypes = setNameParameters;
-
-        ::SlotDefinitions slotDefinitions;
-        slotDefinitions.count = 2;
-        slotDefinitions.definitions = slotDefinitionArray;
-
-        // Properties
-        ::PropertyDefinition propertyDefinitionArray[1];
-        propertyDefinitionArray[0].name = "name";
-        propertyDefinitionArray[0].notifySignal = "nameChanged";
-        propertyDefinitionArray[0].propertyMetaType = QMetaType::QString;
-        propertyDefinitionArray[0].readSlot = "name";
-        propertyDefinitionArray[0].writeSlot = "setName";
-
-        ::PropertyDefinitions propertyDefinitions;
-        propertyDefinitions.count = 1;
-        propertyDefinitions.definitions = propertyDefinitionArray;
-
-        return VoidPointer(dos_qmetaobject_create(superClassMetaObject, "MockQObject", &signalDefinitions, &slotDefinitions, &propertyDefinitions),
-                           &dos_qmetaobject_delete);
-    }
-
-    VoidPointer m_vptr;
-    std::string m_name;
 };
 
 
