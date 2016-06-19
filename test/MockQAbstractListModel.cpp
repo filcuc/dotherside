@@ -68,13 +68,23 @@ void MockQAbstractListModel::onRowCountCalled(void *selfVPtr, const DosQModelInd
 void MockQAbstractListModel::onColumnCountCalled(void *selfVPtr, const DosQModelIndex *index, int *result)
 {
     auto self = static_cast<MockQAbstractListModel*>(selfVPtr);
-    *result = 0;
+    *result = 1;
 }
 
 void MockQAbstractListModel::onDataCalled(void *selfVPtr, const DosQModelIndex *index, int role, DosQVariant *result)
 {
+    auto self = static_cast<MockQAbstractListModel*>(selfVPtr);
+
     if (!dos_qmodelindex_isValid(index))
         return;
+
+    const int row = dos_qmodelindex_row(index);
+    const int column = dos_qmodelindex_column(index);
+
+    if (row < 0 || row >= self->m_names.size() || column != 0)
+        return;
+
+    dos_qvariant_setString(result, self->m_names[row].c_str());
 }
 
 void MockQAbstractListModel::onSetDataCalled(void *selfVPtr, const DosQModelIndex *index, const DosQVariant *value, int role, bool *result)

@@ -5,18 +5,17 @@ QtObject {
     objectName: "testCase"
 
     function testRowCount() {
-        if (!testObject)
-            return false
-        return testObject.rowCount() === 4
+        return testObject && testObject.rowCount() === 4
     }
 
     function testColumnCount() {
-        if (!testObject)
-            return false
-        return testObject.columnCount() === 0;
+        return testObject && testObject.columnCount() === 1;
     }
 
     function testData() {
-        return true
+        return testObject && testObject.data(testObject.index(0,0, null)) === "John"
+                          && testObject.data(testObject.index(1,0, null)) === "Mary"
+                          && testObject.data(testObject.index(2,0, null)) === "Andy"
+                          && testObject.data(testObject.index(3,0, null)) === "Anna"
     }
 }
