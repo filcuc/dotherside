@@ -12,6 +12,13 @@ public:
     DosQMetaObject *metaObject();
     DosQObject *data();
 
+    std::string objectName() const;
+    void setObjectName(const std::string& objectName);
+
+    std::string name() const;
+    void setName(const std::string& name);
+    void nameChanged(const std::string& name);
+
 private:
     static void onSlotCalled(void *selfVPtr, DosQVariant *dosSlotNameVariant, int dosSlotArgc, DosQVariant **dosSlotArgv);
     static void onRowCountCalled(void *selfVPtr, const DosQModelIndex *index, int *result);
@@ -23,5 +30,6 @@ private:
     static void onHeaderDataCalled(void *selfVPtr, int section, int orientation, int role, DosQVariant *result);
 
     VoidPointer m_vptr;
+    std::string m_name;
     std::vector<std::string> m_names;
 };

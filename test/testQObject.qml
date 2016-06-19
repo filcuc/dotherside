@@ -5,9 +5,7 @@ QtObject {
     objectName: "testCase"
 
     function testObjectName() {
-        if (!testObject)
-            return false;
-        return testObject.objectName === "testObject"
+        return testObject && testObject.objectName === "testObject"
     }
 
     function testPropertyReadAndWrite() {

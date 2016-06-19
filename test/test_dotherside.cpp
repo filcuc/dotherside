@@ -291,6 +291,9 @@ private slots:
     void init()
     {
         testObject.reset(new MockQAbstractListModel());
+        testObject->setObjectName("testObject");
+        testObject->setName("foo");
+
         engine.reset(new QQmlApplicationEngine());
         engine->rootContext()->setContextProperty("testObject", QVariant::fromValue<QObject*>(static_cast<QObject*>(testObject->data())));
         engine->load(QUrl("qrc:///testQAbstractItemModel.qml"));
@@ -301,6 +304,36 @@ private slots:
         engine.reset();
         testObject.reset();
     }
+
+    void testObjectName() {
+        QObject* testCase = engine->rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testObjectName", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
+    }
+
+    void testPropertyReadAndWrite()
+    {
+        QObject* testCase = engine->rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testPropertyReadAndWrite", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
+    }
+
+    void testSignalEmittion()
+    {
+        QObject* testCase = engine->rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testSignalEmittion", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
+    }
+
 
     void testRowCount() {
         QObject* testCase = engine->rootObjects().first();
