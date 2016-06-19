@@ -362,6 +362,15 @@ private slots:
         QVERIFY(result.toBool());
     }
 
+    void testSetData() {
+        QObject* testCase = engine->rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testSetData", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
+    }
+
 
 private:
     QString value;

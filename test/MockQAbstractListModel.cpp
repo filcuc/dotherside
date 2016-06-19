@@ -5,7 +5,7 @@ using namespace std;
 
 namespace
 {
-    std::string toStringFromQVariant(DosQVariant* variant) {
+    std::string toStringFromQVariant(const DosQVariant* variant) {
         CharPointer charArray(dos_qvariant_toString(variant), &dos_chararray_delete);
         return std::string(charArray.get());
     }
@@ -163,7 +163,22 @@ void MockQAbstractListModel::onDataCalled(void *selfVPtr, const DosQModelIndex *
 
 void MockQAbstractListModel::onSetDataCalled(void *selfVPtr, const DosQModelIndex *index, const DosQVariant *value, int role, bool *result)
 {
+    auto self = static_cast<MockQAbstractListModel*>(selfVPtr);
+    *result = false;
 
+    if (!dos_qmodelindex_isValid(index))
+        return;
+
+    const int row = dos_qmodelindex_row(index);
+    const int column = dos_qmodelindex_column(index);
+
+    if (row < 0 || row >= self->m_names.size() || column != 0)
+        return;
+
+    self->m_names[row] = toStringFromQVariant(value);
+    dos_qabstractlistmodel_dataChanged(self->data(), index, index, 0, 0);
+
+    *result = true;
 }
 
 void MockQAbstractListModel::onRoleNamesCalled(void *selfVPtr, DosQHashIntQByteArray *result)

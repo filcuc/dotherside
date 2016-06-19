@@ -79,15 +79,15 @@ DOS_API void   DOS_CALL dos_qvariant_setFloat  (DosQVariant *vptr, float value);
 DOS_API void   DOS_CALL dos_qvariant_setDouble (DosQVariant *vptr, double value);
 DOS_API void   DOS_CALL dos_qvariant_setString (DosQVariant *vptr, const char *value);
 DOS_API void   DOS_CALL dos_qvariant_setQObject(DosQVariant *vptr, DosQObject *value);
-DOS_API bool   DOS_CALL dos_qvariant_isnull    (DosQVariant *vptr);
+DOS_API bool   DOS_CALL dos_qvariant_isnull    (const DosQVariant *vptr);
 DOS_API void   DOS_CALL dos_qvariant_delete    (DosQVariant *vptr);
-DOS_API void   DOS_CALL dos_qvariant_assign    (DosQVariant *vptr, DosQVariant *other);
-DOS_API int    DOS_CALL dos_qvariant_toInt     (DosQVariant *vptr);
-DOS_API bool   DOS_CALL dos_qvariant_toBool    (DosQVariant *vptr);
-DOS_API char *DOS_CALL dos_qvariant_toString  (DosQVariant *vptr);
-DOS_API float  DOS_CALL dos_qvariant_toFloat   (DosQVariant *vptr);
-DOS_API double DOS_CALL dos_qvariant_toDouble  (DosQVariant *vptr);
-DOS_API DosQObject *DOS_CALL dos_qvariant_toQObject(DosQVariant *vptr);
+DOS_API void   DOS_CALL dos_qvariant_assign    (DosQVariant *vptr, const DosQVariant *other);
+DOS_API int    DOS_CALL dos_qvariant_toInt     (const DosQVariant *vptr);
+DOS_API bool   DOS_CALL dos_qvariant_toBool    (const DosQVariant *vptr);
+DOS_API char  *DOS_CALL dos_qvariant_toString  (const DosQVariant *vptr);
+DOS_API float  DOS_CALL dos_qvariant_toFloat   (const DosQVariant *vptr);
+DOS_API double DOS_CALL dos_qvariant_toDouble  (const DosQVariant *vptr);
+DOS_API DosQObject *DOS_CALL dos_qvariant_toQObject(const DosQVariant *vptr);
 
 // QMetaObject
 DOS_API DosQMetaObject *DOS_CALL dos_qmetaobject_create(DosQMetaObject *superClassMetaObject,
@@ -115,7 +115,17 @@ DOS_API void DOS_CALL dos_qabstractlistmodel_beginRemoveRows(DosQAbstractListMod
 DOS_API void DOS_CALL dos_qabstractlistmodel_endRemoveRows  (DosQAbstractListModel *vptr);
 DOS_API void DOS_CALL dos_qabstractlistmodel_beginResetModel(DosQAbstractListModel *vptr);
 DOS_API void DOS_CALL dos_qabstractlistmodel_endResetModel  (DosQAbstractListModel *vptr);
-DOS_API void DOS_CALL dos_qabstractlistmodel_dataChanged    (DosQAbstractListModel *vptr, DosQModelIndex *topLeft, DosQModelIndex *bottomRight, int *rolesPtr, int rolesLength);
+
+/// Emit the dataChanged signal
+/// @param vptr The DosQAbstractListModel pointer
+/// @param topLeft The topLeft DosQModelIndex. The index is owned by the caller thus it will not be deleted
+/// @param bottomRight The bottomright DosQModelIndex. The index is owned by the caller thus it will not be deleted
+/// @param rolesPtr The roles array. The pointer is owned by the caller and thus it will not be deleted
+/// @param rolesLength The roles array length
+DOS_API void DOS_CALL dos_qabstractlistmodel_dataChanged(DosQAbstractListModel *vptr,
+                                                         const DosQModelIndex *topLeft,
+                                                         const DosQModelIndex *bottomRight,
+                                                         int *rolesPtr, int rolesLength);
 
 // QObject
 DOS_API DosQMetaObject *DOS_CALL dos_qobject_qmetaobject();

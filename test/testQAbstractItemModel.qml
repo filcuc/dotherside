@@ -44,4 +44,21 @@ QtObject {
                           && testObject.data(testObject.index(2,0, null)) === "Andy"
                           && testObject.data(testObject.index(3,0, null)) === "Anna"
     }
+
+    function testSetData() {
+        if (!testObject)
+            return false
+        var index = testObject.index(0,0, null)
+        if (!index.valid)
+            return false;
+        if (testObject.data(index) !== "John")
+            return false
+        var dataChanged = false
+        testObject.dataChanged.connect(function(topLeft, bottomRight, role) {
+            dataChanged = topLeft === index && bottomRight === index
+        })
+        if (!testObject.setData(index, "Paul"))
+            return false
+        return testObject.data(index) === "Paul";
+    }
 }
