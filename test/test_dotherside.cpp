@@ -407,6 +407,28 @@ private slots:
         QVERIFY(result.toBool());
     }
 
+    void testQmlRegisterSingletonType() {
+        ::QmlRegisterType registerType;
+        registerType.major = 1;
+        registerType.minor = 0;
+        registerType.uri = "MockModule";
+        registerType.qml = "MockQObjectSingleton";
+        registerType.staticMetaObject = MockQObject::staticMetaObject();
+        registerType.createDObject = &mockQObjectCreator;
+        registerType.deleteDObject = &mockQObjectDeleter;
+        dos_qdeclarative_qmlregistersingletontype(&registerType);
+
+        auto engine = std::make_unique<QQmlApplicationEngine>();
+        engine->load(QUrl("qrc:///testQDeclarative.qml"));
+
+        QObject* testCase = engine->rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testQmlRegisterSingletonType", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
+    }
+
 private:
     static void mockQObjectCreator(int typeId, void *wrapper, void **mockQObjectPtr, void **dosQObject)
     {

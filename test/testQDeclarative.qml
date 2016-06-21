@@ -11,26 +11,31 @@ Item {
         MockQObject {}
     }
 
-    function testQmlRegisterType() {
-        var testObject = mockQObjectComponent.createObject(testCase, {"name":"foo"})
-
+    function testMockQObject(testObject) {
         if (!testObject)
             return false
 
-        if (testObject.name !== "foo") {
-            testObject.destroy()
+        if (testObject.name !== "foo")
             return false
-        }
 
         var nameChangedEmitted = false
         testObject.nameChanged.connect(function(name){nameChangedEmitted = name === "bar"});
         testObject.name = "bar"
-        if (!nameChangedEmitted || !testObject.name !== "bar") {
-            testObject.destroy()
-            return false
-        }
+        return nameChangedEmitted && testObject.name === "bar"
+    }
 
-        testObject.destroy()
-        return true
+
+    function testQmlRegisterType() {
+        var testObject = mockQObjectComponent.createObject(testCase, {"name":"foo"})
+        var result = testMockQObject(testObject)
+        if (testObject)
+            testObject.destroy()
+        return result
+    }
+
+    function testQmlRegisterSingletonType() {
+        var testObject = MockQObjectSingleton
+        MockQObjectSingleton.name = "foo"
+        return testMockQObject(testObject)
     }
 }
