@@ -3,5 +3,6 @@
         <file>main.qml</file>
         <file>testQAbstractItemModel.qml</file>
         <file>testQObject.qml</file>
+        <file>testQDeclarative.qml</file>
     </qresource>
 </RCC>

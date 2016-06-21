@@ -334,7 +334,6 @@ private slots:
         QVERIFY(result.toBool());
     }
 
-
     void testRowCount() {
         QObject* testCase = engine->rootObjects().first();
         QVERIFY(testCase);
@@ -378,6 +377,55 @@ private:
     unique_ptr<QQmlApplicationEngine> engine;
 };
 
+/*
+ * Test QQmlContext
+ */
+class TestQDeclarativeIntegration : public QObject
+{
+    Q_OBJECT
+
+private slots:
+    void testQmlRegisterType() {
+        ::QmlRegisterType registerType;
+        registerType.major = 1;
+        registerType.minor = 0;
+        registerType.uri = "MockModule";
+        registerType.qml = "MockQObject";
+        registerType.staticMetaObject = MockQObject::staticMetaObject();
+        registerType.createDObject = &mockQObjectCreator;
+        registerType.deleteDObject = &mockQObjectDeleter;
+        dos_qdeclarative_qmlregistertype(&registerType);
+
+        auto engine = std::make_unique<QQmlApplicationEngine>();
+        engine->load(QUrl("qrc:///testQDeclarative.qml"));
+
+        QObject* testCase = engine->rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testQmlRegisterType", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
+    }
+
+private:
+    static void mockQObjectCreator(int typeId, void *wrapper, void **mockQObjectPtr, void **dosQObject)
+    {
+        VoidPointer data(wrapper, &emptyVoidDeleter);
+        auto mockQObject = new MockQObject();
+        mockQObject->swapData(data);
+        *dosQObject = data.release();
+        *mockQObjectPtr = mockQObject;
+    }
+
+    static void mockQObjectDeleter(int typeId, void *mockQObject)
+    {
+        auto temp = static_cast<MockQObject*>(mockQObject);
+        delete temp;
+    }
+
+    static void emptyVoidDeleter(void*) {}
+};
+
 int main(int argc, char *argv[])
 {
     using namespace DOS;
@@ -389,6 +437,7 @@ int main(int argc, char *argv[])
     success &= ExecuteGuiTest<TestQQmlContext>(argc, argv);
     success &= ExecuteGuiTest<TestQObject>(argc, argv);
     success &= ExecuteGuiTest<TestQAbstractListModel>(argc, argv);
+    success &= ExecuteGuiTest<TestQDeclarativeIntegration>(argc, argv);
 
     return success ? 0 : 1;
 }

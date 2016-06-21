@@ -6,9 +6,13 @@ class MockQObject
 {
 public:
     MockQObject();
+    virtual ~MockQObject();
 
-    ::DosQMetaObject *metaObject();
+    static ::DosQMetaObject *staticMetaObject();
+    virtual ::DosQMetaObject *metaObject();
+
     ::DosQObject *data();
+    void swapData(VoidPointer &data);
 
     std::string objectName() const;
     void setObjectName(const std::string& objectName);

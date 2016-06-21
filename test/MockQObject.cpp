@@ -61,6 +61,24 @@ namespace {
     }
 }
 
+
+MockQObject::MockQObject()
+    : m_vptr(dos_qobject_create(this, metaObject(), &onSlotCalled), &dos_qobject_delete)
+{}
+
+MockQObject::~MockQObject() = default;
+
+DosQMetaObject *MockQObject::staticMetaObject()
+{
+    static VoidPointer result = initializeMetaObject();
+    return result.get();
+}
+
+::DosQMetaObject *MockQObject::metaObject()
+{
+    return staticMetaObject();
+}
+
 std::string MockQObject::objectName() const
 {
     CharPointer result (dos_qobject_objectName(m_vptr.get()), &dos_chararray_delete);
@@ -72,19 +90,14 @@ void MockQObject::setObjectName(const string &objectName)
     dos_qobject_setObjectName(m_vptr.get(), objectName.c_str());
 }
 
-MockQObject::MockQObject()
-    : m_vptr(dos_qobject_create(this, metaObject(), &onSlotCalled), &dos_qobject_delete)
-{}
-
-::DosQMetaObject *MockQObject::metaObject()
-{
-    static VoidPointer result = initializeMetaObject();
-    return result.get();
-}
-
 ::DosQObject *MockQObject::data()
 {
     return m_vptr.get();
+}
+
+void MockQObject::swapData(VoidPointer &data)
+{
+    std::swap(m_vptr, data);
 }
 
 std::string MockQObject::name() const

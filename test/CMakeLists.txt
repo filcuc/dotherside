@@ -20,6 +20,7 @@ add_executable(${PROJECT_NAME} Resources.qrc
     main.qml
     testQObject.qml
     testQAbstractItemModel.qml
+    testQDeclarative.qml
 )
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 14)
 target_link_libraries(${PROJECT_NAME} DOtherSideStatic Qt5::Quick Qt5::Widgets Qt5::Test Qt5::Core)
