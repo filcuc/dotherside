@@ -27,14 +27,38 @@ typedef void DosQObject;
 
 // Raw function types
 typedef void (DOS_CALL *Function)(void *);
-typedef void (DOS_CALL *DObjectCallback)(void *, void *, int, void **);
-typedef void (DOS_CALL *RowCountCallback)     (DosQAbstractListModel *model, const DosQModelIndex *index, int *result);
-typedef void (DOS_CALL *ColumnCountCallback)  (DosQAbstractListModel *model, const DosQModelIndex *index, int *result);
-typedef void (DOS_CALL *DataCallback)         (DosQAbstractListModel *model, const DosQModelIndex *index, int role, DosQVariant *result);
-typedef void (DOS_CALL *SetDataCallback)      (DosQAbstractListModel *model, const DosQModelIndex *index, const DosQVariant *value, int role, bool *result);
-typedef void (DOS_CALL *RoleNamesCallback)    (DosQAbstractListModel *model, DosQHashIntQByteArray *result);
-typedef void (DOS_CALL *FlagsCallback)        (DosQAbstractListModel *model, const DosQModelIndex *index, int *result);
-typedef void (DOS_CALL *HeaderDataCallback)   (DosQAbstractListModel *model, int section, int orientation, int role, DosQVariant *result);
+
+/// Called when a slot should be executed
+/// @param self The pointer to the QObject in the binded language
+/// @param slotName The slotName as DosQVariant. It should not be deleted
+/// @param argc The number of arguments
+/// @param argv An array of DosQVariant pointers. They should not be deleted
+typedef void (DOS_CALL *DObjectCallback)(void *self, DosQVariant *slotName, int argc, DosQVariant **argv);
+
+/// Called when the QAbstractListModel::rowCount method must be executed
+/// @param self The pointer to the QAbstractListModel in the binded language
+/// @param index The parent DosQModelIndex. It should not be deleted
+/// @param result The rowCount result. This must be deferenced and filled from the binded language.
+/// It should not be deleted
+typedef void (DOS_CALL *RowCountCallback)     (void *self, const DosQModelIndex *parent, int *result);
+
+/// Called when the QAbstractListModel::columnCount method must be executed
+/// @param self The pointer to the QAbstractListModel in the binded language
+/// @param index The parent DosQModelIndex. It should not be deleted
+/// @param result The rowCount result. This must be deferenced and filled from the binded language.
+/// It should not be deleted
+typedef void (DOS_CALL *ColumnCountCallback)  (void *self, const DosQModelIndex *parent, int *result);
+
+/// Called when the QAbstractListModel::data method must be executed
+/// @param self The pointer to the QAbstractListModel in the binded language
+/// @param index The DosQModelIndex to which we request the data. It should not be deleted
+/// @param result The DosQVariant result. This must be deferenced and filled from the binded language.
+/// It should not be deleted. See dos_qvariant_assign or other DosQVariant setters
+typedef void (DOS_CALL *DataCallback)         (void *self, const DosQModelIndex *index, int role, DosQVariant *result);
+typedef void (DOS_CALL *SetDataCallback)      (void *self, const DosQModelIndex *index, const DosQVariant *value, int role, bool *result);
+typedef void (DOS_CALL *RoleNamesCallback)    (void *self, DosQHashIntQByteArray *result);
+typedef void (DOS_CALL *FlagsCallback)        (void *self, const DosQModelIndex *index, int *result);
+typedef void (DOS_CALL *HeaderDataCallback)   (void *self, int section, int orientation, int role, DosQVariant *result);
 typedef void (DOS_CALL *CreateDObject)(int, void *, void **, void **);
 typedef void (DOS_CALL *DeleteDObject)(int, void *);
 

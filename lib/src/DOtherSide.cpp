@@ -142,9 +142,9 @@ void dos_qquickview_delete(::DosQQuickView *vptr)
     delete view;
 }
 
-char *dos_qquickview_source(::DosQQuickView *vptr)
+char *dos_qquickview_source(const ::DosQQuickView *vptr)
 {
-    auto view = static_cast<QQuickView *>(vptr);
+    auto view = static_cast<const QQuickView *>(vptr);
     QUrl url = view->source();
     return convert_to_cstring(url.toString());
 }
@@ -179,9 +179,9 @@ void dos_chararray_delete(char *ptr)
     if (ptr) delete[] ptr;
 }
 
-char *dos_qqmlcontext_baseUrl(::DosQQmlContext *vptr)
+char *dos_qqmlcontext_baseUrl(const ::DosQQmlContext *vptr)
 {
-    auto context = static_cast<QQmlContext *>(vptr);
+    auto context = static_cast<const QQmlContext *>(vptr);
     QUrl url = context->baseUrl();
     return convert_to_cstring(url.toString());
 }
@@ -213,9 +213,9 @@ void dos_qqmlcontext_setcontextproperty(::DosQQmlContext *vptr, const char *name
     return new QVariant(value);
 }
 
-::DosQVariant *dos_qvariant_create_qvariant(::DosQVariant *other)
+::DosQVariant *dos_qvariant_create_qvariant(const ::DosQVariant *other)
 {
-    auto otherQVariant = static_cast<QVariant *>(other);
+    auto otherQVariant = static_cast<const QVariant *>(other);
     auto result = new QVariant();
     *result = *otherQVariant;
     return result;
@@ -239,9 +239,9 @@ void dos_qqmlcontext_setcontextproperty(::DosQQmlContext *vptr, const char *name
     return new QVariant(value);
 }
 
-bool dos_qvariant_isnull(::DosQVariant *vptr)
+bool dos_qvariant_isnull(const DosQVariant *vptr)
 {
-    auto variant = static_cast<QVariant *>(vptr);
+    auto variant = static_cast<const QVariant *>(vptr);
     return variant->isNull();
 }
 
@@ -251,46 +251,46 @@ void dos_qvariant_delete(::DosQVariant *vptr)
     delete variant;
 }
 
-void dos_qvariant_assign(::DosQVariant *vptr, ::DosQVariant *other)
+void dos_qvariant_assign(::DosQVariant *vptr, const DosQVariant *other)
 {
     auto leftQVariant = static_cast<QVariant *>(vptr);
-    auto rightQVariant = static_cast<QVariant *>(other);
+    auto rightQVariant = static_cast<const QVariant *>(other);
     *leftQVariant = *rightQVariant;
 }
 
-int dos_qvariant_toInt(::DosQVariant *vptr)
+int dos_qvariant_toInt(const ::DosQVariant *vptr)
 {
-    auto variant = static_cast<QVariant *>(vptr);
+    auto variant = static_cast<const QVariant *>(vptr);
     return variant->toInt();
 }
 
-bool dos_qvariant_toBool(::DosQVariant *vptr)
+bool dos_qvariant_toBool(const ::DosQVariant *vptr)
 {
-    auto variant = static_cast<QVariant *>(vptr);
+    auto variant = static_cast<const QVariant *>(vptr);
     return variant->toBool();
 }
 
-float dos_qvariant_toFloat(::DosQVariant *vptr)
+float dos_qvariant_toFloat(const DosQVariant *vptr)
 {
-    auto variant = static_cast<QVariant *>(vptr);
+    auto variant = static_cast<const QVariant *>(vptr);
     return variant->toFloat();
 }
 
-double dos_qvariant_toDouble(::DosQVariant *vptr)
+double dos_qvariant_toDouble(const DosQVariant *vptr)
 {
-    auto variant = static_cast<QVariant *>(vptr);
+    auto variant = static_cast<const QVariant *>(vptr);
     return variant->toDouble();
 }
 
-char *dos_qvariant_toString(::DosQVariant *vptr)
+char *dos_qvariant_toString(const DosQVariant *vptr)
 {
-    auto variant = static_cast<QVariant *>(vptr);
+    auto variant = static_cast<const QVariant *>(vptr);
     return convert_to_cstring(variant->toString());
 }
 
-::DosQObject *dos_qvariant_toQObject(::DosQVariant *vptr)
+::DosQObject *dos_qvariant_toQObject(const DosQVariant *vptr)
 {
-    auto variant = static_cast<QVariant *>(vptr);
+    auto variant = static_cast<const QVariant *>(vptr);
     return variant->value<QObject *>();
 }
 
@@ -383,9 +383,9 @@ bool dos_qobject_signal_disconnect(::DosQObject *senderVPtr,
     return QObject::disconnect(sender, signal, receiver, method);
 }
 
-char *dos_qobject_objectName(::DosQObject *vptr)
+char *dos_qobject_objectName(const ::DosQObject *vptr)
 {
-    auto object = static_cast<QObject *>(vptr);
+    auto object = static_cast<const QObject *>(vptr);
     return convert_to_cstring(object->objectName());
 }
 
@@ -412,56 +412,56 @@ void dos_qmodelindex_delete(::DosQModelIndex *vptr)
     delete index;
 }
 
-int dos_qmodelindex_row(::DosQModelIndex *vptr)
+int dos_qmodelindex_row(const ::DosQModelIndex *vptr)
 {
-    auto index = static_cast<QModelIndex *>(vptr);
+    auto index = static_cast<const QModelIndex *>(vptr);
     return index->row();
 }
 
-int dos_qmodelindex_column(::DosQModelIndex *vptr)
+int dos_qmodelindex_column(const ::DosQModelIndex *vptr)
 {
-    auto index = static_cast<QModelIndex *>(vptr);
+    auto index = static_cast<const QModelIndex *>(vptr);
     return index->column();
 }
 
-bool dos_qmodelindex_isValid(::DosQModelIndex *vptr)
+bool dos_qmodelindex_isValid(const ::DosQModelIndex *vptr)
 {
-    auto index = static_cast<QModelIndex *>(vptr);
+    auto index = static_cast<const QModelIndex *>(vptr);
     return index->isValid();
 }
 
-::DosQVariant *dos_qmodelindex_data(::DosQModelIndex *vptr, int role)
+::DosQVariant *dos_qmodelindex_data(const ::DosQModelIndex *vptr, int role)
 {
-    auto index = static_cast<QModelIndex *>(vptr);
+    auto index = static_cast<const QModelIndex *>(vptr);
     auto result = new QVariant(index->data(role));
     return static_cast<QVariant *>(result);
 }
 
-::DosQModelIndex *dos_qmodelindex_parent(::DosQModelIndex *vptr)
+::DosQModelIndex *dos_qmodelindex_parent(const ::DosQModelIndex *vptr)
 {
-    auto index = static_cast<QModelIndex *>(vptr);
+    auto index = static_cast<const QModelIndex *>(vptr);
     auto result = new QModelIndex(index->parent());
     return static_cast<QModelIndex *>(result);
 }
 
-::DosQModelIndex *dos_qmodelindex_child(::DosQModelIndex *vptr, int row, int column)
+::DosQModelIndex *dos_qmodelindex_child(const ::DosQModelIndex *vptr, int row, int column)
 {
-    auto index = static_cast<QModelIndex *>(vptr);
+    auto index = static_cast<const QModelIndex *>(vptr);
     auto result = new QModelIndex(index->child(row, column));
     return static_cast<QModelIndex *>(result);
 }
 
-::DosQModelIndex *dos_qmodelindex_sibling(::DosQModelIndex *vptr, int row, int column)
+::DosQModelIndex *dos_qmodelindex_sibling(const ::DosQModelIndex *vptr, int row, int column)
 {
-    auto index = static_cast<QModelIndex *>(vptr);
+    auto index = static_cast<const QModelIndex *>(vptr);
     auto result = new QModelIndex(index->sibling(row, column));
     return static_cast<QModelIndex *>(result);
 }
 
-void dos_qmodelindex_assign(::DosQModelIndex *l, ::DosQModelIndex *r)
+void dos_qmodelindex_assign(::DosQModelIndex *l, const ::DosQModelIndex *r)
 {
     auto li = static_cast<QModelIndex *>(l);
-    auto ri = static_cast<QModelIndex *>(r);
+    auto ri = static_cast<const QModelIndex *>(r);
     *li = *ri;
 }
 
@@ -504,10 +504,16 @@ void dos_qurl_delete(::DosQUrl *vptr)
     delete url;
 }
 
-char *dos_qurl_to_string(::DosQUrl *vptr)
+char *dos_qurl_to_string(const ::DosQUrl *vptr)
 {
-    auto url = static_cast<QUrl *>(vptr);
+    auto url = static_cast<const QUrl *>(vptr);
     return convert_to_cstring(url->toString());
+}
+
+bool dos_qurl_isValid(const ::DosQUrl *vptr)
+{
+    auto url = static_cast<const QUrl *>(vptr);
+    return url->isValid();
 }
 
 ::DosQMetaObject *dos_qmetaobject_create(::DosQMetaObject *superClassVPtr,
@@ -612,15 +618,15 @@ void dos_qabstractlistmodel_endResetModel(::DosQAbstractListModel *vptr)
 }
 
 void dos_qabstractlistmodel_dataChanged(::DosQAbstractListModel *vptr,
-                                        ::DosQModelIndex *topLeftIndex,
-                                        ::DosQModelIndex *bottomRightIndex,
+                                        const ::DosQModelIndex *topLeftIndex,
+                                        const ::DosQModelIndex *bottomRightIndex,
                                         int *rolesArrayPtr,
                                         int rolesArrayLength)
 {
     auto object = static_cast<QObject *>(vptr);
     auto model = dynamic_cast<DOS::DosIQAbstractListModelImpl *>(object);
-    auto topLeft = static_cast<QModelIndex *>(topLeftIndex);
-    auto bottomRight = static_cast<QModelIndex *>(bottomRightIndex);
+    auto topLeft = static_cast<const QModelIndex *>(topLeftIndex);
+    auto bottomRight = static_cast<const QModelIndex *>(bottomRightIndex);
     auto roles = QVector<int>::fromStdVector(std::vector<int>(rolesArrayPtr, rolesArrayPtr + rolesArrayLength));
     model->publicDataChanged(*topLeft, *bottomRight, roles);
 }

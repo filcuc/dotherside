@@ -12,13 +12,19 @@
 #include <QQmlApplicationEngine>
 #include <QQuickItem>
 #include <QQmlContext>
-// DOtherSide
-#include "DOtherSide/DOtherSide.h"
-#include "DOtherSide/DosQObject.h"
-#include "DOtherSide/DosQMetaObject.h"
-#include "DOtherSide/DosQObject.h"
-#include "DOtherSide/DosQAbstractListModel.h"
+#include <QtQuickTest/QtQuickTest>
 
+// DOtherSide
+#include <DOtherSide/DOtherSide.h>
+#include <DOtherSide/DosQObject.h>
+#include <DOtherSide/DosQMetaObject.h>
+#include <DOtherSide/DosQObject.h>
+#include <DOtherSide/DosQAbstractListModel.h>
+
+#include "MockQObject.h"
+#include "MockQAbstractListModel.h"
+
+using namespace std;
 using namespace DOS;
 
 template<typename Test>
@@ -81,6 +87,120 @@ private slots:
         dos_qapplication_exec();
         QVERIFY(quit);
         dos_qapplication_delete();
+    }
+};
+
+/*
+ * Test QVariant
+ */
+class TestQVariant : public QObject
+{
+Q_OBJECT
+
+private slots:
+    void testCreate()
+    {
+        VoidPointer data(dos_qvariant_create(), &dos_qvariant_delete);
+        Q_ASSERT(data.get());
+        QCOMPARE(dos_qvariant_isnull(data.get()), true);
+    }
+
+    void testInt()
+    {
+        VoidPointer data(dos_qvariant_create_int(10), &dos_qvariant_delete);
+        Q_ASSERT(data.get());
+        QCOMPARE(dos_qvariant_isnull(data.get()), false);
+        int value = dos_qvariant_toInt(data.get());
+        QCOMPARE(value, 10);
+        dos_qvariant_setInt(data.get(), 20);
+        value = dos_qvariant_toInt(data.get());
+        QCOMPARE(value, 20);
+    }
+
+    void testBool()
+    {
+        VoidPointer data(dos_qvariant_create_bool(false), &dos_qvariant_delete);
+        Q_ASSERT(data.get());
+        QCOMPARE(dos_qvariant_isnull(data.get()), false);
+        bool value = dos_qvariant_toBool(data.get());
+        QCOMPARE(value, false);
+        dos_qvariant_setBool(data.get(), true);
+        value = dos_qvariant_toBool(data.get());
+        QCOMPARE(value, true);
+    }
+
+    void testFloat()
+    {
+        VoidPointer data(dos_qvariant_create_float(float(5.5)), &dos_qvariant_delete);
+        Q_ASSERT(data.get());
+        QCOMPARE(dos_qvariant_isnull(data.get()), false);
+        float value = dos_qvariant_toFloat(data.get());
+        QCOMPARE(value, float(5.5));
+        dos_qvariant_setFloat(data.get(), float(10.3));
+        value = dos_qvariant_toFloat(data.get());
+        QCOMPARE(value, float(10.3));
+
+    }
+
+    void testDouble()
+    {
+        VoidPointer data(dos_qvariant_create_double(double(5.5)), &dos_qvariant_delete);
+        Q_ASSERT(data.get());
+        QCOMPARE(dos_qvariant_isnull(data.get()), false);
+        double value = dos_qvariant_toDouble(data.get());
+        QCOMPARE(value, double(5.5));
+        dos_qvariant_setDouble(data.get(), double(10.3));
+        value = dos_qvariant_toDouble(data.get());
+        QCOMPARE(value, double(10.3));
+    }
+
+    void testString()
+    {
+        VoidPointer data(dos_qvariant_create_string("Foo"), &dos_qvariant_delete);
+        Q_ASSERT(data.get());
+        QCOMPARE(dos_qvariant_isnull(data.get()), false);
+        char* value = dos_qvariant_toString(data.get());
+        std::string copy (value);
+        dos_chararray_delete(value);
+        QCOMPARE(copy, std::string("Foo"));
+        dos_qvariant_setString(data.get(), "Bar");
+        value = dos_qvariant_toString(data.get());
+        copy = std::string(value);
+        dos_chararray_delete(value);
+        QCOMPARE(copy, std::string("Bar"));
+    }
+
+    void testQObject()
+    {
+        unique_ptr<MockQObject> testObject(new MockQObject());
+        testObject->setObjectName("testObject");
+        testObject->setName("foo");
+
+        VoidPointer data(dos_qvariant_create_qobject(testObject->data()), &dos_qvariant_delete);
+        auto value = dos_qvariant_toQObject(data.get());
+        QVERIFY(value == testObject->data());
+        dos_qvariant_setQObject(data.get(), nullptr);
+        value = dos_qvariant_toQObject(data.get());
+        QVERIFY(value == nullptr);
+    }
+
+};
+
+/*
+ * Test QUrl
+ */
+class TestQUrl : public QObject
+{
+    Q_OBJECT
+
+private slots:
+    void testCreate() {
+        const string testUrl("http://www.qt.io");
+        VoidPointer url(dos_qurl_create(testUrl.c_str(), QUrl::StrictMode), &dos_qurl_delete);
+        QVERIFY(url.get());
+        QVERIFY(dos_qurl_isValid(url.get()));
+        CharPointer str (dos_qurl_to_string(url.get()), &dos_chararray_delete);
+        QCOMPARE(std::string(str.get()), testUrl);
     }
 };
 
@@ -213,106 +333,327 @@ private:
     void *m_context;
 };
 
+
 /*
- * Test QQmlContext
+ * Test QObject
  */
 class TestQObject : public QObject
 {
     Q_OBJECT
 
 private slots:
-    void testPropertyInheritance()
+    void init()
     {
-        DOS::SignalDefinitions signalDefinitions {DOS::SignalDefinition {"nameChanged", {}}};
-        DOS::SlotDefinitions slotDefinitions {DOS::SlotDefinition {"name", QMetaType::QString, {}},
-                                              DOS::SlotDefinition {"setName", QMetaType::Void, {QMetaType::QString}}};
-        DOS::PropertyDefinitions propertyDefinitions {DOS::PropertyDefinition{"name", QMetaType::QString, "name", "setName", "nameChanged"}};
+        testObject.reset(new MockQObject());
+        testObject->setObjectName("testObject");
+        testObject->setName("foo");
 
-        auto mo = std::make_shared<DOS::DosQMetaObject>(std::make_shared<DosQObjectMetaObject>(),
-                                                        "TestClass",
-                                                        signalDefinitions,
-                                                        slotDefinitions,
-                                                        propertyDefinitions);
-
-        QString value = "";
-        auto ose = [&value](const QString & name, const std::vector<QVariant> &args) -> QVariant {
-            if (name == "name")
-                return value;
-            else if (name == "setName")
-                value = args.front().toString();
-            return QVariant();
-        };
-
-        DOS::DosQObject testObject(mo, ose);
-        testObject.setObjectName("testObject");
-        testObject.setProperty("name", "foo");
-
-        /// Test property read
-        QCOMPARE(testObject.property("objectName").toString(), QString("testObject"));
-        QCOMPARE(testObject.property("name").toString(), QString("foo"));
-
-        /// Test slot invokation
-        QMetaObject::invokeMethod(&testObject, "setName", Q_ARG(QString, "bar"));
-        QCOMPARE(testObject.property("name").toString(), QString("bar"));
+        engine.reset(new QQmlApplicationEngine());
+        engine->rootContext()->setContextProperty("testObject", QVariant::fromValue<QObject*>(static_cast<QObject*>(testObject->data())));
+        engine->load(QUrl("qrc:///testQObject.qml"));
     }
+
+    void cleanup()
+    {
+        engine.reset();
+        testObject.reset();
+    }
+
+    void testObjectName() {
+        QObject* testCase = engine->rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testObjectName", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
+    }
+
+    void testPropertyReadAndWrite()
+    {
+        QObject* testCase = engine->rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testPropertyReadAndWrite", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
+    }
+
+    void testSignalEmittion()
+    {
+        QObject* testCase = engine->rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testSignalEmittion", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
+    }
+
+private:
+    QString value;
+    unique_ptr<MockQObject> testObject;
+    unique_ptr<QQmlApplicationEngine> engine;
 };
 
 /*
- * Test QQmlContext
+ * Test QAbstractListModel
  */
 class TestQAbstractListModel : public QObject
 {
     Q_OBJECT
 
 private slots:
-    void testPropertyInheritance()
+    void init()
     {
-        DOS::SignalDefinitions signalDefinitions {DOS::SignalDefinition {"nameChanged", {}}};
-        DOS::SlotDefinitions slotDefinitions {DOS::SlotDefinition {"name", QMetaType::QString, {}},
-                                              DOS::SlotDefinition {"setName", QMetaType::Void, {QMetaType::QString}}};
-        DOS::PropertyDefinitions propertyDefinitions {DOS::PropertyDefinition{"name", QMetaType::QString, "name", "setName", "nameChanged"}};
+        testObject.reset(new MockQAbstractListModel());
+        testObject->setObjectName("testObject");
+        testObject->setName("foo");
 
-        auto mo = std::make_shared<DOS::DosQMetaObject>(std::make_shared<DosQAbstractListModelMetaObject>(),
-                                                        "TestClass",
-                                                        signalDefinitions,
-                                                        slotDefinitions,
-                                                        propertyDefinitions);
+        engine.reset(new QQmlApplicationEngine());
+        engine->rootContext()->setContextProperty("testObject", QVariant::fromValue<QObject*>(static_cast<QObject*>(testObject->data())));
+        engine->load(QUrl("qrc:///testQAbstractItemModel.qml"));
+    }
 
-        std::unique_ptr<DosIQMetaObjectHolder> moh(new DosIQMetaObjectHolder(mo));
+    void cleanup()
+    {
+        engine.reset();
+        testObject.reset();
+    }
 
-        QString value = "";
-        auto ose = [&value](const QString & name, const std::vector<QVariant> &args) -> QVariant {
-            if (name == "name")
-                return value;
-            else if (name == "setName")
-                value = args.front().toString();
-            return QVariant();
-        };
+    void testObjectName() {
+        QObject* testCase = engine->rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testObjectName", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
+    }
 
-        void *dPointer = nullptr;
+    void testPropertyReadAndWrite()
+    {
+        QObject* testCase = engine->rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testPropertyReadAndWrite", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
+    }
 
-        RowCountCallback rcc = nullptr;
-        ColumnCountCallback ccc = nullptr;
-        DataCallback dc = nullptr;
-        SetDataCallback sdc = nullptr;
-        RoleNamesCallback rnc = nullptr;
-        FlagsCallback fc = nullptr;
-        HeaderDataCallback hdc = nullptr;
+    void testSignalEmittion()
+    {
+        QObject* testCase = engine->rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testSignalEmittion", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
+    }
 
-        DOS::DosQAbstractListModel testObject(dPointer, moh->data(), ose, rcc, ccc, dc, sdc, rnc, fc, hdc);
-        testObject.setObjectName("testObject");
-        testObject.setProperty("name", "foo");
+    void testRowCount() {
+        QObject* testCase = engine->rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testRowCount", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
+    }
 
-        /// Test property read
-        QCOMPARE(testObject.property("objectName").toString(), QString("testObject"));
-        QCOMPARE(testObject.property("name").toString(), QString("foo"));
+    void testColumnCount() {
+        QObject* testCase = engine->rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testColumnCount", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
+    }
 
-        /// Test slot invokation
-        QMetaObject::invokeMethod(&testObject, "setName", Q_ARG(QString, "bar"));
-        QCOMPARE(testObject.property("name").toString(), QString("bar"));
+    void testData() {
+        QObject* testCase = engine->rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testData", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
+    }
+
+    void testSetData() {
+        QObject* testCase = engine->rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testSetData", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
+    }
+
+
+private:
+    QString value;
+    unique_ptr<MockQAbstractListModel> testObject;
+    unique_ptr<QQmlApplicationEngine> engine;
+};
+
+/*
+ * Test QDeclarative
+ */
+class TestQDeclarativeIntegration : public QObject
+{
+    Q_OBJECT
+
+private slots:
+    void testQmlRegisterType() {
+        ::QmlRegisterType registerType;
+        registerType.major = 1;
+        registerType.minor = 0;
+        registerType.uri = "MockModule";
+        registerType.qml = "MockQObject";
+        registerType.staticMetaObject = MockQObject::staticMetaObject();
+        registerType.createDObject = &mockQObjectCreator;
+        registerType.deleteDObject = &mockQObjectDeleter;
+        dos_qdeclarative_qmlregistertype(&registerType);
+
+        auto engine = make_unique<QQmlApplicationEngine>();
+        engine->load(QUrl("qrc:///testQDeclarative.qml"));
+
+        QObject* testCase = engine->rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testQmlRegisterType", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
+    }
+
+    void testQmlRegisterSingletonType() {
+        ::QmlRegisterType registerType;
+        registerType.major = 1;
+        registerType.minor = 0;
+        registerType.uri = "MockModule";
+        registerType.qml = "MockQObjectSingleton";
+        registerType.staticMetaObject = MockQObject::staticMetaObject();
+        registerType.createDObject = &mockQObjectCreator;
+        registerType.deleteDObject = &mockQObjectDeleter;
+        dos_qdeclarative_qmlregistersingletontype(&registerType);
+
+        auto engine = make_unique<QQmlApplicationEngine>();
+        engine->load(QUrl("qrc:///testQDeclarative.qml"));
+
+        QObject* testCase = engine->rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testQmlRegisterSingletonType", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
+    }
+
+private:
+    static void mockQObjectCreator(int typeId, void *wrapper, void **mockQObjectPtr, void **dosQObject)
+    {
+        VoidPointer data(wrapper, &emptyVoidDeleter);
+        auto mockQObject = new MockQObject();
+        mockQObject->swapData(data);
+        *dosQObject = data.release();
+        *mockQObjectPtr = mockQObject;
+    }
+
+    static void mockQObjectDeleter(int typeId, void *mockQObject)
+    {
+        auto temp = static_cast<MockQObject*>(mockQObject);
+        delete temp;
+    }
+
+    static void emptyVoidDeleter(void*) {}
+};
+
+
+/*
+ * Test QModelIndex
+ */
+class TestQModelIndex : public QObject
+{
+    Q_OBJECT
+
+private slots:
+    void testCreate() {
+        VoidPointer index (dos_qmodelindex_create(), &dos_qmodelindex_delete);
+        QVERIFY(index.get());
+        QVERIFY(!dos_qmodelindex_isValid(index.get()));
+    }
+
+    void testRow() {
+
+        VoidPointer index (dos_qmodelindex_create(), &dos_qmodelindex_delete);
+        QVERIFY(index.get());
+        QVERIFY(!dos_qmodelindex_isValid(index.get()));
+        QCOMPARE(dos_qmodelindex_row(index.get()), -1);
+    }
+
+    void testColumn() {
+
+        VoidPointer index (dos_qmodelindex_create(), &dos_qmodelindex_delete);
+        QVERIFY(index.get());
+        QVERIFY(!dos_qmodelindex_isValid(index.get()));
+        QCOMPARE(dos_qmodelindex_column(index.get()), -1);
+    }
+
+    void testParent() {
+
+        VoidPointer index (dos_qmodelindex_create(), &dos_qmodelindex_delete);
+        QVERIFY(index.get());
+        QVERIFY(!dos_qmodelindex_isValid(index.get()));
+        VoidPointer parentIndex (dos_qmodelindex_parent(index.get()), &dos_qmodelindex_delete);
+        QVERIFY(parentIndex.get());
+        QVERIFY(!dos_qmodelindex_isValid(parentIndex.get()));
+    }
+
+    void testChild() {
+        VoidPointer index (dos_qmodelindex_create(), &dos_qmodelindex_delete);
+        QVERIFY(index.get());
+        QVERIFY(!dos_qmodelindex_isValid(index.get()));
+        VoidPointer childIndex (dos_qmodelindex_child(index.get(), 0, 0), &dos_qmodelindex_delete);
+        QVERIFY(childIndex.get());
+        QVERIFY(!dos_qmodelindex_isValid(childIndex.get()));
+    }
+
+    void testSibling() {
+        VoidPointer index (dos_qmodelindex_create(), &dos_qmodelindex_delete);
+        QVERIFY(index.get());
+        QVERIFY(!dos_qmodelindex_isValid(index.get()));
+        VoidPointer siblingIndex (dos_qmodelindex_sibling(index.get(), 0, 0), &dos_qmodelindex_delete);
+        QVERIFY(siblingIndex.get());
+        QVERIFY(!dos_qmodelindex_isValid(siblingIndex.get()));
+    }
+
+    void testData() {
+        VoidPointer index (dos_qmodelindex_create(), &dos_qmodelindex_delete);
+        QVERIFY(index.get());
+        QVERIFY(!dos_qmodelindex_isValid(index.get()));
+        VoidPointer data(dos_qmodelindex_data(index.get(), Qt::DisplayRole), &dos_qvariant_delete);
+        QVERIFY(data.get());
+        QVERIFY(dos_qvariant_isnull(data.get()));
     }
 };
 
+/*
+ * Test QQuickView
+ */
+class TestQQuickView : public QObject
+{
+    Q_OBJECT
+
+private slots:
+    void testCreate() {
+        VoidPointer view(dos_qquickview_create(), &dos_qquickview_delete);
+        QVERIFY(view.get());
+    }
+
+    void testSourceAndSetSource() {
+        std::string testUrl = "qrc:/testQQuickView.qml";
+        VoidPointer view(dos_qquickview_create(), &dos_qquickview_delete);
+        VoidPointer url(dos_qurl_create(testUrl.c_str(), QUrl::StrictMode), &dos_qurl_delete);
+        dos_qquickview_set_source_url(view.get(), url.get());
+        CharPointer tempUrl(dos_qquickview_source(view.get()), &dos_chararray_delete);
+        QCOMPARE(std::string(tempUrl.get()), testUrl);
+        dos_qquickview_show(view.get());
+    }
+};
 
 int main(int argc, char *argv[])
 {
@@ -321,11 +662,15 @@ int main(int argc, char *argv[])
     bool success = true;
     success &= ExecuteTest<TestQGuiApplication>(argc, argv);
     success &= ExecuteTest<TestQApplication>(argc, argv);
+    success &= ExecuteTest<TestQVariant>(argc, argv);
+    success &= ExecuteTest<TestQUrl>(argc, argv);
+    success &= ExecuteTest<TestQModelIndex>(argc, argv);
     success &= ExecuteGuiTest<TestQQmlApplicationEngine>(argc, argv);
     success &= ExecuteGuiTest<TestQQmlContext>(argc, argv);
     success &= ExecuteGuiTest<TestQObject>(argc, argv);
     success &= ExecuteGuiTest<TestQAbstractListModel>(argc, argv);
-
+    success &= ExecuteGuiTest<TestQDeclarativeIntegration>(argc, argv);
+    success &= ExecuteGuiTest<TestQQuickView>(argc, argv);
     return success ? 0 : 1;
 }
 
