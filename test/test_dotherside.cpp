@@ -187,6 +187,24 @@ private slots:
 };
 
 /*
+ * Test QUrl
+ */
+class TestQUrl : public QObject
+{
+    Q_OBJECT
+
+private slots:
+    void testCreate() {
+        const string testUrl("http://www.qt.io");
+        VoidPointer url(dos_qurl_create(testUrl.c_str(), QUrl::StrictMode), &dos_qurl_delete);
+        QVERIFY(url.get());
+        QVERIFY(dos_qurl_isValid(url.get()));
+        CharPointer str (dos_qurl_to_string(url.get()), &dos_chararray_delete);
+        QCOMPARE(std::string(str.get()), testUrl);
+    }
+};
+
+/*
  * Test QQmlApplicationEngine
  */
 class TestQQmlApplicationEngine : public QObject
@@ -620,13 +638,14 @@ int main(int argc, char *argv[])
     bool success = true;
     success &= ExecuteTest<TestQGuiApplication>(argc, argv);
     success &= ExecuteTest<TestQApplication>(argc, argv);
-    success &= ExecuteGuiTest<TestQVariant>(argc, argv);
+    success &= ExecuteTest<TestQVariant>(argc, argv);
+    success &= ExecuteTest<TestQUrl>(argc, argv);
+    success &= ExecuteTest<TestQModelIndex>(argc, argv);
     success &= ExecuteGuiTest<TestQQmlApplicationEngine>(argc, argv);
     success &= ExecuteGuiTest<TestQQmlContext>(argc, argv);
     success &= ExecuteGuiTest<TestQObject>(argc, argv);
     success &= ExecuteGuiTest<TestQAbstractListModel>(argc, argv);
     success &= ExecuteGuiTest<TestQDeclarativeIntegration>(argc, argv);
-    success &= ExecuteGuiTest<TestQModelIndex>(argc, argv);
 
     return success ? 0 : 1;
 }

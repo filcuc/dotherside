@@ -43,7 +43,7 @@ DOS_API void  DOS_CALL dos_qqmlapplicationengine_delete(DosQQmlApplicationEngine
 // QQuickView
 DOS_API DosQQuickView *DOS_CALL dos_qquickview_create();
 DOS_API void   DOS_CALL dos_qquickview_show(DosQQuickView *vptr);
-DOS_API char *DOS_CALL dos_qquickview_source(DosQQuickView *vptr);
+DOS_API char *DOS_CALL dos_qquickview_source(const DosQQuickView *vptr);
 DOS_API void   DOS_CALL dos_qquickview_set_source_url(DosQQuickView *vptr, DosQUrl *url);
 DOS_API void   DOS_CALL dos_qquickview_set_source(DosQQuickView *vptr, const char *filename);
 DOS_API void   DOS_CALL dos_qquickview_set_resize_mode(DosQQuickView *vptr, int resizeMode);
@@ -51,7 +51,7 @@ DOS_API void   DOS_CALL dos_qquickview_delete(DosQQuickView *vptr);
 DOS_API DosQQmlContext *DOS_CALL dos_qquickview_rootContext(DosQQuickView *vptr);
 
 // QQmlContext
-DOS_API char *DOS_CALL dos_qqmlcontext_baseUrl(DosQQmlContext *vptr);
+DOS_API char *DOS_CALL dos_qqmlcontext_baseUrl(const DosQQmlContext *vptr);
 
 /// Sets a property inside the context
 /// @param vptr The DosQQmlContext
@@ -70,7 +70,7 @@ DOS_API DosQVariant *DOS_CALL dos_qvariant_create_int(int value);
 DOS_API DosQVariant *DOS_CALL dos_qvariant_create_bool(bool value);
 DOS_API DosQVariant *DOS_CALL dos_qvariant_create_string(const char *value);
 DOS_API DosQVariant *DOS_CALL dos_qvariant_create_qobject(DosQObject *value);
-DOS_API DosQVariant *DOS_CALL dos_qvariant_create_qvariant(DosQVariant *value);
+DOS_API DosQVariant *DOS_CALL dos_qvariant_create_qvariant(const DosQVariant *value);
 DOS_API DosQVariant *DOS_CALL dos_qvariant_create_float(float value);
 DOS_API DosQVariant *DOS_CALL dos_qvariant_create_double(double value);
 DOS_API void   DOS_CALL dos_qvariant_setInt    (DosQVariant *vptr, int value);
@@ -149,7 +149,7 @@ DOS_API bool DOS_CALL dos_qobject_signal_disconnect(DosQObject *senderVPtr,
 /// @param vptr The DosQObject pointer
 /// @return A string in UTF8 format. The ownership is transferred to the caller thus
 /// it's his responsability to free the string
-DOS_API char *DOS_CALL dos_qobject_objectName(DosQObject *vptr);
+DOS_API char *DOS_CALL dos_qobject_objectName(const DosQObject *vptr);
 
 /// Sets the DosQObject objectName
 /// @param vptr the DosQObject pointer
@@ -186,7 +186,8 @@ DOS_API void DOS_CALL dos_qresource_register(const char *filename);
 // QUrl
 DOS_API DosQUrl *DOS_CALL dos_qurl_create(const char *url, int parsingMode);
 DOS_API void   DOS_CALL dos_qurl_delete(DosQUrl *vptr);
-DOS_API char *DOS_CALL dos_qurl_to_string(DosQUrl *vptr);
+DOS_API char *DOS_CALL dos_qurl_to_string(const DosQUrl *vptr);
+DOS_API bool dos_qurl_isValid(const DosQUrl *vptr);
 
 // QDeclarative
 DOS_API int DOS_CALL dos_qdeclarative_qmlregistertype(const QmlRegisterType *qmlRegisterType);

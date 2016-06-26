@@ -142,9 +142,9 @@ void dos_qquickview_delete(::DosQQuickView *vptr)
     delete view;
 }
 
-char *dos_qquickview_source(::DosQQuickView *vptr)
+char *dos_qquickview_source(const ::DosQQuickView *vptr)
 {
-    auto view = static_cast<QQuickView *>(vptr);
+    auto view = static_cast<const QQuickView *>(vptr);
     QUrl url = view->source();
     return convert_to_cstring(url.toString());
 }
@@ -179,9 +179,9 @@ void dos_chararray_delete(char *ptr)
     if (ptr) delete[] ptr;
 }
 
-char *dos_qqmlcontext_baseUrl(::DosQQmlContext *vptr)
+char *dos_qqmlcontext_baseUrl(const ::DosQQmlContext *vptr)
 {
-    auto context = static_cast<QQmlContext *>(vptr);
+    auto context = static_cast<const QQmlContext *>(vptr);
     QUrl url = context->baseUrl();
     return convert_to_cstring(url.toString());
 }
@@ -213,9 +213,9 @@ void dos_qqmlcontext_setcontextproperty(::DosQQmlContext *vptr, const char *name
     return new QVariant(value);
 }
 
-::DosQVariant *dos_qvariant_create_qvariant(::DosQVariant *other)
+::DosQVariant *dos_qvariant_create_qvariant(const ::DosQVariant *other)
 {
-    auto otherQVariant = static_cast<QVariant *>(other);
+    auto otherQVariant = static_cast<const QVariant *>(other);
     auto result = new QVariant();
     *result = *otherQVariant;
     return result;
@@ -383,9 +383,9 @@ bool dos_qobject_signal_disconnect(::DosQObject *senderVPtr,
     return QObject::disconnect(sender, signal, receiver, method);
 }
 
-char *dos_qobject_objectName(::DosQObject *vptr)
+char *dos_qobject_objectName(const ::DosQObject *vptr)
 {
-    auto object = static_cast<QObject *>(vptr);
+    auto object = static_cast<const QObject *>(vptr);
     return convert_to_cstring(object->objectName());
 }
 
@@ -504,10 +504,16 @@ void dos_qurl_delete(::DosQUrl *vptr)
     delete url;
 }
 
-char *dos_qurl_to_string(::DosQUrl *vptr)
+char *dos_qurl_to_string(const ::DosQUrl *vptr)
 {
-    auto url = static_cast<QUrl *>(vptr);
+    auto url = static_cast<const QUrl *>(vptr);
     return convert_to_cstring(url->toString());
+}
+
+bool dos_qurl_isValid(const ::DosQUrl *vptr)
+{
+    auto url = static_cast<const QUrl *>(vptr);
+    return url->isValid();
 }
 
 ::DosQMetaObject *dos_qmetaobject_create(::DosQMetaObject *superClassVPtr,
