@@ -317,7 +317,7 @@ private:
 
 
 /*
- * Test QQmlContext
+ * Test QObject
  */
 class TestQObject : public QObject
 {
@@ -377,7 +377,7 @@ private:
 };
 
 /*
- * Test QQmlContext
+ * Test QAbstractListModel
  */
 class TestQAbstractListModel : public QObject
 {
@@ -474,7 +474,7 @@ private:
 };
 
 /*
- * Test QQmlContext
+ * Test QDeclarative
  */
 class TestQDeclarativeIntegration : public QObject
 {
@@ -544,6 +544,75 @@ private:
     static void emptyVoidDeleter(void*) {}
 };
 
+
+/*
+ * Test QModelIndex
+ */
+class TestQModelIndex : public QObject
+{
+    Q_OBJECT
+
+private slots:
+    void testCreate() {
+        VoidPointer index (dos_qmodelindex_create(), &dos_qmodelindex_delete);
+        QVERIFY(index.get());
+        QVERIFY(!dos_qmodelindex_isValid(index.get()));
+    }
+
+    void testRow() {
+
+        VoidPointer index (dos_qmodelindex_create(), &dos_qmodelindex_delete);
+        QVERIFY(index.get());
+        QVERIFY(!dos_qmodelindex_isValid(index.get()));
+        QCOMPARE(dos_qmodelindex_row(index.get()), -1);
+    }
+
+    void testColumn() {
+
+        VoidPointer index (dos_qmodelindex_create(), &dos_qmodelindex_delete);
+        QVERIFY(index.get());
+        QVERIFY(!dos_qmodelindex_isValid(index.get()));
+        QCOMPARE(dos_qmodelindex_column(index.get()), -1);
+    }
+
+    void testParent() {
+
+        VoidPointer index (dos_qmodelindex_create(), &dos_qmodelindex_delete);
+        QVERIFY(index.get());
+        QVERIFY(!dos_qmodelindex_isValid(index.get()));
+        VoidPointer parentIndex (dos_qmodelindex_parent(index.get()), &dos_qmodelindex_delete);
+        QVERIFY(parentIndex.get());
+        QVERIFY(!dos_qmodelindex_isValid(parentIndex.get()));
+    }
+
+    void testChild() {
+        VoidPointer index (dos_qmodelindex_create(), &dos_qmodelindex_delete);
+        QVERIFY(index.get());
+        QVERIFY(!dos_qmodelindex_isValid(index.get()));
+        VoidPointer childIndex (dos_qmodelindex_child(index.get(), 0, 0), &dos_qmodelindex_delete);
+        QVERIFY(childIndex.get());
+        QVERIFY(!dos_qmodelindex_isValid(childIndex.get()));
+    }
+
+    void testSibling() {
+        VoidPointer index (dos_qmodelindex_create(), &dos_qmodelindex_delete);
+        QVERIFY(index.get());
+        QVERIFY(!dos_qmodelindex_isValid(index.get()));
+        VoidPointer siblingIndex (dos_qmodelindex_sibling(index.get(), 0, 0), &dos_qmodelindex_delete);
+        QVERIFY(siblingIndex.get());
+        QVERIFY(!dos_qmodelindex_isValid(siblingIndex.get()));
+    }
+
+    void testData() {
+        VoidPointer index (dos_qmodelindex_create(), &dos_qmodelindex_delete);
+        QVERIFY(index.get());
+        QVERIFY(!dos_qmodelindex_isValid(index.get()));
+        VoidPointer data(dos_qmodelindex_data(index.get(), Qt::DisplayRole), &dos_qvariant_delete);
+        QVERIFY(data.get());
+        QVERIFY(dos_qvariant_isnull(data.get()));
+    }
+};
+
 int main(int argc, char *argv[])
 {
     using namespace DOS;
@@ -557,6 +626,7 @@ int main(int argc, char *argv[])
     success &= ExecuteGuiTest<TestQObject>(argc, argv);
     success &= ExecuteGuiTest<TestQAbstractListModel>(argc, argv);
     success &= ExecuteGuiTest<TestQDeclarativeIntegration>(argc, argv);
+    success &= ExecuteGuiTest<TestQModelIndex>(argc, argv);
 
     return success ? 0 : 1;
 }

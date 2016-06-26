@@ -168,7 +168,7 @@ DOS_API void DOS_CALL dos_qmodelindex_delete (DosQModelIndex *vptr);
 DOS_API int  DOS_CALL dos_qmodelindex_row    (const DosQModelIndex *vptr);
 DOS_API int  DOS_CALL dos_qmodelindex_column (const DosQModelIndex *vptr);
 DOS_API bool DOS_CALL dos_qmodelindex_isValid(const DosQModelIndex *vptr);
-DOS_API DosQVariant *DOS_CALL dos_qmodelindex_data (DosQModelIndex *vptr, int role);
+DOS_API DosQVariant *DOS_CALL dos_qmodelindex_data (const DosQModelIndex *vptr, int role);
 DOS_API DosQModelIndex *DOS_CALL dos_qmodelindex_parent (const DosQModelIndex *vptr);
 DOS_API DosQModelIndex *DOS_CALL dos_qmodelindex_child  (const DosQModelIndex *vptr, int row, int column);
 DOS_API DosQModelIndex *DOS_CALL dos_qmodelindex_sibling(const DosQModelIndex *vptr, int row, int column);
