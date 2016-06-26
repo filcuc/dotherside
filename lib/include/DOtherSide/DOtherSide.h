@@ -33,21 +33,21 @@ DOS_API void DOS_CALL dos_qapplication_delete();
 
 // QQmlApplicationEngine
 DOS_API DosQQmlApplicationEngine *DOS_CALL dos_qqmlapplicationengine_create();
-DOS_API void  DOS_CALL dos_qqmlapplicationengine_load(DosQQmlApplicationEngine *vptr, const char *filename);
-DOS_API void  DOS_CALL dos_qqmlapplicationengine_load_url(DosQQmlApplicationEngine *vptr, DosQUrl *url);
-DOS_API void  DOS_CALL dos_qqmlapplicationengine_load_data(DosQQmlApplicationEngine *vptr, const char *data);
-DOS_API void  DOS_CALL dos_qqmlapplicationengine_add_import_path(DosQQmlApplicationEngine *vptr, const char *path);
+DOS_API void DOS_CALL dos_qqmlapplicationengine_load(DosQQmlApplicationEngine *vptr, const char *filename);
+DOS_API void DOS_CALL dos_qqmlapplicationengine_load_url(DosQQmlApplicationEngine *vptr, DosQUrl *url);
+DOS_API void DOS_CALL dos_qqmlapplicationengine_load_data(DosQQmlApplicationEngine *vptr, const char *data);
+DOS_API void DOS_CALL dos_qqmlapplicationengine_add_import_path(DosQQmlApplicationEngine *vptr, const char *path);
 DOS_API DosQQmlContext *DOS_CALL dos_qqmlapplicationengine_context(DosQQmlApplicationEngine *vptr);
-DOS_API void  DOS_CALL dos_qqmlapplicationengine_delete(DosQQmlApplicationEngine *vptr);
+DOS_API void DOS_CALL dos_qqmlapplicationengine_delete(DosQQmlApplicationEngine *vptr);
 
 // QQuickView
 DOS_API DosQQuickView *DOS_CALL dos_qquickview_create();
-DOS_API void   DOS_CALL dos_qquickview_show(DosQQuickView *vptr);
+DOS_API void  DOS_CALL dos_qquickview_show(DosQQuickView *vptr);
 DOS_API char *DOS_CALL dos_qquickview_source(const DosQQuickView *vptr);
-DOS_API void   DOS_CALL dos_qquickview_set_source_url(DosQQuickView *vptr, DosQUrl *url);
-DOS_API void   DOS_CALL dos_qquickview_set_source(DosQQuickView *vptr, const char *filename);
-DOS_API void   DOS_CALL dos_qquickview_set_resize_mode(DosQQuickView *vptr, int resizeMode);
-DOS_API void   DOS_CALL dos_qquickview_delete(DosQQuickView *vptr);
+DOS_API void  DOS_CALL dos_qquickview_set_source_url(DosQQuickView *vptr, DosQUrl *url);
+DOS_API void  DOS_CALL dos_qquickview_set_source(DosQQuickView *vptr, const char *filename);
+DOS_API void  DOS_CALL dos_qquickview_set_resize_mode(DosQQuickView *vptr, int resizeMode);
+DOS_API void  DOS_CALL dos_qquickview_delete(DosQQuickView *vptr);
 DOS_API DosQQmlContext *DOS_CALL dos_qquickview_rootContext(DosQQuickView *vptr);
 
 // QQmlContext
@@ -155,11 +155,11 @@ DOS_API char *DOS_CALL dos_qobject_objectName(const DosQObject *vptr);
 /// @param vptr the DosQObject pointer
 /// @param name a pointer to a UTF8 string. The string is owned by the caller thus
 /// it will not be deleted.
-DOS_API void   DOS_CALL dos_qobject_setObjectName(DosQObject *vptr, const char *name);
+DOS_API void DOS_CALL dos_qobject_setObjectName(DosQObject *vptr, const char *name);
 
 /// Delete the DosQObject
 /// @param vptr the DosQObject pointer
-DOS_API void   DOS_CALL dos_qobject_delete(DosQObject *vptr);
+DOS_API void DOS_CALL dos_qobject_delete(DosQObject *vptr);
 
 // QModelIndex
 DOS_API DosQModelIndex *DOS_CALL dos_qmodelindex_create();
@@ -176,8 +176,8 @@ DOS_API void DOS_CALL dos_qmodelindex_assign (DosQModelIndex *l, const DosQModel
 
 // QHash<int, QByteArray>
 DOS_API DosQHashIntQByteArray *DOS_CALL dos_qhash_int_qbytearray_create();
-DOS_API void   DOS_CALL dos_qhash_int_qbytearray_delete(DosQHashIntQByteArray *vptr);
-DOS_API void   DOS_CALL dos_qhash_int_qbytearray_insert(DosQHashIntQByteArray *vptr, int key, const char *value);
+DOS_API void  DOS_CALL dos_qhash_int_qbytearray_delete(DosQHashIntQByteArray *vptr);
+DOS_API void  DOS_CALL dos_qhash_int_qbytearray_insert(DosQHashIntQByteArray *vptr, int key, const char *value);
 DOS_API char *DOS_CALL dos_qhash_int_qbytearray_value (DosQHashIntQByteArray *vptr, int key);
 
 // QResource
@@ -185,7 +185,7 @@ DOS_API void DOS_CALL dos_qresource_register(const char *filename);
 
 // QUrl
 DOS_API DosQUrl *DOS_CALL dos_qurl_create(const char *url, int parsingMode);
-DOS_API void   DOS_CALL dos_qurl_delete(DosQUrl *vptr);
+DOS_API void  DOS_CALL dos_qurl_delete(DosQUrl *vptr);
 DOS_API char *DOS_CALL dos_qurl_to_string(const DosQUrl *vptr);
 DOS_API bool dos_qurl_isValid(const DosQUrl *vptr);
 

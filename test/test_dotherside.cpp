@@ -631,6 +631,30 @@ private slots:
     }
 };
 
+/*
+ * Test QQuickView
+ */
+class TestQQuickView : public QObject
+{
+    Q_OBJECT
+
+private slots:
+    void testCreate() {
+        VoidPointer view(dos_qquickview_create(), &dos_qquickview_delete);
+        QVERIFY(view.get());
+    }
+
+    void testSourceAndSetSource() {
+        std::string testUrl = "qrc:/testQQuickView.qml";
+        VoidPointer view(dos_qquickview_create(), &dos_qquickview_delete);
+        VoidPointer url(dos_qurl_create(testUrl.c_str(), QUrl::StrictMode), &dos_qurl_delete);
+        dos_qquickview_set_source_url(view.get(), url.get());
+        CharPointer tempUrl(dos_qquickview_source(view.get()), &dos_chararray_delete);
+        QCOMPARE(std::string(tempUrl.get()), testUrl);
+        dos_qquickview_show(view.get());
+    }
+};
+
 int main(int argc, char *argv[])
 {
     using namespace DOS;
@@ -646,7 +670,7 @@ int main(int argc, char *argv[])
     success &= ExecuteGuiTest<TestQObject>(argc, argv);
     success &= ExecuteGuiTest<TestQAbstractListModel>(argc, argv);
     success &= ExecuteGuiTest<TestQDeclarativeIntegration>(argc, argv);
-
+    success &= ExecuteGuiTest<TestQQuickView>(argc, argv);
     return success ? 0 : 1;
 }
 
