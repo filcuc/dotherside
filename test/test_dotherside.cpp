@@ -91,6 +91,102 @@ private slots:
 };
 
 /*
+ * Test QVariant
+ */
+class TestQVariant : public QObject
+{
+Q_OBJECT
+
+private slots:
+    void testCreate()
+    {
+        VoidPointer data(dos_qvariant_create(), &dos_qvariant_delete);
+        Q_ASSERT(data.get());
+        QCOMPARE(dos_qvariant_isnull(data.get()), true);
+    }
+
+    void testInt()
+    {
+        VoidPointer data(dos_qvariant_create_int(10), &dos_qvariant_delete);
+        Q_ASSERT(data.get());
+        QCOMPARE(dos_qvariant_isnull(data.get()), false);
+        int value = dos_qvariant_toInt(data.get());
+        QCOMPARE(value, 10);
+        dos_qvariant_setInt(data.get(), 20);
+        value = dos_qvariant_toInt(data.get());
+        QCOMPARE(value, 20);
+    }
+
+    void testBool()
+    {
+        VoidPointer data(dos_qvariant_create_bool(false), &dos_qvariant_delete);
+        Q_ASSERT(data.get());
+        QCOMPARE(dos_qvariant_isnull(data.get()), false);
+        bool value = dos_qvariant_toBool(data.get());
+        QCOMPARE(value, false);
+        dos_qvariant_setBool(data.get(), true);
+        value = dos_qvariant_toBool(data.get());
+        QCOMPARE(value, true);
+    }
+
+    void testFloat()
+    {
+        VoidPointer data(dos_qvariant_create_float(float(5.5)), &dos_qvariant_delete);
+        Q_ASSERT(data.get());
+        QCOMPARE(dos_qvariant_isnull(data.get()), false);
+        float value = dos_qvariant_toFloat(data.get());
+        QCOMPARE(value, float(5.5));
+        dos_qvariant_setFloat(data.get(), float(10.3));
+        value = dos_qvariant_toFloat(data.get());
+        QCOMPARE(value, float(10.3));
+
+    }
+
+    void testDouble()
+    {
+        VoidPointer data(dos_qvariant_create_double(double(5.5)), &dos_qvariant_delete);
+        Q_ASSERT(data.get());
+        QCOMPARE(dos_qvariant_isnull(data.get()), false);
+        double value = dos_qvariant_toDouble(data.get());
+        QCOMPARE(value, double(5.5));
+        dos_qvariant_setDouble(data.get(), double(10.3));
+        value = dos_qvariant_toDouble(data.get());
+        QCOMPARE(value, double(10.3));
+    }
+
+    void testString()
+    {
+        VoidPointer data(dos_qvariant_create_string("Foo"), &dos_qvariant_delete);
+        Q_ASSERT(data.get());
+        QCOMPARE(dos_qvariant_isnull(data.get()), false);
+        char* value = dos_qvariant_toString(data.get());
+        std::string copy (value);
+        dos_chararray_delete(value);
+        QCOMPARE(copy, std::string("Foo"));
+        dos_qvariant_setString(data.get(), "Bar");
+        value = dos_qvariant_toString(data.get());
+        copy = std::string(value);
+        dos_chararray_delete(value);
+        QCOMPARE(copy, std::string("Bar"));
+    }
+
+    void testQObject()
+    {
+        unique_ptr<MockQObject> testObject(new MockQObject());
+        testObject->setObjectName("testObject");
+        testObject->setName("foo");
+
+        VoidPointer data(dos_qvariant_create_qobject(testObject->data()), &dos_qvariant_delete);
+        auto value = dos_qvariant_toQObject(data.get());
+        QVERIFY(value == testObject->data());
+        dos_qvariant_setQObject(data.get(), nullptr);
+        value = dos_qvariant_toQObject(data.get());
+        QVERIFY(value == nullptr);
+    }
+
+};
+
+/*
  * Test QQmlApplicationEngine
  */
 class TestQQmlApplicationEngine : public QObject
@@ -229,7 +325,7 @@ class TestQObject : public QObject
 
 private slots:
     void init()
-    {   
+    {
         testObject.reset(new MockQObject());
         testObject->setObjectName("testObject");
         testObject->setName("foo");
@@ -396,7 +492,7 @@ private slots:
         registerType.deleteDObject = &mockQObjectDeleter;
         dos_qdeclarative_qmlregistertype(&registerType);
 
-        auto engine = std::make_unique<QQmlApplicationEngine>();
+        auto engine = make_unique<QQmlApplicationEngine>();
         engine->load(QUrl("qrc:///testQDeclarative.qml"));
 
         QObject* testCase = engine->rootObjects().first();
@@ -418,7 +514,7 @@ private slots:
         registerType.deleteDObject = &mockQObjectDeleter;
         dos_qdeclarative_qmlregistersingletontype(&registerType);
 
-        auto engine = std::make_unique<QQmlApplicationEngine>();
+        auto engine = make_unique<QQmlApplicationEngine>();
         engine->load(QUrl("qrc:///testQDeclarative.qml"));
 
         QObject* testCase = engine->rootObjects().first();
@@ -455,6 +551,7 @@ int main(int argc, char *argv[])
     bool success = true;
     success &= ExecuteTest<TestQGuiApplication>(argc, argv);
     success &= ExecuteTest<TestQApplication>(argc, argv);
+    success &= ExecuteGuiTest<TestQVariant>(argc, argv);
     success &= ExecuteGuiTest<TestQQmlApplicationEngine>(argc, argv);
     success &= ExecuteGuiTest<TestQQmlContext>(argc, argv);
     success &= ExecuteGuiTest<TestQObject>(argc, argv);

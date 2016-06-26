@@ -155,7 +155,7 @@ void MockQAbstractListModel::onDataCalled(void *selfVPtr, const DosQModelIndex *
     const int row = dos_qmodelindex_row(index);
     const int column = dos_qmodelindex_column(index);
 
-    if (row < 0 || row >= self->m_names.size() || column != 0)
+    if (row < 0 || static_cast<size_t>(row) >= self->m_names.size() || column != 0)
         return;
 
     dos_qvariant_setString(result, self->m_names[row].c_str());
@@ -172,7 +172,7 @@ void MockQAbstractListModel::onSetDataCalled(void *selfVPtr, const DosQModelInde
     const int row = dos_qmodelindex_row(index);
     const int column = dos_qmodelindex_column(index);
 
-    if (row < 0 || row >= self->m_names.size() || column != 0)
+    if (row < 0 || static_cast<size_t>(row) >= self->m_names.size() || column != 0)
         return;
 
     self->m_names[row] = toStringFromQVariant(value);
