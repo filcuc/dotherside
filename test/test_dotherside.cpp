@@ -184,6 +184,26 @@ private slots:
         QVERIFY(value == nullptr);
     }
 
+    void testArray() {
+        std::vector<DosQVariant*> data ({
+           dos_qvariant_create_int(10),
+           dos_qvariant_create_double(4.3),
+           dos_qvariant_create_bool(false),
+           dos_qvariant_create_string("FooBar")
+        });
+
+        VoidPointer variant (dos_qvariant_create_array(data.size(), &data[0]), &dos_qvariant_delete);
+
+        DosQVariantArray* array = dos_qvariant_toArray(variant.get());
+        QVERIFY(array);
+        QCOMPARE(int(data.size()), array->size);
+        QCOMPARE(dos_qvariant_toInt(array->data[0]), int(10));
+        QCOMPARE(dos_qvariant_toDouble(array->data[1]), double(4.3));
+        QCOMPARE(dos_qvariant_toBool(array->data[2]), false);
+        dos_qvariantarray_delete(array);
+
+        std::for_each(data.begin(), data.end(), &dos_qvariant_delete);
+    }
 };
 
 /*
@@ -384,6 +404,15 @@ private slots:
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testSignalEmittion", Q_RETURN_ARG(QVariant, result)));
+        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(result.toBool());
+    }
+
+    void testArrayProperty() {
+        QObject* testCase = engine->rootObjects().first();
+        QVERIFY(testCase);
+        QVariant result;
+        QVERIFY(QMetaObject::invokeMethod(testCase, "testArrayProperty", Q_RETURN_ARG(QVariant, result)));
         QVERIFY(result.type() == QVariant::Bool);
         QVERIFY(result.toBool());
     }
