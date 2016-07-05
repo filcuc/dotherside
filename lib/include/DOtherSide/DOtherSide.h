@@ -1,6 +1,7 @@
 /**
  * \file DOtherSide.h
  * \brief The DOtherSide API file
+ * \author Filippo Cucchetto
  *
  * This file contains all the functions from creating or manipulating the QML
  * environement
@@ -24,31 +25,103 @@ extern "C"
 {
 #endif
 
-// QCoreApplication
+/// \defgroup QGuiApplication QGuiApplication
+/// \brief Functions related to the QGuiApplication class
+/// @{
+
+/// \brief Return the QCore::applicationDirPath
+/// \return The QCore::applicationDirPath as a UTF-8 string
+/// \note The returned string should be deleted by the calling code by using
+/// the dos_chararray_delete() function
 DOS_API char *DOS_CALL dos_qcoreapplication_application_dir_path();
 
-// QGuiApplication
+/// \brief Create a QGuiApplication
+/// \note The created QGuiApplication should be freed by calling dos_qguiapplication_delete()
 DOS_API void DOS_CALL dos_qguiapplication_create();
+
+/// \brief Calls the QGuiApplication::exec() function of the current QGuiApplication
+/// \note A QGuiApplication should have been already created through dos_qguiapplication_create()
 DOS_API void DOS_CALL dos_qguiapplication_exec();
+
+/// \brief Calls the QGuiApplication::quit() function of the current QGuiApplication
+/// \note A QGuiApplication should have been already created through dos_qguiapplication_create()
 DOS_API void DOS_CALL dos_qguiapplication_quit();
+
+/// \brief Free the memory of the current QGuiApplication
+/// \note A QGuiApplication should have been already created through dos_qguiapplication_create()
 DOS_API void DOS_CALL dos_qguiapplication_delete();
 
-// QApplication
+/// @}
+
+/// \defgroup QApplication QApplication
+/// \brief Functions related to the QApplication class
+/// @{
+
+/// \brief Create a QApplication
+/// \note The created QApplication should be freed by calling dos_qapplication_delete()
 DOS_API void DOS_CALL dos_qapplication_create();
+
+/// \brief Calls the QApplication::exec() function of the current QGuiApplication
+/// \note A QApplication should have been already created through dos_qapplication_create()
 DOS_API void DOS_CALL dos_qapplication_exec();
+
+/// \brief Calls the QApplication::quit() function of the current QGuiApplication
+/// \note A QApplication should have been already created through dos_qapplication_create()
 DOS_API void DOS_CALL dos_qapplication_quit();
+
+/// \brief Free the memory of the current QApplication
+/// \note A QApplication should have been already created through dos_qapplication_create()
 DOS_API void DOS_CALL dos_qapplication_delete();
 
-// QQmlApplicationEngine
+/// @}
+
+/// \defgroup QQmlApplicationEngine QQmlApplicationEngine
+/// \brief Functions related to the QQmlApplicationEngine class
+/// @{
+
+/// \brief Create a new QQmlApplicationEngine
+/// \return A new QQmlApplicationEngine
+/// \note The returned QQmlApplicationEngine should be freed by using dos_qqmlapplicationengine_delete(DosQQmlApplicationEngine*)
 DOS_API DosQQmlApplicationEngine *DOS_CALL dos_qqmlapplicationengine_create();
+
+/// \brief Calls the QQmlApplicationEngine::load function
+/// \param vptr The QQmlApplicationEngine
+/// \param filename The file to load. The file is relative to the directory that contains the application executable
 DOS_API void DOS_CALL dos_qqmlapplicationengine_load(DosQQmlApplicationEngine *vptr, const char *filename);
+
+/// \brief Calls the QQmlApplicationEngine::load function
+/// \param vptr The QQmlApplicationEngine
+/// \param url The QUrl of the file to load
 DOS_API void DOS_CALL dos_qqmlapplicationengine_load_url(DosQQmlApplicationEngine *vptr, DosQUrl *url);
+
+/// \brief Calls the QQmlApplicationEngine::loadData function
+/// \param vptr The QQmlApplicationEngine
+/// \param data The UTF-8 string of the QML to load
 DOS_API void DOS_CALL dos_qqmlapplicationengine_load_data(DosQQmlApplicationEngine *vptr, const char *data);
+
+/// \brief Calls the QQmlApplicationEngine::addImportPath function
+/// \param vptr The QQmlApplicationEngine
+/// \param path The path to be added to the list of import paths
 DOS_API void DOS_CALL dos_qqmlapplicationengine_add_import_path(DosQQmlApplicationEngine *vptr, const char *path);
+
+/// \brief Calls the QQmlApplicationEngine::context
+/// \param vptr The QQmlApplicationEngine
+/// \return A pointer to a QQmlContext. This should not be stored nor made available to the binded language if
+/// you can't guarantee that this QQmlContext should not live more that its Engine. This context is owned by
+/// the engine and so it should die with the engine.
 DOS_API DosQQmlContext *DOS_CALL dos_qqmlapplicationengine_context(DosQQmlApplicationEngine *vptr);
+
+/// \brief Free the memory allocated for the given QQmlApplicationEngine
+/// \param vptr The QQmlApplicationEngine
 DOS_API void DOS_CALL dos_qqmlapplicationengine_delete(DosQQmlApplicationEngine *vptr);
 
-// QQuickView
+/// @}
+
+
+/// \defgroup QQuickView QQuickView
+/// \brief Functions related to the QQuickView class
+/// @{
+
 DOS_API DosQQuickView *DOS_CALL dos_qquickview_create();
 DOS_API void  DOS_CALL dos_qquickview_show(DosQQuickView *vptr);
 DOS_API char *DOS_CALL dos_qquickview_source(const DosQQuickView *vptr);
@@ -57,6 +130,8 @@ DOS_API void  DOS_CALL dos_qquickview_set_source(DosQQuickView *vptr, const char
 DOS_API void  DOS_CALL dos_qquickview_set_resize_mode(DosQQuickView *vptr, int resizeMode);
 DOS_API void  DOS_CALL dos_qquickview_delete(DosQQuickView *vptr);
 DOS_API DosQQmlContext *DOS_CALL dos_qquickview_rootContext(DosQQuickView *vptr);
+
+/// @}
 
 // QQmlContext
 DOS_API char *DOS_CALL dos_qqmlcontext_baseUrl(const DosQQmlContext *vptr);
