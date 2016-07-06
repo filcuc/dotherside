@@ -62,6 +62,11 @@ typedef void (DOS_CALL *HeaderDataCallback)   (void *self, int section, int orie
 typedef void (DOS_CALL *CreateDObject)(int, void *, void **, void **);
 typedef void (DOS_CALL *DeleteDObject)(int, void *);
 
+struct DosQVariantArray {
+    int size;
+    DosQVariant** data;
+};
+
 struct QmlRegisterType {
     int major;
     int minor;

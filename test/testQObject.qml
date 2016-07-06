@@ -29,4 +29,14 @@ QtObject {
         testObject.name = "bar"
         return result
     }
+
+    function testArrayProperty() {
+        if (!testObject)
+            return false
+        var values = testObject.arrayProperty
+        if (values[0] != 10 || values[1] != 5.3 || values[2] != false)
+            return false
+        testObject.arrayProperty = [404, 6.3, true]
+        return values[0] != 404 || values[1] != 6.3 || values[2] != true
+    }
 }

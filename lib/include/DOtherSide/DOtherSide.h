@@ -64,6 +64,9 @@ DOS_API void   DOS_CALL dos_qqmlcontext_setcontextproperty(DosQQmlContext *vptr,
 /// @param ptr The string
 DOS_API void DOS_CALL dos_chararray_delete(char *ptr);
 
+/// Delete a DosQVariantArray
+DOS_API void DOS_CALL dos_qvariantarray_delete(DosQVariantArray *ptr);
+
 // QVariant
 DOS_API DosQVariant *DOS_CALL dos_qvariant_create();
 DOS_API DosQVariant *DOS_CALL dos_qvariant_create_int(int value);
@@ -73,12 +76,14 @@ DOS_API DosQVariant *DOS_CALL dos_qvariant_create_qobject(DosQObject *value);
 DOS_API DosQVariant *DOS_CALL dos_qvariant_create_qvariant(const DosQVariant *value);
 DOS_API DosQVariant *DOS_CALL dos_qvariant_create_float(float value);
 DOS_API DosQVariant *DOS_CALL dos_qvariant_create_double(double value);
+DOS_API DosQVariant *DOS_CALL dos_qvariant_create_array(int size, DosQVariant** array);
 DOS_API void   DOS_CALL dos_qvariant_setInt    (DosQVariant *vptr, int value);
 DOS_API void   DOS_CALL dos_qvariant_setBool   (DosQVariant *vptr, bool value);
 DOS_API void   DOS_CALL dos_qvariant_setFloat  (DosQVariant *vptr, float value);
 DOS_API void   DOS_CALL dos_qvariant_setDouble (DosQVariant *vptr, double value);
 DOS_API void   DOS_CALL dos_qvariant_setString (DosQVariant *vptr, const char *value);
 DOS_API void   DOS_CALL dos_qvariant_setQObject(DosQVariant *vptr, DosQObject *value);
+DOS_API void   DOS_CALL dos_qvariant_setArray  (DosQVariant *vptr, int size, DosQVariant** array);
 DOS_API bool   DOS_CALL dos_qvariant_isnull    (const DosQVariant *vptr);
 DOS_API void   DOS_CALL dos_qvariant_delete    (DosQVariant *vptr);
 DOS_API void   DOS_CALL dos_qvariant_assign    (DosQVariant *vptr, const DosQVariant *other);
@@ -87,6 +92,7 @@ DOS_API bool   DOS_CALL dos_qvariant_toBool    (const DosQVariant *vptr);
 DOS_API char  *DOS_CALL dos_qvariant_toString  (const DosQVariant *vptr);
 DOS_API float  DOS_CALL dos_qvariant_toFloat   (const DosQVariant *vptr);
 DOS_API double DOS_CALL dos_qvariant_toDouble  (const DosQVariant *vptr);
+DOS_API DosQVariantArray* DOS_CALL dos_qvariant_toArray(const DosQVariant *vptr);
 DOS_API DosQObject *DOS_CALL dos_qvariant_toQObject(const DosQVariant *vptr);
 
 // QMetaObject
