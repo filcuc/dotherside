@@ -179,6 +179,21 @@ void dos_chararray_delete(char *ptr)
     if (ptr) delete[] ptr;
 }
 
+void dos_qvariantarray_delete(DosQVariantArray *ptr)
+{
+    if (!ptr || !ptr->data)
+        return;
+    // Delete each variant
+    for (int i = 0; i < ptr->size; ++i)
+        dos_qvariant_delete(ptr->data[i]);
+    // Delete the array
+    delete[] ptr->data;
+    ptr->data = nullptr;
+    ptr->size = 0;
+    // Delete the wrapped struct
+    delete ptr;
+}
+
 char *dos_qqmlcontext_baseUrl(const ::DosQQmlContext *vptr)
 {
     auto context = static_cast<const QQmlContext *>(vptr);
@@ -239,6 +254,15 @@ void dos_qqmlcontext_setcontextproperty(::DosQQmlContext *vptr, const char *name
     return new QVariant(value);
 }
 
+::DosQVariant *dos_qvariant_create_array(int size, ::DosQVariant** array)
+{
+    QList<QVariant> data;
+    data.reserve(size);
+    for (int i = 0; i < size; ++i)
+        data << *(static_cast<QVariant*>(array[i]));
+    return new QVariant(data);
+}
+
 bool dos_qvariant_isnull(const DosQVariant *vptr)
 {
     auto variant = static_cast<const QVariant *>(vptr);
@@ -288,6 +312,18 @@ char *dos_qvariant_toString(const DosQVariant *vptr)
     return convert_to_cstring(variant->toString());
 }
 
+DosQVariantArray *dos_qvariant_toArray(const DosQVariant *vptr)
+{
+    auto variant = static_cast<const QVariant *>(vptr);
+    QVariantList data = variant->toList();
+    auto result = new DosQVariantArray();
+    result->size = data.size();
+    result->data = new DosQVariant*[result->size];
+    for (int i = 0; i < result->size; ++i)
+        result->data[i] = new QVariant(data[i]);
+    return result;
+}
+
 ::DosQObject *dos_qvariant_toQObject(const DosQVariant *vptr)
 {
     auto variant = static_cast<const QVariant *>(vptr);
@@ -329,6 +365,16 @@ void dos_qvariant_setQObject(::DosQVariant *vptr, ::DosQObject *value)
     auto variant = static_cast<QVariant *>(vptr);
     auto qobject = static_cast<QObject *>(value);
     variant->setValue<QObject *>(qobject);
+}
+
+void dos_qvariant_setArray(::DosQVariant *vptr, int size, ::DosQVariant **array)
+{
+    auto variant = static_cast<QVariant *>(vptr);
+    QVariantList data;
+    data.reserve(size);
+    for (int i = 0; i < size; ++i)
+        data << *(static_cast<QVariant *>(array[i]));
+    variant->setValue(data);
 }
 
 ::DosQMetaObject *dos_qobject_qmetaobject()

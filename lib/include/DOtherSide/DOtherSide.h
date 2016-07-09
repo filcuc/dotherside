@@ -195,6 +195,9 @@ DOS_API void DOS_CALL dos_chararray_delete(char *ptr);
 /// \brief Functions related to the QVariant class
 /// @{
 
+/// Delete a DosQVariantArray
+DOS_API void DOS_CALL dos_qvariantarray_delete(DosQVariantArray *ptr);
+
 /// \brief Create a new QVariant (null)
 /// \return The a new QVariant
 /// \note The returned QVariant should be freed using dos_qvariant_delete()
@@ -243,6 +246,8 @@ DOS_API DosQVariant *DOS_CALL dos_qvariant_create_float(float value);
 /// \note The returned QVariant should be freed using dos_qvariant_delete()
 DOS_API DosQVariant *DOS_CALL dos_qvariant_create_double(double value);
 
+DOS_API DosQVariant *DOS_CALL dos_qvariant_create_array(int size, DosQVariant** array);
+
 /// \brief Calls the QVariant::setValue<int>() function
 /// \param vptr The QVariant
 /// \param value The int value
@@ -274,6 +279,8 @@ DOS_API void   DOS_CALL dos_qvariant_setString (DosQVariant *vptr, const char *v
 /// \param value The string value
 /// \note The string argument is copied inside the QVariant and it will not be deleted
 DOS_API void   DOS_CALL dos_qvariant_setQObject(DosQVariant *vptr, DosQObject *value);
+
+DOS_API void   DOS_CALL dos_qvariant_setArray  (DosQVariant *vptr, int size, DosQVariant** array);
 
 /// \brief Calls the QVariant::isNull function
 /// \return True if the QVariant is null, false otherwise
@@ -314,6 +321,8 @@ DOS_API float  DOS_CALL dos_qvariant_toFloat   (const DosQVariant *vptr);
 /// \param vptr The QVariant
 /// \return The double value
 DOS_API double DOS_CALL dos_qvariant_toDouble  (const DosQVariant *vptr);
+
+DOS_API DosQVariantArray* DOS_CALL dos_qvariant_toArray(const DosQVariant *vptr);
 
 /// \brief Calls the QVariant::value<QObject*>() function
 /// \param vptr The QVariant

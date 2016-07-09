@@ -153,6 +153,11 @@ typedef void (DOS_CALL *CreateDObject)(int id, void *wrapper, void **dosQObject,
  */
 typedef void (DOS_CALL *DeleteDObject)(int id, void * bindedQObject);
 
+struct DosQVariantArray {
+    int size;
+    DosQVariant** data;
+};
+
 /// The data needed for registering a custom type in the QML environment
 /**
  * This is used from dos_qdeclarative_qmlregistertype() and dos_qdeclarative_qmlregistersingletontype() calls.
