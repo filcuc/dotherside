@@ -140,22 +140,22 @@ DOS_API char *DOS_CALL dos_qquickview_source(const DosQQuickView *vptr);
 /// \brief Calls the QQuickView::setSource() function
 /// \param vptr The QQuickView
 /// \param url The source QUrl
-DOS_API void  DOS_CALL dos_qquickview_set_source_url(DosQQuickView *vptr, DosQUrl *url);
+DOS_API void DOS_CALL dos_qquickview_set_source_url(DosQQuickView *vptr, DosQUrl *url);
 
 /// \brief Calls the QQuickView::setSource() function
 /// \param vptr The QQuickView
 /// \param filename The source path as an UTF-8 string. The path is relative to the directory
 ///  that contains the application executable
-DOS_API void  DOS_CALL dos_qquickview_set_source(DosQQuickView *vptr, const char *filename);
+DOS_API void DOS_CALL dos_qquickview_set_source(DosQQuickView *vptr, const char *filename);
 
 /// \brief Calls the QQuickView::setResizeMode() function
 /// \param vptr The QQuickView
 /// \param resizeMode The resize mode
-DOS_API void  DOS_CALL dos_qquickview_set_resize_mode(DosQQuickView *vptr, int resizeMode);
+DOS_API void DOS_CALL dos_qquickview_set_resize_mode(DosQQuickView *vptr, int resizeMode);
 
 /// \brief Free the memory allocated for the given QQuickView
 /// \param vptr The QQuickView
-DOS_API void  DOS_CALL dos_qquickview_delete(DosQQuickView *vptr);
+DOS_API void DOS_CALL dos_qquickview_delete(DosQQuickView *vptr);
 
 /// \brief Return the QQuickView::rootContext() as a QQuickContext
 /// \param vptr The QQuickView
@@ -246,82 +246,94 @@ DOS_API DosQVariant *DOS_CALL dos_qvariant_create_float(float value);
 /// \note The returned QVariant should be freed using dos_qvariant_delete()
 DOS_API DosQVariant *DOS_CALL dos_qvariant_create_double(double value);
 
+/// \brief Create a new QVariant holding a QVariantList
+/// \return A new QVariant
+/// \param size The size of the QVariant array
+/// \param array The array of QVariant that will be inserted in the inner QVariantList
+/// \note The \p array is owned by the caller thus it will not be deleted
 DOS_API DosQVariant *DOS_CALL dos_qvariant_create_array(int size, DosQVariant** array);
 
 /// \brief Calls the QVariant::setValue<int>() function
 /// \param vptr The QVariant
 /// \param value The int value
-DOS_API void   DOS_CALL dos_qvariant_setInt    (DosQVariant *vptr, int value);
+DOS_API void DOS_CALL dos_qvariant_setInt(DosQVariant *vptr, int value);
 
 /// \brief Calls the QVariant::setValue<bool>() function
 /// \param vptr The QVariant
 /// \param value The bool value
-DOS_API void   DOS_CALL dos_qvariant_setBool   (DosQVariant *vptr, bool value);
+DOS_API void DOS_CALL dos_qvariant_setBool(DosQVariant *vptr, bool value);
 
-/// \brief Calls the QVariant::setValue<float> function
+/// \brief Calls the QVariant::setValue<float>() function
 /// \param vptr The QVariant
 /// \param value The float value
-DOS_API void   DOS_CALL dos_qvariant_setFloat  (DosQVariant *vptr, float value);
+DOS_API void DOS_CALL dos_qvariant_setFloat(DosQVariant *vptr, float value);
 
-/// \brief Calls the QVariant::setValue<double> function
+/// \brief Calls the QVariant::setValue<double>() function
 /// \param vptr The QVariant
 /// \param value The double value
-DOS_API void   DOS_CALL dos_qvariant_setDouble (DosQVariant *vptr, double value);
+DOS_API void DOS_CALL dos_qvariant_setDouble(DosQVariant *vptr, double value);
 
-/// \brief Calls the QVariant::setValue<QString> function
+/// \brief Calls the QVariant::setValue<QString>() function
 /// \param vptr The QVariant
 /// \param value The string value
 /// \note The string argument is copied inside the QVariant and it will not be deleted
-DOS_API void   DOS_CALL dos_qvariant_setString (DosQVariant *vptr, const char *value);
+DOS_API void DOS_CALL dos_qvariant_setString(DosQVariant *vptr, const char *value);
 
-/// \brief Calls the QVariant::setValue<QObject*> function
+/// \brief Calls the QVariant::setValue<QObject*>() function
 /// \param vptr The QVariant
 /// \param value The string value
 /// \note The string argument is copied inside the QVariant and it will not be deleted
-DOS_API void   DOS_CALL dos_qvariant_setQObject(DosQVariant *vptr, DosQObject *value);
+DOS_API void DOS_CALL dos_qvariant_setQObject(DosQVariant *vptr, DosQObject *value);
 
-DOS_API void   DOS_CALL dos_qvariant_setArray  (DosQVariant *vptr, int size, DosQVariant** array);
+/// \brief Calls the QVariant::setValue<QVariantList>() function
+/// \param vptr The QVariant
+/// \param size The size of the \p array
+/// \param array The array of QVariant use for setting the inner QVariantList
+DOS_API void DOS_CALL dos_qvariant_setArray(DosQVariant *vptr, int size, DosQVariant** array);
 
 /// \brief Calls the QVariant::isNull function
 /// \return True if the QVariant is null, false otherwise
 /// \param vptr The QVariant
-DOS_API bool   DOS_CALL dos_qvariant_isnull    (const DosQVariant *vptr);
+DOS_API bool DOS_CALL dos_qvariant_isnull(const DosQVariant *vptr);
 
 /// \brief Free the memory allocated for the given QVariant
 /// \param vptr The QVariant
-DOS_API void   DOS_CALL dos_qvariant_delete    (DosQVariant *vptr);
+DOS_API void DOS_CALL dos_qvariant_delete(DosQVariant *vptr);
 
 /// \brief Calls the QVariant::operator=(const QVariant&) function
 /// \param vptr The QVariant (left side)
 /// \param other The QVariant (right side)
-DOS_API void   DOS_CALL dos_qvariant_assign    (DosQVariant *vptr, const DosQVariant *other);
+DOS_API void DOS_CALL dos_qvariant_assign(DosQVariant *vptr, const DosQVariant *other);
 
 /// \brief Calls the QVariant::value<int>() function
 /// \param vptr The QVariant
 /// \return The int value
-DOS_API int    DOS_CALL dos_qvariant_toInt     (const DosQVariant *vptr);
+DOS_API int DOS_CALL dos_qvariant_toInt(const DosQVariant *vptr);
 
 /// \brief Calls the QVariant::value<bool>() function
 /// \param vptr The QVariant
 /// \return The bool value
-DOS_API bool   DOS_CALL dos_qvariant_toBool    (const DosQVariant *vptr);
+DOS_API bool DOS_CALL dos_qvariant_toBool(const DosQVariant *vptr);
 
 /// \brief Calls the QVariant::value<QString>() function
 /// \param vptr The QVariant
 /// \return The string value
 /// \note The returned string should be freed by using dos_chararray_delete()
-DOS_API char  *DOS_CALL dos_qvariant_toString  (const DosQVariant *vptr);
+DOS_API char *DOS_CALL dos_qvariant_toString(const DosQVariant *vptr);
 
 /// \brief Calls the QVariant::value<float>() function
 /// \param vptr The QVariant
 /// \return The float value
-DOS_API float  DOS_CALL dos_qvariant_toFloat   (const DosQVariant *vptr);
+DOS_API float DOS_CALL dos_qvariant_toFloat (const DosQVariant *vptr);
 
 /// \brief Calls the QVariant::value<double>() function
 /// \param vptr The QVariant
 /// \return The double value
-DOS_API double DOS_CALL dos_qvariant_toDouble  (const DosQVariant *vptr);
+DOS_API double DOS_CALL dos_qvariant_toDouble(const DosQVariant *vptr);
 
+/// \brief Calls the QVariant::value<QVariantList>() function
+/// \param vptr The QVariant
+/// \return The QVariantList value as an array
 DOS_API DosQVariantArray* DOS_CALL dos_qvariant_toArray(const DosQVariant *vptr);
 
 /// \brief Calls the QVariant::value<QObject*>() function
