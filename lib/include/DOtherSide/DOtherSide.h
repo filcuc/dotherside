@@ -335,6 +335,9 @@ DOS_API DosQObject *DOS_CALL dos_qvariant_toQObject(const DosQVariant *vptr);
 /// \param slotDefinitions The SlotDefinitions struct
 /// \param propertyDefinitions The PropertyDefinitions struct
 /// \note The returned QMetaObject should be freed using dos_qmetaobject_delete().
+/// \attention The QMetaObject should live more than the QObject it refears to.
+/// Depending on the implementation usually the QMetaObject should be modeled as static variable
+/// So with a lifetime equals to the entire application
 DOS_API DosQMetaObject *DOS_CALL dos_qmetaobject_create(DosQMetaObject *superClassMetaObject,
                                                         const char *className,
                                                         const SignalDefinitions *signalDefinitions,
@@ -426,7 +429,7 @@ DOS_API bool DOS_CALL dos_qobject_signal_disconnect(DosQObject *senderVPtr,
 /// \brief Return the DosQObject objectName
 /// \param vptr The DosQObject pointer
 /// \return A string in UTF8 format
-/// \note The returned string should be freed using the dos_chararray_delete function
+/// \note The returned string should be freed using the dos_chararray_delete() function
 DOS_API char *DOS_CALL dos_qobject_objectName(const DosQObject *vptr);
 
 
@@ -471,15 +474,50 @@ DOS_API char *DOS_CALL dos_qhash_int_qbytearray_value (DosQHashIntQByteArray *vp
 // QResource
 DOS_API void DOS_CALL dos_qresource_register(const char *filename);
 
-// QUrl
+/// \defgroup QUrl QUrl
+/// \brief Functions related to the QUrl class
+/// @{
+
+/// \brief Create a new QUrl
+/// \param url The UTF-8 string that represents an url
+/// \param parsingMode The parsing mode
+/// \note The retuned QUrl should be freed using the dos_qurl_delete() function
 DOS_API DosQUrl *DOS_CALL dos_qurl_create(const char *url, int parsingMode);
+
+/// \brief Free the memory allocated for the QUrl
+/// \param vptr The QUrl to be freed
 DOS_API void  DOS_CALL dos_qurl_delete(DosQUrl *vptr);
+
+/// \brief Calls the QUrl::toString() function
+/// \param vptr The QUrl
+/// \return The url as an UTF-8 string
+/// \note The returned string should be freed using the dos_chararray_delete() function
 DOS_API char *DOS_CALL dos_qurl_to_string(const DosQUrl *vptr);
+
+
+/// \brief Class the QUrl::isValid() function
+/// \param vptr The QUrl
+/// \return True if the QUrl is valid, false otherwise
 DOS_API bool dos_qurl_isValid(const DosQUrl *vptr);
 
-// QDeclarative
+/// @}
+
+/// \defgroup QDeclarative QDeclarative
+/// \brief Functions related to the QDeclarative module
+/// @{
+
+/// \brief Register a type in order to be instantiable from QML
+/// \return An integer value that represents the registration ID in the
+/// qml environment
+/// \note The \p qmlRegisterType is owned by the caller thus it will not be freed
 DOS_API int DOS_CALL dos_qdeclarative_qmlregistertype(const QmlRegisterType *qmlRegisterType);
+
+/// \brief Register a singleton type in order to be accessible from QML
+/// \return An integer value that represents the registration ID in the
+/// \note The \p qmlRegisterType is owned by the caller thus it will not be freed
 DOS_API int DOS_CALL dos_qdeclarative_qmlregistersingletontype(const QmlRegisterType *qmlRegisterType);
+
+/// @}
 
 #ifdef __cplusplus
 }
