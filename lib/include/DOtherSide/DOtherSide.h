@@ -405,10 +405,22 @@ DOS_API void DOS_CALL dos_qabstractlistmodel_dataChanged(DosQAbstractListModel *
 /// \note The returned QObject should be freed using dos_qmetaobject_delete().
 DOS_API DosQMetaObject *DOS_CALL dos_qobject_qmetaobject();
 
+
+/// \brief Create a new QObject
+/// \param metaObject The QMetaObject associated to the given QObject
+/// \param dObjectCallback The callback called from QML whenever a slot or property
+/// should be in read, write or invoked
+/// \return A new QObject
+/// \note The returned QObject should be freed by calling dos_qobject_delete()
 DOS_API DosQObject *DOS_CALL dos_qobject_create(void *dObjectPointer,
                                                 DosQMetaObject *metaObject,
                                                 DObjectCallback dObjectCallback);
 
+
+/// \brief Emit a signal definited in a QObject
+/// \param name The signal name
+/// \param parametersCount The number of parameters in the \p parameters array
+/// \param parameters An array of DosQVariant with the values of signal arguments
 DOS_API void DOS_CALL dos_qobject_signal_emit(DosQObject *vptr,
                                               const char *name,
                                               int parametersCount,
@@ -451,28 +463,108 @@ DOS_API void DOS_CALL dos_qobject_delete(DosQObject *vptr);
 /// \brief Functions related to the QModelIndex class
 /// @{
 
+/// \brief Create a new QModelIndex()
+/// \note The returned QModelIndex should be freed by calling the dos_qmodelindex_delete() function
 DOS_API DosQModelIndex *DOS_CALL dos_qmodelindex_create();
+
+/// \brief Create a new QModelIndex() copy constructed with given index
+/// \note The returned QModelIndex should be freed by calling the dos_qmodelindex_delete() function
 DOS_API DosQModelIndex *DOS_CALL dos_qmodelindex_create_qmodelindex(DosQModelIndex *index);
+
+/// \brief Free the memory allocated for the QModelIndex
+/// \param vptr The QModelIndex
 DOS_API void DOS_CALL dos_qmodelindex_delete (DosQModelIndex *vptr);
+
+/// \brief Calls the QModelIndex::row() function
+/// \param vptr The QModelIndex
+/// \return The QModelIndex row
 DOS_API int  DOS_CALL dos_qmodelindex_row    (const DosQModelIndex *vptr);
+
+/// \brief Calls the QModelIndex::column() function
+/// \param vptr The QModelIndex
+/// \return The QModelIndex column
 DOS_API int  DOS_CALL dos_qmodelindex_column (const DosQModelIndex *vptr);
+
+/// \brief Calls the QModelIndex::isvalid() function
+/// \param vptr The QModelIndex
+/// \return True if the QModelIndex is valid, false otherwise
 DOS_API bool DOS_CALL dos_qmodelindex_isValid(const DosQModelIndex *vptr);
+
+/// \brief Calls the QModelIndex::data() function
+/// \param vptr The QModelIndex
+/// \param int The model role to which we want the data
+/// \return The QVariant associated at the given role
+/// \note The returned QVariant should be freed by calling the dos_qvariant_delete() function
 DOS_API DosQVariant *DOS_CALL dos_qmodelindex_data (const DosQModelIndex *vptr, int role);
+
+
+/// \brief Calls the QModelIndex::parent() function
+/// \param vptr The QModelIndex
+/// \return The model parent QModelIndex
+/// \note The returned QModelIndex should be freed by calling the dos_qmodelindex_delete() function
 DOS_API DosQModelIndex *DOS_CALL dos_qmodelindex_parent (const DosQModelIndex *vptr);
+
+/// \brief Calls the QModelIndex::child() function
+/// \param vptr The QModelIndex
+/// \param row The child row
+/// \param column The child column
+/// \return The model child QModelIndex at the given \p row and \p column
+/// \note The returned QModelIndex should be freed by calling the dos_qmodelindex_delete() function
 DOS_API DosQModelIndex *DOS_CALL dos_qmodelindex_child  (const DosQModelIndex *vptr, int row, int column);
+
+/// \brief Calls the QModelIndex::sibling() function
+/// \param vptr The QModelIndex
+/// \param row The sibling row
+/// \param column The sibling column
+/// \return The model sibling QModelIndex at the given \p row and \p column
+/// \note The returned QModelIndex should be freed by calling the dos_qmodelindex_delete() function
 DOS_API DosQModelIndex *DOS_CALL dos_qmodelindex_sibling(const DosQModelIndex *vptr, int row, int column);
+
+/// \brief Calls the QModelIndex::operator=(const QModelIndex&) function
+/// \param l The left side QModelIndex
+/// \param r The right side QModelIndex
 DOS_API void DOS_CALL dos_qmodelindex_assign (DosQModelIndex *l, const DosQModelIndex *r);
 
 /// @}
 
-// QHash<int, QByteArray>
-DOS_API DosQHashIntQByteArray *DOS_CALL dos_qhash_int_qbytearray_create();
-DOS_API void  DOS_CALL dos_qhash_int_qbytearray_delete(DosQHashIntQByteArray *vptr);
-DOS_API void  DOS_CALL dos_qhash_int_qbytearray_insert(DosQHashIntQByteArray *vptr, int key, const char *value);
-DOS_API char *DOS_CALL dos_qhash_int_qbytearray_value (DosQHashIntQByteArray *vptr, int key);
+/// \defgroup QHash
+/// \brief Functions related to the QHash class
+/// @{
 
-// QResource
+/// \brief Create a new QHash<int, QByteArray>
+/// \return A new QHash<int, QByteArray>
+/// \note The retuned QHash<int, QByteArray> should be freed using
+/// the dos_qhash_int_qbytearray_delete(DosQHashIntQByteArray *) function
+DOS_API DosQHashIntQByteArray *DOS_CALL dos_qhash_int_qbytearray_create();
+
+/// \brief Free the memory allocated for the QHash<int, QByteArray>
+/// \param vptr The QHash<int, QByteArray>
+DOS_API void  DOS_CALL dos_qhash_int_qbytearray_delete(DosQHashIntQByteArray *vptr);
+
+/// \brief Calls the QHash<int, QByteArray>::insert() function
+/// \param vptr The QHash<int, QByteArray>
+/// \param key The key
+/// \param value The UTF-8 string
+/// \note The \p value string is owned by the caller thus it will not be freed
+DOS_API void  DOS_CALL dos_qhash_int_qbytearray_insert(DosQHashIntQByteArray *vptr, int key, const char *value);
+
+/// \brief Calls the QHash<int, QByteArray>::value() function
+/// \param vptr The QHash<int, QByteArray>
+/// \param key The key to which retrive the value
+/// \return The UTF-8 string associated to the given value
+/// \note The returned string should be freed by calling the dos_chararray_delete() function
+DOS_API char *DOS_CALL dos_qhash_int_qbytearray_value(const DosQHashIntQByteArray *vptr, int key);
+
+/// @}
+
+/// \defgroup QResource QResource
+/// \brief Functions related to the QResource class
+/// @{
+
+/// Register the given .rcc (compiled) file in the resource system
 DOS_API void DOS_CALL dos_qresource_register(const char *filename);
+
+/// @}
 
 /// \defgroup QUrl QUrl
 /// \brief Functions related to the QUrl class
@@ -493,7 +585,6 @@ DOS_API void  DOS_CALL dos_qurl_delete(DosQUrl *vptr);
 /// \return The url as an UTF-8 string
 /// \note The returned string should be freed using the dos_chararray_delete() function
 DOS_API char *DOS_CALL dos_qurl_to_string(const DosQUrl *vptr);
-
 
 /// \brief Class the QUrl::isValid() function
 /// \param vptr The QUrl
