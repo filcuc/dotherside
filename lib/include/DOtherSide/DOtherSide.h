@@ -399,21 +399,17 @@ DOS_API void DOS_CALL dos_qabstractlistmodel_endRemoveRows  (DosQAbstractListMod
 DOS_API void DOS_CALL dos_qabstractlistmodel_beginResetModel(DosQAbstractListModel *vptr);
 DOS_API void DOS_CALL dos_qabstractlistmodel_endResetModel  (DosQAbstractListModel *vptr);
 
-
-
-/**
- * \brief Emit the dataChanged signal
- * \param vptr The DosQAbstractListModel pointer
- * \param topLeft The topLeft DosQModelIndex. The index is owned by the caller thus it will not be deleted
- * \param bottomRight The bottomright DosQModelIndex. The index is owned by the caller thus it will not be deleted
- * \param rolesPtr The roles array. The pointer is owned by the caller and thus it will not be deleted
- * \param rolesLength The roles array length
- */
+/// \brief Emit the dataChanged signal
+/// \param vptr The DosQAbstractListModel pointer
+/// \param topLeft The topLeft DosQModelIndex
+/// \param bottomRight The bottomright DosQModelIndex
+/// \param rolesPtr The roles array
+/// \param rolesLength The roles array length
+/// \note The \p topLeft, \p bottomRight and \p rolesPtr arguments are owned by the caller thus they will not be deleted
 DOS_API void DOS_CALL dos_qabstractlistmodel_dataChanged(DosQAbstractListModel *vptr,
                                                          const DosQModelIndex *topLeft,
                                                          const DosQModelIndex *bottomRight,
                                                          int *rolesPtr, int rolesLength);
-
 /// @}
 
 
@@ -426,7 +422,6 @@ DOS_API void DOS_CALL dos_qabstractlistmodel_dataChanged(DosQAbstractListModel *
 /// \note The returned QObject should be freed using dos_qmetaobject_delete().
 DOS_API DosQMetaObject *DOS_CALL dos_qobject_qmetaobject();
 
-
 /// \brief Create a new QObject
 /// \param metaObject The QMetaObject associated to the given QObject
 /// \param dObjectCallback The callback called from QML whenever a slot or property
@@ -436,7 +431,6 @@ DOS_API DosQMetaObject *DOS_CALL dos_qobject_qmetaobject();
 DOS_API DosQObject *DOS_CALL dos_qobject_create(void *dObjectPointer,
                                                 DosQMetaObject *metaObject,
                                                 DObjectCallback dObjectCallback);
-
 
 /// \brief Emit a signal definited in a QObject
 /// \param name The signal name
@@ -458,20 +452,17 @@ DOS_API bool DOS_CALL dos_qobject_signal_disconnect(DosQObject *senderVPtr,
                                                     DosQObject *receiverVPtr,
                                                     const char *method);
 
-
 /// \brief Return the DosQObject objectName
 /// \param vptr The DosQObject pointer
 /// \return A string in UTF8 format
 /// \note The returned string should be freed using the dos_chararray_delete() function
 DOS_API char *DOS_CALL dos_qobject_objectName(const DosQObject *vptr);
 
-
 /// \brief Calls the QObject::setObjectName() function
 /// \param vptr The QObject
 /// \param name A pointer to an UTF-8 string
 /// \note The \p name string is owned by the caller thus it will not be deleted
 DOS_API void DOS_CALL dos_qobject_setObjectName(DosQObject *vptr, const char *name);
-
 
 /// \brief Free the memory allocated for the QObject
 /// \param vptr The QObject
@@ -517,7 +508,6 @@ DOS_API bool DOS_CALL dos_qmodelindex_isValid(const DosQModelIndex *vptr);
 /// \return The QVariant associated at the given role
 /// \note The returned QVariant should be freed by calling the dos_qvariant_delete() function
 DOS_API DosQVariant *DOS_CALL dos_qmodelindex_data (const DosQModelIndex *vptr, int role);
-
 
 /// \brief Calls the QModelIndex::parent() function
 /// \param vptr The QModelIndex
