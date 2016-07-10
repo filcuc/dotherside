@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/filcuc/DOtherSide.svg?branch=master)](https://travis-ci.org/filcuc/DOtherSide)
 [![Build status](https://ci.appveyor.com/api/projects/status/ufufhtv2h507sd96/branch/master?svg=true)](https://ci.appveyor.com/project/filcuc/dotherside/branch/master)
 [![Coverage Status](https://coveralls.io/repos/github/filcuc/DOtherSide/badge.svg?branch=master)](https://coveralls.io/github/filcuc/DOtherSide?branch=master)
+[![Documentation Status](https://img.shields.io/badge/doc-passing-blue.svg)(https://filcuc.github.io/DOtherSide/)
 
 C language library for creating bindings for the Qt QML language.
 
