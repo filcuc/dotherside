@@ -99,7 +99,7 @@ typedef void (DOS_CALL *HeaderDataCallback)(void *self, int section, int orienta
 
 /// Callback called from QML for creating a registered type
 /**
- * When a type is created through the QML engine a new QObject \i"Wrapper" is created. This becomes a proxy
+ * When a type is created through the QML engine a new QObject \p "Wrapper" is created. This becomes a proxy
  * between the "default" QObject created through dos_qobject_create() and the QML engine. This imply that implementation
  * for this callback should swap the DosQObject* stored in the binded language with the wrapper. At the end the wrapper
  * becomes the owner of the original "default" DosQObject. Furthermore if the binding language is garbage collected you
@@ -149,8 +149,13 @@ typedef void (DOS_CALL *CreateDObject)(int id, void *wrapper, void **dosQObject,
  */
 typedef void (DOS_CALL *DeleteDObject)(int id, void * bindedQObject);
 
+/// \brief Store an array of QVariant
+/// \note This struct should be freed by calling dos_qvariantarray_delete(DosQVariantArray *ptr). This in turn
+/// cleans up the internal array
 struct DosQVariantArray {
+    /// The number of elements
     int size;
+    /// The array
     DosQVariant** data;
 };
 
@@ -179,39 +184,65 @@ struct QmlRegisterType {
     DeleteDObject deleteDObject;
 };
 
+/// Represents a single signal definition
 struct SignalDefinition {
+    /// The signal name
     const char *name;
+    /// The signal parameters count
     int parametersCount;
+    /// The signal parameters metatypes
     int *parametersMetaTypes;
 };
 
+/// Represents a set of signal definitions
 struct SignalDefinitions {
+    /// The total number of signals
     int count;
+    /// The signal definitions array
     SignalDefinition *definitions;
 };
 
+/// Represents a single slot definition
 struct SlotDefinition {
+    /// The slot name
     const char *name;
+    /// The slot return type
     int returnMetaType;
+    /// The slot parameters count
     int parametersCount;
+    /// The slot parameters metatypes
     int *parametersMetaTypes;
 };
 
+/// Represents a set of slot definitions
 struct SlotDefinitions {
+    /// The total number of slots
     int count;
+    /// The slot definitions array
     SlotDefinition *definitions;
 };
 
+/// Represents a single property definition
 struct PropertyDefinition {
+    /// The property name
     const char *name;
+    /// The property metatype
     int propertyMetaType;
+    /// The name of the property read slot
     const char *readSlot;
+    /// \brief The name of the property write slot
+    /// \note Setting this to null means a readonly proeperty
     const char *writeSlot;
+    /// \brief The name of the property notify signals
+    /// \note Setting this to null means a constant property
     const char *notifySignal;
 };
 
+/// Represents a set of property definitions
 struct PropertyDefinitions {
+    /// The total number of properties
     int count;
+    /// The property definitions array
     PropertyDefinition *definitions;
 };
 

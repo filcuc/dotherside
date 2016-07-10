@@ -351,6 +351,7 @@ DOS_API DosQObject *DOS_CALL dos_qvariant_toQObject(const DosQVariant *vptr);
 /// @{
 
 /// \brief Create a new QMetaObject
+/// \param superClassMetaObject The superclass metaobject
 /// \param className The class name
 /// \param signalDefinitions The SignalDefinitions
 /// \param slotDefinitions The SlotDefinitions struct
@@ -364,7 +365,6 @@ DOS_API DosQMetaObject *DOS_CALL dos_qmetaobject_create(DosQMetaObject *superCla
                                                         const SignalDefinitions *signalDefinitions,
                                                         const SlotDefinitions *slotDefinitions,
                                                         const PropertyDefinitions *propertyDefinitions);
-
 
 /// \brief Free the memory allocated for the given QMetaObject
 /// \param vptr The QMetaObject
@@ -383,6 +383,7 @@ DOS_API DosQMetaObject *DOS_CALL dos_qabstractlistmodel_qmetaobject();
 
 
 /// \brief Create a new QAbstractListModel
+/// \param callbackObject The pointer of QAbstractListModel in the binded language
 /// \param metaObject The QMetaObject for this QAbstractListModel
 /// \param dObjectCallback The callback for handling the properties read/write and slots execution
 /// \param rowCountCallback The callback for handling the QAbstractListModel::rowCount() execution
@@ -391,7 +392,7 @@ DOS_API DosQMetaObject *DOS_CALL dos_qabstractlistmodel_qmetaobject();
 /// \param setDataCallback The callback for handling the QAbstractListModel::setData() execution
 /// \param roleNamesCallback The callback for handling the QAbstractListModel::roleNames() execution
 /// \param flagsCallback The callback for handling the QAbstractListModel::flags() execution
-/// \param headedDataCallback The callback for handling the QAbstractListModel::headerData() execution
+/// \param headerDataCallback The callback for handling the QAbstractListModel::headerData() execution
 DOS_API DosQAbstractListModel *DOS_CALL dos_qabstractlistmodel_create(void *callbackObject,
                                                                       DosQMetaObject *metaObject,
                                                                       DObjectCallback dObjectCallback,
@@ -459,16 +460,20 @@ DOS_API void DOS_CALL dos_qabstractlistmodel_dataChanged(DosQAbstractListModel *
 DOS_API DosQMetaObject *DOS_CALL dos_qobject_qmetaobject();
 
 /// \brief Create a new QObject
+/// \param dObjectPointer The pointer of the QObject in the binded language
 /// \param metaObject The QMetaObject associated to the given QObject
 /// \param dObjectCallback The callback called from QML whenever a slot or property
 /// should be in read, write or invoked
 /// \return A new QObject
 /// \note The returned QObject should be freed by calling dos_qobject_delete()
+/// \note The \p dObjectPointer is usefull for forwarding a property read/slot to the correct
+/// object in the binded language in the callback
 DOS_API DosQObject *DOS_CALL dos_qobject_create(void *dObjectPointer,
                                                 DosQMetaObject *metaObject,
                                                 DObjectCallback dObjectCallback);
 
 /// \brief Emit a signal definited in a QObject
+/// \param vptr The QObject
 /// \param name The signal name
 /// \param parametersCount The number of parameters in the \p parameters array
 /// \param parameters An array of DosQVariant with the values of signal arguments
@@ -540,7 +545,7 @@ DOS_API bool DOS_CALL dos_qmodelindex_isValid(const DosQModelIndex *vptr);
 
 /// \brief Calls the QModelIndex::data() function
 /// \param vptr The QModelIndex
-/// \param int The model role to which we want the data
+/// \param role The model role to which we want the data
 /// \return The QVariant associated at the given role
 /// \note The returned QVariant should be freed by calling the dos_qvariant_delete() function
 DOS_API DosQVariant *DOS_CALL dos_qmodelindex_data (const DosQModelIndex *vptr, int role);
@@ -574,7 +579,7 @@ DOS_API void DOS_CALL dos_qmodelindex_assign (DosQModelIndex *l, const DosQModel
 
 /// @}
 
-/// \defgroup QHash
+/// \defgroup QHash QHash
 /// \brief Functions related to the QHash class
 /// @{
 
