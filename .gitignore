@@ -9,3 +9,4 @@ nimcache
 *.user
 .idea
 *.orig
+doc

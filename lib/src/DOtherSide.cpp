@@ -528,9 +528,9 @@ void dos_qhash_int_qbytearray_insert(::DosQHashIntQByteArray *vptr, int key, con
     qHash->insert(key, QByteArray(value));
 }
 
-char *dos_qhash_int_qbytearray_value(::DosQHashIntQByteArray *vptr, int key)
+char *dos_qhash_int_qbytearray_value(const ::DosQHashIntQByteArray *vptr, int key)
 {
-    auto qHash = static_cast<QHash<int, QByteArray>*>(vptr);
+    auto qHash = static_cast<const QHash<int, QByteArray>*>(vptr);
     return convert_to_cstring(qHash->value(key));
 }
 

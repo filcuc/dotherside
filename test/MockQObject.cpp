@@ -91,7 +91,7 @@ namespace {
 
 MockQObject::MockQObject()
     : m_vptr(dos_qobject_create(this, metaObject(), &onSlotCalled), &dos_qobject_delete)
-    , m_arrayProperty({10, 5.3, false})
+    , m_arrayProperty(std::make_tuple(10, 5.3, false))
 {}
 
 MockQObject::~MockQObject() = default;

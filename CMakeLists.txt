@@ -21,5 +21,6 @@ endif()
 # Add additional source path for cmake
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake/)
 
+add_subdirectory(doc)
 add_subdirectory(lib)
 add_subdirectory(test)
