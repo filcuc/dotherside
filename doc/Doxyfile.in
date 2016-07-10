@@ -140,7 +140,7 @@ INLINE_INHERITED_MEMB  = NO
 # shortest path that makes the file name unique will be used
 # The default value is: YES.
 
-FULL_PATH_NAMES        = YES
+FULL_PATH_NAMES        = NO
 
 # The STRIP_FROM_PATH tag can be used to strip a user-defined part of the path.
 # Stripping is only done if one of the specified strings matches the left-hand
@@ -752,7 +752,7 @@ WARN_LOGFILE           =
 # spaces.
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@/../lib
+INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@/../lib @CMAKE_CURRENT_SOURCE_DIR@/../README.md
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -888,7 +888,7 @@ FILTER_SOURCE_PATTERNS =
 # (index.html). This can be useful if you have a project on for instance GitHub
 # and want to reuse the introduction page also for the doxygen output.
 
-USE_MDFILE_AS_MAINPAGE =
+USE_MDFILE_AS_MAINPAGE = README.md
 
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
@@ -1079,7 +1079,7 @@ HTML_STYLESHEET        =
 # list). For an example see the documentation.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_EXTRA_STYLESHEET  =
+HTML_EXTRA_STYLESHEET  = qtify.css
 
 # The HTML_EXTRA_FILES tag can be used to specify one or more extra images or
 # other source files which should be copied to the HTML output directory. Note
