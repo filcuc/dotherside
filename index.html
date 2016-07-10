@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
-<title>DOtherSide: Main Page</title>
+<title>DOtherSide: DOtherSide</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -15,6 +15,7 @@
   $(document).ready(function() { init_search(); });
 </script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="qtify.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -78,13 +79,56 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div class="header">
   <div class="headertitle">
-<div class="title">DOtherSide Documentation</div>  </div>
+<div class="title">DOtherSide </div>  </div>
 </div><!--header-->
 <div class="contents">
-</div><!-- contents -->
+<div class="textblock"><p><a href="https://github.com/filcuc/DOtherSide/blob/master/LICENSE"></a> <a href="https://travis-ci.org/filcuc/DOtherSide"></a> <a href="https://ci.appveyor.com/project/filcuc/dotherside/branch/master"></a> <a href="https://coveralls.io/github/filcuc/DOtherSide?branch=master"></a> <a href="https://filcuc.github.io/DOtherSide/"></a></p>
+<p>C language library for creating bindings for the Qt QML language.</p>
+<p>Currently the DOtherSide library is used by the following bindings:</p><ul>
+<li><a href="https://github.com/filcuc/nimqml">nimqml</a>, QML bindings for the Nim programming language</li>
+<li><a href="https://github.com/filcuc/dqml">dqml</a>, QML bindings for the D programming language</li>
+<li><a href="https://github.com/White-Oak/qml-rust">qml-rust</a>, QML bindings for the Rust programming language</li>
+</ul>
+<h2>Supported features</h2>
+<p>The following features are implementable from a binding language</p><ul>
+<li>Creating custom QObject</li>
+<li>Creating custom QAbstractListModels</li>
+<li>Creating custom properties, signals and slots</li>
+<li>Creating from QML QObject defined in the binded language</li>
+<li>Creating from Singleton QML QObject defined in the binded language</li>
+</ul>
+<h2>Prebuilt binaries</h2>
+<h3>Windows</h3>
+<p>Currently we provide the prebuilt binaries for windows through the github <a href="https://github.com/filcuc/DOtherSide/releases">releases</a> page</p>
+<h3>Linux</h3>
+<p>Currently we provide the prebuilt binaries for the following Linux distributions through the <a href="https://build.opensuse.org/package/show/home:filcuc/DOtherSide">OpenSUSE OBS service</a></p><ul>
+<li><code>Archlinux</code> : <a href="http://software.opensuse.org/download.html?project=home%3Afilcuc&amp;package=DOtherSide">here</a></li>
+</ul>
+<h2>Change log</h2>
+<p>The project change log can be read ./CHANGELOG.md "here".</p>
+<h2>Supported platforms</h2>
+<p>Currently we support the following platforms/compilers:</p><ul>
+<li>Linux both 32/64bit with gcc</li>
+<li>Windows 32/64bit with Visual Studio 2013|2015 Community Edition</li>
+</ul>
+<h2>Build requirements</h2>
+<p>You need the following software:</p><ul>
+<li>Qt 5.4 or higher</li>
+<li>Linux: gcc 4.8 or later with c++11 support or higher</li>
+<li>Windows: Visual Studio 2013|2015 Community Edition (Windows) or higher</li>
+</ul>
+<h2>Build instructions:</h2>
+<ol type="1">
+<li>Open a shell terminal inside the cloned repo</li>
+<li>mkdir build &amp;&amp; cd build</li>
+<li>cmake ..</li>
+<li>make</li>
+</ol>
+<h2>Install Instructions</h2>
+<p>Once you built the package just type </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;make install</div></div><!-- fragment --><p> by default cmake will install to the default CMAKE prefix. If you want to customize this location type the following command during the build steps when invoking cmake </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;cmake -DCMAKE_INSTALL_PREFIX:PATH=/path/to/install/prefix path/to/CMakeLists.txt</div></div><!-- fragment --> </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Jul 10 2016 16:51:55 for DOtherSide by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Jul 10 2016 19:14:47 for DOtherSide by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.11
 </small></address>

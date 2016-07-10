@@ -110,5 +110,6 @@ var searchData=
   ['dosqvariant',['DosQVariant',['../_d_other_side_types_8h.html#aa747af7082662f52206c9cfd4673a428',1,'DOtherSideTypes.h']]],
   ['dosqvariantarray',['DosQVariantArray',['../struct_dos_q_variant_array.html',1,'']]],
   ['dotherside_2eh',['DOtherSide.h',['../_d_other_side_8h.html',1,'']]],
-  ['dothersidetypes_2eh',['DOtherSideTypes.h',['../_d_other_side_types_8h.html',1,'']]]
+  ['dothersidetypes_2eh',['DOtherSideTypes.h',['../_d_other_side_types_8h.html',1,'']]],
+  ['dotherside',['DOtherSide',['../index.html',1,'']]]
 ];
