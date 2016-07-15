@@ -134,10 +134,10 @@ proc createCallback(.....) =
  * to dos_qdeclarative_qmlregistertype() or dos_qdeclarative_qmlregistersingletontype()
  * \param wrapper This is the QObject wrapper that should be stored by the binded language and to which forward the
  * DOtherSide calls
- * \param dosQObject This should be deferenced and assigned with the DosQObject pointer you gained from calling the dos_qobject_create() function
  * \param bindedQObject This should be deferenced and assigned with the pointer of the QObject modeled in the binded language
+ * \param dosQObject This should be deferenced and assigned with the DosQObject pointer you gained from calling the dos_qobject_create() function
  */
-typedef void (DOS_CALL *CreateDObject)(int id, void *wrapper, void **dosQObject, void **bindedQObject);
+typedef void (DOS_CALL *CreateDObject)(int id, void *wrapper, void **bindedQObject, void **dosQObject);
 
 /// Callback invoked from QML for deleting a registered type
 /**
