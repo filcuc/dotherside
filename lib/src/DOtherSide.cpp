@@ -82,6 +82,16 @@ void dos_qapplication_quit()
     qApp->quit();
 }
 
+void dos_qapplication_process_events()
+{
+    qApp->processEvents();
+}
+
+void dos_qapplication_send_posted_events()
+{
+    qApp->sendPostedEvents();
+}
+
 ::DosQQmlApplicationEngine *dos_qqmlapplicationengine_create()
 {
     return new QQmlApplicationEngine();
