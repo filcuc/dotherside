@@ -46,17 +46,17 @@ void dos_qguiapplication_create()
 
 void dos_qguiapplication_delete()
 {
-    delete qApp;
+    delete qGuiApp;
 }
 
 void dos_qguiapplication_exec()
 {
-    qApp->exec();
+    qGuiApp->exec();
 }
 
 void dos_qguiapplication_quit()
 {
-    qApp->quit();
+    qGuiApp->quit();
 }
 
 void dos_qapplication_create()
