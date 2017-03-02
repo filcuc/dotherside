@@ -16,6 +16,9 @@
 #define DOS_CALL
 #endif
 
+#ifndef __cplusplus
+#include <stdbool.h>
+#endif
 
 #ifdef __cplusplus
 extern "C"
@@ -163,6 +166,10 @@ struct DosQVariantArray {
     DosQVariant** data;
 };
 
+#ifndef __cplusplus
+typedef struct DosQVariantArray DosQVariantArray;
+#endif
+
 /// The data needed for registering a custom type in the QML environment
 /**
  * This is used from dos_qdeclarative_qmlregistertype() and dos_qdeclarative_qmlregistersingletontype() calls.
@@ -188,6 +195,10 @@ struct QmlRegisterType {
     DeleteDObject deleteDObject;
 };
 
+#ifndef __cplusplus
+typedef struct QmlRegisterType QmlRegisterType;
+#endif
+
 /// Represents a single signal definition
 struct SignalDefinition {
     /// The signal name
@@ -198,6 +209,10 @@ struct SignalDefinition {
     int *parametersMetaTypes;
 };
 
+#ifndef __cplusplus
+typedef struct SignalDefinition SignalDefinition;
+#endif
+
 /// Represents a set of signal definitions
 struct SignalDefinitions {
     /// The total number of signals
@@ -205,6 +220,10 @@ struct SignalDefinitions {
     /// The signal definitions array
     SignalDefinition *definitions;
 };
+
+#ifndef __cplusplus
+typedef struct SignalDefinitions SignalDefinitions;
+#endif
 
 /// Represents a single slot definition
 struct SlotDefinition {
@@ -218,6 +237,10 @@ struct SlotDefinition {
     int *parametersMetaTypes;
 };
 
+#ifndef __cplusplus
+typedef struct SlotDefinition SlotDefinition;
+#endif
+
 /// Represents a set of slot definitions
 struct SlotDefinitions {
     /// The total number of slots
@@ -225,6 +248,10 @@ struct SlotDefinitions {
     /// The slot definitions array
     SlotDefinition *definitions;
 };
+
+#ifndef __cplusplus
+typedef struct SlotDefinitions SlotDefinitions;
+#endif
 
 /// Represents a single property definition
 struct PropertyDefinition {
@@ -242,6 +269,10 @@ struct PropertyDefinition {
     const char *notifySignal;
 };
 
+#ifndef __cplusplus
+typedef struct PropertyDefinition PropertyDefinition;
+#endif
+
 /// Represents a set of property definitions
 struct PropertyDefinitions {
     /// The total number of properties
@@ -249,6 +280,10 @@ struct PropertyDefinitions {
     /// The property definitions array
     PropertyDefinition *definitions;
 };
+
+#ifndef __cplusplus
+typedef struct PropertyDefinitions PropertyDefinitions;
+#endif
 
 #ifdef __cplusplus
 }
