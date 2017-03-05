@@ -64,40 +64,43 @@ public:
     /// @see QAbstractItemModel::parent
     QModelIndex parent(const QModelIndex &child) const override;
 
-    /// @see DosIQAbstractListModelImpl::publicBeginInsertRows
+    /// @see DosIQAbstractItemModelImpl::publicBeginInsertRows
     void publicBeginInsertRows(const QModelIndex &index, int first, int last) override;
 
-    /// @see DosIQAbstractListModelImpl::publicEndInsertRows
+    /// @see DosIQAbstractItemModelImpl::publicEndInsertRows
     void publicEndInsertRows() override;
 
-    /// @see DosIQAbstractListModelImpl::publicBeginRemoveRows
+    /// @see DosIQAbstractItemModelImpl::publicBeginRemoveRows
     void publicBeginRemoveRows(const QModelIndex &index, int first, int last) override;
 
-    /// @see DosIQAbstractListModelImpl::publicEndRemoveRows
+    /// @see DosIQAbstractItemModelImpl::publicEndRemoveRows
     void publicEndRemoveRows() override;
 
-    /// @see DosIQAbstractListModelImpl::publicBeginInsertColumns
+    /// @see DosIQAbstractItemModelImpl::publicBeginInsertColumns
     void publicBeginInsertColumns(const QModelIndex &index, int first, int last) override;
 
-    /// @see DosIQAbstractListModelImpl::publicEndInsertColumns
+    /// @see DosIQAbstractItemModelImpl::publicEndInsertColumns
     void publicEndInsertColumns() override;
 
-    /// @see DosIQAbstractListModelImpl::publicBeginRemoveColumns
+    /// @see DosIQAbstractItemModelImpl::publicBeginRemoveColumns
     void publicBeginRemoveColumns(const QModelIndex &index, int first, int last) override;
 
-    /// @see DosIQAbstractListModelImpl::publicEndRemoveColumns
+    /// @see DosIQAbstractItemModelImpl::publicEndRemoveColumns
     void publicEndRemoveColumns() override;
 
-    /// @see DosIQAbstractListModelImpl::publicBeginResetModel
+    /// @see DosIQAbstractItemModelImpl::publicBeginResetModel
     void publicBeginResetModel() override;
 
-    /// @see DosIQAbstractListModelImpl::publicEndResetModel
+    /// @see DosIQAbstractItemModelImpl::publicEndResetModel
     void publicEndResetModel() override;
 
-    /// @see DosIQAbstractListModelImpl::publicDataChanged
+    /// @see DosIQAbstractItemModelImpl::publicDataChanged
     void publicDataChanged(const QModelIndex &topLeft,
                            const QModelIndex &bottomRight,
                            const QVector<int> &roles = QVector<int>()) override;
+
+    /// @see DosIQAbstractItemModelImpl::createIndex
+    QModelIndex publicCreateIndex(int row, int column, void *data) const override;
 
 private:
     void *m_dObject;
@@ -322,6 +325,12 @@ template<int N, int M>
 void DosQAbstractItemModelWrapper<N, M>::publicDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
 {
     m_impl->publicDataChanged(topLeft, bottomRight, roles);
+}
+
+template<int N, int M>
+QModelIndex DosQAbstractItemModelWrapper<N, M>::publicCreateIndex(int row, int column, void *data) const
+{
+    return m_impl->publicCreateIndex(row, column, data);
 }
 
 template<int N, int M>

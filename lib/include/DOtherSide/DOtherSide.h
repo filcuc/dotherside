@@ -393,6 +393,8 @@ DOS_API DosQMetaObject *DOS_CALL dos_qabstractitemmodel_qmetaobject();
 /// \param roleNamesCallback The callback for handling the QAbstractItemModel::roleNames() execution
 /// \param flagsCallback The callback for handling the QAbstractItemModel::flags() execution
 /// \param headerDataCallback The callback for handling the QAbstractItemModel::headerData() execution
+/// \param indexCallback The callback for handling the QAbstractItemModel::index() execution
+/// \param parentCallback The callback for handling the QAbstractItemModel::parent() execution
 DOS_API DosQAbstractItemModel *DOS_CALL dos_qabstractitemmodel_create(void *callbackObject,
                                                                       DosQMetaObject *metaObject,
                                                                       DObjectCallback dObjectCallback,
@@ -402,7 +404,9 @@ DOS_API DosQAbstractItemModel *DOS_CALL dos_qabstractitemmodel_create(void *call
                                                                       SetDataCallback setDataCallback,
                                                                       RoleNamesCallback roleNamesCallback,
                                                                       FlagsCallback flagsCallback,
-                                                                      HeaderDataCallback headerDataCallback);
+                                                                      HeaderDataCallback headerDataCallback,
+                                                                      IndexCallback indexCallback,
+                                                                      ParentCallback parentCallback);
 
 /// \brief Calls the QAbstractItemModel::beginInsertRows() function
 /// \param vptr The QAbstractItemModel
@@ -471,6 +475,10 @@ DOS_API void DOS_CALL dos_qabstractitemmodel_dataChanged(DosQAbstractItemModel *
                                                          const DosQModelIndex *topLeft,
                                                          const DosQModelIndex *bottomRight,
                                                          int *rolesPtr, int rolesLength);
+
+/// \brief Calls the createIndex function
+DOS_API DosQModelIndex* DOS_CALL dos_qabstractitemmodel_createIndex(DosQAbstractItemModel *vptr,
+                                                                    int row, int column, void *data = 0);
 /// @}
 
 

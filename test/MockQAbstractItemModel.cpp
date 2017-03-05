@@ -66,7 +66,8 @@ namespace
 MockQAbstractItemModel::MockQAbstractItemModel()
     : m_vptr(dos_qabstractitemmodel_create(this, metaObject(), &onSlotCalled, &onRowCountCalled,
                                            &onColumnCountCalled, &onDataCalled, &onSetDataCalled,
-                                           &onRoleNamesCalled, &onFlagsCalled, &onHeaderDataCalled), &dos_qobject_delete)
+                                           &onRoleNamesCalled, &onFlagsCalled, &onHeaderDataCalled,
+                                           &onIndexCalled, &onParentCalled), &dos_qobject_delete)
     , m_names({"John", "Mary", "Andy", "Anna"})
 {
 
@@ -142,6 +143,7 @@ void MockQAbstractItemModel::onRowCountCalled(void *selfVPtr, const DosQModelInd
 void MockQAbstractItemModel::onColumnCountCalled(void *selfVPtr, const DosQModelIndex *index, int *result)
 {
     auto self = static_cast<MockQAbstractItemModel*>(selfVPtr);
+    Q_UNUSED(self)
     *result = 1;
 }
 
@@ -194,4 +196,12 @@ void MockQAbstractItemModel::onFlagsCalled(void *selfVPtr, const DosQModelIndex 
 void MockQAbstractItemModel::onHeaderDataCalled(void *selfVPtr, int section, int orientation, int role, DosQVariant *result)
 {
 
+}
+
+void MockQAbstractItemModel::onIndexCalled(void *selfVPtr, int row, int column, const DosQModelIndex *parent, DosQModelIndex *result)
+{
+}
+
+void MockQAbstractItemModel::onParentCalled(void *selfVPtr, const DosQModelIndex *child, DosQModelIndex *result)
+{
 }

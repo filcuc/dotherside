@@ -602,7 +602,9 @@ void dos_qmetaobject_delete(::DosQMetaObject *vptr)
                                                        ::SetDataCallback setDataCallback,
                                                        ::RoleNamesCallback roleNamesCallaback,
                                                        ::FlagsCallback flagsCallback,
-                                                       ::HeaderDataCallback headerDataCallback)
+                                                       ::HeaderDataCallback headerDataCallback,
+                                                       ::IndexCallback indexCallback,
+                                                       ::ParentCallback parentCallback)
 {
     auto metaObjectHolder = static_cast<DOS::DosIQMetaObjectHolder *>(metaObjectPointer);
     auto model = new DOS::DosQAbstractItemModel(dObjectPointer,
@@ -614,7 +616,9 @@ void dos_qmetaobject_delete(::DosQMetaObject *vptr)
                                                 setDataCallback,
                                                 roleNamesCallaback,
                                                 flagsCallback,
-                                                headerDataCallback);
+                                                headerDataCallback,
+                                                indexCallback,
+                                                parentCallback);
     QQmlEngine::setObjectOwnership(model, QQmlEngine::CppOwnership);
     return static_cast<QObject *>(model);
 }
@@ -705,6 +709,14 @@ void dos_qabstractitemmodel_dataChanged(::DosQAbstractItemModel *vptr,
     auto bottomRight = static_cast<const QModelIndex *>(bottomRightIndex);
     auto roles = QVector<int>::fromStdVector(std::vector<int>(rolesArrayPtr, rolesArrayPtr + rolesArrayLength));
     model->publicDataChanged(*topLeft, *bottomRight, roles);
+}
+
+DosQModelIndex *dos_qabstractitemmodel_createIndex(::DosQAbstractItemModel *vptr,
+                                        int row, int column, void *data)
+{
+    auto object = static_cast<QObject *>(vptr);
+    auto model = dynamic_cast<DOS::DosIQAbstractItemModelImpl *>(object);
+    return new QModelIndex(model->publicCreateIndex(row, column, data));
 }
 
 int dos_qdeclarative_qmlregistertype(const ::QmlRegisterType *cArgs)

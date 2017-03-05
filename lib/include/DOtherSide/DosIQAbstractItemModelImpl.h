@@ -71,5 +71,7 @@ public:
     /// @see QAbstractListModel::dataChanged
     virtual void publicDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>()) = 0;
 
+    /// @see QAbstractListModel::createIndex
+    virtual QModelIndex publicCreateIndex(int row, int column, void* data = 0) const = 0;
 };
 } // namespace dos

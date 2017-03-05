@@ -104,6 +104,12 @@ typedef void (DOS_CALL *FlagsCallback)(void *self, const DosQModelIndex *index, 
 /// Called when the QAbstractItemModel::headerData method must be called
 typedef void (DOS_CALL *HeaderDataCallback)(void *self, int section, int orientation, int role, DosQVariant *result);
 
+/// Called when the QAbstractItemModel::index method must be called
+typedef void (DOS_CALL *IndexCallback)(void *self, int row, int column, const DosQModelIndex *parent, DosQModelIndex *result);
+
+/// Called when the QAbstractItemModel::parent method must be called
+typedef void (DOS_CALL *ParentCallback)(void *self, const DosQModelIndex *child, DosQModelIndex *result);
+
 /// Callback called from QML for creating a registered type
 /**
  * When a type is created through the QML engine a new QObject \p "Wrapper" is created. This becomes a proxy

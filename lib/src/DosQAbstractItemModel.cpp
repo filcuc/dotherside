@@ -21,7 +21,9 @@ DosQAbstractItemModel::DosQAbstractItemModel(void *modelObject,
                                              SetDataCallback setDataCallback,
                                              RoleNamesCallback roleNamesCallback,
                                              FlagsCallback flagsCallback,
-                                             HeaderDataCallback headerDataCallback)
+                                             HeaderDataCallback headerDataCallback,
+                                             IndexCallback indexCallback,
+                                             ParentCallback parentCallback)
     : m_impl(new DosQObjectImpl(this, ::createParentMetaCall(this), std::move(metaObject), std::move(onSlotExecuted)))
     , m_modelObject(std::move(modelObject))
     , m_rowCountCallback(std::move(rowCountCallback))
@@ -31,6 +33,8 @@ DosQAbstractItemModel::DosQAbstractItemModel(void *modelObject,
     , m_roleNamesCallback(std::move(roleNamesCallback))
     , m_flagsCallback(std::move(flagsCallback))
     , m_headerDataCallback(std::move(headerDataCallback))
+    , m_indexCallback(std::move(indexCallback))
+    , m_parentCallback(std::move(parentCallback))
 {}
 
 bool DosQAbstractItemModel::emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &argumentsValues)
@@ -95,12 +99,16 @@ QVariant DosQAbstractItemModel::headerData(int section, Qt::Orientation orientat
 
 QModelIndex DosQAbstractItemModel::index(int row, int column, const QModelIndex &parent) const
 {
-    return QModelIndex();
+    QModelIndex result;
+    m_indexCallback(m_modelObject, row, column, &parent, &result);
+    return result;
 }
 
 QModelIndex DosQAbstractItemModel::parent(const QModelIndex &child) const
 {
-    return QModelIndex();
+    QModelIndex result;
+    m_parentCallback(m_modelObject, &child, &result);
+    return result;
 }
 
 void *DosQAbstractItemModel::modelObject()
@@ -168,6 +176,11 @@ void DOS::DosQAbstractItemModel::publicEndResetModel()
 void DOS::DosQAbstractItemModel::publicDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
 {
     emit dataChanged(topLeft, bottomRight, roles);
+}
+
+QModelIndex DOS::DosQAbstractItemModel::publicCreateIndex(int row, int column, void *data) const
+{
+    return createIndex(row, column, data);
 }
 
 } // namespace DOS

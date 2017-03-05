@@ -28,6 +28,8 @@ private:
     static void onRoleNamesCalled(void *selfVPtr, DosQHashIntQByteArray *result);
     static void onFlagsCalled(void *selfVPtr, const DosQModelIndex *index, int *result);
     static void onHeaderDataCalled(void *selfVPtr, int section, int orientation, int role, DosQVariant *result);
+    static void onIndexCalled(void *selfVPtr, int row, int column, const DosQModelIndex *parent, DosQModelIndex *result);
+    static void onParentCalled(void *selfVPtr, const DosQModelIndex *child, DosQModelIndex *result);
 
     VoidPointer m_vptr;
     std::string m_name;
