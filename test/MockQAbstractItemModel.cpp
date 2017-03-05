@@ -200,8 +200,15 @@ void MockQAbstractItemModel::onHeaderDataCalled(void *selfVPtr, int section, int
 
 void MockQAbstractItemModel::onIndexCalled(void *selfVPtr, int row, int column, const DosQModelIndex *parent, DosQModelIndex *result)
 {
+    auto self = static_cast<MockQAbstractItemModel*>(selfVPtr);
+    auto index = dos_qabstractitemmodel_createIndex(self->data(), row, column, 0);
+    dos_qmodelindex_assign(result, index);
+    dos_qmodelindex_delete(index);
 }
 
 void MockQAbstractItemModel::onParentCalled(void *selfVPtr, const DosQModelIndex *child, DosQModelIndex *result)
 {
+    auto index = dos_qmodelindex_create();
+    dos_qmodelindex_assign(result, index);
+    dos_qmodelindex_delete(index);
 }

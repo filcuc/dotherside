@@ -4,11 +4,11 @@
 
 namespace DOS {
 
-bool isQAbstractListModel(const QMetaObject *metaObject)
+bool isQAbstractItemModel(const QMetaObject *metaObject)
 {
     const QMetaObject *current = metaObject;
     while (current) {
-        if (&QAbstractListModel::staticMetaObject == current)
+        if (&QAbstractItemModel::staticMetaObject == current)
             return true;
         current = current->superClass();
     }
@@ -19,8 +19,8 @@ int dosQmlRegisterType(QmlRegisterType args)
 {
     static int i = 0;
     static int j = 0;
-    if (isQAbstractListModel(args.staticMetaObject->metaObject()))
-        return DQALMW::DosQmlRegisterHelper<35>::Register(j++, std::move(args));
+    if (isQAbstractItemModel(args.staticMetaObject->metaObject()))
+        return DQAIMW::DosQmlRegisterHelper<35>::Register(j++, std::move(args));
     else
         return DQOW::DosQmlRegisterHelper<35>::Register(i++, std::move(args));
 }
@@ -29,8 +29,8 @@ int dosQmlRegisterSingletonType(QmlRegisterType args)
 {
     static int i = 0;
     static int j = 0;
-    if (isQAbstractListModel(args.staticMetaObject->metaObject()))
-        return DQALMW::DosQmlRegisterSingletonHelper<35>::Register(j++, std::move(args));
+    if (isQAbstractItemModel(args.staticMetaObject->metaObject()))
+        return DQAIMW::DosQmlRegisterSingletonHelper<35>::Register(j++, std::move(args));
     else
         return DQOW::DosQmlRegisterSingletonHelper<35>::Register(i++, std::move(args));
 }

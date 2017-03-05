@@ -424,9 +424,9 @@ private:
 };
 
 /*
- * Test QAbstractListModel
+ * Test QAbstractItemModel
  */
-class TestQAbstractListModel : public QObject
+class TestQAbstractItemModel : public QObject
 {
     Q_OBJECT
 
@@ -697,7 +697,7 @@ int main(int argc, char *argv[])
     success &= ExecuteGuiTest<TestQQmlApplicationEngine>(argc, argv);
     success &= ExecuteGuiTest<TestQQmlContext>(argc, argv);
     success &= ExecuteGuiTest<TestQObject>(argc, argv);
-    success &= ExecuteGuiTest<TestQAbstractListModel>(argc, argv);
+    success &= ExecuteGuiTest<TestQAbstractItemModel>(argc, argv);
     success &= ExecuteGuiTest<TestQDeclarativeIntegration>(argc, argv);
     success &= ExecuteGuiTest<TestQQuickView>(argc, argv);
     return success ? 0 : 1;

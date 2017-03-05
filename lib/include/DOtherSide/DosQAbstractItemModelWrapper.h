@@ -37,25 +37,25 @@ public:
     /// Sets the qmlRegisterType id
     static void setId(int id);
 
-    /// @see QAbstractListModel::rowCount
+    /// @see QAbstractItemModel::rowCount
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    /// @see QAbstractListModel::columnCount
+    /// @see QAbstractItemModel::columnCount
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    /// @see QAbstractListModel::data
+    /// @see QAbstractItemModel::data
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
-    /// @see QAbstractListModel::setData
+    /// @see QAbstractItemModel::setData
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 
-    /// @see QAbstractListModel::flags
+    /// @see QAbstractItemModel::flags
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
-    /// @see QAbstractListModel::headerData
+    /// @see QAbstractItemModel::headerData
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
-    /// @see QAbstractListModel::roleNames
+    /// @see QAbstractItemModel::roleNames
     QHash<int, QByteArray> roleNames() const override;
 
     /// @see QAbstractItemModel::index
@@ -110,7 +110,7 @@ private:
 };
 
 template<int N, int M>
-const QMetaObject DosQAbstractItemModelWrapper<N, M>::staticMetaObject = QAbstractListModel::staticMetaObject;
+const QMetaObject DosQAbstractItemModelWrapper<N, M>::staticMetaObject = QAbstractItemModel::staticMetaObject;
 
 template<int N, int M>
 QmlRegisterType DosQAbstractItemModelWrapper<N, M>::m_data;
@@ -339,7 +339,7 @@ const QmlRegisterType &DosQAbstractItemModelWrapper<N, M>::qmlRegisterType()
     return m_data;
 }
 
-namespace DQALMW {
+namespace DQAIMW {
 
 template<int N>
 using RegisterTypeQObject = DosQAbstractItemModelWrapper<N, 0>;

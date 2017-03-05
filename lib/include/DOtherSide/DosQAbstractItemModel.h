@@ -29,10 +29,10 @@ public:
     /// @see IDynamicQObject::emitSignal
     bool emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &argumentsValues) override;
 
-    /// @see QAbstractListModel::metaObject()
+    /// @see QAbstractItemModel::metaObject()
     const QMetaObject *metaObject() const override;
 
-    /// @see QAbstractListModel::qt_metacall
+    /// @see QAbstractItemModel::qt_metacall
     int qt_metacall(QMetaObject::Call, int, void **) override;
 
     /// Return the model's row count

@@ -49,14 +49,14 @@ public:
     DosQObjectMetaObject();
 };
 
-/// This is the DosQMetaObject for a QAbstractListModel
+/// This is the DosQMetaObject for a QAbstractItemModel
 class DosQAbstractItemModelMetaObject : public BaseDosQMetaObject
 {
 public:
     DosQAbstractItemModelMetaObject();
 };
 
-/// This the generic version used by subclasses of QObject or QAbstractListModels
+/// This the generic version used by subclasses of QObject or QAbstractItemModels
 class DosQMetaObject : public BaseDosQMetaObject
 {
 public:

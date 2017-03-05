@@ -3,7 +3,7 @@
 #include "private/qmetaobjectbuilder_p.h"
 #include "private/qmetaobject_p.h"
 #include "private/qobject_p.h"
-#include <QtCore/QAbstractListModel>
+#include <QtCore/QAbstractItemModel>
 
 namespace {
 
