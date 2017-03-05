@@ -93,6 +93,16 @@ QVariant DosQAbstractItemModel::headerData(int section, Qt::Orientation orientat
     return result;
 }
 
+QModelIndex DosQAbstractItemModel::index(int row, int column, const QModelIndex &parent) const
+{
+    return QModelIndex();
+}
+
+QModelIndex DosQAbstractItemModel::parent(const QModelIndex &child) const
+{
+    return QModelIndex();
+}
+
 void *DosQAbstractItemModel::modelObject()
 {
     return m_modelObject;
@@ -103,6 +113,26 @@ QHash<int, QByteArray> DosQAbstractItemModel::roleNames() const
     QHash<int, QByteArray> result;
     m_roleNamesCallback(m_modelObject, &result);
     return result;
+}
+
+void DOS::DosQAbstractItemModel::publicBeginInsertColumns(const QModelIndex &index, int first, int last)
+{
+    beginInsertColumns(index, first, last);
+}
+
+void DOS::DosQAbstractItemModel::publicEndInsertColumns()
+{
+    endInsertColumns();
+}
+
+void DOS::DosQAbstractItemModel::publicBeginRemoveColumns(const QModelIndex &index, int first, int last)
+{
+    beginRemoveColumns(index, first, last);
+}
+
+void DOS::DosQAbstractItemModel::publicEndRemoveColumns()
+{
+    endRemoveColumns();
 }
 
 void DOS::DosQAbstractItemModel::publicBeginInsertRows(const QModelIndex &index, int first, int last)

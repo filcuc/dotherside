@@ -22,7 +22,7 @@
 #include <DOtherSide/DosQAbstractItemModel.h>
 
 #include "MockQObject.h"
-#include "MockQAbstractListModel.h"
+#include "MockQAbstractItemModel.h"
 
 using namespace std;
 using namespace DOS;

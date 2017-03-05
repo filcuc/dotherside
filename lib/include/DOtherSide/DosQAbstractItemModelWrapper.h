@@ -5,16 +5,16 @@
 
 namespace DOS {
 template <int, int>
-class DosQAbstractListModelWrapper : public QAbstractListModel, public DosIQAbstractItemModelImpl
+class DosQAbstractItemModelWrapper : public QAbstractItemModel, public DosIQAbstractItemModelImpl
 {
 public:
     static const QMetaObject staticMetaObject;
 
     /// Constructor
-    DosQAbstractListModelWrapper(QObject *parent = nullptr);
+    DosQAbstractItemModelWrapper(QObject *parent = nullptr);
 
     /// Destructor
-    ~DosQAbstractListModelWrapper();
+    ~DosQAbstractItemModelWrapper();
 
     /// @see DosIQObjectImpl::metaObject
     const QMetaObject *metaObject() const override;
@@ -58,6 +58,12 @@ public:
     /// @see QAbstractListModel::roleNames
     QHash<int, QByteArray> roleNames() const override;
 
+    /// @see QAbstractItemModel::index
+    QModelIndex index(int row, int column, const QModelIndex &parent) const override;
+
+    /// @see QAbstractItemModel::parent
+    QModelIndex parent(const QModelIndex &child) const override;
+
     /// @see DosIQAbstractListModelImpl::publicBeginInsertRows
     void publicBeginInsertRows(const QModelIndex &index, int first, int last) override;
 
@@ -69,6 +75,18 @@ public:
 
     /// @see DosIQAbstractListModelImpl::publicEndRemoveRows
     void publicEndRemoveRows() override;
+
+    /// @see DosIQAbstractListModelImpl::publicBeginInsertColumns
+    void publicBeginInsertColumns(const QModelIndex &index, int first, int last) override;
+
+    /// @see DosIQAbstractListModelImpl::publicEndInsertColumns
+    void publicEndInsertColumns() override;
+
+    /// @see DosIQAbstractListModelImpl::publicBeginRemoveColumns
+    void publicBeginRemoveColumns(const QModelIndex &index, int first, int last) override;
+
+    /// @see DosIQAbstractListModelImpl::publicEndRemoveColumns
+    void publicEndRemoveColumns() override;
 
     /// @see DosIQAbstractListModelImpl::publicBeginResetModel
     void publicBeginResetModel() override;
@@ -89,17 +107,17 @@ private:
 };
 
 template<int N, int M>
-const QMetaObject DosQAbstractListModelWrapper<N, M>::staticMetaObject = QAbstractListModel::staticMetaObject;
+const QMetaObject DosQAbstractItemModelWrapper<N, M>::staticMetaObject = QAbstractListModel::staticMetaObject;
 
 template<int N, int M>
-QmlRegisterType DosQAbstractListModelWrapper<N, M>::m_data;
+QmlRegisterType DosQAbstractItemModelWrapper<N, M>::m_data;
 
 template<int N, int M>
-int DosQAbstractListModelWrapper<N, M>::m_id = -1;
+int DosQAbstractItemModelWrapper<N, M>::m_id = -1;
 
 template<int N, int M>
-DosQAbstractListModelWrapper<N, M>::DosQAbstractListModelWrapper(QObject *parent)
-    : QAbstractListModel(parent)
+DosQAbstractItemModelWrapper<N, M>::DosQAbstractItemModelWrapper(QObject *parent)
+    : QAbstractItemModel(parent)
     , m_dObject(nullptr)
     , m_impl(nullptr)
 {
@@ -107,30 +125,30 @@ DosQAbstractListModelWrapper<N, M>::DosQAbstractListModelWrapper(QObject *parent
     m_data.createDObject(m_id, static_cast<QObject *>(this), &m_dObject, &impl);
     beginResetModel();
     m_impl = dynamic_cast<DosQAbstractItemModel *>(static_cast<QObject *>(impl));
-    QObject::connect(m_impl, &DosQAbstractItemModel::rowsAboutToBeInserted, this, &DosQAbstractListModelWrapper::beginInsertRows);
-    QObject::connect(m_impl, &DosQAbstractItemModel::rowsInserted, this, &DosQAbstractListModelWrapper::endInsertRows);
-    QObject::connect(m_impl, &DosQAbstractItemModel::rowsAboutToBeRemoved, this, &DosQAbstractListModelWrapper::beginRemoveRows);
-    QObject::connect(m_impl, &DosQAbstractItemModel::rowsRemoved, this, &DosQAbstractListModelWrapper::endRemoveRows);
-    QObject::connect(m_impl, &DosQAbstractItemModel::rowsAboutToBeMoved, this, &DosQAbstractListModelWrapper::beginMoveRows);
-    QObject::connect(m_impl, &DosQAbstractItemModel::rowsMoved, this, &DosQAbstractListModelWrapper::endMoveRows);
-    QObject::connect(m_impl, &DosQAbstractItemModel::columnsAboutToBeInserted, this, &DosQAbstractListModelWrapper::beginInsertColumns);
-    QObject::connect(m_impl, &DosQAbstractItemModel::columnsInserted, this, &DosQAbstractListModelWrapper::endInsertColumns);
-    QObject::connect(m_impl, &DosQAbstractItemModel::columnsAboutToBeRemoved, this, &DosQAbstractListModelWrapper::beginRemoveColumns);
-    QObject::connect(m_impl, &DosQAbstractItemModel::columnsRemoved, this, &DosQAbstractListModelWrapper::endRemoveColumns);
-    QObject::connect(m_impl, &DosQAbstractItemModel::columnsAboutToBeMoved, this, &DosQAbstractListModelWrapper::beginMoveColumns);
-    QObject::connect(m_impl, &DosQAbstractItemModel::columnsMoved, this, &DosQAbstractListModelWrapper::endMoveColumns);
-    QObject::connect(m_impl, &DosQAbstractItemModel::modelAboutToBeReset, this, &DosQAbstractListModelWrapper::beginResetModel);
-    QObject::connect(m_impl, &DosQAbstractItemModel::modelReset, this, &DosQAbstractListModelWrapper::endResetModel);
-    QObject::connect(m_impl, &DosQAbstractItemModel::dataChanged, this, &DosQAbstractListModelWrapper::dataChanged);
-    QObject::connect(m_impl, &DosQAbstractItemModel::layoutAboutToBeChanged, this, &DosQAbstractListModelWrapper::layoutAboutToBeChanged);
-    QObject::connect(m_impl, &DosQAbstractItemModel::layoutChanged, this, &DosQAbstractListModelWrapper::layoutChanged);
+    QObject::connect(m_impl, &DosQAbstractItemModel::rowsAboutToBeInserted, this, &DosQAbstractItemModelWrapper::beginInsertRows);
+    QObject::connect(m_impl, &DosQAbstractItemModel::rowsInserted, this, &DosQAbstractItemModelWrapper::endInsertRows);
+    QObject::connect(m_impl, &DosQAbstractItemModel::rowsAboutToBeRemoved, this, &DosQAbstractItemModelWrapper::beginRemoveRows);
+    QObject::connect(m_impl, &DosQAbstractItemModel::rowsRemoved, this, &DosQAbstractItemModelWrapper::endRemoveRows);
+    QObject::connect(m_impl, &DosQAbstractItemModel::rowsAboutToBeMoved, this, &DosQAbstractItemModelWrapper::beginMoveRows);
+    QObject::connect(m_impl, &DosQAbstractItemModel::rowsMoved, this, &DosQAbstractItemModelWrapper::endMoveRows);
+    QObject::connect(m_impl, &DosQAbstractItemModel::columnsAboutToBeInserted, this, &DosQAbstractItemModelWrapper::beginInsertColumns);
+    QObject::connect(m_impl, &DosQAbstractItemModel::columnsInserted, this, &DosQAbstractItemModelWrapper::endInsertColumns);
+    QObject::connect(m_impl, &DosQAbstractItemModel::columnsAboutToBeRemoved, this, &DosQAbstractItemModelWrapper::beginRemoveColumns);
+    QObject::connect(m_impl, &DosQAbstractItemModel::columnsRemoved, this, &DosQAbstractItemModelWrapper::endRemoveColumns);
+    QObject::connect(m_impl, &DosQAbstractItemModel::columnsAboutToBeMoved, this, &DosQAbstractItemModelWrapper::beginMoveColumns);
+    QObject::connect(m_impl, &DosQAbstractItemModel::columnsMoved, this, &DosQAbstractItemModelWrapper::endMoveColumns);
+    QObject::connect(m_impl, &DosQAbstractItemModel::modelAboutToBeReset, this, &DosQAbstractItemModelWrapper::beginResetModel);
+    QObject::connect(m_impl, &DosQAbstractItemModel::modelReset, this, &DosQAbstractItemModelWrapper::endResetModel);
+    QObject::connect(m_impl, &DosQAbstractItemModel::dataChanged, this, &DosQAbstractItemModelWrapper::dataChanged);
+    QObject::connect(m_impl, &DosQAbstractItemModel::layoutAboutToBeChanged, this, &DosQAbstractItemModelWrapper::layoutAboutToBeChanged);
+    QObject::connect(m_impl, &DosQAbstractItemModel::layoutChanged, this, &DosQAbstractItemModelWrapper::layoutChanged);
     endResetModel();
     Q_ASSERT(m_dObject);
     Q_ASSERT(m_impl);
 }
 
 template<int N, int M>
-DosQAbstractListModelWrapper<N, M>::~DosQAbstractListModelWrapper()
+DosQAbstractItemModelWrapper<N, M>::~DosQAbstractItemModelWrapper()
 {
     m_data.deleteDObject(m_id, m_dObject);
     m_dObject = nullptr;
@@ -139,137 +157,175 @@ DosQAbstractListModelWrapper<N, M>::~DosQAbstractListModelWrapper()
 }
 
 template<int N, int M>
-const QMetaObject *DosQAbstractListModelWrapper<N, M>::metaObject() const
+const QMetaObject *DosQAbstractItemModelWrapper<N, M>::metaObject() const
 {
     Q_ASSERT(m_impl);
     return m_impl->metaObject();
 }
 
 template<int N, int M>
-int DosQAbstractListModelWrapper<N, M>::qt_metacall(QMetaObject::Call call, int index, void **args)
+int DosQAbstractItemModelWrapper<N, M>::qt_metacall(QMetaObject::Call call, int index, void **args)
 {
     Q_ASSERT(m_impl);
     return m_impl->qt_metacall(call, index, args);
 }
 
 template<int N, int M>
-bool DosQAbstractListModelWrapper<N, M>::emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &argumentsValues)
+bool DosQAbstractItemModelWrapper<N, M>::emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &argumentsValues)
 {
     Q_ASSERT(m_impl);
     return m_impl->emitSignal(this, name, argumentsValues);
 }
 
 template<int N, int M>
-void DosQAbstractListModelWrapper<N, M>::setQmlRegisterType(QmlRegisterType data)
+void DosQAbstractItemModelWrapper<N, M>::setQmlRegisterType(QmlRegisterType data)
 {
     m_data = std::move(data);
 }
 
 template<int N, int M>
-void DosQAbstractListModelWrapper<N, M>::setStaticMetaObject(const QMetaObject &metaObject)
+void DosQAbstractItemModelWrapper<N, M>::setStaticMetaObject(const QMetaObject &metaObject)
 {
     *(const_cast<QMetaObject *>(&staticMetaObject)) = metaObject;
 }
 
 template<int N, int M>
-void DosQAbstractListModelWrapper<N, M>::setId(int id)
+void DosQAbstractItemModelWrapper<N, M>::setId(int id)
 {
     m_id = id;
 }
 
 template<int N, int M>
-int DosQAbstractListModelWrapper<N, M>::rowCount(const QModelIndex &parent) const
+int DosQAbstractItemModelWrapper<N, M>::rowCount(const QModelIndex &parent) const
 {
     Q_ASSERT(m_impl);
     return m_impl->rowCount(parent);
 }
 
 template<int N, int M>
-int DosQAbstractListModelWrapper<N, M>::columnCount(const QModelIndex &parent) const
+int DosQAbstractItemModelWrapper<N, M>::columnCount(const QModelIndex &parent) const
 {
     Q_ASSERT(m_impl);
     return m_impl->columnCount(parent);
 }
 
 template<int N, int M>
-QVariant DosQAbstractListModelWrapper<N, M>::data(const QModelIndex &index, int role) const
+QVariant DosQAbstractItemModelWrapper<N, M>::data(const QModelIndex &index, int role) const
 {
     Q_ASSERT(m_impl);
     return m_impl->data(index, role);
 }
 
 template<int N, int M>
-bool DosQAbstractListModelWrapper<N, M>::setData(const QModelIndex &index, const QVariant &value, int role)
+bool DosQAbstractItemModelWrapper<N, M>::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     Q_ASSERT(m_impl);
     return m_impl->setData(index, value, role);
 }
 
 template<int N, int M>
-Qt::ItemFlags DosQAbstractListModelWrapper<N, M>::flags(const QModelIndex &index) const
+Qt::ItemFlags DosQAbstractItemModelWrapper<N, M>::flags(const QModelIndex &index) const
 {
     Q_ASSERT(m_impl);
     return m_impl->flags(index);
 }
 
 template<int N, int M>
-QVariant DosQAbstractListModelWrapper<N, M>::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant DosQAbstractItemModelWrapper<N, M>::headerData(int section, Qt::Orientation orientation, int role) const
 {
     Q_ASSERT(m_impl);
     return m_impl->headerData(section, orientation, role);
 }
 
 template<int N, int M>
-QHash<int, QByteArray> DosQAbstractListModelWrapper<N, M>::roleNames() const
+QHash<int, QByteArray> DosQAbstractItemModelWrapper<N, M>::roleNames() const
 {
     Q_ASSERT(m_impl);
     return m_impl->roleNames();
 }
 
 template<int N, int M>
-void DosQAbstractListModelWrapper<N, M>::publicBeginInsertRows(const QModelIndex &index, int first, int last)
+QModelIndex DosQAbstractItemModelWrapper<N, M>::index(int row, int column, const QModelIndex &parent) const
+{
+    Q_ASSERT(m_impl);
+    return m_impl->index(row, column, parent);
+}
+
+template<int N, int M>
+QModelIndex DosQAbstractItemModelWrapper<N, M>::parent(const QModelIndex &child) const
+{
+    Q_ASSERT(m_impl);
+    return m_impl->parent(child);
+}
+
+template<int N, int M>
+void DosQAbstractItemModelWrapper<N, M>::publicBeginInsertRows(const QModelIndex &index, int first, int last)
 {
     m_impl->publicBeginInsertRows(index, first, last);
 }
 
 template<int N, int M>
-void DosQAbstractListModelWrapper<N, M>::publicEndInsertRows()
+void DosQAbstractItemModelWrapper<N, M>::publicEndInsertRows()
 {
     m_impl->publicEndInsertRows();
 }
 
 template<int N, int M>
-void DosQAbstractListModelWrapper<N, M>::publicBeginRemoveRows(const QModelIndex &index, int first, int last)
+void DosQAbstractItemModelWrapper<N, M>::publicBeginRemoveRows(const QModelIndex &index, int first, int last)
 {
     m_impl->publicBeginRemoveRows(index, first, last);
 }
 
 template<int N, int M>
-void DosQAbstractListModelWrapper<N, M>::publicEndRemoveRows()
+void DosQAbstractItemModelWrapper<N, M>::publicEndRemoveRows()
 {
     m_impl->publicEndRemoveRows();
 }
 
 template<int N, int M>
-void DosQAbstractListModelWrapper<N, M>::publicBeginResetModel()
+void DosQAbstractItemModelWrapper<N, M>::publicBeginInsertColumns(const QModelIndex &index, int first, int last)
+{
+    m_impl->publicBeginInsertColumns(index, first, last);
+}
+
+template<int N, int M>
+void DosQAbstractItemModelWrapper<N, M>::publicEndInsertColumns()
+{
+    m_impl->publicEndInsertColumns();
+}
+
+template<int N, int M>
+void DosQAbstractItemModelWrapper<N, M>::publicBeginRemoveColumns(const QModelIndex &index, int first, int last)
+{
+    m_impl->publicBeginRemoveColumns(index, first, last);
+}
+
+template<int N, int M>
+void DosQAbstractItemModelWrapper<N, M>::publicEndRemoveColumns()
+{
+    m_impl->publicEndRemoveColumns();
+}
+
+template<int N, int M>
+void DosQAbstractItemModelWrapper<N, M>::publicBeginResetModel()
 {
     m_impl->publicBeginResetModel();
 }
 
 template<int N, int M>
-void DosQAbstractListModelWrapper<N, M>::publicEndResetModel()
+void DosQAbstractItemModelWrapper<N, M>::publicEndResetModel()
 {
     m_impl->publicEndResetModel();
 }
 
 template<int N, int M>
-void DosQAbstractListModelWrapper<N, M>::publicDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
+void DosQAbstractItemModelWrapper<N, M>::publicDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
 {
     m_impl->publicDataChanged(topLeft, bottomRight, roles);
 }
 
 template<int N, int M>
-const QmlRegisterType &DosQAbstractListModelWrapper<N, M>::qmlRegisterType()
+const QmlRegisterType &DosQAbstractItemModelWrapper<N, M>::qmlRegisterType()
 {
     return m_data;
 }
@@ -277,7 +333,7 @@ const QmlRegisterType &DosQAbstractListModelWrapper<N, M>::qmlRegisterType()
 namespace DQALMW {
 
 template<int N>
-using RegisterTypeQObject = DosQAbstractListModelWrapper<N, 0>;
+using RegisterTypeQObject = DosQAbstractItemModelWrapper<N, 0>;
 
 template<int N>
 int dosQmlRegisterType(QmlRegisterType args)
@@ -318,7 +374,7 @@ int dosQmlRegisterType(QmlRegisterType args)
 }
 
 template<int N>
-using RegisterSingletonTypeQObject = DosQAbstractListModelWrapper<N, 1>;
+using RegisterSingletonTypeQObject = DosQAbstractItemModelWrapper<N, 1>;
 
 template<int N>
 QObject *singletontype_provider(QQmlEngine *engine, QJSEngine *scriptEngine)

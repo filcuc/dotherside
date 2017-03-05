@@ -51,11 +51,27 @@ public:
     /// Return the data for the given role and section in the header with the specified orientation
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
+    QModelIndex index(int row, int column, const QModelIndex &parent) const override;
+
+    QModelIndex parent(const QModelIndex &child) const override;
+
     /// Return the dModelPointer
     void *modelObject();
 
     /// Return the roleNames
     QHash<int, QByteArray> roleNames() const override;
+
+    /// Expose beginInsertRows
+    void publicBeginInsertColumns(const QModelIndex &index, int first, int last) override;
+
+    /// Expose endInsertRows
+    void publicEndInsertColumns() override;
+
+    /// Expose beginRemoveRows
+    void publicBeginRemoveColumns(const QModelIndex &index, int first, int last) override;
+
+    /// Expose endInsertRows
+    void publicEndRemoveColumns() override;
 
     /// Expose beginInsertRows
     void publicBeginInsertRows(const QModelIndex &index, int first, int last) override;
@@ -79,6 +95,7 @@ public:
     void publicDataChanged(const QModelIndex &topLeft,
                            const QModelIndex &bottomRight,
                            const QVector<int> &roles = QVector<int>()) override;
+
 private:
     std::unique_ptr<DosIQObjectImpl> m_impl;
     void *m_modelObject;

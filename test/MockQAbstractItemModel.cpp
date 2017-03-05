@@ -12,7 +12,7 @@ namespace
 
     VoidPointer initializeMetaObject()
     {
-        void* superClassMetaObject = dos_qabstractlistmodel_qmetaobject();
+        void* superClassMetaObject = dos_qabstractitemmodel_qmetaobject();
 
         // Signals
         ::SignalDefinition signalDefinitionArray[1];
@@ -64,7 +64,7 @@ namespace
 }
 
 MockQAbstractItemModel::MockQAbstractItemModel()
-    : m_vptr(dos_qabstractlistmodel_create(this, metaObject(), &onSlotCalled, &onRowCountCalled,
+    : m_vptr(dos_qabstractitemmodel_create(this, metaObject(), &onSlotCalled, &onRowCountCalled,
                                            &onColumnCountCalled, &onDataCalled, &onSetDataCalled,
                                            &onRoleNamesCalled, &onFlagsCalled, &onHeaderDataCalled), &dos_qobject_delete)
     , m_names({"John", "Mary", "Andy", "Anna"})
@@ -176,7 +176,7 @@ void MockQAbstractItemModel::onSetDataCalled(void *selfVPtr, const DosQModelInde
         return;
 
     self->m_names[row] = toStringFromQVariant(value);
-    dos_qabstractlistmodel_dataChanged(self->data(), index, index, 0, 0);
+    dos_qabstractitemmodel_dataChanged(self->data(), index, index, 0, 0);
 
     *result = true;
 }

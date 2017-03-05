@@ -50,6 +50,18 @@ public:
     /// @see QAbstractListModel::endRemoveRows
     virtual void publicEndRemoveRows() = 0;
 
+    /// @see QAbstractListModel::beginInsertColumns
+    virtual void publicBeginInsertColumns(const QModelIndex &index, int first, int last) = 0;
+
+    /// @see QAbstractListModel::endInsertColumns
+    virtual void publicEndInsertColumns() = 0;
+
+    /// @see QAbstractListModel::beginRemoveColumns
+    virtual void publicBeginRemoveColumns(const QModelIndex &index, int first, int last) = 0;
+
+    /// @see QAbstractListModel::endRemoveColumns
+    virtual void publicEndRemoveColumns() = 0;
+
     /// @see QAbstractListModel::beginResetModel
     virtual void publicBeginResetModel() = 0;
 
