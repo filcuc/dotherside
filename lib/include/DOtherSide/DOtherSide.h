@@ -449,6 +449,82 @@ DOS_API void DOS_CALL dos_qabstractlistmodel_dataChanged(DosQAbstractListModel *
                                                          int *rolesPtr, int rolesLength);
 /// @}
 
+/// \defgroup QAbstractItemModel QAbstractItemModel
+/// \brief Functions related to the QAbstractItemModel class
+/// @{
+
+/// \brief Return QMetaObject associated to the QAbstractItemModel class
+/// \return The QMetaObject of the QAbstractItemModel class
+/// \note The returned QMetaObject should be freed using dos_qmetaobject_delete().
+DOS_API DosQMetaObject *DOS_CALL dos_qabstractItemModel_qmetaobject();
+
+
+/// \brief Create a new QAbstractItemModel
+/// \param callbackObject The pointer of QAbstractItemModel in the binded language
+/// \param metaObject The QMetaObject for this QAbstractItemModel
+/// \param dObjectCallback The callback for handling the properties read/write and slots execution
+/// \param rowCountCallback The callback for handling the QAbstractItemModel::rowCount() execution
+/// \param columnCountCallback The callback for handling the QAbstractItemModel::columnCount() execution
+/// \param dataCallback The callback for handling the QAbstractItemModel::data() execution
+/// \param setDataCallback The callback for handling the QAbstractItemModel::setData() execution
+/// \param roleNamesCallback The callback for handling the QAbstractItemModel::roleNames() execution
+/// \param flagsCallback The callback for handling the QAbstractItemModel::flags() execution
+/// \param headerDataCallback The callback for handling the QAbstractItemModel::headerData() execution
+DOS_API DosQAbstractItemModel *DOS_CALL dos_qabstractItemModel_create(void *callbackObject,
+                                                                      DosQMetaObject *metaObject,
+                                                                      DObjectCallback dObjectCallback,
+                                                                      RowCountCallback rowCountCallback,
+                                                                      ColumnCountCallback columnCountCallback,
+                                                                      DataCallback dataCallback,
+                                                                      SetDataCallback setDataCallback,
+                                                                      RoleNamesCallback roleNamesCallback,
+                                                                      FlagsCallback flagsCallback,
+                                                                      HeaderDataCallback headerDataCallback);
+
+/// \brief Calls the QAbstractItemModel::beginInsertRows() function
+/// \param vptr The QAbstractItemModel
+/// \param parent The parent QModelIndex
+/// \param first The first row in the range
+/// \param last The last row in the range
+/// \note The \p parent QModelIndex is owned by the caller thus it will not be deleted
+DOS_API void DOS_CALL dos_qabstractItemModel_beginInsertRows(DosQAbstractItemModel *vptr, DosQModelIndex *parent, int first, int last);
+
+/// \brief Calls the QAbstractItemModel::endInsertRows() function
+/// \param vptr The QAbstractItemModel
+DOS_API void DOS_CALL dos_qabstractItemModel_endInsertRows(DosQAbstractItemModel *vptr);
+
+/// \brief Calls the QAbstractItemModel::beginRemovetRows() function
+/// \param vptr The QAbstractItemModel
+/// \param parent The parent QModelIndex
+/// \param first The first column in the range
+/// \param last The last column in the range
+/// \note The \p parent QModelIndex is owned by the caller thus it will not be deleted
+DOS_API void DOS_CALL dos_qabstractItemModel_beginRemoveRows(DosQAbstractItemModel *vptr, DosQModelIndex *parent, int first, int last);
+
+/// \brief Calls the QAbstractItemModel::endRemoveRows() function
+/// \param vptr The QAbstractItemModel
+DOS_API void DOS_CALL dos_qabstractItemModel_endRemoveRows(DosQAbstractItemModel *vptr);
+
+/// \brief Calls the QAbstractItemModel::beginResetModel() function
+/// \param vptr The QAbstractItemModel
+DOS_API void DOS_CALL dos_qabstractItemModel_beginResetModel(DosQAbstractItemModel *vptr);
+
+/// \brief Calls the QAbstractItemModel::endResetModel() function
+/// \param vptr The QAbstractItemModel
+DOS_API void DOS_CALL dos_qabstractItemModel_endResetModel(DosQAbstractItemModel *vptr);
+
+/// \brief Emit the dataChanged signal
+/// \param vptr The DosQAbstractItemModel pointer
+/// \param topLeft The topLeft DosQModelIndex
+/// \param bottomRight The bottomright DosQModelIndex
+/// \param rolesPtr The roles array
+/// \param rolesLength The roles array length
+/// \note The \p topLeft, \p bottomRight and \p rolesPtr arguments are owned by the caller thus they will not be deleted
+DOS_API void DOS_CALL dos_qabstractItemModel_dataChanged(DosQAbstractItemModel *vptr,
+                                                         const DosQModelIndex *topLeft,
+                                                         const DosQModelIndex *bottomRight,
+                                                         int *rolesPtr, int rolesLength);
+/// @}
 
 /// \defgroup QObject QObject
 /// \brief Functions related to the QObject class

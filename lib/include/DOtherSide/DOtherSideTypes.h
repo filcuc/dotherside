@@ -31,6 +31,9 @@ typedef void DosQModelIndex;
 /// A pointer to a QAbstractListModel
 typedef void DosQAbstractListModel;
 
+/// A pointer to a QAbstractItemModel
+typedef void DosQAbstractItemModel;
+
 /// A pointer to a QQmlApplicationEngine
 typedef void DosQQmlApplicationEngine;
 
@@ -73,32 +76,32 @@ typedef void (DOS_CALL *DObjectCallback)(void *self, DosQVariant *slotName, int 
 /// \note The \p result arg is an out parameter so it should be deleted
 typedef void (DOS_CALL *RowCountCallback)(void *self, const DosQModelIndex *parent, int *result);
 
-/// Called when the QAbstractListModel::columnCount method must be executed
-/// \param self The pointer to the QAbstractListModel in the binded language
+/// Called when the QAbstractItemModel::columnCount method must be executed
+/// \param self The pointer to the QAbstractItemModel in the binded language
 /// \param index The parent DosQModelIndex
 /// \param[out] result The rowCount result. This must be deferenced and filled from the binded language
 /// \note The \p parent QModelIndex is owned by the DOtherSide library thus it \b shouldn't be deleted
 /// \note The \p result arg is an out parameter so it should be deleted
 typedef void (DOS_CALL *ColumnCountCallback)(void *self, const DosQModelIndex *parent, int *result);
 
-/// Called when the QAbstractListModel::data method must be executed
-/// \param self The pointer to the QAbstractListModel in the binded language
+/// Called when the QAbstractItemModel::data method must be executed
+/// \param self The pointer to the QAbstractItemModel in the binded language
 /// \param index The DosQModelIndex to which we request the data
 /// \param[out] result The DosQVariant result. This must be deferenced and filled from the binded language.
 /// \note The \p index QModelIndex is owned by the DOtherSide library thus it \b shouldn't be deleted
 /// \note The \p result arg is an out parameter so it should be deleted
 typedef void (DOS_CALL *DataCallback)(void *self, const DosQModelIndex *index, int role, DosQVariant *result);
 
-/// Called when the QAbstractListModel::setData method must be executed
+/// Called when the QAbstractItemModel::setData method must be executed
 typedef void (DOS_CALL *SetDataCallback)(void *self, const DosQModelIndex *index, const DosQVariant *value, int role, bool *result);
 
-/// Called when the QAbstractListModel::roleNames method must be executed
+/// Called when the QAbstractItemModel::roleNames method must be executed
 typedef void (DOS_CALL *RoleNamesCallback)(void *self, DosQHashIntQByteArray *result);
 
-/// Called when the QAbstractListModel::flags method must be called
+/// Called when the QAbstractItemModel::flags method must be called
 typedef void (DOS_CALL *FlagsCallback)(void *self, const DosQModelIndex *index, int *result);
 
-/// Called when the QAbstractListModel::headerData method must be called
+/// Called when the QAbstractItemModel::headerData method must be called
 typedef void (DOS_CALL *HeaderDataCallback)(void *self, int section, int orientation, int role, DosQVariant *result);
 
 /// Callback called from QML for creating a registered type
