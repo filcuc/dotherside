@@ -428,6 +428,30 @@ DOS_API void DOS_CALL dos_qabstractitemmodel_beginRemoveRows(DosQAbstractItemMod
 /// \param vptr The QAbstractItemModel
 DOS_API void DOS_CALL dos_qabstractitemmodel_endRemoveRows(DosQAbstractItemModel *vptr);
 
+/// \brief Calls the QAbstractItemModel::beginInsertColumns() function
+/// \param vptr The QAbstractItemModel
+/// \param parent The parent QModelIndex
+/// \param first The first column in the range
+/// \param last The last column in the range
+/// \note The \p parent QModelIndex is owned by the caller thus it will not be deleted
+DOS_API void DOS_CALL dos_qabstractitemmodel_beginInsertColumns(DosQAbstractItemModel *vptr, DosQModelIndex *parent, int first, int last);
+
+/// \brief Calls the QAbstractItemModel::endInsertColumns() function
+/// \param vptr The QAbstractItemModel
+DOS_API void DOS_CALL dos_qabstractitemmodel_endInsertColumns(DosQAbstractItemModel *vptr);
+
+/// \brief Calls the QAbstractItemModel::beginRemovetColumns() function
+/// \param vptr The QAbstractItemModel
+/// \param parent The parent QModelIndex
+/// \param first The first column in the range
+/// \param last The last column in the range
+/// \note The \p parent QModelIndex is owned by the caller thus it will not be deleted
+DOS_API void DOS_CALL dos_qabstractitemmodel_beginRemoveColumns(DosQAbstractItemModel *vptr, DosQModelIndex *parent, int first, int last);
+
+/// \brief Calls the QAbstractItemModel::endRemoveColumns() function
+/// \param vptr The QAbstractItemModel
+DOS_API void DOS_CALL dos_qabstractitemmodel_endRemoveColumns(DosQAbstractItemModel *vptr);
+
 /// \brief Calls the QAbstractItemModel::beginResetModel() function
 /// \param vptr The QAbstractItemModel
 DOS_API void DOS_CALL dos_qabstractitemmodel_beginResetModel(DosQAbstractItemModel *vptr);

@@ -649,6 +649,36 @@ void dos_qabstractitemmodel_endRemoveRows(::DosQAbstractItemModel *vptr)
     model->publicEndRemoveRows();
 }
 
+void dos_qabstractitemmodel_beginInsertColumns(::DosQAbstractItemModel *vptr, ::DosQModelIndex *parentIndex, int first, int last)
+{
+    auto object = static_cast<QObject *>(vptr);
+    auto model = dynamic_cast<DOS::DosIQAbstractItemModelImpl *>(object);
+    auto index = static_cast<QModelIndex *>(parentIndex);
+    model->publicBeginInsertColumns(*index, first, last);
+}
+
+void dos_qabstractitemmodel_endInsertColumns(::DosQAbstractItemModel *vptr)
+{
+    auto object = static_cast<QObject *>(vptr);
+    auto model = dynamic_cast<DOS::DosIQAbstractItemModelImpl *>(object);
+    model->publicEndInsertColumns();
+}
+
+void dos_qabstractitemmodel_beginRemoveColumns(::DosQAbstractItemModel *vptr, ::DosQModelIndex *parentIndex, int first, int last)
+{
+    auto object = static_cast<QObject *>(vptr);
+    auto model = dynamic_cast<DOS::DosIQAbstractItemModelImpl *>(object);
+    auto index = static_cast<QModelIndex *>(parentIndex);
+    model->publicBeginRemoveColumns(*index, first, last);
+}
+
+void dos_qabstractitemmodel_endRemoveColumns(::DosQAbstractItemModel *vptr)
+{
+    auto object = static_cast<QObject *>(vptr);
+    auto model = dynamic_cast<DOS::DosIQAbstractItemModelImpl *>(object);
+    model->publicEndRemoveColumns();
+}
+
 void dos_qabstractitemmodel_beginResetModel(::DosQAbstractItemModel *vptr)
 {
     auto object = static_cast<QObject *>(vptr);
