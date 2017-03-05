@@ -15,7 +15,7 @@ find_package(Qt5QuickTest REQUIRED)
 add_executable(${PROJECT_NAME} Resources.qrc
     test_dotherside.cpp
     MockQObject.cpp
-    MockQAbstractListModel.cpp
+    MockQAbstractItemModel.cpp
     Global.h
     main.qml
     testQObject.qml

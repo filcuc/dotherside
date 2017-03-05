@@ -1,19 +1,19 @@
 #pragma once
 
 // Qt
-#include <QAbstractListModel>
+#include <QAbstractItemModel>
 // DOtherSide
 #include "DOtherSide/DOtherSideTypes.h"
-#include "DOtherSide/DosIQAbstractListModelImpl.h"
+#include "DOtherSide/DosIQAbstractItemModelImpl.h"
 #include "DOtherSide/OnSlotExecutedHandler.h"
 
 namespace DOS {
 
-class DosQAbstractListModel : public QAbstractListModel, public DosIQAbstractListModelImpl
+class DosQAbstractItemModel : public QAbstractItemModel, public DosIQAbstractItemModelImpl
 {
 public:
     /// Constructor
-    DosQAbstractListModel(void *modelObject,
+    DosQAbstractItemModel(void *modelObject,
                           DosIQMetaObjectPtr metaObject,
                           OnSlotExecuted onSlotExecuted,
                           RowCountCallback rowCountCallback,

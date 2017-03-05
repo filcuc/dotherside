@@ -11,11 +11,11 @@
 
 namespace DOS {
 
-class DosIQAbstractListModelImpl : public DosIQObjectImpl
+class DosIQAbstractItemModelImpl : public DosIQObjectImpl
 {
 public:
     /// Destructor
-    virtual ~DosIQAbstractListModelImpl() = default;
+    virtual ~DosIQAbstractItemModelImpl() = default;
 
     /// @see QAbstractListModel::rowCount
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const = 0;

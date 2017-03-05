@@ -49,11 +49,11 @@ QMetaObject *createDynamicQObjectMetaObject()
     return builder.toMetaObject();
 }
 
-QMetaObject *createDynamicQAbstractListModelMetaObject()
+QMetaObject *createDynamicQAbstractItemModelMetaObject()
 {
     QMetaObjectBuilder builder;
-    builder.setClassName("DosQAbstractListModel");
-    builder.setSuperClass(&QAbstractListModel::staticMetaObject);
+    builder.setClassName("DosQAbstractItemModel");
+    builder.setSuperClass(&QAbstractItemModel::staticMetaObject);
     return builder.toMetaObject();
 }
 
@@ -94,8 +94,8 @@ DosQObjectMetaObject::DosQObjectMetaObject()
     : BaseDosQMetaObject(::createDynamicQObjectMetaObject())
 {}
 
-DosQAbstractListModelMetaObject::DosQAbstractListModelMetaObject()
-    : BaseDosQMetaObject(::createDynamicQAbstractListModelMetaObject())
+DosQAbstractItemModelMetaObject::DosQAbstractItemModelMetaObject()
+    : BaseDosQMetaObject(::createDynamicQAbstractItemModelMetaObject())
 {}
 
 DosQMetaObject::DosQMetaObject(DosIQMetaObjectPtr superClassMetaObject,

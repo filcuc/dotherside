@@ -1,11 +1,11 @@
 #pragma once
 
-#include "DOtherSide/DosQAbstractListModel.h"
+#include "DOtherSide/DosQAbstractItemModel.h"
 #include "DOtherSide/DosQMetaObject.h"
 
 namespace DOS {
 template <int, int>
-class DosQAbstractListModelWrapper : public QAbstractListModel, public DosIQAbstractListModelImpl
+class DosQAbstractListModelWrapper : public QAbstractListModel, public DosIQAbstractItemModelImpl
 {
 public:
     static const QMetaObject staticMetaObject;
@@ -83,7 +83,7 @@ public:
 
 private:
     void *m_dObject;
-    DosQAbstractListModel *m_impl;
+    DosQAbstractItemModel *m_impl;
     static int m_id;
     static QmlRegisterType m_data;
 };
@@ -106,24 +106,24 @@ DosQAbstractListModelWrapper<N, M>::DosQAbstractListModelWrapper(QObject *parent
     void *impl = nullptr;
     m_data.createDObject(m_id, static_cast<QObject *>(this), &m_dObject, &impl);
     beginResetModel();
-    m_impl = dynamic_cast<DosQAbstractListModel *>(static_cast<QObject *>(impl));
-    QObject::connect(m_impl, &DosQAbstractListModel::rowsAboutToBeInserted, this, &DosQAbstractListModelWrapper::beginInsertRows);
-    QObject::connect(m_impl, &DosQAbstractListModel::rowsInserted, this, &DosQAbstractListModelWrapper::endInsertRows);
-    QObject::connect(m_impl, &DosQAbstractListModel::rowsAboutToBeRemoved, this, &DosQAbstractListModelWrapper::beginRemoveRows);
-    QObject::connect(m_impl, &DosQAbstractListModel::rowsRemoved, this, &DosQAbstractListModelWrapper::endRemoveRows);
-    QObject::connect(m_impl, &DosQAbstractListModel::rowsAboutToBeMoved, this, &DosQAbstractListModelWrapper::beginMoveRows);
-    QObject::connect(m_impl, &DosQAbstractListModel::rowsMoved, this, &DosQAbstractListModelWrapper::endMoveRows);
-    QObject::connect(m_impl, &DosQAbstractListModel::columnsAboutToBeInserted, this, &DosQAbstractListModelWrapper::beginInsertColumns);
-    QObject::connect(m_impl, &DosQAbstractListModel::columnsInserted, this, &DosQAbstractListModelWrapper::endInsertColumns);
-    QObject::connect(m_impl, &DosQAbstractListModel::columnsAboutToBeRemoved, this, &DosQAbstractListModelWrapper::beginRemoveColumns);
-    QObject::connect(m_impl, &DosQAbstractListModel::columnsRemoved, this, &DosQAbstractListModelWrapper::endRemoveColumns);
-    QObject::connect(m_impl, &DosQAbstractListModel::columnsAboutToBeMoved, this, &DosQAbstractListModelWrapper::beginMoveColumns);
-    QObject::connect(m_impl, &DosQAbstractListModel::columnsMoved, this, &DosQAbstractListModelWrapper::endMoveColumns);
-    QObject::connect(m_impl, &DosQAbstractListModel::modelAboutToBeReset, this, &DosQAbstractListModelWrapper::beginResetModel);
-    QObject::connect(m_impl, &DosQAbstractListModel::modelReset, this, &DosQAbstractListModelWrapper::endResetModel);
-    QObject::connect(m_impl, &DosQAbstractListModel::dataChanged, this, &DosQAbstractListModelWrapper::dataChanged);
-    QObject::connect(m_impl, &DosQAbstractListModel::layoutAboutToBeChanged, this, &DosQAbstractListModelWrapper::layoutAboutToBeChanged);
-    QObject::connect(m_impl, &DosQAbstractListModel::layoutChanged, this, &DosQAbstractListModelWrapper::layoutChanged);
+    m_impl = dynamic_cast<DosQAbstractItemModel *>(static_cast<QObject *>(impl));
+    QObject::connect(m_impl, &DosQAbstractItemModel::rowsAboutToBeInserted, this, &DosQAbstractListModelWrapper::beginInsertRows);
+    QObject::connect(m_impl, &DosQAbstractItemModel::rowsInserted, this, &DosQAbstractListModelWrapper::endInsertRows);
+    QObject::connect(m_impl, &DosQAbstractItemModel::rowsAboutToBeRemoved, this, &DosQAbstractListModelWrapper::beginRemoveRows);
+    QObject::connect(m_impl, &DosQAbstractItemModel::rowsRemoved, this, &DosQAbstractListModelWrapper::endRemoveRows);
+    QObject::connect(m_impl, &DosQAbstractItemModel::rowsAboutToBeMoved, this, &DosQAbstractListModelWrapper::beginMoveRows);
+    QObject::connect(m_impl, &DosQAbstractItemModel::rowsMoved, this, &DosQAbstractListModelWrapper::endMoveRows);
+    QObject::connect(m_impl, &DosQAbstractItemModel::columnsAboutToBeInserted, this, &DosQAbstractListModelWrapper::beginInsertColumns);
+    QObject::connect(m_impl, &DosQAbstractItemModel::columnsInserted, this, &DosQAbstractListModelWrapper::endInsertColumns);
+    QObject::connect(m_impl, &DosQAbstractItemModel::columnsAboutToBeRemoved, this, &DosQAbstractListModelWrapper::beginRemoveColumns);
+    QObject::connect(m_impl, &DosQAbstractItemModel::columnsRemoved, this, &DosQAbstractListModelWrapper::endRemoveColumns);
+    QObject::connect(m_impl, &DosQAbstractItemModel::columnsAboutToBeMoved, this, &DosQAbstractListModelWrapper::beginMoveColumns);
+    QObject::connect(m_impl, &DosQAbstractItemModel::columnsMoved, this, &DosQAbstractListModelWrapper::endMoveColumns);
+    QObject::connect(m_impl, &DosQAbstractItemModel::modelAboutToBeReset, this, &DosQAbstractListModelWrapper::beginResetModel);
+    QObject::connect(m_impl, &DosQAbstractItemModel::modelReset, this, &DosQAbstractListModelWrapper::endResetModel);
+    QObject::connect(m_impl, &DosQAbstractItemModel::dataChanged, this, &DosQAbstractListModelWrapper::dataChanged);
+    QObject::connect(m_impl, &DosQAbstractItemModel::layoutAboutToBeChanged, this, &DosQAbstractListModelWrapper::layoutAboutToBeChanged);
+    QObject::connect(m_impl, &DosQAbstractItemModel::layoutChanged, this, &DosQAbstractListModelWrapper::layoutChanged);
     endResetModel();
     Q_ASSERT(m_dObject);
     Q_ASSERT(m_impl);

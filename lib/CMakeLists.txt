@@ -19,13 +19,13 @@ set(HEADERS_LIST
   include/DOtherSide/DOtherSide.h
   include/DOtherSide/DosQDeclarative.h
   include/DOtherSide/DosQObjectWrapper.h
-  include/DOtherSide/DosQAbstractListModelWrapper.h
+  include/DOtherSide/DosQAbstractItemModelWrapper.h
   include/DOtherSide/DosQObject.h
   include/DOtherSide/DosQObjectImpl.h
   include/DOtherSide/DosIQObjectImpl.h
   include/DOtherSide/OnSlotExecutedHandler.h
   include/DOtherSide/DosQMetaObject.h
-  include/DOtherSide/DosQAbstractListModel.h
+  include/DOtherSide/DosQAbstractItemModel.h
   include/DOtherSide/Utils.h
   )
 
@@ -37,7 +37,7 @@ set(SRC_LIST
   src/DosQObject.cpp
   src/DOtherSideTypesCpp.cpp
   src/DosQObjectImpl.cpp
-  src/DosQAbstractListModel.cpp
+  src/DosQAbstractItemModel.cpp
   )
 
 include_directories(include include/Qt)

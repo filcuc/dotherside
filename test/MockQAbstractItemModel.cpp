@@ -1,4 +1,4 @@
-#include "MockQAbstractListModel.h"
+#include "MockQAbstractItemModel.h"
 #include <QMetaType>
 
 using namespace std;
@@ -63,7 +63,7 @@ namespace
     }
 }
 
-MockQAbstractListModel::MockQAbstractListModel()
+MockQAbstractItemModel::MockQAbstractItemModel()
     : m_vptr(dos_qabstractlistmodel_create(this, metaObject(), &onSlotCalled, &onRowCountCalled,
                                            &onColumnCountCalled, &onDataCalled, &onSetDataCalled,
                                            &onRoleNamesCalled, &onFlagsCalled, &onHeaderDataCalled), &dos_qobject_delete)
@@ -72,34 +72,34 @@ MockQAbstractListModel::MockQAbstractListModel()
 
 }
 
-DosQMetaObject *MockQAbstractListModel::metaObject()
+DosQMetaObject *MockQAbstractItemModel::metaObject()
 {
     static VoidPointer result = initializeMetaObject();
     return result.get();
 }
 
-DosQObject *MockQAbstractListModel::data()
+DosQObject *MockQAbstractItemModel::data()
 {
     return m_vptr.get();
 }
 
-string MockQAbstractListModel::objectName() const
+string MockQAbstractItemModel::objectName() const
 {
     CharPointer result (dos_qobject_objectName(m_vptr.get()), &dos_chararray_delete);
     return string(result.get());
 }
 
-void MockQAbstractListModel::setObjectName(const string &objectName)
+void MockQAbstractItemModel::setObjectName(const string &objectName)
 {
     dos_qobject_setObjectName(m_vptr.get(), objectName.c_str());
 }
 
-string MockQAbstractListModel::name() const
+string MockQAbstractItemModel::name() const
 {
     return m_name;
 }
 
-void MockQAbstractListModel::setName(const string &name)
+void MockQAbstractItemModel::setName(const string &name)
 {
     if (m_name == name)
         return;
@@ -107,7 +107,7 @@ void MockQAbstractListModel::setName(const string &name)
     nameChanged(name);
 }
 
-void MockQAbstractListModel::nameChanged(const string &name)
+void MockQAbstractItemModel::nameChanged(const string &name)
 {
     int argc = 1;
     DosQVariant* argv[1];
@@ -116,9 +116,9 @@ void MockQAbstractListModel::nameChanged(const string &name)
     dos_qvariant_delete(argv[0]);
 }
 
-void MockQAbstractListModel::onSlotCalled(void *selfVPtr, DosQVariant *dosSlotNameVariant, int dosSlotArgc, DosQVariant **dosSlotArgv)
+void MockQAbstractItemModel::onSlotCalled(void *selfVPtr, DosQVariant *dosSlotNameVariant, int dosSlotArgc, DosQVariant **dosSlotArgv)
 {
-    auto self = static_cast<MockQAbstractListModel*>(selfVPtr);
+    auto self = static_cast<MockQAbstractItemModel*>(selfVPtr);
     string slotName = toStringFromQVariant(dosSlotNameVariant);
 
     if (slotName == "name") {
@@ -133,21 +133,21 @@ void MockQAbstractListModel::onSlotCalled(void *selfVPtr, DosQVariant *dosSlotNa
     }
 }
 
-void MockQAbstractListModel::onRowCountCalled(void *selfVPtr, const DosQModelIndex *index, int *result)
+void MockQAbstractItemModel::onRowCountCalled(void *selfVPtr, const DosQModelIndex *index, int *result)
 {
-    auto self = static_cast<MockQAbstractListModel*>(selfVPtr);
+    auto self = static_cast<MockQAbstractItemModel*>(selfVPtr);
     *result = self->m_names.size();
 }
 
-void MockQAbstractListModel::onColumnCountCalled(void *selfVPtr, const DosQModelIndex *index, int *result)
+void MockQAbstractItemModel::onColumnCountCalled(void *selfVPtr, const DosQModelIndex *index, int *result)
 {
-    auto self = static_cast<MockQAbstractListModel*>(selfVPtr);
+    auto self = static_cast<MockQAbstractItemModel*>(selfVPtr);
     *result = 1;
 }
 
-void MockQAbstractListModel::onDataCalled(void *selfVPtr, const DosQModelIndex *index, int role, DosQVariant *result)
+void MockQAbstractItemModel::onDataCalled(void *selfVPtr, const DosQModelIndex *index, int role, DosQVariant *result)
 {
-    auto self = static_cast<MockQAbstractListModel*>(selfVPtr);
+    auto self = static_cast<MockQAbstractItemModel*>(selfVPtr);
 
     if (!dos_qmodelindex_isValid(index))
         return;
@@ -161,9 +161,9 @@ void MockQAbstractListModel::onDataCalled(void *selfVPtr, const DosQModelIndex *
     dos_qvariant_setString(result, self->m_names[row].c_str());
 }
 
-void MockQAbstractListModel::onSetDataCalled(void *selfVPtr, const DosQModelIndex *index, const DosQVariant *value, int role, bool *result)
+void MockQAbstractItemModel::onSetDataCalled(void *selfVPtr, const DosQModelIndex *index, const DosQVariant *value, int role, bool *result)
 {
-    auto self = static_cast<MockQAbstractListModel*>(selfVPtr);
+    auto self = static_cast<MockQAbstractItemModel*>(selfVPtr);
     *result = false;
 
     if (!dos_qmodelindex_isValid(index))
@@ -181,17 +181,17 @@ void MockQAbstractListModel::onSetDataCalled(void *selfVPtr, const DosQModelInde
     *result = true;
 }
 
-void MockQAbstractListModel::onRoleNamesCalled(void *selfVPtr, DosQHashIntQByteArray *result)
+void MockQAbstractItemModel::onRoleNamesCalled(void *selfVPtr, DosQHashIntQByteArray *result)
 {
 
 }
 
-void MockQAbstractListModel::onFlagsCalled(void *selfVPtr, const DosQModelIndex *index, int *result)
+void MockQAbstractItemModel::onFlagsCalled(void *selfVPtr, const DosQModelIndex *index, int *result)
 {
 
 }
 
-void MockQAbstractListModel::onHeaderDataCalled(void *selfVPtr, int section, int orientation, int role, DosQVariant *result)
+void MockQAbstractItemModel::onHeaderDataCalled(void *selfVPtr, int section, int orientation, int role, DosQVariant *result)
 {
 
 }

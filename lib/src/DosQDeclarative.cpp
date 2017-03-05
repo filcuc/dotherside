@@ -1,6 +1,6 @@
 #include "DOtherSide/DosQDeclarative.h"
 #include "DOtherSide/DosQObjectWrapper.h"
-#include "DOtherSide/DosQAbstractListModelWrapper.h"
+#include "DOtherSide/DosQAbstractItemModelWrapper.h"
 
 namespace DOS {
 

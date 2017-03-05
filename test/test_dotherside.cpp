@@ -19,7 +19,7 @@
 #include <DOtherSide/DosQObject.h>
 #include <DOtherSide/DosQMetaObject.h>
 #include <DOtherSide/DosQObject.h>
-#include <DOtherSide/DosQAbstractListModel.h>
+#include <DOtherSide/DosQAbstractItemModel.h>
 
 #include "MockQObject.h"
 #include "MockQAbstractListModel.h"
@@ -433,7 +433,7 @@ class TestQAbstractListModel : public QObject
 private slots:
     void init()
     {
-        testObject.reset(new MockQAbstractListModel());
+        testObject.reset(new MockQAbstractItemModel());
         testObject->setObjectName("testObject");
         testObject->setName("foo");
 
@@ -516,7 +516,7 @@ private slots:
 
 private:
     QString value;
-    unique_ptr<MockQAbstractListModel> testObject;
+    unique_ptr<MockQAbstractItemModel> testObject;
     unique_ptr<QQmlApplicationEngine> engine;
 };
 

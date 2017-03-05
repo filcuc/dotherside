@@ -4,10 +4,10 @@
 #include <vector>
 #include <string>
 
-class MockQAbstractListModel
+class MockQAbstractItemModel
 {
 public:
-    MockQAbstractListModel();
+    MockQAbstractItemModel();
 
     DosQMetaObject *metaObject();
     DosQObject *data();
