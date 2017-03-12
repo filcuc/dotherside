@@ -1,7 +1,7 @@
 lib_version = '1.0.0'
-lib_dependencies = dependency('qt5', modules : ['Core', 'Widgets', 'Quick', 'Qml'])
+lib_dependencies = dependency('qt5', modules : ['Core', 'Gui', 'Widgets', 'Quick', 'Qml'])
 lib_sources = [
-  'src/DosQAbstractListModel.cpp',
+  'src/DosQAbstractItemModel.cpp',
   'src/DosQMetaObject.cpp',
   'src/DosQObject.cpp',
   'src/DosQObjectImpl.cpp',

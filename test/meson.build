@@ -1,5 +1,5 @@
-test_dependencies = dependency('qt5', modules : ['Core', 'Widgets', 'Quick', 'Qml', 'Test'])
-test_sources = 'test_dotherside.cpp'
+test_dependencies = dependency('qt5', modules : ['Core', 'Gui', 'Widgets', 'Quick', 'Qml', 'Test'])
+test_sources = ['test_dotherside.cpp', 'MockQAbstractItemModel.cpp', 'MockQObject.cpp']
 test_resources = 'Resources.qrc'
 test_include_directories = ['../lib/include', '../lib/include/Qt']
 test_pch = '../pch/test_pch.h'
