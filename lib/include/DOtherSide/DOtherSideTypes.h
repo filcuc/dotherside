@@ -205,14 +205,26 @@ struct QmlRegisterType {
 typedef struct QmlRegisterType QmlRegisterType;
 #endif
 
+/// Represents a parameter definition
+struct ParameterDefinition {
+    /// The parameter name
+    const char* name;
+    /// The parameter metatype
+    int metaType;
+};
+
+#ifndef __cplusplus
+typedef struct ParameterDefinition ParameterDefinition;
+#endif
+
 /// Represents a single signal definition
 struct SignalDefinition {
     /// The signal name
     const char *name;
-    /// The signal parameters count
+    /// The parameters count
     int parametersCount;
-    /// The signal parameters metatypes
-    int *parametersMetaTypes;
+    /// The parameters
+    ParameterDefinition *parameters;
 };
 
 #ifndef __cplusplus
@@ -223,7 +235,7 @@ typedef struct SignalDefinition SignalDefinition;
 struct SignalDefinitions {
     /// The total number of signals
     int count;
-    /// The signal definitions array
+    /// The signals
     SignalDefinition *definitions;
 };
 
@@ -237,10 +249,10 @@ struct SlotDefinition {
     const char *name;
     /// The slot return type
     int returnMetaType;
-    /// The slot parameters count
+    /// The parameters count
     int parametersCount;
-    /// The slot parameters metatypes
-    int *parametersMetaTypes;
+    /// The parameters
+    ParameterDefinition *parameters;
 };
 
 #ifndef __cplusplus

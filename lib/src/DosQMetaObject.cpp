@@ -10,10 +10,10 @@ namespace {
 QList<QByteArray> createParameterNames(const DOS::SignalDefinition &signal)
 {
     QList<QByteArray> result;
-    size_t size = signal.parameterTypes.size();
-    result.reserve(size);
-    for (size_t i = 0; i < size; ++i)
-        result << QString("arg%1").arg(i).toUtf8();
+    const auto &parameters = signal.parameters;
+    result.reserve(parameters.size());
+    for (size_t i = 0; i < parameters.size(); ++i)
+        result << parameters[i].name.toUtf8();
     return result;
 }
 
@@ -23,12 +23,12 @@ QByteArray createSignature(const T &functionDefinition)
     QString signature("%1(%2)");
     QString arguments;
 
-    const auto &parameters = functionDefinition.parameterTypes;
+    const auto &parameters = functionDefinition.parameters;
 
     for (size_t i = 0; i < parameters.size(); ++i) {
         if (i != 0)
             arguments += ",";
-        arguments += QMetaType::typeName(parameters[i]);
+        arguments += QMetaType::typeName(parameters[i].metaType);
     }
 
     return signature.arg(functionDefinition.name, arguments).toUtf8();

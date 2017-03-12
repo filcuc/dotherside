@@ -17,18 +17,20 @@ namespace {
         ::SignalDefinition signalDefinitionArray[2];
 
         // nameChanged
+        ParameterDefinition nameChanged[1];
+        nameChanged[0].name = "name";
+        nameChanged[0].metaType = QMetaType::QString;
         signalDefinitionArray[0].name = "nameChanged";
         signalDefinitionArray[0].parametersCount = 1;
-        int nameChanged[1];
-        nameChanged[0] = QMetaType::QString;
-        signalDefinitionArray[0].parametersMetaTypes = nameChanged;
+        signalDefinitionArray[0].parameters = nameChanged;
 
         // arrayPropertyChanged
+        ParameterDefinition arrayPropertyChanged[1];
+        arrayPropertyChanged[0].metaType = QMetaType::QVariantList;
+        arrayPropertyChanged[0].name = "arrayProperty";
         signalDefinitionArray[1].name = "arrayPropertyChanged";
         signalDefinitionArray[1].parametersCount = 1;
-        int arrayPropertyChanged[1];
-        arrayPropertyChanged[0] = QMetaType::QVariantList;
-        signalDefinitionArray[1].parametersMetaTypes = arrayPropertyChanged;
+        signalDefinitionArray[1].parameters = arrayPropertyChanged;
 
         ::SignalDefinitions signalDefinitions;
         signalDefinitions.count = 2;
@@ -40,26 +42,28 @@ namespace {
         slotDefinitionArray[0].name = "name";
         slotDefinitionArray[0].returnMetaType = QMetaType::QString;
         slotDefinitionArray[0].parametersCount = 0;
-        slotDefinitionArray[0].parametersMetaTypes = nullptr;
+        slotDefinitionArray[0].parameters = nullptr;
 
+        ParameterDefinition setNameParameters[1];
+        setNameParameters[0].metaType = QMetaType::QString;
+        setNameParameters[0].name = "name";
         slotDefinitionArray[1].name = "setName";
         slotDefinitionArray[1].returnMetaType = QMetaType::Void;
-        int setNameParameters[1];
-        setNameParameters[0] = QMetaType::QString;
         slotDefinitionArray[1].parametersCount = 1;
-        slotDefinitionArray[1].parametersMetaTypes = setNameParameters;
+        slotDefinitionArray[1].parameters = setNameParameters;
 
         slotDefinitionArray[2].name = "arrayProperty";
         slotDefinitionArray[2].returnMetaType = QMetaType::QVariantList;
         slotDefinitionArray[2].parametersCount = 0;
-        slotDefinitionArray[2].parametersMetaTypes = nullptr;
+        slotDefinitionArray[2].parameters = nullptr;
 
+        ParameterDefinition setArrayPropertyParameters[1];
+        setArrayPropertyParameters[0].metaType = QMetaType::QVariantList;
+        setArrayPropertyParameters[0].name = "arrayProperty";
         slotDefinitionArray[3].name = "setArrayProperty";
         slotDefinitionArray[3].returnMetaType = QMetaType::Void;
-        int setArrayPropertyParameters[1];
-        setArrayPropertyParameters[0] = QMetaType::QVariantList;
         slotDefinitionArray[3].parametersCount = 1;
-        slotDefinitionArray[3].parametersMetaTypes = setArrayPropertyParameters;
+        slotDefinitionArray[3].parameters = setArrayPropertyParameters;
 
         ::SlotDefinitions slotDefinitions;
         slotDefinitions.count = 4;

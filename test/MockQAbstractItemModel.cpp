@@ -17,11 +17,12 @@ namespace
         // Signals
         ::SignalDefinition signalDefinitionArray[1];
 
+        ParameterDefinition nameChanged[1];
+        nameChanged[0].metaType = QMetaType::QString;
+        nameChanged[0].name = "name";
         signalDefinitionArray[0].name = "nameChanged";
         signalDefinitionArray[0].parametersCount = 1;
-        int nameChanged[1];
-        nameChanged[0] = QMetaType::QString;
-        signalDefinitionArray[0].parametersMetaTypes = nameChanged;
+        signalDefinitionArray[0].parameters = nameChanged;
 
         ::SignalDefinitions signalDefinitions;
         signalDefinitions.count = 1;
@@ -33,14 +34,15 @@ namespace
         slotDefinitionArray[0].name = "name";
         slotDefinitionArray[0].returnMetaType = QMetaType::QString;
         slotDefinitionArray[0].parametersCount = 0;
-        slotDefinitionArray[0].parametersMetaTypes = nullptr;
+        slotDefinitionArray[0].parameters = nullptr;
 
         slotDefinitionArray[1].name = "setName";
         slotDefinitionArray[1].returnMetaType = QMetaType::Void;
-        int setNameParameters[1];
-        setNameParameters[0] = QMetaType::QString;
+        ParameterDefinition setNameParameters[1];
+        setNameParameters[0].name = "name";
+        setNameParameters[0].metaType = QMetaType::QString;
         slotDefinitionArray[1].parametersCount = 1;
-        slotDefinitionArray[1].parametersMetaTypes = setNameParameters;
+        slotDefinitionArray[1].parameters = setNameParameters;
 
         ::SlotDefinitions slotDefinitions;
         slotDefinitions.count = 2;
