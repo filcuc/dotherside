@@ -18,25 +18,25 @@ public:
     virtual ~DosIQAbstractItemModelImpl() = default;
 
     /// @see QAbstractListModel::rowCount
-    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const = 0;
+    virtual int defaultRowCount(const QModelIndex &parent = QModelIndex()) const = 0;
 
     /// @see QAbstractListModel::columnCount
-    virtual int columnCount(const QModelIndex &parent = QModelIndex()) const = 0;
+    virtual int defaultColumnCount(const QModelIndex &parent = QModelIndex()) const = 0;
 
     /// @see QAbstractListModel::data
-    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const = 0;
+    virtual QVariant defaultData(const QModelIndex &index, int role = Qt::DisplayRole) const = 0;
 
     /// @see QAbstractListModel::setData
-    virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) = 0;
+    virtual bool defaultSetData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) = 0;
 
     /// @see QAbstractListModel::flags
-    virtual Qt::ItemFlags flags(const QModelIndex &index) const = 0;
+    virtual Qt::ItemFlags defaultFlags(const QModelIndex &index) const = 0;
 
     /// @see QAbstractListModel::headerData
-    virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const = 0;
+    virtual QVariant defaultHeaderData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const = 0;
 
     /// @see QAbstractListModel::roleNames
-    virtual QHash<int, QByteArray> roleNames() const = 0;
+    virtual QHash<int, QByteArray> defaultRoleNames() const = 0;
 
     /// @see QAbstractListModel::beginInsertRows
     virtual void publicBeginInsertRows(const QModelIndex &index, int first, int last) = 0;

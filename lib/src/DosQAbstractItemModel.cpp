@@ -215,5 +215,5 @@ QModelIndex DosQAbstractGenericModel<T>::publicCreateIndex(int row, int column, 
 
 // Force instantiation
 template class DOS::DosQAbstractGenericModel<QAbstractItemModel>;
-template class DOS::DosQAbstractGenericModel<QAbstractListModel>;
-template class DOS::DosQAbstractGenericModel<QAbstractTableModel>;
+//template class DOS::DosQAbstractGenericModel<QAbstractListModel>;
+//template class DOS::DosQAbstractGenericModel<QAbstractTableModel>;

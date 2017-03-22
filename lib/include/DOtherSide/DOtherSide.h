@@ -431,17 +431,17 @@ DOS_API DosQMetaObject *DOS_CALL dos_qabstracttablemmodel_qmetaobject();
 /// \param indexCallback The callback for handling the QAbstractItemModel::index() execution
 /// \param parentCallback The callback for handling the QAbstractItemModel::parent() execution
 DOS_API DosQAbstractListModel *DOS_CALL dos_qabstracttablemodel_create(void *callbackObject,
-                                                                      DosQMetaObject *metaObject,
-                                                                      DObjectCallback dObjectCallback,
-                                                                      RowCountCallback rowCountCallback,
-                                                                      ColumnCountCallback columnCountCallback,
-                                                                      DataCallback dataCallback,
-                                                                      SetDataCallback setDataCallback,
-                                                                      RoleNamesCallback roleNamesCallback,
-                                                                      FlagsCallback flagsCallback,
-                                                                      HeaderDataCallback headerDataCallback,
-                                                                      IndexCallback indexCallback,
-                                                                      ParentCallback parentCallback);
+                                                                       DosQMetaObject *metaObject,
+                                                                       DObjectCallback dObjectCallback,
+                                                                       RowCountCallback rowCountCallback,
+                                                                       ColumnCountCallback columnCountCallback,
+                                                                       DataCallback dataCallback,
+                                                                       SetDataCallback setDataCallback,
+                                                                       RoleNamesCallback roleNamesCallback,
+                                                                       FlagsCallback flagsCallback,
+                                                                       HeaderDataCallback headerDataCallback,
+                                                                       IndexCallback indexCallback,
+                                                                       ParentCallback parentCallback);
 /// @}
 
 /// \defgroup QAbstractItemModel QAbstractItemModel
@@ -551,6 +551,18 @@ DOS_API void DOS_CALL dos_qabstractitemmodel_dataChanged(DosQAbstractItemModel *
 /// \brief Calls the createIndex function
 DOS_API DosQModelIndex* DOS_CALL dos_qabstractitemmodel_createIndex(DosQAbstractItemModel *vptr,
                                                                     int row, int column, void *data = 0);
+
+
+DOS_API int DOS_CALL dos_qabstractitemmodel_rowCount(DosQAbstractItemModel *vptr, DosQModelIndex* parent);
+DOS_API int DOS_CALL dos_qabstractitemmodel_columnCount(DosQAbstractItemModel *vptr, DosQModelIndex* parent);
+DOS_API DosQVariant* DOS_CALL dos_qabstractitemmodel_data(DosQAbstractItemModel *vptr, DosQModelIndex* index, int role);
+DOS_API bool DOS_CALL dos_qabstractitemmodel_setData(DosQAbstractItemModel *vptr, DosQModelIndex* index, DosQVariant* value, int role);
+DOS_API DosQHashIntQByteArray* DOS_CALL dos_qabstractitemmodel_roleNames(DosQAbstractItemModel *vptr);
+DOS_API int DOS_CALL dos_qabstractitemmodel_flags(DosQAbstractItemModel *vptr, DosQModelIndex* index);
+DOS_API DosQVariant* DOS_CALL dos_qabstractitemmodel_headerData(DosQAbstractItemModel *vptr, int section, int orienation, int role);
+DOS_API DosQModelIndex* DOS_CALL dos_qabstractitemmodel_index(DosQAbstractItemModel *vptr, int row, int column, DosQModelIndex* parent);
+DOS_API DosQModelIndex* DOS_CALL dos_qabstractitemmodel_parent(DosQAbstractItemModel *vptr, DosQModelIndex* child);
+
 /// @}
 
 

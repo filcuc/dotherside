@@ -104,6 +104,14 @@ public:
     /// Expose createIndex
     QModelIndex publicCreateIndex(int row, int column, void *data = nullptr) const override;
 
+    int defaultRowCount(const QModelIndex &parent) const override;
+    int defaultColumnCount(const QModelIndex &parent) const override;
+    QVariant defaultData(const QModelIndex &index, int role) const override;
+    bool defaultSetData(const QModelIndex &index, const QVariant &value, int role) override;
+    Qt::ItemFlags defaultFlags(const QModelIndex &index) const override;
+    QVariant defaultHeaderData(int section, Qt::Orientation orientation, int role) const override;
+    QHash<int, QByteArray> defaultRoleNames() const override;
+
 private:
     std::unique_ptr<DosIQObjectImpl> m_impl;
     void *m_modelObject;

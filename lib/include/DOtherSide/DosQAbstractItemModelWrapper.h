@@ -102,6 +102,27 @@ public:
     /// @see DosIQAbstractItemModelImpl::createIndex
     QModelIndex publicCreateIndex(int row, int column, void *data) const override;
 
+    /// @see DosIQAbstractItemModelImpl::defaultRowCount
+    int defaultRowCount(const QModelIndex &parent) const override;
+
+    /// @see DosIQAbstractItemModelImpl::defaultColumnCount
+    int defaultColumnCount(const QModelIndex &parent) const override;
+
+    /// @see DosIQAbstractItemModelImpl::defaultData
+    QVariant defaultData(const QModelIndex &index, int role) const override;
+
+    /// @see DosIQAbstractItemModelImpl::defaultSetData
+    bool defaultSetData(const QModelIndex &index, const QVariant &value, int role) override;
+
+    /// @see DosIQAbstractItemModelImpl::defaultFlags
+    Qt::ItemFlags defaultFlags(const QModelIndex &index) const override;
+
+    /// @see DosIQAbstractItemModelImpl::defaultHeaderData
+    QVariant defaultHeaderData(int section, Qt::Orientation orientation, int role) const override;
+
+    /// @see DosIQAbstractItemModelImpl::defaultRoleNames
+    QHash<int, QByteArray> defaultRoleNames() const override;
+
 private:
     void *m_dObject;
     DosQAbstractItemModel *m_impl;
@@ -128,23 +149,23 @@ DosQAbstractItemModelWrapper<N, M>::DosQAbstractItemModelWrapper(QObject *parent
     m_data.createDObject(m_id, static_cast<QObject *>(this), &m_dObject, &impl);
     beginResetModel();
     m_impl = dynamic_cast<DosQAbstractItemModel *>(static_cast<QObject *>(impl));
-    QObject::connect(m_impl, &DosQAbstractItemModel::rowsAboutToBeInserted, this, &DosQAbstractItemModelWrapper::beginInsertRows);
-    QObject::connect(m_impl, &DosQAbstractItemModel::rowsInserted, this, &DosQAbstractItemModelWrapper::endInsertRows);
-    QObject::connect(m_impl, &DosQAbstractItemModel::rowsAboutToBeRemoved, this, &DosQAbstractItemModelWrapper::beginRemoveRows);
-    QObject::connect(m_impl, &DosQAbstractItemModel::rowsRemoved, this, &DosQAbstractItemModelWrapper::endRemoveRows);
-    QObject::connect(m_impl, &DosQAbstractItemModel::rowsAboutToBeMoved, this, &DosQAbstractItemModelWrapper::beginMoveRows);
-    QObject::connect(m_impl, &DosQAbstractItemModel::rowsMoved, this, &DosQAbstractItemModelWrapper::endMoveRows);
-    QObject::connect(m_impl, &DosQAbstractItemModel::columnsAboutToBeInserted, this, &DosQAbstractItemModelWrapper::beginInsertColumns);
-    QObject::connect(m_impl, &DosQAbstractItemModel::columnsInserted, this, &DosQAbstractItemModelWrapper::endInsertColumns);
-    QObject::connect(m_impl, &DosQAbstractItemModel::columnsAboutToBeRemoved, this, &DosQAbstractItemModelWrapper::beginRemoveColumns);
-    QObject::connect(m_impl, &DosQAbstractItemModel::columnsRemoved, this, &DosQAbstractItemModelWrapper::endRemoveColumns);
-    QObject::connect(m_impl, &DosQAbstractItemModel::columnsAboutToBeMoved, this, &DosQAbstractItemModelWrapper::beginMoveColumns);
-    QObject::connect(m_impl, &DosQAbstractItemModel::columnsMoved, this, &DosQAbstractItemModelWrapper::endMoveColumns);
-    QObject::connect(m_impl, &DosQAbstractItemModel::modelAboutToBeReset, this, &DosQAbstractItemModelWrapper::beginResetModel);
-    QObject::connect(m_impl, &DosQAbstractItemModel::modelReset, this, &DosQAbstractItemModelWrapper::endResetModel);
-    QObject::connect(m_impl, &DosQAbstractItemModel::dataChanged, this, &DosQAbstractItemModelWrapper::dataChanged);
-    QObject::connect(m_impl, &DosQAbstractItemModel::layoutAboutToBeChanged, this, &DosQAbstractItemModelWrapper::layoutAboutToBeChanged);
-    QObject::connect(m_impl, &DosQAbstractItemModel::layoutChanged, this, &DosQAbstractItemModelWrapper::layoutChanged);
+    QObject::connect(m_impl, &DosQAbstractItemModel::rowsAboutToBeInserted, this, &DosQAbstractItemModelWrapper<N,M>::beginInsertRows);
+    QObject::connect(m_impl, &DosQAbstractItemModel::rowsInserted, this, &DosQAbstractItemModelWrapper<N,M>::endInsertRows);
+    QObject::connect(m_impl, &DosQAbstractItemModel::rowsAboutToBeRemoved, this, &DosQAbstractItemModelWrapper<N,M>::beginRemoveRows);
+    QObject::connect(m_impl, &DosQAbstractItemModel::rowsRemoved, this, &DosQAbstractItemModelWrapper<N,M>::endRemoveRows);
+    QObject::connect(m_impl, &DosQAbstractItemModel::rowsAboutToBeMoved, this, &DosQAbstractItemModelWrapper<N,M>::beginMoveRows);
+    QObject::connect(m_impl, &DosQAbstractItemModel::rowsMoved, this, &DosQAbstractItemModelWrapper<N,M>::endMoveRows);
+    QObject::connect(m_impl, &DosQAbstractItemModel::columnsAboutToBeInserted, this, &DosQAbstractItemModelWrapper<N,M>::beginInsertColumns);
+    QObject::connect(m_impl, &DosQAbstractItemModel::columnsInserted, this, &DosQAbstractItemModelWrapper<N,M>::endInsertColumns);
+    QObject::connect(m_impl, &DosQAbstractItemModel::columnsAboutToBeRemoved, this, &DosQAbstractItemModelWrapper<N,M>::beginRemoveColumns);
+    QObject::connect(m_impl, &DosQAbstractItemModel::columnsRemoved, this, &DosQAbstractItemModelWrapper<N,M>::endRemoveColumns);
+    QObject::connect(m_impl, &DosQAbstractItemModel::columnsAboutToBeMoved, this, &DosQAbstractItemModelWrapper<N,M>::beginMoveColumns);
+    QObject::connect(m_impl, &DosQAbstractItemModel::columnsMoved, this, &DosQAbstractItemModelWrapper<N,M>::endMoveColumns);
+    QObject::connect(m_impl, &DosQAbstractItemModel::modelAboutToBeReset, this, &DosQAbstractItemModelWrapper<N,M>::beginResetModel);
+    QObject::connect(m_impl, &DosQAbstractItemModel::modelReset, this, &DosQAbstractItemModelWrapper<N,M>::endResetModel);
+    QObject::connect(m_impl, &DosQAbstractItemModel::dataChanged, this, &DosQAbstractItemModelWrapper<N,M>::dataChanged);
+    QObject::connect(m_impl, &DosQAbstractItemModel::layoutAboutToBeChanged, this, &DosQAbstractItemModelWrapper<N,M>::layoutAboutToBeChanged);
+    QObject::connect(m_impl, &DosQAbstractItemModel::layoutChanged, this, &DosQAbstractItemModelWrapper<N,M>::layoutChanged);
     endResetModel();
     Q_ASSERT(m_dObject);
     Q_ASSERT(m_impl);
@@ -331,6 +352,48 @@ template<int N, int M>
 QModelIndex DosQAbstractItemModelWrapper<N, M>::publicCreateIndex(int row, int column, void *data) const
 {
     return m_impl->publicCreateIndex(row, column, data);
+}
+
+template<int N, int M>
+int DosQAbstractItemModelWrapper<N,M>::defaultRowCount(const QModelIndex &parent) const
+{
+    return m_impl->defaultRowCount(parent);
+}
+
+template<int N, int M>
+int DosQAbstractItemModelWrapper<N,M>::defaultColumnCount(const QModelIndex &parent) const
+{
+    return m_impl->defaultColumnCount(parent);
+}
+
+template<int N, int M>
+QVariant DosQAbstractItemModelWrapper<N,M>::defaultData(const QModelIndex &index, int role) const
+{
+    return m_impl->defaultData(index, role);
+}
+
+template<int N, int M>
+bool DosQAbstractItemModelWrapper<N,M>::defaultSetData(const QModelIndex &index, const QVariant &value, int role)
+{
+    return m_impl->defaultSetData(index, value, role);
+}
+
+template<int N, int M>
+Qt::ItemFlags DosQAbstractItemModelWrapper<N,M>::defaultFlags(const QModelIndex &index) const
+{
+    return m_impl->defaultFlags(index);
+}
+
+template<int N, int M>
+QVariant DosQAbstractItemModelWrapper<N,M>::defaultHeaderData(int section, Qt::Orientation orientation, int role) const
+{
+    return m_impl->defaultHeaderData(section, orientation, role);
+}
+
+template<int N, int M>
+QHash<int, QByteArray> DosQAbstractItemModelWrapper<N,M>::defaultRoleNames() const
+{
+    return m_impl->defaultRoleNames();
 }
 
 template<int N, int M>
