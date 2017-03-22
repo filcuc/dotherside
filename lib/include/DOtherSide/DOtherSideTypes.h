@@ -34,6 +34,9 @@ typedef void DosQModelIndex;
 /// A pointer to a QAbstractItemModel
 typedef void DosQAbstractItemModel;
 
+/// A pointer to a QAbstractListModel
+typedef void DosQAbstractListModel;
+
 /// A pointer to a QQmlApplicationEngine
 typedef void DosQQmlApplicationEngine;
 

@@ -41,19 +41,17 @@ Value valueOrDefault(std::unordered_map<Key, Value> const &map, const Key &k, Va
     return it != std::end(map) ? it->second : std::move(value);
 }
 
-QMetaObject *createDynamicQObjectMetaObject()
-{
-    QMetaObjectBuilder builder;
-    builder.setClassName("DosQObject");
-    builder.setSuperClass(&QObject::staticMetaObject);
-    return builder.toMetaObject();
-}
+template<class T> const char* className();
+template<> const char* className<QObject>() { return "DosQObject"; }
+template<> const char* className<QAbstractItemModel>() { return "DosQAbstractItemModel"; }
+template<> const char* className<QAbstractListModel>() { return "DosQAbstractListModel"; }
 
-QMetaObject *createDynamicQAbstractItemModelMetaObject()
+template <class T>
+QMetaObject *createDynamicMetaObject()
 {
     QMetaObjectBuilder builder;
-    builder.setClassName("DosQAbstractItemModel");
-    builder.setSuperClass(&QAbstractItemModel::staticMetaObject);
+    builder.setClassName(className<T>());
+    builder.setSuperClass(&T::staticMetaObject);
     return builder.toMetaObject();
 }
 
@@ -91,12 +89,18 @@ const DosIQMetaObject *BaseDosQMetaObject::superClassDosMetaObject() const
 }
 
 DosQObjectMetaObject::DosQObjectMetaObject()
-    : BaseDosQMetaObject(::createDynamicQObjectMetaObject())
+    : BaseDosQMetaObject(::createDynamicMetaObject<QObject>())
 {}
 
-DosQAbstractItemModelMetaObject::DosQAbstractItemModelMetaObject()
-    : BaseDosQMetaObject(::createDynamicQAbstractItemModelMetaObject())
+template<class T>
+DosQAbstractGenericModelMetaObject<T>::DosQAbstractGenericModelMetaObject()
+    : BaseDosQMetaObject(::createDynamicMetaObject<T>())
 {}
+
+// Force template instantations
+template class DosQAbstractGenericModelMetaObject<QAbstractItemModel>;
+template class DosQAbstractGenericModelMetaObject<QAbstractListModel>;
+
 
 DosQMetaObject::DosQMetaObject(DosIQMetaObjectPtr superClassMetaObject,
                                const QString &className,

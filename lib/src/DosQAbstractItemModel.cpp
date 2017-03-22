@@ -2,28 +2,32 @@
 #include "DOtherSide/DosQObjectImpl.h"
 
 namespace {
-DOS::DosQObjectImpl::ParentMetaCall createParentMetaCall(QAbstractItemModel *parent)
+
+template<class T>
+DOS::DosQObjectImpl::ParentMetaCall createParentMetaCall(DOS::DosQAbstractGenericModel<T> *parent)
 {
     return [parent](QMetaObject::Call callType, int index, void **args)->int {
-        return parent->QAbstractItemModel::qt_metacall(callType, index, args);
+        return parent->T::qt_metacall(callType, index, args);
     };
 }
+
 }
 
 namespace DOS {
 
-DosQAbstractItemModel::DosQAbstractItemModel(void *modelObject,
-                                             DosIQMetaObjectPtr metaObject,
-                                             OnSlotExecuted onSlotExecuted,
-                                             RowCountCallback rowCountCallback,
-                                             ColumnCountCallback columnCountCallback,
-                                             DataCallback dataCallback,
-                                             SetDataCallback setDataCallback,
-                                             RoleNamesCallback roleNamesCallback,
-                                             FlagsCallback flagsCallback,
-                                             HeaderDataCallback headerDataCallback,
-                                             IndexCallback indexCallback,
-                                             ParentCallback parentCallback)
+template<class T>
+DosQAbstractGenericModel<T>::DosQAbstractGenericModel(void *modelObject,
+                                                      DosIQMetaObjectPtr metaObject,
+                                                      OnSlotExecuted onSlotExecuted,
+                                                      RowCountCallback rowCountCallback,
+                                                      ColumnCountCallback columnCountCallback,
+                                                      DataCallback dataCallback,
+                                                      SetDataCallback setDataCallback,
+                                                      RoleNamesCallback roleNamesCallback,
+                                                      FlagsCallback flagsCallback,
+                                                      HeaderDataCallback headerDataCallback,
+                                                      IndexCallback indexCallback,
+                                                      ParentCallback parentCallback)
     : m_impl(new DosQObjectImpl(this, ::createParentMetaCall(this), std::move(metaObject), std::move(onSlotExecuted)))
     , m_modelObject(std::move(modelObject))
     , m_rowCountCallback(std::move(rowCountCallback))
@@ -37,150 +41,179 @@ DosQAbstractItemModel::DosQAbstractItemModel(void *modelObject,
     , m_parentCallback(std::move(parentCallback))
 {}
 
-bool DosQAbstractItemModel::emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &argumentsValues)
+template<class T>
+bool DosQAbstractGenericModel<T>::emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &argumentsValues)
 {
     Q_ASSERT(m_impl);
     return m_impl->emitSignal(emitter, name, argumentsValues);
 }
 
-const QMetaObject *DosQAbstractItemModel::metaObject() const
+template<class T>
+const QMetaObject *DosQAbstractGenericModel<T>::metaObject() const
 {
     Q_ASSERT(m_impl);
     return m_impl->metaObject();
 }
 
-int DosQAbstractItemModel::qt_metacall(QMetaObject::Call call, int index, void **args)
+template<class T>
+int DosQAbstractGenericModel<T>::qt_metacall(QMetaObject::Call call, int index, void **args)
 {
     Q_ASSERT(m_impl);
     return m_impl->qt_metacall(call, index, args);
 }
 
-int DosQAbstractItemModel::rowCount(const QModelIndex &parent) const
+template<class T>
+int DosQAbstractGenericModel<T>::rowCount(const QModelIndex &parent) const
 {
     int result;
     m_rowCountCallback(m_modelObject, &parent, &result);
     return result;
 }
 
-int DosQAbstractItemModel::columnCount(const QModelIndex &parent) const
+template<class T>
+int DosQAbstractGenericModel<T>::columnCount(const QModelIndex &parent) const
 {
     int result;
     m_columnCountCallback(m_modelObject, &parent, &result);
     return result;
 }
 
-QVariant DosQAbstractItemModel::data(const QModelIndex &index, int role) const
+template<class T>
+QVariant DosQAbstractGenericModel<T>::data(const QModelIndex &index, int role) const
 {
     QVariant result;
     m_dataCallback(m_modelObject, &index, role, &result);
     return result;
 }
 
-bool DosQAbstractItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
+template<class T>
+bool DosQAbstractGenericModel<T>::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     bool result = false;
     m_setDataCallback(m_modelObject, &index, &value, role, &result);
     return result;
 }
 
-Qt::ItemFlags DosQAbstractItemModel::flags(const QModelIndex &index) const
+template<class T>
+Qt::ItemFlags DosQAbstractGenericModel<T>::flags(const QModelIndex &index) const
 {
     int result;
     m_flagsCallback(m_modelObject, &index, &result);
     return Qt::ItemFlags(result);
 }
 
-QVariant DosQAbstractItemModel::headerData(int section, Qt::Orientation orientation, int role) const
+template<class T>
+QVariant DosQAbstractGenericModel<T>::headerData(int section, Qt::Orientation orientation, int role) const
 {
     QVariant result;
     m_headerDataCallback(m_modelObject, section, orientation, role, &result);
     return result;
 }
 
-QModelIndex DosQAbstractItemModel::index(int row, int column, const QModelIndex &parent) const
+template<class T>
+QModelIndex DosQAbstractGenericModel<T>::index(int row, int column, const QModelIndex &parent) const
 {
     QModelIndex result;
     m_indexCallback(m_modelObject, row, column, &parent, &result);
     return result;
 }
 
-QModelIndex DosQAbstractItemModel::parent(const QModelIndex &child) const
+template<class T>
+QModelIndex DosQAbstractGenericModel<T>::parent(const QModelIndex &child) const
 {
     QModelIndex result;
     m_parentCallback(m_modelObject, &child, &result);
     return result;
 }
 
-void *DosQAbstractItemModel::modelObject()
+template<class T>
+void *DosQAbstractGenericModel<T>::modelObject()
 {
     return m_modelObject;
 }
 
-QHash<int, QByteArray> DosQAbstractItemModel::roleNames() const
+template<class T>
+QHash<int, QByteArray> DosQAbstractGenericModel<T>::roleNames() const
 {
     QHash<int, QByteArray> result;
     m_roleNamesCallback(m_modelObject, &result);
     return result;
 }
 
-void DOS::DosQAbstractItemModel::publicBeginInsertColumns(const QModelIndex &index, int first, int last)
+template<class T>
+void DosQAbstractGenericModel<T>::publicBeginInsertColumns(const QModelIndex &index, int first, int last)
 {
-    beginInsertColumns(index, first, last);
+    T::beginInsertColumns(index, first, last);
 }
 
-void DOS::DosQAbstractItemModel::publicEndInsertColumns()
+template<class T>
+void DosQAbstractGenericModel<T>::publicEndInsertColumns()
 {
-    endInsertColumns();
+    T::endInsertColumns();
 }
 
-void DOS::DosQAbstractItemModel::publicBeginRemoveColumns(const QModelIndex &index, int first, int last)
+template<class T>
+void DosQAbstractGenericModel<T>::publicBeginRemoveColumns(const QModelIndex &index, int first, int last)
 {
-    beginRemoveColumns(index, first, last);
+    T::beginRemoveColumns(index, first, last);
 }
 
-void DOS::DosQAbstractItemModel::publicEndRemoveColumns()
+template<class T>
+void DosQAbstractGenericModel<T>::publicEndRemoveColumns()
 {
-    endRemoveColumns();
+    T::endRemoveColumns();
+}
+template<class T>
+void DosQAbstractGenericModel<T>::publicBeginInsertRows(const QModelIndex &index, int first, int last)
+{
+    T::beginInsertRows(index, first, last);
 }
 
-void DOS::DosQAbstractItemModel::publicBeginInsertRows(const QModelIndex &index, int first, int last)
+template<class T>
+void DosQAbstractGenericModel<T>::publicEndInsertRows()
 {
-    beginInsertRows(index, first, last);
+    T::endInsertRows();
 }
 
-void DOS::DosQAbstractItemModel::publicEndInsertRows()
+template<class T>
+void DosQAbstractGenericModel<T>::publicBeginRemoveRows(const QModelIndex &index, int first, int last)
 {
-    endInsertRows();
+    T::beginRemoveRows(index, first, last);
 }
 
-void DOS::DosQAbstractItemModel::publicBeginRemoveRows(const QModelIndex &index, int first, int last)
+template<class T>
+void DosQAbstractGenericModel<T>::publicEndRemoveRows()
 {
-    beginRemoveRows(index, first, last);
+    T::endRemoveRows();
 }
 
-void DOS::DosQAbstractItemModel::publicEndRemoveRows()
+template<class T>
+void DosQAbstractGenericModel<T>::publicBeginResetModel()
 {
-    endRemoveRows();
+    T::beginResetModel();
 }
 
-void DOS::DosQAbstractItemModel::publicBeginResetModel()
+template<class T>
+void DosQAbstractGenericModel<T>::publicEndResetModel()
 {
-    beginResetModel();
+    T::endResetModel();
 }
 
-void DOS::DosQAbstractItemModel::publicEndResetModel()
+template<class T>
+void DosQAbstractGenericModel<T>::publicDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
 {
-    endResetModel();
+    emit T::dataChanged(topLeft, bottomRight, roles);
 }
 
-void DOS::DosQAbstractItemModel::publicDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
+template<class T>
+QModelIndex DosQAbstractGenericModel<T>::publicCreateIndex(int row, int column, void *data) const
 {
-    emit dataChanged(topLeft, bottomRight, roles);
-}
-
-QModelIndex DOS::DosQAbstractItemModel::publicCreateIndex(int row, int column, void *data) const
-{
-    return createIndex(row, column, data);
+    return T::createIndex(row, column, data);
 }
 
 } // namespace DOS
+
+// Force instantiation
+template class DOS::DosQAbstractGenericModel<QAbstractItemModel>;
+template class DOS::DosQAbstractGenericModel<QAbstractListModel>;
+template class DOS::DosQAbstractGenericModel<QAbstractTableModel>;
