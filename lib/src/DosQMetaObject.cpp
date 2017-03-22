@@ -45,6 +45,7 @@ template<class T> const char* className();
 template<> const char* className<QObject>() { return "DosQObject"; }
 template<> const char* className<QAbstractItemModel>() { return "DosQAbstractItemModel"; }
 template<> const char* className<QAbstractListModel>() { return "DosQAbstractListModel"; }
+template<> const char* className<QAbstractTableModel>() { return "DosQAbstractTableModel"; }
 
 template <class T>
 QMetaObject *createDynamicMetaObject()
@@ -100,6 +101,7 @@ DosQAbstractGenericModelMetaObject<T>::DosQAbstractGenericModelMetaObject()
 // Force template instantations
 template class DosQAbstractGenericModelMetaObject<QAbstractItemModel>;
 template class DosQAbstractGenericModelMetaObject<QAbstractListModel>;
+template class DosQAbstractGenericModelMetaObject<QAbstractTableModel>;
 
 
 DosQMetaObject::DosQMetaObject(DosIQMetaObjectPtr superClassMetaObject,

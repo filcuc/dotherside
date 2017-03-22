@@ -119,8 +119,8 @@ private:
 };
 
 
-using DosQAbstractItemModel = DosQAbstractGenericModel<QAbstractItemModel>;
-using DosQAbstractListModel = DosQAbstractGenericModel<QAbstractListModel>;
+using DosQAbstractItemModel  = DosQAbstractGenericModel<QAbstractItemModel>;
+using DosQAbstractListModel  = DosQAbstractGenericModel<QAbstractListModel>;
 using DosQAbstractTableModel = DosQAbstractGenericModel<QAbstractTableModel>;
 
 } // namespace DOS

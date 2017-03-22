@@ -588,6 +588,41 @@ void dos_qmetaobject_delete(::DosQMetaObject *vptr)
     delete factory;
 }
 
+::DosQMetaObject *dos_qabstracttablemodel_qmetaobject()
+{
+    return new DOS::DosIQMetaObjectHolder(std::make_shared<DOS::DosQAbstractTableModelMetaObject>());
+}
+
+::DosQAbstractListModel *dos_qabstracttablemodel_create(void *dObjectPointer,
+                                                       ::DosQMetaObject *metaObjectPointer,
+                                                       ::DObjectCallback dObjectCallback,
+                                                       ::RowCountCallback rowCountCallback,
+                                                       ::ColumnCountCallback columnCountCallback,
+                                                       ::DataCallback dataCallback,
+                                                       ::SetDataCallback setDataCallback,
+                                                       ::RoleNamesCallback roleNamesCallaback,
+                                                       ::FlagsCallback flagsCallback,
+                                                       ::HeaderDataCallback headerDataCallback,
+                                                       ::IndexCallback indexCallback,
+                                                       ::ParentCallback parentCallback)
+{
+    auto metaObjectHolder = static_cast<DOS::DosIQMetaObjectHolder *>(metaObjectPointer);
+    auto model = new DOS::DosQAbstractTableModel(dObjectPointer,
+                                                metaObjectHolder->data(),
+                                                DOS::OnSlotExecutedHandler(dObjectPointer, dObjectCallback),
+                                                rowCountCallback,
+                                                columnCountCallback,
+                                                dataCallback,
+                                                setDataCallback,
+                                                roleNamesCallaback,
+                                                flagsCallback,
+                                                headerDataCallback,
+                                                indexCallback,
+                                                parentCallback);
+    QQmlEngine::setObjectOwnership(model, QQmlEngine::CppOwnership);
+    return static_cast<QObject *>(model);
+}
+
 ::DosQMetaObject *dos_qabstractlistmodel_qmetaobject()
 {
     return new DOS::DosIQMetaObjectHolder(std::make_shared<DOS::DosQAbstractListModelMetaObject>());

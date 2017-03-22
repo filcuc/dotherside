@@ -11,6 +11,7 @@
 #include <QtCore/QMetaMethod>
 #include <QtCore/QAbstractItemModel>
 #include <QtCore/QAbstractListModel>
+#include <QtCore/QAbstractTableModel>
 // DOtherSide
 #include "DOtherSide/DOtherSideTypesCpp.h"
 
@@ -61,6 +62,7 @@ public:
 
 using DosQAbstractItemModelMetaObject = DosQAbstractGenericModelMetaObject<QAbstractItemModel>;
 using DosQAbstractListModelMetaObject = DosQAbstractGenericModelMetaObject<QAbstractListModel>;
+using DosQAbstractTableModelMetaObject = DosQAbstractGenericModelMetaObject<QAbstractTableModel>;
 
 /// This the generic version used by subclasses of QObject or QAbstractItemModels
 class DosQMetaObject : public BaseDosQMetaObject

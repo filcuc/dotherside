@@ -408,6 +408,42 @@ DOS_API DosQAbstractListModel *DOS_CALL dos_qabstractlistmodel_create(void *call
                                                                       ParentCallback parentCallback);
 /// @}
 
+/// \defgroup QAbstractTableModel QAbstractTableModel
+/// \brief Functions related to the QAbstractTableModel class
+/// @{
+
+/// \brief Return QMetaObject associated to the QAbstractTableModel class
+/// \return The QMetaObject of the QAbstractTableModel class
+/// \note The returned QMetaObject should be freed using dos_qmetaobject_delete().
+DOS_API DosQMetaObject *DOS_CALL dos_qabstracttablemmodel_qmetaobject();
+
+/// \brief Create a new QAbstractTableModel
+/// \param callbackObject The pointer of QAbstractTableModel in the binded language
+/// \param metaObject The QMetaObject for this QAbstractTableModel
+/// \param dObjectCallback The callback for handling the properties read/write and slots execution
+/// \param rowCountCallback The callback for handling the QAbstractItemModel::rowCount() execution
+/// \param columnCountCallback The callback for handling the QAbstractItemModel::columnCount() execution
+/// \param dataCallback The callback for handling the QAbstractItemModel::data() execution
+/// \param setDataCallback The callback for handling the QAbstractItemModel::setData() execution
+/// \param roleNamesCallback The callback for handling the QAbstractItemModel::roleNames() execution
+/// \param flagsCallback The callback for handling the QAbstractItemModel::flags() execution
+/// \param headerDataCallback The callback for handling the QAbstractItemModel::headerData() execution
+/// \param indexCallback The callback for handling the QAbstractItemModel::index() execution
+/// \param parentCallback The callback for handling the QAbstractItemModel::parent() execution
+DOS_API DosQAbstractListModel *DOS_CALL dos_qabstracttablemodel_create(void *callbackObject,
+                                                                      DosQMetaObject *metaObject,
+                                                                      DObjectCallback dObjectCallback,
+                                                                      RowCountCallback rowCountCallback,
+                                                                      ColumnCountCallback columnCountCallback,
+                                                                      DataCallback dataCallback,
+                                                                      SetDataCallback setDataCallback,
+                                                                      RoleNamesCallback roleNamesCallback,
+                                                                      FlagsCallback flagsCallback,
+                                                                      HeaderDataCallback headerDataCallback,
+                                                                      IndexCallback indexCallback,
+                                                                      ParentCallback parentCallback);
+/// @}
+
 /// \defgroup QAbstractItemModel QAbstractItemModel
 /// \brief Functions related to the QAbstractItemModel class
 /// @{
