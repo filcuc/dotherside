@@ -2,6 +2,9 @@
 
 // Qt
 #include <QAbstractItemModel>
+#include <QAbstractListModel>
+#include <QAbstractTableModel>
+
 // DOtherSide
 #include "DOtherSide/DOtherSideTypes.h"
 #include "DOtherSide/DosIQAbstractItemModelImpl.h"
@@ -104,13 +107,17 @@ public:
     /// Expose createIndex
     QModelIndex publicCreateIndex(int row, int column, void *data = nullptr) const override;
 
-    int defaultRowCount(const QModelIndex &parent) const override;
-    int defaultColumnCount(const QModelIndex &parent) const override;
-    QVariant defaultData(const QModelIndex &index, int role) const override;
-    bool defaultSetData(const QModelIndex &index, const QVariant &value, int role) override;
+    /// Expose the not overriden flags
     Qt::ItemFlags defaultFlags(const QModelIndex &index) const override;
+
+    /// Expose the not overriden header data
     QVariant defaultHeaderData(int section, Qt::Orientation orientation, int role) const override;
+
+    /// Expose the not overriden roleNames
     QHash<int, QByteArray> defaultRoleNames() const override;
+
+    /// Expose the not overriden setData
+    bool defaultSetData(const QModelIndex &index, const QVariant &value, int role) override;
 
 private:
     std::unique_ptr<DosIQObjectImpl> m_impl;
@@ -126,9 +133,35 @@ private:
     ParentCallback m_parentCallback;
 };
 
+class DosQAbstractItemModel : public DosQAbstractGenericModel<QAbstractItemModel>
+{
+    using SuperClass = DosQAbstractGenericModel<QAbstractItemModel>;
 
-using DosQAbstractItemModel  = DosQAbstractGenericModel<QAbstractItemModel>;
-using DosQAbstractListModel  = DosQAbstractGenericModel<QAbstractListModel>;
-using DosQAbstractTableModel = DosQAbstractGenericModel<QAbstractTableModel>;
+public:
+    using SuperClass::SuperClass;
+};
+
+class DosQAbstractTableModel : public DosQAbstractGenericModel<QAbstractTableModel>
+{
+    using SuperClass = DosQAbstractGenericModel<QAbstractTableModel>;
+
+public:
+    using SuperClass::SuperClass;
+
+    QModelIndex defaultParent(const QModelIndex& child) const;
+    QModelIndex defaultIndex(int row, int column, const QModelIndex& parent = QModelIndex()) const;
+};
+
+class DosQAbstractListModel : public DosQAbstractGenericModel<QAbstractListModel>
+{
+    using SuperClass = DosQAbstractGenericModel<QAbstractListModel>;
+
+public:
+    using SuperClass::SuperClass;
+
+    QModelIndex defaultParent(const QModelIndex& child) const;
+    QModelIndex defaultIndex(int row, int column, const QModelIndex& parent = QModelIndex()) const;
+    int defaultColumnCount(const QModelIndex &parent) const;
+};
 
 } // namespace DOS

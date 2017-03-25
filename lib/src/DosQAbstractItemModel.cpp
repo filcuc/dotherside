@@ -211,9 +211,58 @@ QModelIndex DosQAbstractGenericModel<T>::publicCreateIndex(int row, int column, 
     return T::createIndex(row, column, data);
 }
 
+template<class T>
+Qt::ItemFlags DosQAbstractGenericModel<T>::defaultFlags(const QModelIndex &index) const
+{
+    return T::flags(index);
+}
+
+template<class T>
+QVariant DosQAbstractGenericModel<T>::defaultHeaderData(int section, Qt::Orientation orientation, int role) const
+{
+    return T::headerData(section, orientation, role);
+}
+
+template<class T>
+QHash<int, QByteArray> DosQAbstractGenericModel<T>::defaultRoleNames() const
+{
+    return T::roleNames();
+}
+
+template<class T>
+bool DosQAbstractGenericModel<T>::defaultSetData(const QModelIndex &index, const QVariant &value, int role)
+{
+    return T::setData(index, value, role);
+}
+
+QModelIndex DosQAbstractListModel::defaultIndex(int row, int column, const QModelIndex &parent) const
+{
+    return QAbstractListModel::index(row, column, parent);
+}
+
+int DosQAbstractListModel::defaultColumnCount(const QModelIndex &parent) const
+{
+    return parent.isValid() ? 0 : 1;
+}
+
+QModelIndex DosQAbstractListModel::defaultParent(const QModelIndex &child) const
+{
+    return QModelIndex();
+}
+
+QModelIndex DosQAbstractTableModel::defaultIndex(int row, int column, const QModelIndex &parent) const
+{
+    return hasIndex(row, column, parent) ? createIndex(row, column) : QModelIndex();
+}
+
+QModelIndex DosQAbstractTableModel::defaultParent(const QModelIndex &child) const
+{
+    return QModelIndex();
+}
+
 } // namespace DOS
 
 // Force instantiation
 template class DOS::DosQAbstractGenericModel<QAbstractItemModel>;
-//template class DOS::DosQAbstractGenericModel<QAbstractListModel>;
-//template class DOS::DosQAbstractGenericModel<QAbstractTableModel>;
+template class DOS::DosQAbstractGenericModel<QAbstractListModel>;
+template class DOS::DosQAbstractGenericModel<QAbstractTableModel>;

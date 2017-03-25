@@ -623,6 +623,24 @@ void dos_qmetaobject_delete(::DosQMetaObject *vptr)
     return static_cast<QObject *>(model);
 }
 
+DosQModelIndex *dos_qabstracttablemodel_index(DosQAbstractTableModel *vptr, int row, int column, DosQModelIndex *dosParent)
+{
+    auto object = static_cast<QObject *>(vptr);
+    auto model = dynamic_cast<DOS::DosQAbstractTableModel *>(object);
+    auto parent = static_cast<QModelIndex*>(dosParent);
+    auto result = new QModelIndex(model->defaultIndex(row, column, *parent));
+    return static_cast<DosQModelIndex*>(result);
+}
+
+DosQModelIndex *dos_qabstracttablemodel_parent(DosQAbstractTableModel *vptr, DosQModelIndex *dosChild)
+{
+    auto object = static_cast<QObject *>(vptr);
+    auto model = dynamic_cast<DOS::DosQAbstractTableModel *>(object);
+    auto child = static_cast<QModelIndex*>(dosChild);
+    auto result = new QModelIndex(model->defaultParent(*child));
+    return static_cast<DosQModelIndex*>(result);
+}
+
 ::DosQMetaObject *dos_qabstractlistmodel_qmetaobject()
 {
     return new DOS::DosIQMetaObjectHolder(std::make_shared<DOS::DosQAbstractListModelMetaObject>());
@@ -656,6 +674,32 @@ void dos_qmetaobject_delete(::DosQMetaObject *vptr)
                                                 parentCallback);
     QQmlEngine::setObjectOwnership(model, QQmlEngine::CppOwnership);
     return static_cast<QObject *>(model);
+}
+
+DosQModelIndex *dos_qabstractlistmodel_index(DosQAbstractListModel *vptr, int row, int column, DosQModelIndex *dosParent)
+{
+    auto object = static_cast<QObject *>(vptr);
+    auto model = dynamic_cast<DOS::DosQAbstractListModel *>(object);
+    auto parent = static_cast<QModelIndex*>(dosParent);
+    auto result = new QModelIndex(model->defaultIndex(row, column, *parent));
+    return static_cast<DosQModelIndex*>(result);
+}
+
+DosQModelIndex *dos_qabstractlistmodel_parent(DosQAbstractListModel *vptr, DosQModelIndex *dosChild)
+{
+    auto object = static_cast<QObject *>(vptr);
+    auto model = dynamic_cast<DOS::DosQAbstractListModel *>(object);
+    auto child = static_cast<QModelIndex*>(dosChild);
+    auto result = new QModelIndex(model->defaultParent(*child));
+    return static_cast<DosQModelIndex*>(result);
+}
+
+int dos_qabstractlistmodel_columnCount(DosQAbstractListModel *vptr, DosQModelIndex *dosParent)
+{
+    auto object = static_cast<QObject *>(vptr);
+    auto model = dynamic_cast<DOS::DosQAbstractListModel *>(object);
+    auto parent = static_cast<QModelIndex*>(dosParent);
+    return model->defaultColumnCount(*parent);
 }
 
 ::DosQMetaObject *dos_qabstractitemmodel_qmetaobject()
@@ -789,11 +833,38 @@ DosQModelIndex *dos_qabstractitemmodel_createIndex(::DosQAbstractItemModel *vptr
     return new QModelIndex(model->publicCreateIndex(row, column, data));
 }
 
-int dos_qabstractitemmodel_rowCount(DosQAbstractItemModel *vptr, DosQModelIndex *parent)
+bool dos_qabstractitemmodel_setData(DosQAbstractItemModel *vptr,
+                                    DosQModelIndex *dosIndex, DosQVariant *dosValue, int role)
 {
     auto object = static_cast<QObject *>(vptr);
     auto model = dynamic_cast<DOS::DosIQAbstractItemModelImpl *>(object);
-    return model->defaultRowCount();
+    auto index = static_cast<QModelIndex*>(dosIndex);
+    auto value = static_cast<QVariant*>(dosValue);
+    return model->defaultSetData(*index, *value, role);
+}
+
+DosQHashIntQByteArray *dos_qabstractitemmodel_roleNames(DosQAbstractItemModel *vptr)
+{
+    auto object = static_cast<QObject *>(vptr);
+    auto model = dynamic_cast<DOS::DosIQAbstractItemModelImpl *>(object);
+    auto result = new QHash<int, QByteArray>(model->defaultRoleNames());
+    return static_cast<DosQHashIntQByteArray*>(result);
+}
+
+int dos_qabstractitemmodel_flags(DosQAbstractItemModel *vptr, DosQModelIndex *dosIndex)
+{
+    auto object = static_cast<QObject *>(vptr);
+    auto model = dynamic_cast<DOS::DosIQAbstractItemModelImpl *>(object);
+    auto index = static_cast<QModelIndex*>(dosIndex);
+    return model->defaultFlags(*index);
+}
+
+DosQVariant *dos_qabstractitemmodel_headerData(DosQAbstractItemModel *vptr, int section, int orientation, int role)
+{
+    auto object = static_cast<QObject *>(vptr);
+    auto model = dynamic_cast<DOS::DosIQAbstractItemModelImpl *>(object);
+    auto result = new QVariant(model->defaultHeaderData(section, static_cast<Qt::Orientation>(orientation), role));
+    return static_cast<DosQVariant *>(result);
 }
 
 int dos_qdeclarative_qmlregistertype(const ::QmlRegisterType *cArgs)

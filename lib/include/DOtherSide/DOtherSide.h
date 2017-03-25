@@ -379,7 +379,7 @@ DOS_API void DOS_CALL dos_qmetaobject_delete(DosQMetaObject *vptr);
 /// \brief Return QMetaObject associated to the QAbstractListModel class
 /// \return The QMetaObject of the QAbstractListModel class
 /// \note The returned QMetaObject should be freed using dos_qmetaobject_delete().
-DOS_API DosQMetaObject *DOS_CALL dos_qabstractlistmmodel_qmetaobject();
+DOS_API DosQMetaObject *DOS_CALL dos_qabstractlistmodel_qmetaobject();
 
 /// \brief Create a new QAbstractListModel
 /// \param callbackObject The pointer of QAbstractListModel in the binded language
@@ -406,6 +406,19 @@ DOS_API DosQAbstractListModel *DOS_CALL dos_qabstractlistmodel_create(void *call
                                                                       HeaderDataCallback headerDataCallback,
                                                                       IndexCallback indexCallback,
                                                                       ParentCallback parentCallback);
+
+/// \brief Calls the default QAbstractListModel::index() function
+DOS_API DosQModelIndex* DOS_CALL dos_qabstractlistmodel_index(DosQAbstractListModel *vptr,
+                                                              int row, int column, DosQModelIndex* parent);
+
+/// \brief Calls the default QAbstractListModel::parent() function
+DOS_API DosQModelIndex* DOS_CALL dos_qabstractlistmodel_parent(DosQAbstractListModel *vptr,
+                                                               DosQModelIndex* child);
+
+/// \brief Calls the default QAbstractListModel::columnCount() function
+DOS_API int DOS_CALL dos_qabstractlistmodel_columnCount(DosQAbstractListModel *vptr,
+                                                        DosQModelIndex* parent);
+
 /// @}
 
 /// \defgroup QAbstractTableModel QAbstractTableModel
@@ -415,7 +428,7 @@ DOS_API DosQAbstractListModel *DOS_CALL dos_qabstractlistmodel_create(void *call
 /// \brief Return QMetaObject associated to the QAbstractTableModel class
 /// \return The QMetaObject of the QAbstractTableModel class
 /// \note The returned QMetaObject should be freed using dos_qmetaobject_delete().
-DOS_API DosQMetaObject *DOS_CALL dos_qabstracttablemmodel_qmetaobject();
+DOS_API DosQMetaObject *DOS_CALL dos_qabstracttablemodel_qmetaobject();
 
 /// \brief Create a new QAbstractTableModel
 /// \param callbackObject The pointer of QAbstractTableModel in the binded language
@@ -430,7 +443,7 @@ DOS_API DosQMetaObject *DOS_CALL dos_qabstracttablemmodel_qmetaobject();
 /// \param headerDataCallback The callback for handling the QAbstractItemModel::headerData() execution
 /// \param indexCallback The callback for handling the QAbstractItemModel::index() execution
 /// \param parentCallback The callback for handling the QAbstractItemModel::parent() execution
-DOS_API DosQAbstractListModel *DOS_CALL dos_qabstracttablemodel_create(void *callbackObject,
+DOS_API DosQAbstractTableModel *DOS_CALL dos_qabstracttablemodel_create(void *callbackObject,
                                                                        DosQMetaObject *metaObject,
                                                                        DObjectCallback dObjectCallback,
                                                                        RowCountCallback rowCountCallback,
@@ -442,6 +455,15 @@ DOS_API DosQAbstractListModel *DOS_CALL dos_qabstracttablemodel_create(void *cal
                                                                        HeaderDataCallback headerDataCallback,
                                                                        IndexCallback indexCallback,
                                                                        ParentCallback parentCallback);
+
+/// \brief Calls the default QAbstractTableModel::index() function
+DOS_API DosQModelIndex* DOS_CALL dos_qabstracttablemodel_index(DosQAbstractTableModel *vptr,
+                                                               int row, int column, DosQModelIndex* parent);
+
+/// \brief Calls the default QAbstractTableModel::parent() function
+DOS_API DosQModelIndex* DOS_CALL dos_qabstracttablemodel_parent(DosQAbstractTableModel *vptr,
+                                                                DosQModelIndex* child);
+
 /// @}
 
 /// \defgroup QAbstractItemModel QAbstractItemModel
@@ -548,20 +570,25 @@ DOS_API void DOS_CALL dos_qabstractitemmodel_dataChanged(DosQAbstractItemModel *
                                                          const DosQModelIndex *bottomRight,
                                                          int *rolesPtr, int rolesLength);
 
-/// \brief Calls the createIndex function
+/// \brief Calls the QAbstractItemModel::createIndex() function
 DOS_API DosQModelIndex* DOS_CALL dos_qabstractitemmodel_createIndex(DosQAbstractItemModel *vptr,
                                                                     int row, int column, void *data = 0);
 
 
-DOS_API int DOS_CALL dos_qabstractitemmodel_rowCount(DosQAbstractItemModel *vptr, DosQModelIndex* parent);
-DOS_API int DOS_CALL dos_qabstractitemmodel_columnCount(DosQAbstractItemModel *vptr, DosQModelIndex* parent);
-DOS_API DosQVariant* DOS_CALL dos_qabstractitemmodel_data(DosQAbstractItemModel *vptr, DosQModelIndex* index, int role);
-DOS_API bool DOS_CALL dos_qabstractitemmodel_setData(DosQAbstractItemModel *vptr, DosQModelIndex* index, DosQVariant* value, int role);
+/// \brief Calls the default QAbstractItemModel::setData() function
+DOS_API bool DOS_CALL dos_qabstractitemmodel_setData(DosQAbstractItemModel *vptr,
+                                                     DosQModelIndex* index, DosQVariant* value, int role);
+
+/// \brief Calls the default QAbstractItemModel::roleNames() function
 DOS_API DosQHashIntQByteArray* DOS_CALL dos_qabstractitemmodel_roleNames(DosQAbstractItemModel *vptr);
-DOS_API int DOS_CALL dos_qabstractitemmodel_flags(DosQAbstractItemModel *vptr, DosQModelIndex* index);
-DOS_API DosQVariant* DOS_CALL dos_qabstractitemmodel_headerData(DosQAbstractItemModel *vptr, int section, int orienation, int role);
-DOS_API DosQModelIndex* DOS_CALL dos_qabstractitemmodel_index(DosQAbstractItemModel *vptr, int row, int column, DosQModelIndex* parent);
-DOS_API DosQModelIndex* DOS_CALL dos_qabstractitemmodel_parent(DosQAbstractItemModel *vptr, DosQModelIndex* child);
+
+/// \brief Calls the default QAbstractItemModel::flags() function
+DOS_API int DOS_CALL dos_qabstractitemmodel_flags(DosQAbstractItemModel *vptr,
+                                                  DosQModelIndex* index);
+
+/// \brief Calls the default QAbstractItemModel::headerData() function
+DOS_API DosQVariant* DOS_CALL dos_qabstractitemmodel_headerData(DosQAbstractItemModel *vptr,
+                                                                int section, int orientation, int role);
 
 /// @}
 
