@@ -21,6 +21,12 @@
 #include "DOtherSide/DosQAbstractListModel.h"
 #include "DOtherSide/DosQDeclarative.h"
 
+namespace {
+  void register_meta_types() {
+    qRegisterMetaType<QVector<int>>();
+  }
+}
+
 char *convert_to_cstring(const QByteArray &array)
 {
     return qstrdup(array.data());
@@ -41,6 +47,9 @@ void dos_qguiapplication_create()
     static int argc = 1;
     static char empty[1] = {0};
     static char *argv[] = {empty};
+
+    register_meta_types();
+
     new QGuiApplication(argc, argv);
 }
 
@@ -64,6 +73,9 @@ void dos_qapplication_create()
     static int argc = 1;
     static char empty[1] = {0};
     static char *argv[] = {empty};
+
+    register_meta_types();
+
     new QApplication(argc, argv);
 }
 
