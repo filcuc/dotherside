@@ -466,6 +466,15 @@ int dos_qabstractitemmodel_flags(DosQAbstractItemModel *vptr, DosQModelIndex* in
 /// \brief Calls the QAbstractItemModel::headerData function
 DosQVariant* dos_qabstractitemmodel_headerData(DosQAbstractItemModel *vptr, int section, int orientation, int role);
 
+/// \brief Calls the QAbstractItemModel::hasChildren function
+bool dos_qabstractitemmodel_hasChildren(DosQAbstractItemModel *vptr, DosQModelIndex* parentIndex);
+
+/// \brief Calls the QAbstractItemModel::canFetchMore function
+bool dos_qabstractitemmodel_canFetchMore(DosQAbstractItemModel *vptr, DosQModelIndex* parentIndex);
+
+/// \brief Calls the QAbstractItemModel::fetchMore function
+void dos_qabstractitemmodel_fetchMore(DosQAbstractItemModel *vptr, DosQModelIndex* parentIndex);
+
 /// \brief Calls the QAbstractItemModel::beginInsertRows() function
 /// \param vptr The QAbstractItemModel
 /// \param parent The parent QModelIndex

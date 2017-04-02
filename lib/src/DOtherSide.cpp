@@ -819,6 +819,30 @@ DosQVariant *dos_qabstractitemmodel_headerData(DosQAbstractItemModel *vptr, int 
     return static_cast<DosQVariant *>(result);
 }
 
+bool dos_qabstractitemmodel_hasChildren(DosQAbstractItemModel *vptr, DosQModelIndex *dosParentIndex)
+{
+    auto object = static_cast<QObject *>(vptr);
+    auto model = dynamic_cast<DOS::DosIQAbstractItemModelImpl *>(object);
+    auto parentIndex = static_cast<QModelIndex*>(dosParentIndex);
+    return model->defaultHasChildren(*parentIndex);
+}
+
+bool dos_qabstractitemmodel_canFetchMore(DosQAbstractItemModel *vptr, DosQModelIndex *dosParentIndex)
+{
+    auto object = static_cast<QObject *>(vptr);
+    auto model = dynamic_cast<DOS::DosIQAbstractItemModelImpl *>(object);
+    auto parentIndex = static_cast<QModelIndex*>(dosParentIndex);
+    return model->defaultCanFetchMore(*parentIndex);
+}
+
+void dos_qabstractitemmodel_fetchMore(DosQAbstractItemModel *vptr, DosQModelIndex *dosParentIndex)
+{
+    auto object = static_cast<QObject *>(vptr);
+    auto model = dynamic_cast<DOS::DosIQAbstractItemModelImpl *>(object);
+    auto parentIndex = static_cast<QModelIndex*>(dosParentIndex);
+    model->defaultFetchMore(*parentIndex);
+}
+
 int dos_qdeclarative_qmlregistertype(const ::QmlRegisterType *cArgs)
 {
     auto holder = static_cast<DOS::DosIQMetaObjectHolder *>(cArgs->staticMetaObject);

@@ -25,6 +25,7 @@ set(HEADERS_LIST
   include/DOtherSide/DosIQObjectImpl.h
   include/DOtherSide/OnSlotExecutedHandler.h
   include/DOtherSide/DosQMetaObject.h
+  include/DOtherSide/DosIQAbstractItemModelImpl.h
   include/DOtherSide/DosQAbstractItemModel.h
   include/DOtherSide/Utils.h
   )

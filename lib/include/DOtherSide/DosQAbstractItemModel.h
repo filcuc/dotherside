@@ -111,6 +111,21 @@ public:
     /// Expose the not overriden setData
     bool defaultSetData(const QModelIndex &index, const QVariant &value, int role) override;
 
+    /// Expose the hasChildren
+    bool hasChildren(const QModelIndex &parent = QModelIndex()) const override;
+
+    /// Expose the canFetchMore
+    bool canFetchMore(const QModelIndex &parent) const override;
+
+    /// Expose the not override canFetchMore
+    bool defaultCanFetchMore(const QModelIndex &parent) const override;
+
+    /// Expose the fetchMore
+    void fetchMore(const QModelIndex& parent) override;
+
+    /// Expose the not overriden fetchMore
+    void defaultFetchMore(const QModelIndex &parent) override;
+
 private:
     std::unique_ptr<DosIQObjectImpl> m_impl;
     void *m_modelObject;
@@ -123,6 +138,7 @@ class DosQAbstractItemModel : public DosQAbstractGenericModel<QAbstractItemModel
 
 public:
     using SuperClass::SuperClass;
+    bool defaultHasChildren(const QModelIndex &parent) const override;
 };
 
 class DosQAbstractTableModel : public DosQAbstractGenericModel<QAbstractTableModel>
@@ -134,6 +150,7 @@ public:
 
     QModelIndex defaultParent(const QModelIndex& child) const;
     QModelIndex defaultIndex(int row, int column, const QModelIndex& parent = QModelIndex()) const;
+    bool defaultHasChildren(const QModelIndex &parent) const override;
 };
 
 class DosQAbstractListModel : public DosQAbstractGenericModel<QAbstractListModel>
@@ -146,6 +163,7 @@ public:
     QModelIndex defaultParent(const QModelIndex& child) const;
     QModelIndex defaultIndex(int row, int column, const QModelIndex& parent = QModelIndex()) const;
     int defaultColumnCount(const QModelIndex &parent) const;
+    bool defaultHasChildren(const QModelIndex &parent) const override;
 };
 
 } // namespace DOS

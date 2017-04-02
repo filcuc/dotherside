@@ -116,6 +116,15 @@ typedef void (DOS_CALL *IndexCallback)(void *self, int row, int column, const Do
 /// Called when the QAbstractItemModel::parent method must be called
 typedef void (DOS_CALL *ParentCallback)(void *self, const DosQModelIndex *child, DosQModelIndex *result);
 
+/// Called when the QAbstractItemModel::hasChildren method must be called
+typedef void (DOS_CALL *HasChildrenCallback)(void *self, const DosQModelIndex *parent, bool *result);
+
+/// Called when the QAbstractItemModel::canFetchMore method must be called
+typedef void (DOS_CALL *CanFetchMoreCallback)(void *self, const DosQModelIndex *parent, bool *result);
+
+/// Called when the QAbstractItemModel::fetchMore method must be called
+typedef void (DOS_CALL *FetchMoreCallback)(void *self, const DosQModelIndex *parent);
+
 /// Callback called from QML for creating a registered type
 /**
  * When a type is created through the QML engine a new QObject \p "Wrapper" is created. This becomes a proxy
@@ -321,6 +330,9 @@ struct DosQAbstractItemModelCallbacks
     HeaderDataCallback headerData;
     IndexCallback index;
     ParentCallback parent;
+    HasChildrenCallback hasChildren;
+    CanFetchMoreCallback canFetchMore;
+    FetchMoreCallback fetchMore;
 };
 
 #ifndef __cplusplus

@@ -64,5 +64,14 @@ public:
 
     /// @see QAbstractItemModel::createIndex
     virtual QModelIndex publicCreateIndex(int row, int column, void* data = 0) const = 0;
+
+    /// @see QAbstractItemModel::hasChildren
+    virtual bool defaultHasChildren(const QModelIndex &parent) const = 0;
+
+    /// @see QAbstractItemModel::canFetchMore
+    virtual bool defaultCanFetchMore(const QModelIndex &parent) const = 0;
+
+    /// @see QAbstractItemModel::fetchMore
+    virtual void defaultFetchMore(const QModelIndex &parent) = 0;
 };
 } // namespace dos

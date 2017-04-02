@@ -219,6 +219,40 @@ bool DosQAbstractGenericModel<T>::defaultSetData(const QModelIndex &index, const
     return T::setData(index, value, role);
 }
 
+template<class T>
+bool DosQAbstractGenericModel<T>::hasChildren(const QModelIndex &parent) const
+{
+    bool result = false;
+    m_callbacks.hasChildren(m_modelObject, &parent, &result);
+    return result;
+}
+
+template<class T>
+bool DosQAbstractGenericModel<T>::canFetchMore(const QModelIndex &parent) const
+{
+    bool result = false;
+    m_callbacks.canFetchMore(m_modelObject, &parent, &result);
+    return result;
+}
+
+template<class T>
+bool DosQAbstractGenericModel<T>::defaultCanFetchMore(const QModelIndex &parent) const
+{
+    return this->T::canFetchMore(parent);
+}
+
+template<class T>
+void DosQAbstractGenericModel<T>::fetchMore(const QModelIndex &parent)
+{
+    m_callbacks.fetchMore(m_modelObject, &parent);
+}
+
+template<class T>
+void DosQAbstractGenericModel<T>::defaultFetchMore(const QModelIndex &parent)
+{
+    this->T::fetchMore(parent);
+}
+
 QModelIndex DosQAbstractListModel::defaultIndex(int row, int column, const QModelIndex &parent) const
 {
     return QAbstractListModel::index(row, column, parent);
@@ -227,6 +261,11 @@ QModelIndex DosQAbstractListModel::defaultIndex(int row, int column, const QMode
 int DosQAbstractListModel::defaultColumnCount(const QModelIndex &parent) const
 {
     return parent.isValid() ? 0 : 1;
+}
+
+bool DosQAbstractListModel::defaultHasChildren(const QModelIndex &parent) const
+{
+    return parent.isValid() ? false : (rowCount() > 0);
 }
 
 QModelIndex DosQAbstractListModel::defaultParent(const QModelIndex &child) const
@@ -239,9 +278,21 @@ QModelIndex DosQAbstractTableModel::defaultIndex(int row, int column, const QMod
     return hasIndex(row, column, parent) ? createIndex(row, column) : QModelIndex();
 }
 
+bool DosQAbstractTableModel::defaultHasChildren(const QModelIndex &parent) const
+{
+    if (parent.model() == this || !parent.isValid())
+        return rowCount(parent) > 0 && columnCount(parent) > 0;
+    return false;
+}
+
 QModelIndex DosQAbstractTableModel::defaultParent(const QModelIndex &child) const
 {
     return QModelIndex();
+}
+
+bool DosQAbstractItemModel::defaultHasChildren(const QModelIndex &parent) const
+{
+    return QAbstractItemModel::hasChildren(parent);
 }
 
 } // namespace DOS
