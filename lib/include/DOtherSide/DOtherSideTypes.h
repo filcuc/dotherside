@@ -309,6 +309,24 @@ struct PropertyDefinitions {
 typedef struct PropertyDefinitions PropertyDefinitions;
 #endif
 
+/// Incapsulate all the QAbstractItemModel callbacks
+struct DosQAbstractItemModelCallbacks
+{
+    RowCountCallback rowCount;
+    ColumnCountCallback columnCount;
+    DataCallback data;
+    SetDataCallback setData;
+    RoleNamesCallback roleNames;
+    FlagsCallback flags;
+    HeaderDataCallback headerData;
+    IndexCallback index;
+    ParentCallback parent;
+};
+
+#ifndef __cplusplus
+typedef struct DosQAbstractItemModelCallbacks DosQAbstractItemModelCallbacks;
+#endif
+
 #ifdef __cplusplus
 }
 #endif

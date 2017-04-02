@@ -385,27 +385,11 @@ DOS_API DosQMetaObject *DOS_CALL dos_qabstractlistmodel_qmetaobject();
 /// \param callbackObject The pointer of QAbstractListModel in the binded language
 /// \param metaObject The QMetaObject for this QAbstractListModel
 /// \param dObjectCallback The callback for handling the properties read/write and slots execution
-/// \param rowCountCallback The callback for handling the QAbstractItemModel::rowCount() execution
-/// \param columnCountCallback The callback for handling the QAbstractItemModel::columnCount() execution
-/// \param dataCallback The callback for handling the QAbstractItemModel::data() execution
-/// \param setDataCallback The callback for handling the QAbstractItemModel::setData() execution
-/// \param roleNamesCallback The callback for handling the QAbstractItemModel::roleNames() execution
-/// \param flagsCallback The callback for handling the QAbstractItemModel::flags() execution
-/// \param headerDataCallback The callback for handling the QAbstractItemModel::headerData() execution
-/// \param indexCallback The callback for handling the QAbstractItemModel::index() execution
-/// \param parentCallback The callback for handling the QAbstractItemModel::parent() execution
+/// \param callbacks The QAbstractItemModel callbacks
 DOS_API DosQAbstractListModel *DOS_CALL dos_qabstractlistmodel_create(void *callbackObject,
                                                                       DosQMetaObject *metaObject,
                                                                       DObjectCallback dObjectCallback,
-                                                                      RowCountCallback rowCountCallback,
-                                                                      ColumnCountCallback columnCountCallback,
-                                                                      DataCallback dataCallback,
-                                                                      SetDataCallback setDataCallback,
-                                                                      RoleNamesCallback roleNamesCallback,
-                                                                      FlagsCallback flagsCallback,
-                                                                      HeaderDataCallback headerDataCallback,
-                                                                      IndexCallback indexCallback,
-                                                                      ParentCallback parentCallback);
+                                                                      DosQAbstractItemModelCallbacks* callbacks);
 
 /// \brief Calls the default QAbstractListModel::index() function
 DOS_API DosQModelIndex* DOS_CALL dos_qabstractlistmodel_index(DosQAbstractListModel *vptr,
@@ -434,27 +418,11 @@ DOS_API DosQMetaObject *DOS_CALL dos_qabstracttablemodel_qmetaobject();
 /// \param callbackObject The pointer of QAbstractTableModel in the binded language
 /// \param metaObject The QMetaObject for this QAbstractTableModel
 /// \param dObjectCallback The callback for handling the properties read/write and slots execution
-/// \param rowCountCallback The callback for handling the QAbstractItemModel::rowCount() execution
-/// \param columnCountCallback The callback for handling the QAbstractItemModel::columnCount() execution
-/// \param dataCallback The callback for handling the QAbstractItemModel::data() execution
-/// \param setDataCallback The callback for handling the QAbstractItemModel::setData() execution
-/// \param roleNamesCallback The callback for handling the QAbstractItemModel::roleNames() execution
-/// \param flagsCallback The callback for handling the QAbstractItemModel::flags() execution
-/// \param headerDataCallback The callback for handling the QAbstractItemModel::headerData() execution
-/// \param indexCallback The callback for handling the QAbstractItemModel::index() execution
-/// \param parentCallback The callback for handling the QAbstractItemModel::parent() execution
+/// \param callbacks The QAbstractItemModel callbacks
 DOS_API DosQAbstractTableModel *DOS_CALL dos_qabstracttablemodel_create(void *callbackObject,
                                                                        DosQMetaObject *metaObject,
                                                                        DObjectCallback dObjectCallback,
-                                                                       RowCountCallback rowCountCallback,
-                                                                       ColumnCountCallback columnCountCallback,
-                                                                       DataCallback dataCallback,
-                                                                       SetDataCallback setDataCallback,
-                                                                       RoleNamesCallback roleNamesCallback,
-                                                                       FlagsCallback flagsCallback,
-                                                                       HeaderDataCallback headerDataCallback,
-                                                                       IndexCallback indexCallback,
-                                                                       ParentCallback parentCallback);
+                                                                       DosQAbstractItemModelCallbacks* callbacks);
 
 /// \brief Calls the default QAbstractTableModel::index() function
 DOS_API DosQModelIndex* DOS_CALL dos_qabstracttablemodel_index(DosQAbstractTableModel *vptr,
@@ -475,32 +443,28 @@ DOS_API DosQModelIndex* DOS_CALL dos_qabstracttablemodel_parent(DosQAbstractTabl
 /// \note The returned QMetaObject should be freed using dos_qmetaobject_delete().
 DOS_API DosQMetaObject *DOS_CALL dos_qabstractitemmodel_qmetaobject();
 
-
 /// \brief Create a new QAbstractItemModel
 /// \param callbackObject The pointer of QAbstractItemModel in the binded language
 /// \param metaObject The QMetaObject for this QAbstractItemModel
 /// \param dObjectCallback The callback for handling the properties read/write and slots execution
-/// \param rowCountCallback The callback for handling the QAbstractItemModel::rowCount() execution
-/// \param columnCountCallback The callback for handling the QAbstractItemModel::columnCount() execution
-/// \param dataCallback The callback for handling the QAbstractItemModel::data() execution
-/// \param setDataCallback The callback for handling the QAbstractItemModel::setData() execution
-/// \param roleNamesCallback The callback for handling the QAbstractItemModel::roleNames() execution
-/// \param flagsCallback The callback for handling the QAbstractItemModel::flags() execution
-/// \param headerDataCallback The callback for handling the QAbstractItemModel::headerData() execution
-/// \param indexCallback The callback for handling the QAbstractItemModel::index() execution
-/// \param parentCallback The callback for handling the QAbstractItemModel::parent() execution
+/// \param callbacks The QAbstractItemModel callbacks
+/// \note The callbacks struct is copied so you can freely delete after calling this function
 DOS_API DosQAbstractItemModel *DOS_CALL dos_qabstractitemmodel_create(void *callbackObject,
                                                                       DosQMetaObject *metaObject,
                                                                       DObjectCallback dObjectCallback,
-                                                                      RowCountCallback rowCountCallback,
-                                                                      ColumnCountCallback columnCountCallback,
-                                                                      DataCallback dataCallback,
-                                                                      SetDataCallback setDataCallback,
-                                                                      RoleNamesCallback roleNamesCallback,
-                                                                      FlagsCallback flagsCallback,
-                                                                      HeaderDataCallback headerDataCallback,
-                                                                      IndexCallback indexCallback,
-                                                                      ParentCallback parentCallback);
+                                                                      DosQAbstractItemModelCallbacks* callbacks);
+
+/// \brief Calls the QAbstractItemModel::setData function
+bool dos_qabstractitemmodel_setData(DosQAbstractItemModel *vptr, DosQModelIndex* index, DosQVariant* data, int role);
+
+/// \brief Calls the QAbstractItemModel::roleNames function
+DosQHashIntQByteArray* dos_qabstractitemmodel_roleNames(DosQAbstractItemModel *vptr);
+
+/// \brief Calls the QAbstractItemModel::flags function
+int dos_qabstractitemmodel_flags(DosQAbstractItemModel *vptr, DosQModelIndex* index);
+
+/// \brief Calls the QAbstractItemModel::headerData function
+DosQVariant* dos_qabstractitemmodel_headerData(DosQAbstractItemModel *vptr, int section, int orientation, int role);
 
 /// \brief Calls the QAbstractItemModel::beginInsertRows() function
 /// \param vptr The QAbstractItemModel

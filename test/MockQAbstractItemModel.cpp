@@ -66,13 +66,21 @@ namespace
 }
 
 MockQAbstractItemModel::MockQAbstractItemModel()
-    : m_vptr(dos_qabstractitemmodel_create(this, metaObject(), &onSlotCalled, &onRowCountCalled,
-                                           &onColumnCountCalled, &onDataCalled, &onSetDataCalled,
-                                           &onRoleNamesCalled, &onFlagsCalled, &onHeaderDataCalled,
-                                           &onIndexCalled, &onParentCalled), &dos_qobject_delete)
+    : m_vptr(nullptr, &dos_qobject_delete)
     , m_names({"John", "Mary", "Andy", "Anna"})
 {
+    DosQAbstractItemModelCallbacks callbacks;
+    callbacks.rowCount = &onRowCountCalled;
+    callbacks.columnCount = &onColumnCountCalled;
+    callbacks.data = &onDataCalled;
+    callbacks.setData = &onSetDataCalled;
+    callbacks.roleNames = &onRoleNamesCalled;
+    callbacks.flags = &onFlagsCalled;
+    callbacks.headerData = &onHeaderDataCalled;
+    callbacks.index = &onIndexCalled;
+    callbacks.parent = &onParentCalled;
 
+    m_vptr.reset(dos_qabstractitemmodel_create(this, metaObject(), &onSlotCalled, &callbacks));
 }
 
 DosQMetaObject *MockQAbstractItemModel::metaObject()

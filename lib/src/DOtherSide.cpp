@@ -596,29 +596,13 @@ void dos_qmetaobject_delete(::DosQMetaObject *vptr)
 ::DosQAbstractListModel *dos_qabstracttablemodel_create(void *dObjectPointer,
                                                         ::DosQMetaObject *metaObjectPointer,
                                                         ::DObjectCallback dObjectCallback,
-                                                        ::RowCountCallback rowCountCallback,
-                                                        ::ColumnCountCallback columnCountCallback,
-                                                        ::DataCallback dataCallback,
-                                                        ::SetDataCallback setDataCallback,
-                                                        ::RoleNamesCallback roleNamesCallaback,
-                                                        ::FlagsCallback flagsCallback,
-                                                        ::HeaderDataCallback headerDataCallback,
-                                                        ::IndexCallback indexCallback,
-                                                        ::ParentCallback parentCallback)
+                                                        ::DosQAbstractItemModelCallbacks* callbacks)
 {
     auto metaObjectHolder = static_cast<DOS::DosIQMetaObjectHolder *>(metaObjectPointer);
     auto model = new DOS::DosQAbstractTableModel(dObjectPointer,
                                                  metaObjectHolder->data(),
                                                  DOS::OnSlotExecutedHandler(dObjectPointer, dObjectCallback),
-                                                 rowCountCallback,
-                                                 columnCountCallback,
-                                                 dataCallback,
-                                                 setDataCallback,
-                                                 roleNamesCallaback,
-                                                 flagsCallback,
-                                                 headerDataCallback,
-                                                 indexCallback,
-                                                 parentCallback);
+                                                 *callbacks);
     QQmlEngine::setObjectOwnership(model, QQmlEngine::CppOwnership);
     return static_cast<QObject *>(model);
 }
@@ -649,29 +633,13 @@ DosQModelIndex *dos_qabstracttablemodel_parent(DosQAbstractTableModel *vptr, Dos
 ::DosQAbstractListModel *dos_qabstractlistmodel_create(void *dObjectPointer,
                                                        ::DosQMetaObject *metaObjectPointer,
                                                        ::DObjectCallback dObjectCallback,
-                                                       ::RowCountCallback rowCountCallback,
-                                                       ::ColumnCountCallback columnCountCallback,
-                                                       ::DataCallback dataCallback,
-                                                       ::SetDataCallback setDataCallback,
-                                                       ::RoleNamesCallback roleNamesCallaback,
-                                                       ::FlagsCallback flagsCallback,
-                                                       ::HeaderDataCallback headerDataCallback,
-                                                       ::IndexCallback indexCallback,
-                                                       ::ParentCallback parentCallback)
+                                                       ::DosQAbstractItemModelCallbacks* callbacks)
 {
     auto metaObjectHolder = static_cast<DOS::DosIQMetaObjectHolder *>(metaObjectPointer);
     auto model = new DOS::DosQAbstractListModel(dObjectPointer,
                                                 metaObjectHolder->data(),
                                                 DOS::OnSlotExecutedHandler(dObjectPointer, dObjectCallback),
-                                                rowCountCallback,
-                                                columnCountCallback,
-                                                dataCallback,
-                                                setDataCallback,
-                                                roleNamesCallaback,
-                                                flagsCallback,
-                                                headerDataCallback,
-                                                indexCallback,
-                                                parentCallback);
+                                                *callbacks);
     QQmlEngine::setObjectOwnership(model, QQmlEngine::CppOwnership);
     return static_cast<QObject *>(model);
 }
@@ -710,29 +678,13 @@ int dos_qabstractlistmodel_columnCount(DosQAbstractListModel *vptr, DosQModelInd
 ::DosQAbstractItemModel *dos_qabstractitemmodel_create(void *dObjectPointer,
                                                        ::DosQMetaObject *metaObjectPointer,
                                                        ::DObjectCallback dObjectCallback,
-                                                       ::RowCountCallback rowCountCallback,
-                                                       ::ColumnCountCallback columnCountCallback,
-                                                       ::DataCallback dataCallback,
-                                                       ::SetDataCallback setDataCallback,
-                                                       ::RoleNamesCallback roleNamesCallaback,
-                                                       ::FlagsCallback flagsCallback,
-                                                       ::HeaderDataCallback headerDataCallback,
-                                                       ::IndexCallback indexCallback,
-                                                       ::ParentCallback parentCallback)
+                                                       ::DosQAbstractItemModelCallbacks* callbacks)
 {
     auto metaObjectHolder = static_cast<DOS::DosIQMetaObjectHolder *>(metaObjectPointer);
     auto model = new DOS::DosQAbstractItemModel(dObjectPointer,
                                                 metaObjectHolder->data(),
                                                 DOS::OnSlotExecutedHandler(dObjectPointer, dObjectCallback),
-                                                rowCountCallback,
-                                                columnCountCallback,
-                                                dataCallback,
-                                                setDataCallback,
-                                                roleNamesCallaback,
-                                                flagsCallback,
-                                                headerDataCallback,
-                                                indexCallback,
-                                                parentCallback);
+                                                *callbacks);
     QQmlEngine::setObjectOwnership(model, QQmlEngine::CppOwnership);
     return static_cast<QObject *>(model);
 }

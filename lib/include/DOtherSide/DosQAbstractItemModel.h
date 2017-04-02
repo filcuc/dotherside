@@ -20,15 +20,7 @@ public:
     DosQAbstractGenericModel(void *modelObject,
                              DosIQMetaObjectPtr metaObject,
                              OnSlotExecuted onSlotExecuted,
-                             RowCountCallback rowCountCallback,
-                             ColumnCountCallback columnCountCallback,
-                             DataCallback dataCallback,
-                             SetDataCallback setDataCallback,
-                             RoleNamesCallback roleNamesCallback,
-                             FlagsCallback flagsCallback,
-                             HeaderDataCallback headerDataCallback,
-                             IndexCallback indexCallback,
-                             ParentCallback parentCallback);
+                             DosQAbstractItemModelCallbacks callbacks);
 
     /// @see IDynamicQObject::emitSignal
     bool emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &argumentsValues) override;
@@ -122,15 +114,7 @@ public:
 private:
     std::unique_ptr<DosIQObjectImpl> m_impl;
     void *m_modelObject;
-    RowCountCallback m_rowCountCallback;
-    ColumnCountCallback m_columnCountCallback;
-    DataCallback m_dataCallback;
-    SetDataCallback m_setDataCallback;
-    RoleNamesCallback m_roleNamesCallback;
-    FlagsCallback m_flagsCallback;
-    HeaderDataCallback m_headerDataCallback;
-    IndexCallback m_indexCallback;
-    ParentCallback m_parentCallback;
+    DosQAbstractItemModelCallbacks m_callbacks;
 };
 
 class DosQAbstractItemModel : public DosQAbstractGenericModel<QAbstractItemModel>

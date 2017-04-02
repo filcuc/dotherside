@@ -19,26 +19,10 @@ template<class T>
 DosQAbstractGenericModel<T>::DosQAbstractGenericModel(void *modelObject,
                                                       DosIQMetaObjectPtr metaObject,
                                                       OnSlotExecuted onSlotExecuted,
-                                                      RowCountCallback rowCountCallback,
-                                                      ColumnCountCallback columnCountCallback,
-                                                      DataCallback dataCallback,
-                                                      SetDataCallback setDataCallback,
-                                                      RoleNamesCallback roleNamesCallback,
-                                                      FlagsCallback flagsCallback,
-                                                      HeaderDataCallback headerDataCallback,
-                                                      IndexCallback indexCallback,
-                                                      ParentCallback parentCallback)
+                                                      DosQAbstractItemModelCallbacks callbacks)
     : m_impl(new DosQObjectImpl(this, ::createParentMetaCall(this), std::move(metaObject), std::move(onSlotExecuted)))
     , m_modelObject(std::move(modelObject))
-    , m_rowCountCallback(std::move(rowCountCallback))
-    , m_columnCountCallback(std::move(columnCountCallback))
-    , m_dataCallback(std::move(dataCallback))
-    , m_setDataCallback(std::move(setDataCallback))
-    , m_roleNamesCallback(std::move(roleNamesCallback))
-    , m_flagsCallback(std::move(flagsCallback))
-    , m_headerDataCallback(std::move(headerDataCallback))
-    , m_indexCallback(std::move(indexCallback))
-    , m_parentCallback(std::move(parentCallback))
+    , m_callbacks(callbacks)
 {}
 
 template<class T>
@@ -66,7 +50,7 @@ template<class T>
 int DosQAbstractGenericModel<T>::rowCount(const QModelIndex &parent) const
 {
     int result;
-    m_rowCountCallback(m_modelObject, &parent, &result);
+    m_callbacks.rowCount(m_modelObject, &parent, &result);
     return result;
 }
 
@@ -74,7 +58,7 @@ template<class T>
 int DosQAbstractGenericModel<T>::columnCount(const QModelIndex &parent) const
 {
     int result;
-    m_columnCountCallback(m_modelObject, &parent, &result);
+    m_callbacks.columnCount(m_modelObject, &parent, &result);
     return result;
 }
 
@@ -82,7 +66,7 @@ template<class T>
 QVariant DosQAbstractGenericModel<T>::data(const QModelIndex &index, int role) const
 {
     QVariant result;
-    m_dataCallback(m_modelObject, &index, role, &result);
+    m_callbacks.data(m_modelObject, &index, role, &result);
     return result;
 }
 
@@ -90,7 +74,7 @@ template<class T>
 bool DosQAbstractGenericModel<T>::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     bool result = false;
-    m_setDataCallback(m_modelObject, &index, &value, role, &result);
+    m_callbacks.setData(m_modelObject, &index, &value, role, &result);
     return result;
 }
 
@@ -98,7 +82,7 @@ template<class T>
 Qt::ItemFlags DosQAbstractGenericModel<T>::flags(const QModelIndex &index) const
 {
     int result;
-    m_flagsCallback(m_modelObject, &index, &result);
+    m_callbacks.flags(m_modelObject, &index, &result);
     return Qt::ItemFlags(result);
 }
 
@@ -106,7 +90,7 @@ template<class T>
 QVariant DosQAbstractGenericModel<T>::headerData(int section, Qt::Orientation orientation, int role) const
 {
     QVariant result;
-    m_headerDataCallback(m_modelObject, section, orientation, role, &result);
+    m_callbacks.headerData(m_modelObject, section, orientation, role, &result);
     return result;
 }
 
@@ -114,7 +98,7 @@ template<class T>
 QModelIndex DosQAbstractGenericModel<T>::index(int row, int column, const QModelIndex &parent) const
 {
     QModelIndex result;
-    m_indexCallback(m_modelObject, row, column, &parent, &result);
+    m_callbacks.index(m_modelObject, row, column, &parent, &result);
     return result;
 }
 
@@ -122,7 +106,7 @@ template<class T>
 QModelIndex DosQAbstractGenericModel<T>::parent(const QModelIndex &child) const
 {
     QModelIndex result;
-    m_parentCallback(m_modelObject, &child, &result);
+    m_callbacks.parent(m_modelObject, &child, &result);
     return result;
 }
 
@@ -136,7 +120,7 @@ template<class T>
 QHash<int, QByteArray> DosQAbstractGenericModel<T>::roleNames() const
 {
     QHash<int, QByteArray> result;
-    m_roleNamesCallback(m_modelObject, &result);
+    m_callbacks.roleNames(m_modelObject, &result);
     return result;
 }
 
