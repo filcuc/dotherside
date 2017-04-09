@@ -1,7 +1,12 @@
 find_package(Qt5Core REQUIRED)
 
-set(TARGET_SOURCES include/DOtherSide/Core/Core.h)
-set(TARGET_INCLUDES src/QCoreApplication.cpp)
+set(TARGET_SOURCES
+    include/DOtherSide/Core/Core.h
+)
+set(TARGET_INCLUDES
+    src/QCoreApplication.cpp
+    src/QVariant.cpp
+)
 
 include_directories(include)
 

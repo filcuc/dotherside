@@ -1,8 +1,19 @@
 #include "DOtherSide/Qml/Qml.h"
 
-#include <QQmlApplicationEngine>
 #include <QCoreApplication>
 #include <QDir>
+#include <QQmlApplicationEngine>
+#include <QQmlContext>
+
+char *convert_to_cstring(const QByteArray &array)
+{
+    return qstrdup(array.data());
+}
+
+char *convert_to_cstring(const QString &source)
+{
+    return convert_to_cstring(source.toUtf8());
+}
 
 ::DosQQmlApplicationEngine *dos_qqmlapplicationengine_create()
 {
@@ -45,4 +56,18 @@ void dos_qqmlapplicationengine_delete(::DosQQmlApplicationEngine *vptr)
 {
     auto engine = static_cast<QQmlApplicationEngine *>(vptr);
     delete engine;
+}
+
+char *dos_qqmlcontext_baseUrl(const ::DosQQmlContext *vptr)
+{
+    auto context = static_cast<const QQmlContext *>(vptr);
+    QUrl url = context->baseUrl();
+    return convert_to_cstring(url.toString());
+}
+
+void dos_qqmlcontext_setcontextproperty(::DosQQmlContext *vptr, const char *name, ::DosQVariant *value)
+{
+    auto context = static_cast<QQmlContext *>(vptr);
+    auto variant = static_cast<QVariant *>(value);
+    context->setContextProperty(QString::fromUtf8(name), *variant);
 }

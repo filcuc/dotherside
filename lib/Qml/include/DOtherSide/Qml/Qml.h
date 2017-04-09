@@ -17,6 +17,7 @@ extern "C"
 typedef void DosQQmlApplicationEngine;
 typedef void DosQQmlContext;
 typedef void DosQUrl;
+typedef void DosQVariant;
 
 /// \defgroup QQmlApplicationEngine QQmlApplicationEngine
 /// \brief Functions related to the QQmlApplicationEngine class
@@ -57,6 +58,23 @@ DOS_API DosQQmlContext *DOS_CALL dos_qqmlapplicationengine_context(DosQQmlApplic
 /// \brief Free the memory allocated for the given QQmlApplicationEngine
 /// \param vptr The QQmlApplicationEngine
 DOS_API void DOS_CALL dos_qqmlapplicationengine_delete(DosQQmlApplicationEngine *vptr);
+
+/// @}
+
+/// \defgroup QQmlContext QQmlContext
+/// \brief Functions related to the QQmlContext class
+/// @{
+
+/// \brief Calls the QQmlContext::baseUrl function
+/// \return The QQmlContext url as an UTF-8 string
+/// \note The returned string should be freed using with the dos_chararray_delete() function
+DOS_API char *DOS_CALL dos_qqmlcontext_baseUrl(const DosQQmlContext *vptr);
+
+/// \brief Sets a property inside the context
+/// \param vptr The DosQQmlContext
+/// \param name The property name. The string is owned by the caller thus it will not be deleted by the library
+/// \param value The property value. The DosQVariant is owned by the caller thus it will not be deleted by the library
+DOS_API void DOS_CALL dos_qqmlcontext_setcontextproperty(DosQQmlContext *vptr, const char *name, DosQVariant *value);
 
 /// @}
 

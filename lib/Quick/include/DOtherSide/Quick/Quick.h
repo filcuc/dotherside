@@ -14,6 +14,10 @@ extern "C"
 {
 #endif
 
+typedef void DosQQuickView;
+typedef void DosQUrl;
+typedef void DosQQmlContext;
+
 /// \defgroup QQuickView QQuickView
 /// \brief Functions related to the QQuickView class
 /// @{

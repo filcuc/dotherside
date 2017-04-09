@@ -1,6 +1,19 @@
 #include "DOtherSide/Quick/Quick.h"
 
+#include <QCoreApplication>
+#include <QDir>
 #include <QQuickView>
+#include <QUrl>
+
+char *convert_to_cstring(const QByteArray &array)
+{
+    return qstrdup(array.data());
+}
+
+char *convert_to_cstring(const QString &source)
+{
+    return convert_to_cstring(source.toUtf8());
+}
 
 ::DosQQuickView *dos_qquickview_create()
 {

@@ -1,1 +1,4 @@
- 
+#ifndef DOTHERSIDE_COMMON_H
+#define DOTHERSIDE_COMMON_H
+
+#endif

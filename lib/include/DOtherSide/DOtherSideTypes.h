@@ -177,20 +177,6 @@ typedef void (DOS_CALL *CreateDObject)(int id, void *wrapper, void **bindedQObje
  */
 typedef void (DOS_CALL *DeleteDObject)(int id, void *bindedQObject);
 
-/// \brief Store an array of QVariant
-/// \note This struct should be freed by calling dos_qvariantarray_delete(DosQVariantArray *ptr). This in turn
-/// cleans up the internal array
-struct DosQVariantArray {
-    /// The number of elements
-    int size;
-    /// The array
-    DosQVariant **data;
-};
-
-#ifndef __cplusplus
-typedef struct DosQVariantArray DosQVariantArray;
-#endif
-
 /// The data needed for registering a custom type in the QML environment
 /**
  * This is used from dos_qdeclarative_qmlregistertype() and dos_qdeclarative_qmlregistersingletontype() calls.
