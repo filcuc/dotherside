@@ -1,3 +1,6 @@
+# Version 0.6.1
+* Fixed compilation on windows with Visual studio 2013 and 2015
+
 # Version 0.6.0
 * Fixed #48: Added support QAbstractItemModel and QAbstractTableModels
 * Added missing canFetchMore, fetchMore, hasChildren callbacks
