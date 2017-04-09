@@ -392,11 +392,11 @@ DOS_API DosQAbstractListModel *DOS_CALL dos_qabstractlistmodel_create(void *call
                                                                       DosQAbstractItemModelCallbacks* callbacks);
 
 /// \brief Calls the default QAbstractListModel::index() function
-DOS_API DosQModelIndex* DOS_CALL dos_qabstractlistmodel_index(DosQAbstractListModel *vptr,
+DOS_API DosQModelIndex *DOS_CALL dos_qabstractlistmodel_index(DosQAbstractListModel *vptr,
                                                               int row, int column, DosQModelIndex* parent);
 
 /// \brief Calls the default QAbstractListModel::parent() function
-DOS_API DosQModelIndex* DOS_CALL dos_qabstractlistmodel_parent(DosQAbstractListModel *vptr,
+DOS_API DosQModelIndex *DOS_CALL dos_qabstractlistmodel_parent(DosQAbstractListModel *vptr,
                                                                DosQModelIndex* child);
 
 /// \brief Calls the default QAbstractListModel::columnCount() function
@@ -425,11 +425,11 @@ DOS_API DosQAbstractTableModel *DOS_CALL dos_qabstracttablemodel_create(void *ca
                                                                        DosQAbstractItemModelCallbacks* callbacks);
 
 /// \brief Calls the default QAbstractTableModel::index() function
-DOS_API DosQModelIndex* DOS_CALL dos_qabstracttablemodel_index(DosQAbstractTableModel *vptr,
+DOS_API DosQModelIndex *DOS_CALL dos_qabstracttablemodel_index(DosQAbstractTableModel *vptr,
                                                                int row, int column, DosQModelIndex* parent);
 
 /// \brief Calls the default QAbstractTableModel::parent() function
-DOS_API DosQModelIndex* DOS_CALL dos_qabstracttablemodel_parent(DosQAbstractTableModel *vptr,
+DOS_API DosQModelIndex *DOS_CALL dos_qabstracttablemodel_parent(DosQAbstractTableModel *vptr,
                                                                 DosQModelIndex* child);
 
 /// @}
@@ -455,25 +455,25 @@ DOS_API DosQAbstractItemModel *DOS_CALL dos_qabstractitemmodel_create(void *call
                                                                       DosQAbstractItemModelCallbacks* callbacks);
 
 /// \brief Calls the QAbstractItemModel::setData function
-bool dos_qabstractitemmodel_setData(DosQAbstractItemModel *vptr, DosQModelIndex* index, DosQVariant* data, int role);
+DOS_API bool DOS_CALL dos_qabstractitemmodel_setData(DosQAbstractItemModel *vptr, DosQModelIndex* index, DosQVariant* data, int role);
 
 /// \brief Calls the QAbstractItemModel::roleNames function
-DosQHashIntQByteArray* dos_qabstractitemmodel_roleNames(DosQAbstractItemModel *vptr);
+DOS_API DosQHashIntQByteArray *DOS_CALL dos_qabstractitemmodel_roleNames(DosQAbstractItemModel *vptr);
 
 /// \brief Calls the QAbstractItemModel::flags function
-int dos_qabstractitemmodel_flags(DosQAbstractItemModel *vptr, DosQModelIndex* index);
+DOS_API int DOS_CALL dos_qabstractitemmodel_flags(DosQAbstractItemModel *vptr, DosQModelIndex* index);
 
 /// \brief Calls the QAbstractItemModel::headerData function
-DosQVariant* dos_qabstractitemmodel_headerData(DosQAbstractItemModel *vptr, int section, int orientation, int role);
+DOS_API DosQVariant *DOS_CALL dos_qabstractitemmodel_headerData(DosQAbstractItemModel *vptr, int section, int orientation, int role);
 
 /// \brief Calls the QAbstractItemModel::hasChildren function
-bool dos_qabstractitemmodel_hasChildren(DosQAbstractItemModel *vptr, DosQModelIndex* parentIndex);
+DOS_API bool DOS_CALL dos_qabstractitemmodel_hasChildren(DosQAbstractItemModel *vptr, DosQModelIndex* parentIndex);
 
 /// \brief Calls the QAbstractItemModel::canFetchMore function
-bool dos_qabstractitemmodel_canFetchMore(DosQAbstractItemModel *vptr, DosQModelIndex* parentIndex);
+DOS_API bool DOS_CALL dos_qabstractitemmodel_canFetchMore(DosQAbstractItemModel *vptr, DosQModelIndex* parentIndex);
 
 /// \brief Calls the QAbstractItemModel::fetchMore function
-void dos_qabstractitemmodel_fetchMore(DosQAbstractItemModel *vptr, DosQModelIndex* parentIndex);
+DOS_API void DOS_CALL dos_qabstractitemmodel_fetchMore(DosQAbstractItemModel *vptr, DosQModelIndex* parentIndex);
 
 /// \brief Calls the QAbstractItemModel::beginInsertRows() function
 /// \param vptr The QAbstractItemModel
@@ -544,7 +544,7 @@ DOS_API void DOS_CALL dos_qabstractitemmodel_dataChanged(DosQAbstractItemModel *
                                                          int *rolesPtr, int rolesLength);
 
 /// \brief Calls the QAbstractItemModel::createIndex() function
-DOS_API DosQModelIndex* DOS_CALL dos_qabstractitemmodel_createIndex(DosQAbstractItemModel *vptr,
+DOS_API DosQModelIndex *DOS_CALL dos_qabstractitemmodel_createIndex(DosQAbstractItemModel *vptr,
                                                                     int row, int column, void *data = 0);
 
 
@@ -553,14 +553,14 @@ DOS_API bool DOS_CALL dos_qabstractitemmodel_setData(DosQAbstractItemModel *vptr
                                                      DosQModelIndex* index, DosQVariant* value, int role);
 
 /// \brief Calls the default QAbstractItemModel::roleNames() function
-DOS_API DosQHashIntQByteArray* DOS_CALL dos_qabstractitemmodel_roleNames(DosQAbstractItemModel *vptr);
+DOS_API DosQHashIntQByteArray *DOS_CALL dos_qabstractitemmodel_roleNames(DosQAbstractItemModel *vptr);
 
 /// \brief Calls the default QAbstractItemModel::flags() function
 DOS_API int DOS_CALL dos_qabstractitemmodel_flags(DosQAbstractItemModel *vptr,
                                                   DosQModelIndex* index);
 
 /// \brief Calls the default QAbstractItemModel::headerData() function
-DOS_API DosQVariant* DOS_CALL dos_qabstractitemmodel_headerData(DosQAbstractItemModel *vptr,
+DOS_API DosQVariant *DOS_CALL dos_qabstractitemmodel_headerData(DosQAbstractItemModel *vptr,
                                                                 int section, int orientation, int role);
 
 /// @}
@@ -746,7 +746,7 @@ DOS_API DosQUrl *DOS_CALL dos_qurl_create(const char *url, int parsingMode);
 
 /// \brief Free the memory allocated for the QUrl
 /// \param vptr The QUrl to be freed
-DOS_API void  DOS_CALL dos_qurl_delete(DosQUrl *vptr);
+DOS_API void DOS_CALL dos_qurl_delete(DosQUrl *vptr);
 
 /// \brief Calls the QUrl::toString() function
 /// \param vptr The QUrl
