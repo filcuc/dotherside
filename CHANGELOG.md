@@ -1,3 +1,10 @@
+# Version 0.6.0
+* Fixed #48: Added support QAbstractItemModel and QAbstractTableModels
+* Added missing canFetchMore, fetchMore, hasChildren callbacks
+* Fixed #46: Added support for index, createIndex
+* Fixed #45: Added support for setting the qml signal names (old behaviour was arg0, arg1..)
+* Added support
+
 # Version 0.5.2
 * Added support qmlRegisterType
 * Added support qmlRegisterSingletonType
