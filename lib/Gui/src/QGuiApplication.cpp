@@ -1,6 +1,7 @@
 #include "DOtherSide/Gui/Gui.h"
 
 #include <QGuiApplication>
+#include <QVector>
 
 void dos_qguiapplication_create()
 {
@@ -8,7 +9,7 @@ void dos_qguiapplication_create()
     static char empty[1] = {0};
     static char *argv[] = {empty};
 
-    register_meta_types();
+    qRegisterMetaType<QVector<int>>();
 
     new QGuiApplication(argc, argv);
 }

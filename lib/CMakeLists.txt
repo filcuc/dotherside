@@ -1,6 +1,8 @@
 project(DOtherSide)
+add_subdirectory(Common)
 add_subdirectory(Core)
 add_subdirectory(Declarative)
 add_subdirectory(Gui)
 add_subdirectory(Quick)
 add_subdirectory(Widgets)
+add_subdirectory(Qml)
