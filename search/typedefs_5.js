@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['setdatacallback',['SetDataCallback',['../_d_other_side_types_8h.html#a385fd4fcc5ccc5fb56ab23c65d00eb9b',1,'DOtherSideTypes.h']]]
+  ['parentcallback',['ParentCallback',['../_d_other_side_types_8h.html#a175b2876cfa91791c2018ce03be59fac',1,'DOtherSideTypes.h']]]
 ];

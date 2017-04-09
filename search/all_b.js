@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['writeslot',['writeSlot',['../struct_property_definition.html#a6f577053b40f858c9a9da164448fd136',1,'PropertyDefinition']]]
+  ['uri',['uri',['../struct_qml_register_type.html#a66d7aa5349b62716fdb733c80575fc14',1,'QmlRegisterType']]]
 ];

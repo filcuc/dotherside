@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['qabstractlistmodel',['QAbstractListModel',['../group___q_abstract_list_model.html',1,'']]],
+  ['qabstractitemmodel',['QAbstractItemModel',['../group___q_abstract_list_model.html',1,'(Global Namespace)'],['../group___q_abstract_item_model.html',1,'(Global Namespace)']]],
+  ['qabstracttablemodel',['QAbstractTableModel',['../group___q_abstract_table_model.html',1,'']]],
   ['qapplication',['QApplication',['../group___q_application.html',1,'']]],
   ['qdeclarative',['QDeclarative',['../group___q_declarative.html',1,'']]],
   ['qguiapplication',['QGuiApplication',['../group___q_gui_application.html',1,'']]],

@@ -1,8 +1,5 @@
 var searchData=
 [
-  ['parameterscount',['parametersCount',['../struct_signal_definition.html#a62343009aa14e84d19e9b961867c3d9b',1,'SignalDefinition::parametersCount()'],['../struct_slot_definition.html#a6790dc52ce87635c3284c23a3972031c',1,'SlotDefinition::parametersCount()']]],
-  ['parametersmetatypes',['parametersMetaTypes',['../struct_signal_definition.html#a574c2ff1f36a7dd8c3cdb8fefd52279c',1,'SignalDefinition::parametersMetaTypes()'],['../struct_slot_definition.html#a13b11d5493bea5c378d2bf19f3113286',1,'SlotDefinition::parametersMetaTypes()']]],
-  ['propertydefinition',['PropertyDefinition',['../struct_property_definition.html',1,'']]],
-  ['propertydefinitions',['PropertyDefinitions',['../struct_property_definitions.html',1,'']]],
-  ['propertymetatype',['propertyMetaType',['../struct_property_definition.html#a9510b0c5f1a58804675c60f01999a3da',1,'PropertyDefinition']]]
+  ['name',['name',['../struct_parameter_definition.html#a8728722b1b87bc3965a385a7f35b71de',1,'ParameterDefinition::name()'],['../struct_signal_definition.html#a5d0bf4b186cf091eadf1fd9ef1ca036f',1,'SignalDefinition::name()'],['../struct_slot_definition.html#a084ca24e3a29edcf25c58044d70303f3',1,'SlotDefinition::name()'],['../struct_property_definition.html#ad5a8e8200300f4392806c800b4a1ad7e',1,'PropertyDefinition::name()']]],
+  ['notifysignal',['notifySignal',['../struct_property_definition.html#a5c0e35622b430b07e7079067095d4afb',1,'PropertyDefinition']]]
 ];

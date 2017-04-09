@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['name',['name',['../struct_signal_definition.html#a5d0bf4b186cf091eadf1fd9ef1ca036f',1,'SignalDefinition::name()'],['../struct_slot_definition.html#a084ca24e3a29edcf25c58044d70303f3',1,'SlotDefinition::name()'],['../struct_property_definition.html#ad5a8e8200300f4392806c800b4a1ad7e',1,'PropertyDefinition::name()']]],
-  ['notifysignal',['notifySignal',['../struct_property_definition.html#a5c0e35622b430b07e7079067095d4afb',1,'PropertyDefinition']]]
+  ['major',['major',['../struct_qml_register_type.html#a5a2781ca45dfa0e54cbee866646b7e99',1,'QmlRegisterType']]],
+  ['metatype',['metaType',['../struct_parameter_definition.html#aa91460a8dfd83bd3946c316dc09c50ff',1,'ParameterDefinition']]],
+  ['minor',['minor',['../struct_qml_register_type.html#a2a3d02f9cdb60d65604716cb452523a9',1,'QmlRegisterType']]]
 ];
