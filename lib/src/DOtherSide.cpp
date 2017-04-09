@@ -38,37 +38,6 @@ char *convert_to_cstring(const QString &source)
     return convert_to_cstring(source.toUtf8());
 }
 
-char *dos_qcoreapplication_application_dir_path()
-{
-    return convert_to_cstring(QCoreApplication::applicationDirPath());
-}
-
-void dos_qguiapplication_create()
-{
-    static int argc = 1;
-    static char empty[1] = {0};
-    static char *argv[] = {empty};
-
-    register_meta_types();
-
-    new QGuiApplication(argc, argv);
-}
-
-void dos_qguiapplication_delete()
-{
-    delete qGuiApp;
-}
-
-void dos_qguiapplication_exec()
-{
-    qGuiApp->exec();
-}
-
-void dos_qguiapplication_quit()
-{
-    qGuiApp->quit();
-}
-
 void dos_qapplication_create()
 {
     static int argc = 1;
