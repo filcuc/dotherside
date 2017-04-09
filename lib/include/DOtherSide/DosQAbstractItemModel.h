@@ -134,19 +134,15 @@ private:
 
 class DosQAbstractItemModel : public DosQAbstractGenericModel<QAbstractItemModel>
 {
-    using SuperClass = DosQAbstractGenericModel<QAbstractItemModel>;
-
 public:
-    using SuperClass::SuperClass;
+    using DosQAbstractGenericModel::DosQAbstractGenericModel;
     bool defaultHasChildren(const QModelIndex &parent) const override;
 };
 
 class DosQAbstractTableModel : public DosQAbstractGenericModel<QAbstractTableModel>
 {
-    using SuperClass = DosQAbstractGenericModel<QAbstractTableModel>;
-
 public:
-    using SuperClass::SuperClass;
+    using DosQAbstractGenericModel::DosQAbstractGenericModel;
 
     QModelIndex defaultParent(const QModelIndex& child) const;
     QModelIndex defaultIndex(int row, int column, const QModelIndex& parent = QModelIndex()) const;
@@ -155,10 +151,8 @@ public:
 
 class DosQAbstractListModel : public DosQAbstractGenericModel<QAbstractListModel>
 {
-    using SuperClass = DosQAbstractGenericModel<QAbstractListModel>;
-
 public:
-    using SuperClass::SuperClass;
+    using DosQAbstractGenericModel::DosQAbstractGenericModel;
 
     QModelIndex defaultParent(const QModelIndex& child) const;
     QModelIndex defaultIndex(int row, int column, const QModelIndex& parent = QModelIndex()) const;
