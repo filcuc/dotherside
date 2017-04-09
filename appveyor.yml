@@ -3,16 +3,6 @@ clone_depth: 5
 environment:
   matrix:
     - CMAKE_GENERATOR: "Visual Studio 12 2013"
-      QTDIR: "C:/Qt/5.5/msvc2013/bin"
-      CMAKE_PREFIX_PATH: "C:/Qt/5.5/msvc2013/lib/cmake"
-      CONFIGURATION: Release
-      ARTIFACT: libDOtherside-windows-x86-msvc2013-qt-5.5.zip
-    - CMAKE_GENERATOR: "Visual Studio 12 2013 Win64"
-      QTDIR: "C:/Qt/5.5/msvc2013_64/bin"
-      CMAKE_PREFIX_PATH: "C:/Qt/5.5/msvc2013_64/lib/cmake"
-      CONFIGURATION: Release
-      ARTIFACT: libDOtherside-windows-x64-msvc2013-qt-5.5.zip
-    - CMAKE_GENERATOR: "Visual Studio 12 2013"
       QTDIR: "C:/Qt/5.6/msvc2013/bin"
       CMAKE_PREFIX_PATH: "C:/Qt/5.6/msvc2013/lib/cmake"
       CONFIGURATION: Release
@@ -32,16 +22,26 @@ environment:
       CMAKE_PREFIX_PATH: "C:/Qt/5.6/msvc2015_64/lib/cmake"
       CONFIGURATION: Release
       ARTIFACT: libDOtherside-windows-x64-msvc2015-qt-5.6.zip
+    - CMAKE_GENERATOR: "Visual Studio 12 2013"
+      QTDIR: "C:/Qt/5.8/msvc2013/bin"
+      CMAKE_PREFIX_PATH: "C:/Qt/5.8/msvc2013/lib/cmake"
+      CONFIGURATION: Release
+      ARTIFACT: libDOtherside-windows-x86-msvc2013-qt-5.8.zip
+    - CMAKE_GENERATOR: "Visual Studio 12 2013 Win64"
+      QTDIR: "C:/Qt/5.8/msvc2013_64/bin"
+      CMAKE_PREFIX_PATH: "C:/Qt/5.8/msvc2013_64/lib/cmake"
+      CONFIGURATION: Release
+      ARTIFACT: libDOtherside-windows-x64-msvc2013-qt-5.8.zip
     - CMAKE_GENERATOR: "Visual Studio 14 2015"
-      QTDIR: "C:/Qt/5.7/msvc2015/bin"
-      CMAKE_PREFIX_PATH: "C:/Qt/5.7/msvc2015/lib/cmake"
+      QTDIR: "C:/Qt/5.8/msvc2015/bin"
+      CMAKE_PREFIX_PATH: "C:/Qt/5.8/msvc2015/lib/cmake"
       CONFIGURATION: Release
-      ARTIFACT: libDOtherside-windows-x86-msvc2015-qt-5.7.zip
+      ARTIFACT: libDOtherside-windows-x86-msvc2015-qt-5.8.zip
     - CMAKE_GENERATOR: "Visual Studio 14 2015 Win64"
-      QTDIR: "C:/Qt/5.7/msvc2015_64/bin"
-      CMAKE_PREFIX_PATH: "C:/Qt/5.7/msvc2015_64/lib/cmake"
+      QTDIR: "C:/Qt/5.8/msvc2015_64/bin"
+      CMAKE_PREFIX_PATH: "C:/Qt/5.8/msvc2015_64/lib/cmake"
       CONFIGURATION: Release
-      ARTIFACT: libDOtherside-windows-x64-msvc2015-qt-5.7.zip
+      ARTIFACT: libDOtherside-windows-x64-msvc2015-qt-5.8.zip
 
 
 install:
