@@ -1,4 +1,4 @@
-#include "MockQAbstractListModel.h"
+#include "MockQAbstractItemModel.h"
 #include <QMetaType>
 
 using namespace std;
@@ -12,16 +12,17 @@ namespace
 
     VoidPointer initializeMetaObject()
     {
-        void* superClassMetaObject = dos_qabstractlistmodel_qmetaobject();
+        void* superClassMetaObject = dos_qabstractitemmodel_qmetaobject();
 
         // Signals
         ::SignalDefinition signalDefinitionArray[1];
 
+        ParameterDefinition nameChanged[1];
+        nameChanged[0].metaType = QMetaType::QString;
+        nameChanged[0].name = "name";
         signalDefinitionArray[0].name = "nameChanged";
         signalDefinitionArray[0].parametersCount = 1;
-        int nameChanged[1];
-        nameChanged[0] = QMetaType::QString;
-        signalDefinitionArray[0].parametersMetaTypes = nameChanged;
+        signalDefinitionArray[0].parameters = nameChanged;
 
         ::SignalDefinitions signalDefinitions;
         signalDefinitions.count = 1;
@@ -33,14 +34,15 @@ namespace
         slotDefinitionArray[0].name = "name";
         slotDefinitionArray[0].returnMetaType = QMetaType::QString;
         slotDefinitionArray[0].parametersCount = 0;
-        slotDefinitionArray[0].parametersMetaTypes = nullptr;
+        slotDefinitionArray[0].parameters = nullptr;
 
         slotDefinitionArray[1].name = "setName";
         slotDefinitionArray[1].returnMetaType = QMetaType::Void;
-        int setNameParameters[1];
-        setNameParameters[0] = QMetaType::QString;
+        ParameterDefinition setNameParameters[1];
+        setNameParameters[0].name = "name";
+        setNameParameters[0].metaType = QMetaType::QString;
         slotDefinitionArray[1].parametersCount = 1;
-        slotDefinitionArray[1].parametersMetaTypes = setNameParameters;
+        slotDefinitionArray[1].parameters = setNameParameters;
 
         ::SlotDefinitions slotDefinitions;
         slotDefinitions.count = 2;
@@ -63,43 +65,52 @@ namespace
     }
 }
 
-MockQAbstractListModel::MockQAbstractListModel()
-    : m_vptr(dos_qabstractlistmodel_create(this, metaObject(), &onSlotCalled, &onRowCountCalled,
-                                           &onColumnCountCalled, &onDataCalled, &onSetDataCalled,
-                                           &onRoleNamesCalled, &onFlagsCalled, &onHeaderDataCalled), &dos_qobject_delete)
+MockQAbstractItemModel::MockQAbstractItemModel()
+    : m_vptr(nullptr, &dos_qobject_delete)
     , m_names({"John", "Mary", "Andy", "Anna"})
 {
+    DosQAbstractItemModelCallbacks callbacks;
+    callbacks.rowCount = &onRowCountCalled;
+    callbacks.columnCount = &onColumnCountCalled;
+    callbacks.data = &onDataCalled;
+    callbacks.setData = &onSetDataCalled;
+    callbacks.roleNames = &onRoleNamesCalled;
+    callbacks.flags = &onFlagsCalled;
+    callbacks.headerData = &onHeaderDataCalled;
+    callbacks.index = &onIndexCalled;
+    callbacks.parent = &onParentCalled;
 
+    m_vptr.reset(dos_qabstractitemmodel_create(this, metaObject(), &onSlotCalled, &callbacks));
 }
 
-DosQMetaObject *MockQAbstractListModel::metaObject()
+DosQMetaObject *MockQAbstractItemModel::metaObject()
 {
     static VoidPointer result = initializeMetaObject();
     return result.get();
 }
 
-DosQObject *MockQAbstractListModel::data()
+DosQObject *MockQAbstractItemModel::data()
 {
     return m_vptr.get();
 }
 
-string MockQAbstractListModel::objectName() const
+string MockQAbstractItemModel::objectName() const
 {
     CharPointer result (dos_qobject_objectName(m_vptr.get()), &dos_chararray_delete);
     return string(result.get());
 }
 
-void MockQAbstractListModel::setObjectName(const string &objectName)
+void MockQAbstractItemModel::setObjectName(const string &objectName)
 {
     dos_qobject_setObjectName(m_vptr.get(), objectName.c_str());
 }
 
-string MockQAbstractListModel::name() const
+string MockQAbstractItemModel::name() const
 {
     return m_name;
 }
 
-void MockQAbstractListModel::setName(const string &name)
+void MockQAbstractItemModel::setName(const string &name)
 {
     if (m_name == name)
         return;
@@ -107,7 +118,7 @@ void MockQAbstractListModel::setName(const string &name)
     nameChanged(name);
 }
 
-void MockQAbstractListModel::nameChanged(const string &name)
+void MockQAbstractItemModel::nameChanged(const string &name)
 {
     int argc = 1;
     DosQVariant* argv[1];
@@ -116,9 +127,9 @@ void MockQAbstractListModel::nameChanged(const string &name)
     dos_qvariant_delete(argv[0]);
 }
 
-void MockQAbstractListModel::onSlotCalled(void *selfVPtr, DosQVariant *dosSlotNameVariant, int dosSlotArgc, DosQVariant **dosSlotArgv)
+void MockQAbstractItemModel::onSlotCalled(void *selfVPtr, DosQVariant *dosSlotNameVariant, int dosSlotArgc, DosQVariant **dosSlotArgv)
 {
-    auto self = static_cast<MockQAbstractListModel*>(selfVPtr);
+    auto self = static_cast<MockQAbstractItemModel*>(selfVPtr);
     string slotName = toStringFromQVariant(dosSlotNameVariant);
 
     if (slotName == "name") {
@@ -133,21 +144,22 @@ void MockQAbstractListModel::onSlotCalled(void *selfVPtr, DosQVariant *dosSlotNa
     }
 }
 
-void MockQAbstractListModel::onRowCountCalled(void *selfVPtr, const DosQModelIndex *index, int *result)
+void MockQAbstractItemModel::onRowCountCalled(void *selfVPtr, const DosQModelIndex *index, int *result)
 {
-    auto self = static_cast<MockQAbstractListModel*>(selfVPtr);
+    auto self = static_cast<MockQAbstractItemModel*>(selfVPtr);
     *result = self->m_names.size();
 }
 
-void MockQAbstractListModel::onColumnCountCalled(void *selfVPtr, const DosQModelIndex *index, int *result)
+void MockQAbstractItemModel::onColumnCountCalled(void *selfVPtr, const DosQModelIndex *index, int *result)
 {
-    auto self = static_cast<MockQAbstractListModel*>(selfVPtr);
+    auto self = static_cast<MockQAbstractItemModel*>(selfVPtr);
+    Q_UNUSED(self)
     *result = 1;
 }
 
-void MockQAbstractListModel::onDataCalled(void *selfVPtr, const DosQModelIndex *index, int role, DosQVariant *result)
+void MockQAbstractItemModel::onDataCalled(void *selfVPtr, const DosQModelIndex *index, int role, DosQVariant *result)
 {
-    auto self = static_cast<MockQAbstractListModel*>(selfVPtr);
+    auto self = static_cast<MockQAbstractItemModel*>(selfVPtr);
 
     if (!dos_qmodelindex_isValid(index))
         return;
@@ -161,9 +173,9 @@ void MockQAbstractListModel::onDataCalled(void *selfVPtr, const DosQModelIndex *
     dos_qvariant_setString(result, self->m_names[row].c_str());
 }
 
-void MockQAbstractListModel::onSetDataCalled(void *selfVPtr, const DosQModelIndex *index, const DosQVariant *value, int role, bool *result)
+void MockQAbstractItemModel::onSetDataCalled(void *selfVPtr, const DosQModelIndex *index, const DosQVariant *value, int role, bool *result)
 {
-    auto self = static_cast<MockQAbstractListModel*>(selfVPtr);
+    auto self = static_cast<MockQAbstractItemModel*>(selfVPtr);
     *result = false;
 
     if (!dos_qmodelindex_isValid(index))
@@ -176,22 +188,37 @@ void MockQAbstractListModel::onSetDataCalled(void *selfVPtr, const DosQModelInde
         return;
 
     self->m_names[row] = toStringFromQVariant(value);
-    dos_qabstractlistmodel_dataChanged(self->data(), index, index, 0, 0);
+    dos_qabstractitemmodel_dataChanged(self->data(), index, index, 0, 0);
 
     *result = true;
 }
 
-void MockQAbstractListModel::onRoleNamesCalled(void *selfVPtr, DosQHashIntQByteArray *result)
+void MockQAbstractItemModel::onRoleNamesCalled(void *selfVPtr, DosQHashIntQByteArray *result)
 {
 
 }
 
-void MockQAbstractListModel::onFlagsCalled(void *selfVPtr, const DosQModelIndex *index, int *result)
+void MockQAbstractItemModel::onFlagsCalled(void *selfVPtr, const DosQModelIndex *index, int *result)
 {
 
 }
 
-void MockQAbstractListModel::onHeaderDataCalled(void *selfVPtr, int section, int orientation, int role, DosQVariant *result)
+void MockQAbstractItemModel::onHeaderDataCalled(void *selfVPtr, int section, int orientation, int role, DosQVariant *result)
 {
 
+}
+
+void MockQAbstractItemModel::onIndexCalled(void *selfVPtr, int row, int column, const DosQModelIndex *parent, DosQModelIndex *result)
+{
+    auto self = static_cast<MockQAbstractItemModel*>(selfVPtr);
+    auto index = dos_qabstractitemmodel_createIndex(self->data(), row, column, 0);
+    dos_qmodelindex_assign(result, index);
+    dos_qmodelindex_delete(index);
+}
+
+void MockQAbstractItemModel::onParentCalled(void *selfVPtr, const DosQModelIndex *child, DosQModelIndex *result)
+{
+    auto index = dos_qmodelindex_create();
+    dos_qmodelindex_assign(result, index);
+    dos_qmodelindex_delete(index);
 }

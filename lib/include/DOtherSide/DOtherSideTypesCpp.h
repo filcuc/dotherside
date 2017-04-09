@@ -12,46 +12,59 @@
 
 namespace DOS {
 
+struct ParameterDefinition {
+    ParameterDefinition(const ::ParameterDefinition &definition)
+        : name(QString::fromUtf8(definition.name))
+        , metaType(static_cast<QMetaType::Type>(definition.metaType))
+    {}
+
+    QString name;
+    QMetaType::Type metaType;
+};
+
 struct SignalDefinition {
     SignalDefinition(QString n,
-                     std::vector<QMetaType::Type> v)
+                     std::vector<ParameterDefinition> v)
         : name(std::move(n))
         , returnType(QMetaType::Void)
-        , parameterTypes(std::move(v))
+        , parameters(std::move(v))
     {}
 
     SignalDefinition(::SignalDefinition cType)
         : name(QString::fromUtf8(cType.name))
+        , returnType(QMetaType::Void)
     {
-        for (int type : wrap_array(cType.parametersMetaTypes, cType.parametersCount))
-            parameterTypes.emplace_back(QMetaType::Type(type));
+        parameters.reserve(cType.parametersCount);
+        for (int i = 0; i < cType.parametersCount; ++i)
+            parameters.emplace_back(cType.parameters[i]);
     }
 
     QString name;
     QMetaType::Type returnType;
-    std::vector<QMetaType::Type> parameterTypes;
+    std::vector<ParameterDefinition> parameters;
 };
 
 struct SlotDefinition {
     SlotDefinition(QString n,
                    QMetaType::Type t,
-                   std::vector<QMetaType::Type> v)
+                   std::vector<ParameterDefinition> v)
         : name(std::move(n))
         , returnType(std::move(t))
-        , parameterTypes(std::move(v))
+        , parameters(std::move(v))
     {}
 
     SlotDefinition(::SlotDefinition cType)
         : name(QString::fromUtf8(cType.name))
         , returnType(QMetaType::Type(cType.returnMetaType))
     {
-        for (int type : wrap_array(cType.parametersMetaTypes, cType.parametersCount))
-            parameterTypes.emplace_back(QMetaType::Type(type));
+        parameters.reserve(cType.parametersCount);
+        for (int i = 0; i < cType.parametersCount; ++i)
+            parameters.emplace_back(cType.parameters[i]);
     }
 
     QString name;
     QMetaType::Type returnType;
-    std::vector<QMetaType::Type> parameterTypes;
+    std::vector<ParameterDefinition> parameters;
 };
 
 struct PropertyDefinition {

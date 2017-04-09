@@ -3,17 +3,17 @@
 #include "private/qmetaobjectbuilder_p.h"
 #include "private/qmetaobject_p.h"
 #include "private/qobject_p.h"
-#include <QtCore/QAbstractListModel>
+#include <QtCore/QAbstractItemModel>
 
 namespace {
 
 QList<QByteArray> createParameterNames(const DOS::SignalDefinition &signal)
 {
     QList<QByteArray> result;
-    size_t size = signal.parameterTypes.size();
-    result.reserve(size);
-    for (size_t i = 0; i < size; ++i)
-        result << QString("arg%1").arg(i).toUtf8();
+    const auto &parameters = signal.parameters;
+    result.reserve(parameters.size());
+    for (size_t i = 0; i < parameters.size(); ++i)
+        result << parameters[i].name.toUtf8();
     return result;
 }
 
@@ -23,12 +23,12 @@ QByteArray createSignature(const T &functionDefinition)
     QString signature("%1(%2)");
     QString arguments;
 
-    const auto &parameters = functionDefinition.parameterTypes;
+    const auto &parameters = functionDefinition.parameters;
 
     for (size_t i = 0; i < parameters.size(); ++i) {
         if (i != 0)
             arguments += ",";
-        arguments += QMetaType::typeName(parameters[i]);
+        arguments += QMetaType::typeName(parameters[i].metaType);
     }
 
     return signature.arg(functionDefinition.name, arguments).toUtf8();
@@ -41,19 +41,18 @@ Value valueOrDefault(std::unordered_map<Key, Value> const &map, const Key &k, Va
     return it != std::end(map) ? it->second : std::move(value);
 }
 
-QMetaObject *createDynamicQObjectMetaObject()
-{
-    QMetaObjectBuilder builder;
-    builder.setClassName("DosQObject");
-    builder.setSuperClass(&QObject::staticMetaObject);
-    return builder.toMetaObject();
-}
+template<class T> const char* className();
+template<> const char* className<QObject>() { return "DosQObject"; }
+template<> const char* className<QAbstractItemModel>() { return "DosQAbstractItemModel"; }
+template<> const char* className<QAbstractListModel>() { return "DosQAbstractListModel"; }
+template<> const char* className<QAbstractTableModel>() { return "DosQAbstractTableModel"; }
 
-QMetaObject *createDynamicQAbstractListModelMetaObject()
+template <class T>
+QMetaObject *createDynamicMetaObject()
 {
     QMetaObjectBuilder builder;
-    builder.setClassName("DosQAbstractListModel");
-    builder.setSuperClass(&QAbstractListModel::staticMetaObject);
+    builder.setClassName(className<T>());
+    builder.setSuperClass(&T::staticMetaObject);
     return builder.toMetaObject();
 }
 
@@ -91,12 +90,19 @@ const DosIQMetaObject *BaseDosQMetaObject::superClassDosMetaObject() const
 }
 
 DosQObjectMetaObject::DosQObjectMetaObject()
-    : BaseDosQMetaObject(::createDynamicQObjectMetaObject())
+    : BaseDosQMetaObject(::createDynamicMetaObject<QObject>())
 {}
 
-DosQAbstractListModelMetaObject::DosQAbstractListModelMetaObject()
-    : BaseDosQMetaObject(::createDynamicQAbstractListModelMetaObject())
+template<class T>
+DosQAbstractGenericModelMetaObject<T>::DosQAbstractGenericModelMetaObject()
+    : BaseDosQMetaObject(::createDynamicMetaObject<T>())
 {}
+
+// Force template instantations
+template class DosQAbstractGenericModelMetaObject<QAbstractItemModel>;
+template class DosQAbstractGenericModelMetaObject<QAbstractListModel>;
+template class DosQAbstractGenericModelMetaObject<QAbstractTableModel>;
+
 
 DosQMetaObject::DosQMetaObject(DosIQMetaObjectPtr superClassMetaObject,
                                const QString &className,

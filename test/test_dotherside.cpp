@@ -19,10 +19,10 @@
 #include <DOtherSide/DosQObject.h>
 #include <DOtherSide/DosQMetaObject.h>
 #include <DOtherSide/DosQObject.h>
-#include <DOtherSide/DosQAbstractListModel.h>
+#include <DOtherSide/DosQAbstractItemModel.h>
 
 #include "MockQObject.h"
-#include "MockQAbstractListModel.h"
+#include "MockQAbstractItemModel.h"
 
 using namespace std;
 using namespace DOS;
@@ -424,16 +424,16 @@ private:
 };
 
 /*
- * Test QAbstractListModel
+ * Test QAbstractItemModel
  */
-class TestQAbstractListModel : public QObject
+class TestQAbstractItemModel : public QObject
 {
     Q_OBJECT
 
 private slots:
     void init()
     {
-        testObject.reset(new MockQAbstractListModel());
+        testObject.reset(new MockQAbstractItemModel());
         testObject->setObjectName("testObject");
         testObject->setName("foo");
 
@@ -516,7 +516,7 @@ private slots:
 
 private:
     QString value;
-    unique_ptr<MockQAbstractListModel> testObject;
+    unique_ptr<MockQAbstractItemModel> testObject;
     unique_ptr<QQmlApplicationEngine> engine;
 };
 
@@ -697,7 +697,7 @@ int main(int argc, char *argv[])
     success &= ExecuteGuiTest<TestQQmlApplicationEngine>(argc, argv);
     success &= ExecuteGuiTest<TestQQmlContext>(argc, argv);
     success &= ExecuteGuiTest<TestQObject>(argc, argv);
-    success &= ExecuteGuiTest<TestQAbstractListModel>(argc, argv);
+    success &= ExecuteGuiTest<TestQAbstractItemModel>(argc, argv);
     success &= ExecuteGuiTest<TestQDeclarativeIntegration>(argc, argv);
     success &= ExecuteGuiTest<TestQQuickView>(argc, argv);
     return success ? 0 : 1;

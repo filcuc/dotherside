@@ -31,8 +31,14 @@ typedef void DosQVariant;
 /// A pointer to a QModelIndex
 typedef void DosQModelIndex;
 
+/// A pointer to a QAbstractItemModel
+typedef void DosQAbstractItemModel;
+
 /// A pointer to a QAbstractListModel
 typedef void DosQAbstractListModel;
+
+/// A pointer to a QAbstractTableModel
+typedef void DosQAbstractTableModel;
 
 /// A pointer to a QQmlApplicationEngine
 typedef void DosQQmlApplicationEngine;
@@ -68,41 +74,56 @@ typedef void DosQObject;
 /// \note The \p argv array is owned by the library thus it \b shouldn't be deleted
 typedef void (DOS_CALL *DObjectCallback)(void *self, DosQVariant *slotName, int argc, DosQVariant **argv);
 
-/// Called when the QAbstractListModel::rowCount method must be executed
-/// \param self The pointer of the QAbstractListModel in the binded language
+/// Called when the QAbstractItemModel::rowCount method must be executed
+/// \param self The pointer of the QAbstractItemModel in the binded language
 /// \param index The parent DosQModelIndex
 /// \param[out] result The rowCount result. This must be deferenced and filled from the binded language
 /// \note The \p parent QModelIndex is owned by the DOtherSide library thus it \b shouldn't be deleted
 /// \note The \p result arg is an out parameter so it should be deleted
 typedef void (DOS_CALL *RowCountCallback)(void *self, const DosQModelIndex *parent, int *result);
 
-/// Called when the QAbstractListModel::columnCount method must be executed
-/// \param self The pointer to the QAbstractListModel in the binded language
+/// Called when the QAbstractItemModel::columnCount method must be executed
+/// \param self The pointer to the QAbstractItemModel in the binded language
 /// \param index The parent DosQModelIndex
 /// \param[out] result The rowCount result. This must be deferenced and filled from the binded language
 /// \note The \p parent QModelIndex is owned by the DOtherSide library thus it \b shouldn't be deleted
 /// \note The \p result arg is an out parameter so it should be deleted
 typedef void (DOS_CALL *ColumnCountCallback)(void *self, const DosQModelIndex *parent, int *result);
 
-/// Called when the QAbstractListModel::data method must be executed
-/// \param self The pointer to the QAbstractListModel in the binded language
+/// Called when the QAbstractItemModel::data method must be executed
+/// \param self The pointer to the QAbstractItemModel in the binded language
 /// \param index The DosQModelIndex to which we request the data
 /// \param[out] result The DosQVariant result. This must be deferenced and filled from the binded language.
 /// \note The \p index QModelIndex is owned by the DOtherSide library thus it \b shouldn't be deleted
 /// \note The \p result arg is an out parameter so it should be deleted
 typedef void (DOS_CALL *DataCallback)(void *self, const DosQModelIndex *index, int role, DosQVariant *result);
 
-/// Called when the QAbstractListModel::setData method must be executed
+/// Called when the QAbstractItemModel::setData method must be executed
 typedef void (DOS_CALL *SetDataCallback)(void *self, const DosQModelIndex *index, const DosQVariant *value, int role, bool *result);
 
-/// Called when the QAbstractListModel::roleNames method must be executed
+/// Called when the QAbstractItemModel::roleNames method must be executed
 typedef void (DOS_CALL *RoleNamesCallback)(void *self, DosQHashIntQByteArray *result);
 
-/// Called when the QAbstractListModel::flags method must be called
+/// Called when the QAbstractItemModel::flags method must be called
 typedef void (DOS_CALL *FlagsCallback)(void *self, const DosQModelIndex *index, int *result);
 
-/// Called when the QAbstractListModel::headerData method must be called
+/// Called when the QAbstractItemModel::headerData method must be called
 typedef void (DOS_CALL *HeaderDataCallback)(void *self, int section, int orientation, int role, DosQVariant *result);
+
+/// Called when the QAbstractItemModel::index method must be called
+typedef void (DOS_CALL *IndexCallback)(void *self, int row, int column, const DosQModelIndex *parent, DosQModelIndex *result);
+
+/// Called when the QAbstractItemModel::parent method must be called
+typedef void (DOS_CALL *ParentCallback)(void *self, const DosQModelIndex *child, DosQModelIndex *result);
+
+/// Called when the QAbstractItemModel::hasChildren method must be called
+typedef void (DOS_CALL *HasChildrenCallback)(void *self, const DosQModelIndex *parent, bool *result);
+
+/// Called when the QAbstractItemModel::canFetchMore method must be called
+typedef void (DOS_CALL *CanFetchMoreCallback)(void *self, const DosQModelIndex *parent, bool *result);
+
+/// Called when the QAbstractItemModel::fetchMore method must be called
+typedef void (DOS_CALL *FetchMoreCallback)(void *self, const DosQModelIndex *parent);
 
 /// Callback called from QML for creating a registered type
 /**
@@ -199,14 +220,26 @@ struct QmlRegisterType {
 typedef struct QmlRegisterType QmlRegisterType;
 #endif
 
+/// Represents a parameter definition
+struct ParameterDefinition {
+    /// The parameter name
+    const char* name;
+    /// The parameter metatype
+    int metaType;
+};
+
+#ifndef __cplusplus
+typedef struct ParameterDefinition ParameterDefinition;
+#endif
+
 /// Represents a single signal definition
 struct SignalDefinition {
     /// The signal name
     const char *name;
-    /// The signal parameters count
+    /// The parameters count
     int parametersCount;
-    /// The signal parameters metatypes
-    int *parametersMetaTypes;
+    /// The parameters
+    ParameterDefinition *parameters;
 };
 
 #ifndef __cplusplus
@@ -217,7 +250,7 @@ typedef struct SignalDefinition SignalDefinition;
 struct SignalDefinitions {
     /// The total number of signals
     int count;
-    /// The signal definitions array
+    /// The signals
     SignalDefinition *definitions;
 };
 
@@ -231,10 +264,10 @@ struct SlotDefinition {
     const char *name;
     /// The slot return type
     int returnMetaType;
-    /// The slot parameters count
+    /// The parameters count
     int parametersCount;
-    /// The slot parameters metatypes
-    int *parametersMetaTypes;
+    /// The parameters
+    ParameterDefinition *parameters;
 };
 
 #ifndef __cplusplus
@@ -283,6 +316,27 @@ struct PropertyDefinitions {
 
 #ifndef __cplusplus
 typedef struct PropertyDefinitions PropertyDefinitions;
+#endif
+
+/// Incapsulate all the QAbstractItemModel callbacks
+struct DosQAbstractItemModelCallbacks
+{
+    RowCountCallback rowCount;
+    ColumnCountCallback columnCount;
+    DataCallback data;
+    SetDataCallback setData;
+    RoleNamesCallback roleNames;
+    FlagsCallback flags;
+    HeaderDataCallback headerData;
+    IndexCallback index;
+    ParentCallback parent;
+    HasChildrenCallback hasChildren;
+    CanFetchMoreCallback canFetchMore;
+    FetchMoreCallback fetchMore;
+};
+
+#ifndef __cplusplus
+typedef struct DosQAbstractItemModelCallbacks DosQAbstractItemModelCallbacks;
 #endif
 
 #ifdef __cplusplus
