@@ -268,6 +268,13 @@ bool DosQAbstractListModel::defaultHasChildren(const QModelIndex &parent) const
     return parent.isValid() ? false : (rowCount() > 0);
 }
 
+DosQAbstractListModel::DosQAbstractListModel(void *modelObject,
+                                             DosIQMetaObjectPtr metaObject,
+                                             OnSlotExecuted onSlotExecuted,
+                                             DosQAbstractItemModelCallbacks callbacks)
+    : DosQAbstractGenericModel(modelObject, metaObject, onSlotExecuted, callbacks)
+{}
+
 QModelIndex DosQAbstractListModel::defaultParent(const QModelIndex &child) const
 {
     return QModelIndex();
@@ -285,10 +292,21 @@ bool DosQAbstractTableModel::defaultHasChildren(const QModelIndex &parent) const
     return false;
 }
 
+DosQAbstractTableModel::DosQAbstractTableModel(void *modelObject, DosIQMetaObjectPtr metaObject, OnSlotExecuted onSlotExecuted, DosQAbstractItemModelCallbacks callbacks)
+    : DosQAbstractGenericModel(modelObject, metaObject, onSlotExecuted, callbacks)
+{}
+
 QModelIndex DosQAbstractTableModel::defaultParent(const QModelIndex &child) const
 {
     return QModelIndex();
 }
+
+DosQAbstractItemModel::DosQAbstractItemModel(void *modelObject,
+                                             DosIQMetaObjectPtr metaObject,
+                                             OnSlotExecuted onSlotExecuted,
+                                             DosQAbstractItemModelCallbacks callbacks)
+    : DosQAbstractGenericModel(modelObject, metaObject, onSlotExecuted, callbacks)
+{}
 
 bool DosQAbstractItemModel::defaultHasChildren(const QModelIndex &parent) const
 {
