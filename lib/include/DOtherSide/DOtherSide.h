@@ -251,7 +251,7 @@ DOS_API DosQVariant *DOS_CALL dos_qvariant_create_double(double value);
 /// \param size The size of the QVariant array
 /// \param array The array of QVariant that will be inserted in the inner QVariantList
 /// \note The \p array is owned by the caller thus it will not be deleted
-DOS_API DosQVariant *DOS_CALL dos_qvariant_create_array(int size, DosQVariant** array);
+DOS_API DosQVariant *DOS_CALL dos_qvariant_create_array(int size, DosQVariant **array);
 
 /// \brief Calls the QVariant::setValue<int>() function
 /// \param vptr The QVariant
@@ -289,7 +289,7 @@ DOS_API void DOS_CALL dos_qvariant_setQObject(DosQVariant *vptr, DosQObject *val
 /// \param vptr The QVariant
 /// \param size The size of the \p array
 /// \param array The array of QVariant use for setting the inner QVariantList
-DOS_API void DOS_CALL dos_qvariant_setArray(DosQVariant *vptr, int size, DosQVariant** array);
+DOS_API void DOS_CALL dos_qvariant_setArray(DosQVariant *vptr, int size, DosQVariant **array);
 
 /// \brief Calls the QVariant::isNull function
 /// \return True if the QVariant is null, false otherwise
@@ -334,7 +334,7 @@ DOS_API double DOS_CALL dos_qvariant_toDouble(const DosQVariant *vptr);
 /// \brief Calls the QVariant::value<QVariantList>() function
 /// \param vptr The QVariant
 /// \return The QVariantList value as an array
-DOS_API DosQVariantArray* DOS_CALL dos_qvariant_toArray(const DosQVariant *vptr);
+DOS_API DosQVariantArray *DOS_CALL dos_qvariant_toArray(const DosQVariant *vptr);
 
 /// \brief Calls the QVariant::value<QObject*>() function
 /// \param vptr The QVariant
@@ -389,19 +389,19 @@ DOS_API DosQMetaObject *DOS_CALL dos_qabstractlistmodel_qmetaobject();
 DOS_API DosQAbstractListModel *DOS_CALL dos_qabstractlistmodel_create(void *callbackObject,
                                                                       DosQMetaObject *metaObject,
                                                                       DObjectCallback dObjectCallback,
-                                                                      DosQAbstractItemModelCallbacks* callbacks);
+                                                                      DosQAbstractItemModelCallbacks *callbacks);
 
 /// \brief Calls the default QAbstractListModel::index() function
 DOS_API DosQModelIndex *DOS_CALL dos_qabstractlistmodel_index(DosQAbstractListModel *vptr,
-                                                              int row, int column, DosQModelIndex* parent);
+                                                              int row, int column, DosQModelIndex *parent);
 
 /// \brief Calls the default QAbstractListModel::parent() function
 DOS_API DosQModelIndex *DOS_CALL dos_qabstractlistmodel_parent(DosQAbstractListModel *vptr,
-                                                               DosQModelIndex* child);
+                                                               DosQModelIndex *child);
 
 /// \brief Calls the default QAbstractListModel::columnCount() function
 DOS_API int DOS_CALL dos_qabstractlistmodel_columnCount(DosQAbstractListModel *vptr,
-                                                        DosQModelIndex* parent);
+                                                        DosQModelIndex *parent);
 
 /// @}
 
@@ -420,17 +420,17 @@ DOS_API DosQMetaObject *DOS_CALL dos_qabstracttablemodel_qmetaobject();
 /// \param dObjectCallback The callback for handling the properties read/write and slots execution
 /// \param callbacks The QAbstractItemModel callbacks
 DOS_API DosQAbstractTableModel *DOS_CALL dos_qabstracttablemodel_create(void *callbackObject,
-                                                                       DosQMetaObject *metaObject,
-                                                                       DObjectCallback dObjectCallback,
-                                                                       DosQAbstractItemModelCallbacks* callbacks);
+                                                                        DosQMetaObject *metaObject,
+                                                                        DObjectCallback dObjectCallback,
+                                                                        DosQAbstractItemModelCallbacks *callbacks);
 
 /// \brief Calls the default QAbstractTableModel::index() function
 DOS_API DosQModelIndex *DOS_CALL dos_qabstracttablemodel_index(DosQAbstractTableModel *vptr,
-                                                               int row, int column, DosQModelIndex* parent);
+                                                               int row, int column, DosQModelIndex *parent);
 
 /// \brief Calls the default QAbstractTableModel::parent() function
 DOS_API DosQModelIndex *DOS_CALL dos_qabstracttablemodel_parent(DosQAbstractTableModel *vptr,
-                                                                DosQModelIndex* child);
+                                                                DosQModelIndex *child);
 
 /// @}
 
@@ -452,28 +452,28 @@ DOS_API DosQMetaObject *DOS_CALL dos_qabstractitemmodel_qmetaobject();
 DOS_API DosQAbstractItemModel *DOS_CALL dos_qabstractitemmodel_create(void *callbackObject,
                                                                       DosQMetaObject *metaObject,
                                                                       DObjectCallback dObjectCallback,
-                                                                      DosQAbstractItemModelCallbacks* callbacks);
+                                                                      DosQAbstractItemModelCallbacks *callbacks);
 
 /// \brief Calls the QAbstractItemModel::setData function
-DOS_API bool DOS_CALL dos_qabstractitemmodel_setData(DosQAbstractItemModel *vptr, DosQModelIndex* index, DosQVariant* data, int role);
+DOS_API bool DOS_CALL dos_qabstractitemmodel_setData(DosQAbstractItemModel *vptr, DosQModelIndex *index, DosQVariant *data, int role);
 
 /// \brief Calls the QAbstractItemModel::roleNames function
 DOS_API DosQHashIntQByteArray *DOS_CALL dos_qabstractitemmodel_roleNames(DosQAbstractItemModel *vptr);
 
 /// \brief Calls the QAbstractItemModel::flags function
-DOS_API int DOS_CALL dos_qabstractitemmodel_flags(DosQAbstractItemModel *vptr, DosQModelIndex* index);
+DOS_API int DOS_CALL dos_qabstractitemmodel_flags(DosQAbstractItemModel *vptr, DosQModelIndex *index);
 
 /// \brief Calls the QAbstractItemModel::headerData function
 DOS_API DosQVariant *DOS_CALL dos_qabstractitemmodel_headerData(DosQAbstractItemModel *vptr, int section, int orientation, int role);
 
 /// \brief Calls the QAbstractItemModel::hasChildren function
-DOS_API bool DOS_CALL dos_qabstractitemmodel_hasChildren(DosQAbstractItemModel *vptr, DosQModelIndex* parentIndex);
+DOS_API bool DOS_CALL dos_qabstractitemmodel_hasChildren(DosQAbstractItemModel *vptr, DosQModelIndex *parentIndex);
 
 /// \brief Calls the QAbstractItemModel::canFetchMore function
-DOS_API bool DOS_CALL dos_qabstractitemmodel_canFetchMore(DosQAbstractItemModel *vptr, DosQModelIndex* parentIndex);
+DOS_API bool DOS_CALL dos_qabstractitemmodel_canFetchMore(DosQAbstractItemModel *vptr, DosQModelIndex *parentIndex);
 
 /// \brief Calls the QAbstractItemModel::fetchMore function
-DOS_API void DOS_CALL dos_qabstractitemmodel_fetchMore(DosQAbstractItemModel *vptr, DosQModelIndex* parentIndex);
+DOS_API void DOS_CALL dos_qabstractitemmodel_fetchMore(DosQAbstractItemModel *vptr, DosQModelIndex *parentIndex);
 
 /// \brief Calls the QAbstractItemModel::beginInsertRows() function
 /// \param vptr The QAbstractItemModel
@@ -550,14 +550,14 @@ DOS_API DosQModelIndex *DOS_CALL dos_qabstractitemmodel_createIndex(DosQAbstract
 
 /// \brief Calls the default QAbstractItemModel::setData() function
 DOS_API bool DOS_CALL dos_qabstractitemmodel_setData(DosQAbstractItemModel *vptr,
-                                                     DosQModelIndex* index, DosQVariant* value, int role);
+                                                     DosQModelIndex *index, DosQVariant *value, int role);
 
 /// \brief Calls the default QAbstractItemModel::roleNames() function
 DOS_API DosQHashIntQByteArray *DOS_CALL dos_qabstractitemmodel_roleNames(DosQAbstractItemModel *vptr);
 
 /// \brief Calls the default QAbstractItemModel::flags() function
 DOS_API int DOS_CALL dos_qabstractitemmodel_flags(DosQAbstractItemModel *vptr,
-                                                  DosQModelIndex* index);
+                                                  DosQModelIndex *index);
 
 /// \brief Calls the default QAbstractItemModel::headerData() function
 DOS_API DosQVariant *DOS_CALL dos_qabstractitemmodel_headerData(DosQAbstractItemModel *vptr,

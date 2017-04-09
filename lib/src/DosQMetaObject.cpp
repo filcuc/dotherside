@@ -41,11 +41,23 @@ Value valueOrDefault(std::unordered_map<Key, Value> const &map, const Key &k, Va
     return it != std::end(map) ? it->second : std::move(value);
 }
 
-template<class T> const char* className();
-template<> const char* className<QObject>() { return "DosQObject"; }
-template<> const char* className<QAbstractItemModel>() { return "DosQAbstractItemModel"; }
-template<> const char* className<QAbstractListModel>() { return "DosQAbstractListModel"; }
-template<> const char* className<QAbstractTableModel>() { return "DosQAbstractTableModel"; }
+template<class T> const char *className();
+template<> const char *className<QObject>()
+{
+    return "DosQObject";
+}
+template<> const char *className<QAbstractItemModel>()
+{
+    return "DosQAbstractItemModel";
+}
+template<> const char *className<QAbstractListModel>()
+{
+    return "DosQAbstractListModel";
+}
+template<> const char *className<QAbstractTableModel>()
+{
+    return "DosQAbstractTableModel";
+}
 
 template <class T>
 QMetaObject *createDynamicMetaObject()

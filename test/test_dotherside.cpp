@@ -95,7 +95,7 @@ private slots:
  */
 class TestQVariant : public QObject
 {
-Q_OBJECT
+    Q_OBJECT
 
 private slots:
     void testCreate()
@@ -159,7 +159,7 @@ private slots:
         VoidPointer data(dos_qvariant_create_string("Foo"), &dos_qvariant_delete);
         Q_ASSERT(data.get());
         QCOMPARE(dos_qvariant_isnull(data.get()), false);
-        char* value = dos_qvariant_toString(data.get());
+        char *value = dos_qvariant_toString(data.get());
         std::string copy (value);
         dos_chararray_delete(value);
         QCOMPARE(copy, std::string("Foo"));
@@ -184,17 +184,18 @@ private slots:
         QVERIFY(value == nullptr);
     }
 
-    void testArray() {
-        std::vector<DosQVariant*> data ({
-           dos_qvariant_create_int(10),
-           dos_qvariant_create_double(4.3),
-           dos_qvariant_create_bool(false),
-           dos_qvariant_create_string("FooBar")
+    void testArray()
+    {
+        std::vector<DosQVariant *> data ({
+            dos_qvariant_create_int(10),
+            dos_qvariant_create_double(4.3),
+            dos_qvariant_create_bool(false),
+            dos_qvariant_create_string("FooBar")
         });
 
         VoidPointer variant (dos_qvariant_create_array(data.size(), &data[0]), &dos_qvariant_delete);
 
-        DosQVariantArray* array = dos_qvariant_toArray(variant.get());
+        DosQVariantArray *array = dos_qvariant_toArray(variant.get());
         QVERIFY(array);
         QCOMPARE(int(data.size()), array->size);
         QCOMPARE(dos_qvariant_toInt(array->data[0]), int(10));
@@ -214,7 +215,8 @@ class TestQUrl : public QObject
     Q_OBJECT
 
 private slots:
-    void testCreate() {
+    void testCreate()
+    {
         const string testUrl("http://www.qt.io");
         VoidPointer url(dos_qurl_create(testUrl.c_str(), QUrl::StrictMode), &dos_qurl_delete);
         QVERIFY(url.get());
@@ -369,7 +371,7 @@ private slots:
         testObject->setName("foo");
 
         engine.reset(new QQmlApplicationEngine());
-        engine->rootContext()->setContextProperty("testObject", QVariant::fromValue<QObject*>(static_cast<QObject*>(testObject->data())));
+        engine->rootContext()->setContextProperty("testObject", QVariant::fromValue<QObject *>(static_cast<QObject *>(testObject->data())));
         engine->load(QUrl("qrc:///testQObject.qml"));
     }
 
@@ -379,8 +381,9 @@ private slots:
         testObject.reset();
     }
 
-    void testObjectName() {
-        QObject* testCase = engine->rootObjects().first();
+    void testObjectName()
+    {
+        QObject *testCase = engine->rootObjects().first();
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testObjectName", Q_RETURN_ARG(QVariant, result)));
@@ -390,7 +393,7 @@ private slots:
 
     void testPropertyReadAndWrite()
     {
-        QObject* testCase = engine->rootObjects().first();
+        QObject *testCase = engine->rootObjects().first();
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testPropertyReadAndWrite", Q_RETURN_ARG(QVariant, result)));
@@ -400,7 +403,7 @@ private slots:
 
     void testSignalEmittion()
     {
-        QObject* testCase = engine->rootObjects().first();
+        QObject *testCase = engine->rootObjects().first();
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testSignalEmittion", Q_RETURN_ARG(QVariant, result)));
@@ -408,8 +411,9 @@ private slots:
         QVERIFY(result.toBool());
     }
 
-    void testArrayProperty() {
-        QObject* testCase = engine->rootObjects().first();
+    void testArrayProperty()
+    {
+        QObject *testCase = engine->rootObjects().first();
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testArrayProperty", Q_RETURN_ARG(QVariant, result)));
@@ -438,7 +442,7 @@ private slots:
         testObject->setName("foo");
 
         engine.reset(new QQmlApplicationEngine());
-        engine->rootContext()->setContextProperty("testObject", QVariant::fromValue<QObject*>(static_cast<QObject*>(testObject->data())));
+        engine->rootContext()->setContextProperty("testObject", QVariant::fromValue<QObject *>(static_cast<QObject *>(testObject->data())));
         engine->load(QUrl("qrc:///testQAbstractItemModel.qml"));
     }
 
@@ -448,8 +452,9 @@ private slots:
         testObject.reset();
     }
 
-    void testObjectName() {
-        QObject* testCase = engine->rootObjects().first();
+    void testObjectName()
+    {
+        QObject *testCase = engine->rootObjects().first();
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testObjectName", Q_RETURN_ARG(QVariant, result)));
@@ -459,7 +464,7 @@ private slots:
 
     void testPropertyReadAndWrite()
     {
-        QObject* testCase = engine->rootObjects().first();
+        QObject *testCase = engine->rootObjects().first();
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testPropertyReadAndWrite", Q_RETURN_ARG(QVariant, result)));
@@ -469,7 +474,7 @@ private slots:
 
     void testSignalEmittion()
     {
-        QObject* testCase = engine->rootObjects().first();
+        QObject *testCase = engine->rootObjects().first();
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testSignalEmittion", Q_RETURN_ARG(QVariant, result)));
@@ -477,8 +482,9 @@ private slots:
         QVERIFY(result.toBool());
     }
 
-    void testRowCount() {
-        QObject* testCase = engine->rootObjects().first();
+    void testRowCount()
+    {
+        QObject *testCase = engine->rootObjects().first();
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testRowCount", Q_RETURN_ARG(QVariant, result)));
@@ -486,8 +492,9 @@ private slots:
         QVERIFY(result.toBool());
     }
 
-    void testColumnCount() {
-        QObject* testCase = engine->rootObjects().first();
+    void testColumnCount()
+    {
+        QObject *testCase = engine->rootObjects().first();
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testColumnCount", Q_RETURN_ARG(QVariant, result)));
@@ -495,8 +502,9 @@ private slots:
         QVERIFY(result.toBool());
     }
 
-    void testData() {
-        QObject* testCase = engine->rootObjects().first();
+    void testData()
+    {
+        QObject *testCase = engine->rootObjects().first();
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testData", Q_RETURN_ARG(QVariant, result)));
@@ -504,8 +512,9 @@ private slots:
         QVERIFY(result.toBool());
     }
 
-    void testSetData() {
-        QObject* testCase = engine->rootObjects().first();
+    void testSetData()
+    {
+        QObject *testCase = engine->rootObjects().first();
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testSetData", Q_RETURN_ARG(QVariant, result)));
@@ -528,7 +537,8 @@ class TestQDeclarativeIntegration : public QObject
     Q_OBJECT
 
 private slots:
-    void testQmlRegisterType() {
+    void testQmlRegisterType()
+    {
         ::QmlRegisterType registerType;
         registerType.major = 1;
         registerType.minor = 0;
@@ -542,7 +552,7 @@ private slots:
         auto engine = make_unique<QQmlApplicationEngine>();
         engine->load(QUrl("qrc:///testQDeclarative.qml"));
 
-        QObject* testCase = engine->rootObjects().first();
+        QObject *testCase = engine->rootObjects().first();
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testQmlRegisterType", Q_RETURN_ARG(QVariant, result)));
@@ -550,7 +560,8 @@ private slots:
         QVERIFY(result.toBool());
     }
 
-    void testQmlRegisterSingletonType() {
+    void testQmlRegisterSingletonType()
+    {
         ::QmlRegisterType registerType;
         registerType.major = 1;
         registerType.minor = 0;
@@ -564,7 +575,7 @@ private slots:
         auto engine = make_unique<QQmlApplicationEngine>();
         engine->load(QUrl("qrc:///testQDeclarative.qml"));
 
-        QObject* testCase = engine->rootObjects().first();
+        QObject *testCase = engine->rootObjects().first();
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testQmlRegisterSingletonType", Q_RETURN_ARG(QVariant, result)));
@@ -584,11 +595,11 @@ private:
 
     static void mockQObjectDeleter(int typeId, void *mockQObject)
     {
-        auto temp = static_cast<MockQObject*>(mockQObject);
+        auto temp = static_cast<MockQObject *>(mockQObject);
         delete temp;
     }
 
-    static void emptyVoidDeleter(void*) {}
+    static void emptyVoidDeleter(void *) {}
 };
 
 
@@ -600,13 +611,15 @@ class TestQModelIndex : public QObject
     Q_OBJECT
 
 private slots:
-    void testCreate() {
+    void testCreate()
+    {
         VoidPointer index (dos_qmodelindex_create(), &dos_qmodelindex_delete);
         QVERIFY(index.get());
         QVERIFY(!dos_qmodelindex_isValid(index.get()));
     }
 
-    void testRow() {
+    void testRow()
+    {
 
         VoidPointer index (dos_qmodelindex_create(), &dos_qmodelindex_delete);
         QVERIFY(index.get());
@@ -614,7 +627,8 @@ private slots:
         QCOMPARE(dos_qmodelindex_row(index.get()), -1);
     }
 
-    void testColumn() {
+    void testColumn()
+    {
 
         VoidPointer index (dos_qmodelindex_create(), &dos_qmodelindex_delete);
         QVERIFY(index.get());
@@ -622,7 +636,8 @@ private slots:
         QCOMPARE(dos_qmodelindex_column(index.get()), -1);
     }
 
-    void testParent() {
+    void testParent()
+    {
 
         VoidPointer index (dos_qmodelindex_create(), &dos_qmodelindex_delete);
         QVERIFY(index.get());
@@ -632,7 +647,8 @@ private slots:
         QVERIFY(!dos_qmodelindex_isValid(parentIndex.get()));
     }
 
-    void testChild() {
+    void testChild()
+    {
         VoidPointer index (dos_qmodelindex_create(), &dos_qmodelindex_delete);
         QVERIFY(index.get());
         QVERIFY(!dos_qmodelindex_isValid(index.get()));
@@ -641,7 +657,8 @@ private slots:
         QVERIFY(!dos_qmodelindex_isValid(childIndex.get()));
     }
 
-    void testSibling() {
+    void testSibling()
+    {
         VoidPointer index (dos_qmodelindex_create(), &dos_qmodelindex_delete);
         QVERIFY(index.get());
         QVERIFY(!dos_qmodelindex_isValid(index.get()));
@@ -650,7 +667,8 @@ private slots:
         QVERIFY(!dos_qmodelindex_isValid(siblingIndex.get()));
     }
 
-    void testData() {
+    void testData()
+    {
         VoidPointer index (dos_qmodelindex_create(), &dos_qmodelindex_delete);
         QVERIFY(index.get());
         QVERIFY(!dos_qmodelindex_isValid(index.get()));
@@ -668,12 +686,14 @@ class TestQQuickView : public QObject
     Q_OBJECT
 
 private slots:
-    void testCreate() {
+    void testCreate()
+    {
         VoidPointer view(dos_qquickview_create(), &dos_qquickview_delete);
         QVERIFY(view.get());
     }
 
-    void testSourceAndSetSource() {
+    void testSourceAndSetSource()
+    {
         std::string testUrl = "qrc:/testQQuickView.qml";
         VoidPointer view(dos_qquickview_create(), &dos_qquickview_delete);
         VoidPointer url(dos_qurl_create(testUrl.c_str(), QUrl::StrictMode), &dos_qurl_delete);

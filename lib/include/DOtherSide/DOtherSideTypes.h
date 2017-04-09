@@ -175,7 +175,7 @@ typedef void (DOS_CALL *CreateDObject)(int id, void *wrapper, void **bindedQObje
  * \param bindedQObject This is the pointer you given in the CreateDObject callback and you can use it
  * for obtaining the QObject in your binded language. This allows you to unpin/unref it or delete it.
  */
-typedef void (DOS_CALL *DeleteDObject)(int id, void * bindedQObject);
+typedef void (DOS_CALL *DeleteDObject)(int id, void *bindedQObject);
 
 /// \brief Store an array of QVariant
 /// \note This struct should be freed by calling dos_qvariantarray_delete(DosQVariantArray *ptr). This in turn
@@ -184,7 +184,7 @@ struct DosQVariantArray {
     /// The number of elements
     int size;
     /// The array
-    DosQVariant** data;
+    DosQVariant **data;
 };
 
 #ifndef __cplusplus
@@ -223,7 +223,7 @@ typedef struct QmlRegisterType QmlRegisterType;
 /// Represents a parameter definition
 struct ParameterDefinition {
     /// The parameter name
-    const char* name;
+    const char *name;
     /// The parameter metatype
     int metaType;
 };
@@ -319,8 +319,7 @@ typedef struct PropertyDefinitions PropertyDefinitions;
 #endif
 
 /// Incapsulate all the QAbstractItemModel callbacks
-struct DosQAbstractItemModelCallbacks
-{
+struct DosQAbstractItemModelCallbacks {
     RowCountCallback rowCount;
     ColumnCountCallback columnCount;
     DataCallback data;

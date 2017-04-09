@@ -6,8 +6,8 @@
 #include <DOtherSide/DOtherSide.h>
 
 extern "C" {
-    typedef void (*VoidDeleter)(void*);
-    typedef void (*CharDeleter)(char*);
+    typedef void (*VoidDeleter)(void *);
+    typedef void (*CharDeleter)(char *);
 }
 
 using VoidPointer = std::unique_ptr<void, VoidDeleter>;

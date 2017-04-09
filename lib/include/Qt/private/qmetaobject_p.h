@@ -114,7 +114,7 @@ enum MetaDataFlags {
     TypeNameIndexMask = 0x7FFFFFFF
 };
 
-extern int qMetaTypeTypeInternal(const char*);
+extern int qMetaTypeTypeInternal(const char *);
 
 class QArgumentType
 {
@@ -122,7 +122,7 @@ public:
     QArgumentType(int type)
         : _type(type)
     {}
-    QArgumentType(const QByteArray& name)
+    QArgumentType(const QByteArray &name)
         : _type(qMetaTypeTypeInternal(name.constData())), _name(name)
     {}
     QArgumentType()
@@ -135,10 +135,10 @@ public:
     QByteArray name() const
     {
         if (_type && _name.isEmpty())
-            const_cast<QArgumentType*>(this)->_name = QMetaType::typeName(_type);
+            const_cast<QArgumentType *>(this)->_name = QMetaType::typeName(_type);
         return _name;
     }
-    bool operator==(const QArgumentType& other) const
+    bool operator==(const QArgumentType &other) const
     {
         if (_type)
             return _type == other._type;
@@ -147,7 +147,7 @@ public:
         else
             return _name == other._name;
     }
-    bool operator!=(const QArgumentType& other) const
+    bool operator!=(const QArgumentType &other) const
     {
         if (_type)
             return _type != other._type;
@@ -167,8 +167,7 @@ typedef QVarLengthArray<QArgumentType, 10> QArgumentTypeArray;
 class QMetaMethodPrivate;
 class QMutex;
 
-struct QMetaObjectPrivate
-{
+struct QMetaObjectPrivate {
     enum { OutputRevision = 7 }; // Used by moc, qmetaobjectbuilder and qdbus
 
     int revision;
@@ -184,57 +183,57 @@ struct QMetaObjectPrivate
     // revision 6 added qt_static_metacall as a member of each Q_OBJECT and inside QMetaObject itself
     // revision 7 is Qt 5
 
-    static inline const QMetaObjectPrivate* get(const QMetaObject* metaobject)
+    static inline const QMetaObjectPrivate *get(const QMetaObject *metaobject)
     {
-        return reinterpret_cast<const QMetaObjectPrivate*>(metaobject->d.data);
+        return reinterpret_cast<const QMetaObjectPrivate *>(metaobject->d.data);
     }
 
-    static int originalClone(const QMetaObject* obj, int local_method_index);
+    static int originalClone(const QMetaObject *obj, int local_method_index);
 
-    static QByteArray decodeMethodSignature(const char* signature,
-                                            QArgumentTypeArray& types);
-    static int indexOfSignalRelative(const QMetaObject** baseObject,
-                                     const QByteArray& name, int argc,
-                                     const QArgumentType* types);
-    static int indexOfSlotRelative(const QMetaObject** m,
-                                   const QByteArray& name, int argc,
-                                   const QArgumentType* types);
-    static int indexOfSignal(const QMetaObject* m, const QByteArray& name,
-                             int argc, const QArgumentType* types);
-    static int indexOfSlot(const QMetaObject* m, const QByteArray& name,
-                           int argc, const QArgumentType* types);
-    static int indexOfMethod(const QMetaObject* m, const QByteArray& name,
-                             int argc, const QArgumentType* types);
-    static int indexOfConstructor(const QMetaObject* m, const QByteArray& name,
-                                  int argc, const QArgumentType* types);
-    Q_CORE_EXPORT static QMetaMethod signal(const QMetaObject* m, int signal_index);
-    Q_CORE_EXPORT static int signalOffset(const QMetaObject* m);
-    Q_CORE_EXPORT static int absoluteSignalCount(const QMetaObject* m);
-    Q_CORE_EXPORT static int signalIndex(const QMetaMethod& m);
-    static bool checkConnectArgs(int signalArgc, const QArgumentType* signalTypes,
-                                 int methodArgc, const QArgumentType* methodTypes);
-    static bool checkConnectArgs(const QMetaMethodPrivate* signal,
-                                 const QMetaMethodPrivate* method);
+    static QByteArray decodeMethodSignature(const char *signature,
+                                            QArgumentTypeArray &types);
+    static int indexOfSignalRelative(const QMetaObject **baseObject,
+                                     const QByteArray &name, int argc,
+                                     const QArgumentType *types);
+    static int indexOfSlotRelative(const QMetaObject **m,
+                                   const QByteArray &name, int argc,
+                                   const QArgumentType *types);
+    static int indexOfSignal(const QMetaObject *m, const QByteArray &name,
+                             int argc, const QArgumentType *types);
+    static int indexOfSlot(const QMetaObject *m, const QByteArray &name,
+                           int argc, const QArgumentType *types);
+    static int indexOfMethod(const QMetaObject *m, const QByteArray &name,
+                             int argc, const QArgumentType *types);
+    static int indexOfConstructor(const QMetaObject *m, const QByteArray &name,
+                                  int argc, const QArgumentType *types);
+    Q_CORE_EXPORT static QMetaMethod signal(const QMetaObject *m, int signal_index);
+    Q_CORE_EXPORT static int signalOffset(const QMetaObject *m);
+    Q_CORE_EXPORT static int absoluteSignalCount(const QMetaObject *m);
+    Q_CORE_EXPORT static int signalIndex(const QMetaMethod &m);
+    static bool checkConnectArgs(int signalArgc, const QArgumentType *signalTypes,
+                                 int methodArgc, const QArgumentType *methodTypes);
+    static bool checkConnectArgs(const QMetaMethodPrivate *signal,
+                                 const QMetaMethodPrivate *method);
 
-    static QList<QByteArray> parameterTypeNamesFromSignature(const char* signature);
+    static QList<QByteArray> parameterTypeNamesFromSignature(const char *signature);
 
 #ifndef QT_NO_QOBJECT
     //defined in qobject.cpp
     enum DisconnectType { DisconnectAll, DisconnectOne };
-    static void memberIndexes(const QObject* obj, const QMetaMethod& member,
-                              int* signalIndex, int* methodIndex);
-    static QObjectPrivate::Connection* connect(const QObject* sender, int signal_index,
-            const QMetaObject* smeta,
-            const QObject* receiver, int method_index_relative,
-            const QMetaObject* rmeta = 0,
-            int type = 0, int* types = 0);
-    static bool disconnect(const QObject* sender, int signal_index,
-                           const QMetaObject* smeta,
-                           const QObject* receiver, int method_index, void** slot,
+    static void memberIndexes(const QObject *obj, const QMetaMethod &member,
+                              int *signalIndex, int *methodIndex);
+    static QObjectPrivate::Connection *connect(const QObject *sender, int signal_index,
+                                               const QMetaObject *smeta,
+                                               const QObject *receiver, int method_index_relative,
+                                               const QMetaObject *rmeta = 0,
+                                               int type = 0, int *types = 0);
+    static bool disconnect(const QObject *sender, int signal_index,
+                           const QMetaObject *smeta,
+                           const QObject *receiver, int method_index, void **slot,
                            DisconnectType = DisconnectAll);
-    static inline bool disconnectHelper(QObjectPrivate::Connection* c,
-                                        const QObject* receiver, int method_index, void** slot,
-                                        QMutex* senderMutex, DisconnectType = DisconnectAll);
+    static inline bool disconnectHelper(QObjectPrivate::Connection *c,
+                                        const QObject *receiver, int method_index, void **slot,
+                                        QMutex *senderMutex, DisconnectType = DisconnectAll);
 #endif
 };
 

@@ -3,71 +3,73 @@
 
 using namespace std;
 
-namespace
+namespace {
+std::string toStringFromQVariant(const DosQVariant *variant)
 {
-    std::string toStringFromQVariant(const DosQVariant* variant) {
-        CharPointer charArray(dos_qvariant_toString(variant), &dos_chararray_delete);
-        return std::string(charArray.get());
-    }
+    CharPointer charArray(dos_qvariant_toString(variant), &dos_chararray_delete);
+    return std::string(charArray.get());
+}
 
-    VoidPointer initializeMetaObject()
-    {
-        void* superClassMetaObject = dos_qabstractitemmodel_qmetaobject();
+VoidPointer initializeMetaObject()
+{
+    void *superClassMetaObject = dos_qabstractitemmodel_qmetaobject();
 
-        // Signals
-        ::SignalDefinition signalDefinitionArray[1];
+    // Signals
+    ::SignalDefinition signalDefinitionArray[1];
 
-        ParameterDefinition nameChanged[1];
-        nameChanged[0].metaType = QMetaType::QString;
-        nameChanged[0].name = "name";
-        signalDefinitionArray[0].name = "nameChanged";
-        signalDefinitionArray[0].parametersCount = 1;
-        signalDefinitionArray[0].parameters = nameChanged;
+    ParameterDefinition nameChanged[1];
+    nameChanged[0].metaType = QMetaType::QString;
+    nameChanged[0].name = "name";
+    signalDefinitionArray[0].name = "nameChanged";
+    signalDefinitionArray[0].parametersCount = 1;
+    signalDefinitionArray[0].parameters = nameChanged;
 
-        ::SignalDefinitions signalDefinitions;
-        signalDefinitions.count = 1;
-        signalDefinitions.definitions = signalDefinitionArray;
+    ::SignalDefinitions signalDefinitions;
+    signalDefinitions.count = 1;
+    signalDefinitions.definitions = signalDefinitionArray;
 
-        // Slots
-        ::SlotDefinition slotDefinitionArray[2];
+    // Slots
+    ::SlotDefinition slotDefinitionArray[2];
 
-        slotDefinitionArray[0].name = "name";
-        slotDefinitionArray[0].returnMetaType = QMetaType::QString;
-        slotDefinitionArray[0].parametersCount = 0;
-        slotDefinitionArray[0].parameters = nullptr;
+    slotDefinitionArray[0].name = "name";
+    slotDefinitionArray[0].returnMetaType = QMetaType::QString;
+    slotDefinitionArray[0].parametersCount = 0;
+    slotDefinitionArray[0].parameters = nullptr;
 
-        slotDefinitionArray[1].name = "setName";
-        slotDefinitionArray[1].returnMetaType = QMetaType::Void;
-        ParameterDefinition setNameParameters[1];
-        setNameParameters[0].name = "name";
-        setNameParameters[0].metaType = QMetaType::QString;
-        slotDefinitionArray[1].parametersCount = 1;
-        slotDefinitionArray[1].parameters = setNameParameters;
+    slotDefinitionArray[1].name = "setName";
+    slotDefinitionArray[1].returnMetaType = QMetaType::Void;
+    ParameterDefinition setNameParameters[1];
+    setNameParameters[0].name = "name";
+    setNameParameters[0].metaType = QMetaType::QString;
+    slotDefinitionArray[1].parametersCount = 1;
+    slotDefinitionArray[1].parameters = setNameParameters;
 
-        ::SlotDefinitions slotDefinitions;
-        slotDefinitions.count = 2;
-        slotDefinitions.definitions = slotDefinitionArray;
+    ::SlotDefinitions slotDefinitions;
+    slotDefinitions.count = 2;
+    slotDefinitions.definitions = slotDefinitionArray;
 
-        // Properties
-        ::PropertyDefinition propertyDefinitionArray[1];
-        propertyDefinitionArray[0].name = "name";
-        propertyDefinitionArray[0].notifySignal = "nameChanged";
-        propertyDefinitionArray[0].propertyMetaType = QMetaType::QString;
-        propertyDefinitionArray[0].readSlot = "name";
-        propertyDefinitionArray[0].writeSlot = "setName";
+    // Properties
+    ::PropertyDefinition propertyDefinitionArray[1];
+    propertyDefinitionArray[0].name = "name";
+    propertyDefinitionArray[0].notifySignal = "nameChanged";
+    propertyDefinitionArray[0].propertyMetaType = QMetaType::QString;
+    propertyDefinitionArray[0].readSlot = "name";
+    propertyDefinitionArray[0].writeSlot = "setName";
 
-        ::PropertyDefinitions propertyDefinitions;
-        propertyDefinitions.count = 1;
-        propertyDefinitions.definitions = propertyDefinitionArray;
+    ::PropertyDefinitions propertyDefinitions;
+    propertyDefinitions.count = 1;
+    propertyDefinitions.definitions = propertyDefinitionArray;
 
-        return VoidPointer(dos_qmetaobject_create(superClassMetaObject, "MockQAbstractListModel", &signalDefinitions, &slotDefinitions, &propertyDefinitions),
-                           &dos_qmetaobject_delete);
-    }
+    return VoidPointer(dos_qmetaobject_create(superClassMetaObject, "MockQAbstractListModel", &signalDefinitions, &slotDefinitions, &propertyDefinitions),
+                       &dos_qmetaobject_delete);
+}
 }
 
 MockQAbstractItemModel::MockQAbstractItemModel()
     : m_vptr(nullptr, &dos_qobject_delete)
-    , m_names({"John", "Mary", "Andy", "Anna"})
+    , m_names(
+{"John", "Mary", "Andy", "Anna"
+})
 {
     DosQAbstractItemModelCallbacks callbacks;
     callbacks.rowCount = &onRowCountCalled;
@@ -121,7 +123,7 @@ void MockQAbstractItemModel::setName(const string &name)
 void MockQAbstractItemModel::nameChanged(const string &name)
 {
     int argc = 1;
-    DosQVariant* argv[1];
+    DosQVariant *argv[1];
     argv[0] = dos_qvariant_create_string(name.c_str());
     dos_qobject_signal_emit(m_vptr.get(), "nameChanged", argc, argv);
     dos_qvariant_delete(argv[0]);
@@ -129,7 +131,7 @@ void MockQAbstractItemModel::nameChanged(const string &name)
 
 void MockQAbstractItemModel::onSlotCalled(void *selfVPtr, DosQVariant *dosSlotNameVariant, int dosSlotArgc, DosQVariant **dosSlotArgv)
 {
-    auto self = static_cast<MockQAbstractItemModel*>(selfVPtr);
+    auto self = static_cast<MockQAbstractItemModel *>(selfVPtr);
     string slotName = toStringFromQVariant(dosSlotNameVariant);
 
     if (slotName == "name") {
@@ -146,20 +148,20 @@ void MockQAbstractItemModel::onSlotCalled(void *selfVPtr, DosQVariant *dosSlotNa
 
 void MockQAbstractItemModel::onRowCountCalled(void *selfVPtr, const DosQModelIndex *index, int *result)
 {
-    auto self = static_cast<MockQAbstractItemModel*>(selfVPtr);
+    auto self = static_cast<MockQAbstractItemModel *>(selfVPtr);
     *result = self->m_names.size();
 }
 
 void MockQAbstractItemModel::onColumnCountCalled(void *selfVPtr, const DosQModelIndex *index, int *result)
 {
-    auto self = static_cast<MockQAbstractItemModel*>(selfVPtr);
+    auto self = static_cast<MockQAbstractItemModel *>(selfVPtr);
     Q_UNUSED(self)
     *result = 1;
 }
 
 void MockQAbstractItemModel::onDataCalled(void *selfVPtr, const DosQModelIndex *index, int role, DosQVariant *result)
 {
-    auto self = static_cast<MockQAbstractItemModel*>(selfVPtr);
+    auto self = static_cast<MockQAbstractItemModel *>(selfVPtr);
 
     if (!dos_qmodelindex_isValid(index))
         return;
@@ -175,7 +177,7 @@ void MockQAbstractItemModel::onDataCalled(void *selfVPtr, const DosQModelIndex *
 
 void MockQAbstractItemModel::onSetDataCalled(void *selfVPtr, const DosQModelIndex *index, const DosQVariant *value, int role, bool *result)
 {
-    auto self = static_cast<MockQAbstractItemModel*>(selfVPtr);
+    auto self = static_cast<MockQAbstractItemModel *>(selfVPtr);
     *result = false;
 
     if (!dos_qmodelindex_isValid(index))
@@ -210,7 +212,7 @@ void MockQAbstractItemModel::onHeaderDataCalled(void *selfVPtr, int section, int
 
 void MockQAbstractItemModel::onIndexCalled(void *selfVPtr, int row, int column, const DosQModelIndex *parent, DosQModelIndex *result)
 {
-    auto self = static_cast<MockQAbstractItemModel*>(selfVPtr);
+    auto self = static_cast<MockQAbstractItemModel *>(selfVPtr);
     auto index = dos_qabstractitemmodel_createIndex(self->data(), row, column, 0);
     dos_qmodelindex_assign(result, index);
     dos_qmodelindex_delete(index);
