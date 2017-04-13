@@ -524,6 +524,12 @@ void dos_qmodelindex_assign(::DosQModelIndex *l, const ::DosQModelIndex *r)
     *li = *ri;
 }
 
+void *dos_qmodelindex_internalPointer(DosQModelIndex *vptr)
+{
+    auto index = static_cast<const QModelIndex *>(vptr);
+    return index->internalPointer();
+}
+
 ::DosQHashIntQByteArray *dos_qhash_int_qbytearray_create()
 {
     return new QHash<int, QByteArray>();

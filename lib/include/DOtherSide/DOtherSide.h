@@ -691,7 +691,13 @@ DOS_API DosQModelIndex *DOS_CALL dos_qmodelindex_sibling(const DosQModelIndex *v
 /// \brief Calls the QModelIndex::operator=(const QModelIndex&) function
 /// \param l The left side QModelIndex
 /// \param r The right side QModelIndex
-DOS_API void DOS_CALL dos_qmodelindex_assign (DosQModelIndex *l, const DosQModelIndex *r);
+DOS_API void DOS_CALL dos_qmodelindex_assign(DosQModelIndex *l, const DosQModelIndex *r);
+
+/// \brief Calls the QModelIndex::internalPointer function
+/// \param vptr The QModelIndex
+/// \return The internal pointer
+DOS_API void* DOS_CALL dos_qmodelindex_internalPointer(DosQModelIndex *vptr);
+
 
 /// @}
 
