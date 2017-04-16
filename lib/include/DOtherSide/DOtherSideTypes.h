@@ -119,6 +119,9 @@ typedef void (DOS_CALL *ParentCallback)(void *self, const DosQModelIndex *child,
 /// Called when the QAbstractItemModel::hasChildren method must be called
 typedef void (DOS_CALL *HasChildrenCallback)(void *self, const DosQModelIndex *parent, bool *result);
 
+/// Called when the QAbstractItemModel::hasIndex method must be called
+typedef void (DOS_CALL *HasIndexCallback)(void *self, int row, int column, const DosQModelIndex *parent, bool *result);
+
 /// Called when the QAbstractItemModel::canFetchMore method must be called
 typedef void (DOS_CALL *CanFetchMoreCallback)(void *self, const DosQModelIndex *parent, bool *result);
 
@@ -330,6 +333,7 @@ struct DosQAbstractItemModelCallbacks {
     IndexCallback index;
     ParentCallback parent;
     HasChildrenCallback hasChildren;
+    HasIndexCallback hasIndex;
     CanFetchMoreCallback canFetchMore;
     FetchMoreCallback fetchMore;
 };

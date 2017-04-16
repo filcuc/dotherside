@@ -846,6 +846,14 @@ bool dos_qabstractitemmodel_hasChildren(DosQAbstractItemModel *vptr, DosQModelIn
     return model->defaultHasChildren(*parentIndex);
 }
 
+bool dos_qabstractitemmodel_hasIndex(DosQAbstractItemModel *vptr, int row, int column, DosQModelIndex *dosParentIndex)
+{
+    auto object = static_cast<QObject *>(vptr);
+    auto model = dynamic_cast<DOS::DosIQAbstractItemModelImpl *>(object);
+    auto parentIndex = static_cast<QModelIndex *>(dosParentIndex);
+    return model->defaultHasIndex(row, column, *parentIndex);
+}
+
 bool dos_qabstractitemmodel_canFetchMore(DosQAbstractItemModel *vptr, DosQModelIndex *dosParentIndex)
 {
     auto object = static_cast<QObject *>(vptr);

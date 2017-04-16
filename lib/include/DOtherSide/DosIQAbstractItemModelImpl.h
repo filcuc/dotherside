@@ -68,6 +68,9 @@ public:
     /// @see QAbstractItemModel::hasChildren
     virtual bool defaultHasChildren(const QModelIndex &parent) const = 0;
 
+    /// @see QAbstractItemModel::hasIndex
+    virtual bool defaultHasIndex(int row, int column, const QModelIndex &parent) const = 0;
+
     /// @see QAbstractItemModel::canFetchMore
     virtual bool defaultCanFetchMore(const QModelIndex &parent) const = 0;
 

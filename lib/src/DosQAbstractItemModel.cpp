@@ -228,6 +228,14 @@ bool DosQAbstractGenericModel<T>::hasChildren(const QModelIndex &parent) const
 }
 
 template<class T>
+bool DosQAbstractGenericModel<T>::hasIndex(int row, int column, const QModelIndex &parent) const
+{
+    bool result = false;
+    m_callbacks.hasIndex(m_modelObject, row, column, &parent, &result);
+    return result;
+}
+
+template<class T>
 bool DosQAbstractGenericModel<T>::canFetchMore(const QModelIndex &parent) const
 {
     bool result = false;
@@ -311,6 +319,11 @@ DosQAbstractItemModel::DosQAbstractItemModel(void *modelObject,
 bool DosQAbstractItemModel::defaultHasChildren(const QModelIndex &parent) const
 {
     return QAbstractItemModel::hasChildren(parent);
+}
+
+bool DosQAbstractItemModel::defaultHasIndex(int row, int column, const QModelIndex &parent) const
+{
+    return QAbstractItemModel::hasIndex(row, column, parent);
 }
 
 } // namespace DOS
