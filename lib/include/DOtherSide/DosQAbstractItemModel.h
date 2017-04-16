@@ -114,6 +114,9 @@ public:
     /// Expose the hasChildren
     bool hasChildren(const QModelIndex &parent = QModelIndex()) const override;
 
+    /// Expose hasIndex
+    bool hasIndex(int row, int column, const QModelIndex &parent = QModelIndex()) const;// override;
+
     /// Expose the canFetchMore
     bool canFetchMore(const QModelIndex &parent) const override;
 
@@ -142,6 +145,7 @@ public:
 
     using DosQAbstractGenericModel::DosQAbstractGenericModel;
     bool defaultHasChildren(const QModelIndex &parent) const override;
+    bool defaultHasIndex(int row, int column, const QModelIndex &parent) const override;
 };
 
 class DosQAbstractTableModel : public DosQAbstractGenericModel<QAbstractTableModel>
@@ -155,6 +159,12 @@ public:
     QModelIndex defaultParent(const QModelIndex &child) const;
     QModelIndex defaultIndex(int row, int column, const QModelIndex &parent = QModelIndex()) const;
     bool defaultHasChildren(const QModelIndex &parent) const override;
+private:
+    bool defaultHasIndex(int row, int column, const QModelIndex &parent) const override
+    {
+        // do nothing
+        return false;
+    }
 };
 
 class DosQAbstractListModel : public DosQAbstractGenericModel<QAbstractListModel>
@@ -169,6 +179,12 @@ public:
     QModelIndex defaultIndex(int row, int column, const QModelIndex &parent = QModelIndex()) const;
     int defaultColumnCount(const QModelIndex &parent) const;
     bool defaultHasChildren(const QModelIndex &parent) const override;
+private:
+    bool defaultHasIndex(int row, int column, const QModelIndex &parent) const override
+    {
+        // do nothing
+        return false;
+    }
 };
 
 } // namespace DOS
