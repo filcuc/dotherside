@@ -469,6 +469,9 @@ DOS_API DosQVariant *DOS_CALL dos_qabstractitemmodel_headerData(DosQAbstractItem
 /// \brief Calls the QAbstractItemModel::hasChildren function
 DOS_API bool DOS_CALL dos_qabstractitemmodel_hasChildren(DosQAbstractItemModel *vptr, DosQModelIndex *parentIndex);
 
+/// \brief Calls the QAbstractItemModel::hasIndex function
+DOS_API bool DOS_CALL dos_qabstractitemmodel_hasIndex(DosQAbstractItemModel *vptr, int row, int column, DosQModelIndex *dosParentIndex);
+
 /// \brief Calls the QAbstractItemModel::canFetchMore function
 DOS_API bool DOS_CALL dos_qabstractitemmodel_canFetchMore(DosQAbstractItemModel *vptr, DosQModelIndex *parentIndex);
 
