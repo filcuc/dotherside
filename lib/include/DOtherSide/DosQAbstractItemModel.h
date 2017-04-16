@@ -114,6 +114,9 @@ public:
     /// Expose the hasChildren
     bool hasChildren(const QModelIndex &parent = QModelIndex()) const override;
 
+    /// Expose hasIndex
+    bool hasIndex(int row, int column, const QModelIndex &parent) const;
+
     /// Expose the canFetchMore
     bool canFetchMore(const QModelIndex &parent) const override;
 

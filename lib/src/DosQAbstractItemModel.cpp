@@ -228,6 +228,12 @@ bool DosQAbstractGenericModel<T>::hasChildren(const QModelIndex &parent) const
 }
 
 template<class T>
+bool DosQAbstractGenericModel<T>::hasIndex(int row, int column, const QModelIndex &parent) const
+{
+    return T::hasIndex(row, column, parent);
+}
+
+template<class T>
 bool DosQAbstractGenericModel<T>::canFetchMore(const QModelIndex &parent) const
 {
     bool result = false;

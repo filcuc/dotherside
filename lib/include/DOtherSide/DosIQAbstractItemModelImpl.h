@@ -73,5 +73,8 @@ public:
 
     /// @see QAbstractItemModel::fetchMore
     virtual void defaultFetchMore(const QModelIndex &parent) = 0;
+
+    ///  @see QAbstractItemModel::hasIndex
+    virtual bool hasIndex(int row, int column, const QModelIndex &parent = QModelIndex()) const = 0;
 };
 } // namespace dos
