@@ -25,7 +25,7 @@ The following features are implementable from a binding language
 Currently we provide the prebuilt binaries for windows through the
 github [releases](https://github.com/filcuc/DOtherSide/releases) page
 
-###Linux
+### Linux
 Currently we provide the prebuilt binaries for the following
 Linux distributions through the [OpenSUSE OBS service](https://build.opensuse.org/package/show/home:filcuc/DOtherSide)
 * ```Archlinux``` : [here](http://software.opensuse.org/download.html?project=home%3Afilcuc&package=DOtherSide)
