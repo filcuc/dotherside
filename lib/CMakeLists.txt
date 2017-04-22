@@ -43,9 +43,15 @@ set(SRC_LIST
 
 include_directories(include include/Qt)
 
+set(major 0)
+set(minor 6)
+set(patch 3)
+
 # Shared version for distributing
 add_library(${PROJECT_NAME} SHARED ${SRC_LIST} ${HEADERS_LIST})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
+set_property(TARGET ${PROJECT_NAME} PROPERTY SOVERSION "${major}.${minor}")
+set_property(TARGET ${PROJECT_NAME} PROPERTY VERSION "${major}.${minor}.${patch}")
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick)
 
 # Static version for testing

@@ -1,3 +1,9 @@
+
+# Version 0.6.3
+* Added soversion and version to CMake
+* Fixed #57: Added support for QModelIndex internal pointer
+* Added support for QAbstractItemModel::hasIndex
+
 # Version 0.6.2
 * Updated appveyor packages by adding 5.8 and removing 5.5 and 5.6
 
