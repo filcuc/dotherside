@@ -157,10 +157,13 @@ QMetaObject *DosQMetaObject::createMetaObject(const QString &className,
     }
 
     for (const PropertyDefinition &property : propertyDefinitions) {
+        const int writer = methodIndexByName.value(property.writeSlot, -1);
         const int notifier = m_signalIndexByName.value(property.notifySignal, -1);
         const QByteArray name = property.name.toUtf8();
         const QByteArray typeName = QMetaObject::normalizedType(QMetaType::typeName(property.type));
         QMetaPropertyBuilder propertyBuilder = builder.addProperty(name, typeName, notifier);
+        if (writer == -1)
+            propertyBuilder.setWritable(false);
         if (notifier == -1)
             propertyBuilder.setConstant(true);
         m_propertySlots[property.name] = qMakePair(methodIndexByName.value(property.readSlot, -1),
