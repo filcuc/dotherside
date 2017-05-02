@@ -73,6 +73,21 @@ DOS_API void DOS_CALL dos_qapplication_quit();
 /// \note A QApplication should have been already created through dos_qapplication_create()
 DOS_API void DOS_CALL dos_qapplication_delete();
 
+/// \brief Calls the QCoreApplication::processEvents() of the current QGuiApplication
+/// Processes all pending events for the calling thread according to the specified flags
+/// until there are no more events to process.
+/// You can call this function occasionally when your program is busy performing a long
+/// operation (e.g. copying a file).
+/// \note A QApplication should have been already created through dos_qapplication_create()
+DOS_API void DOS_CALL dos_qapplication_process_events();
+
+/// \brief Calls the QCoreApplication::sendPostedEvents() of the current QGuiApplication
+/// Immediately dispatches all events which have been previously queued with
+/// QCoreApplication::postEvent().
+/// Events from the window system are not dispatched by this function, but by process_events().
+/// \note A QApplication should have been already created through dos_qapplication_create()
+DOS_API void DOS_CALL dos_qapplication_send_posted_events();
+
 /// @}
 
 /// \defgroup QQmlApplicationEngine QQmlApplicationEngine
