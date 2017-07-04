@@ -5,7 +5,7 @@
 * Added support for QAbstractItemModel::hasIndex
 
 # Version 0.6.2
-* Updated appveyor packages by adding 5.8 and removing 5.5 and 5.6
+* Updated appveyor packages by adding 5.8 and removing 5.5 and 5.7
 
 # Version 0.6.1
 * Fixed compilation on windows with Visual studio 2013 and 2015
