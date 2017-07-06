@@ -33,23 +33,23 @@ extern "C"
 /// \return The QCore::applicationDirPath as a UTF-8 string
 /// \note The returned string should be deleted by the calling code by using
 /// the dos_chararray_delete() function
-DOS_API char *DOS_CALL dos_qcoreapplication_application_dir_path();
+DOS_API char *DOS_CALL dos_qcoreapplication_application_dir_path(void);
 
 /// \brief Create a QGuiApplication
 /// \note The created QGuiApplication should be freed by calling dos_qguiapplication_delete()
-DOS_API void DOS_CALL dos_qguiapplication_create();
+DOS_API void DOS_CALL dos_qguiapplication_create(void);
 
 /// \brief Calls the QGuiApplication::exec() function of the current QGuiApplication
 /// \note A QGuiApplication should have been already created through dos_qguiapplication_create()
-DOS_API void DOS_CALL dos_qguiapplication_exec();
+DOS_API void DOS_CALL dos_qguiapplication_exec(void);
 
 /// \brief Calls the QGuiApplication::quit() function of the current QGuiApplication
 /// \note A QGuiApplication should have been already created through dos_qguiapplication_create()
-DOS_API void DOS_CALL dos_qguiapplication_quit();
+DOS_API void DOS_CALL dos_qguiapplication_quit(void);
 
 /// \brief Free the memory of the current QGuiApplication
 /// \note A QGuiApplication should have been already created through dos_qguiapplication_create()
-DOS_API void DOS_CALL dos_qguiapplication_delete();
+DOS_API void DOS_CALL dos_qguiapplication_delete(void);
 
 /// @}
 
@@ -59,19 +59,19 @@ DOS_API void DOS_CALL dos_qguiapplication_delete();
 
 /// \brief Create a QApplication
 /// \note The created QApplication should be freed by calling dos_qapplication_delete()
-DOS_API void DOS_CALL dos_qapplication_create();
+DOS_API void DOS_CALL dos_qapplication_create(void);
 
 /// \brief Calls the QApplication::exec() function of the current QGuiApplication
 /// \note A QApplication should have been already created through dos_qapplication_create()
-DOS_API void DOS_CALL dos_qapplication_exec();
+DOS_API void DOS_CALL dos_qapplication_exec(void);
 
 /// \brief Calls the QApplication::quit() function of the current QGuiApplication
 /// \note A QApplication should have been already created through dos_qapplication_create()
-DOS_API void DOS_CALL dos_qapplication_quit();
+DOS_API void DOS_CALL dos_qapplication_quit(void);
 
 /// \brief Free the memory of the current QApplication
 /// \note A QApplication should have been already created through dos_qapplication_create()
-DOS_API void DOS_CALL dos_qapplication_delete();
+DOS_API void DOS_CALL dos_qapplication_delete(void);
 
 /// @}
 
@@ -82,7 +82,7 @@ DOS_API void DOS_CALL dos_qapplication_delete();
 /// \brief Create a new QQmlApplicationEngine
 /// \return A new QQmlApplicationEngine
 /// \note The returned QQmlApplicationEngine should be freed by using dos_qqmlapplicationengine_delete(DosQQmlApplicationEngine*)
-DOS_API DosQQmlApplicationEngine *DOS_CALL dos_qqmlapplicationengine_create();
+DOS_API DosQQmlApplicationEngine *DOS_CALL dos_qqmlapplicationengine_create(void);
 
 /// \brief Calls the QQmlApplicationEngine::load function
 /// \param vptr The QQmlApplicationEngine
@@ -125,7 +125,7 @@ DOS_API void DOS_CALL dos_qqmlapplicationengine_delete(DosQQmlApplicationEngine 
 /// \brief Create a new QQuickView
 /// \return A new QQuickView
 /// \note The returned QQuickView should be freed by using dos_qquickview_delete(DosQQuickview*)
-DOS_API DosQQuickView *DOS_CALL dos_qquickview_create();
+DOS_API DosQQuickView *DOS_CALL dos_qquickview_create(void);
 
 /// \brief Calls the QQuickView::show() function
 /// \param vptr The QQuickView
@@ -201,7 +201,7 @@ DOS_API void DOS_CALL dos_qvariantarray_delete(DosQVariantArray *ptr);
 /// \brief Create a new QVariant (null)
 /// \return The a new QVariant
 /// \note The returned QVariant should be freed using dos_qvariant_delete()
-DOS_API DosQVariant *DOS_CALL dos_qvariant_create();
+DOS_API DosQVariant *DOS_CALL dos_qvariant_create(void);
 
 /// \brief Create a new QVariant holding an int value
 /// \return The a new QVariant
@@ -379,7 +379,7 @@ DOS_API void DOS_CALL dos_qmetaobject_delete(DosQMetaObject *vptr);
 /// \brief Return QMetaObject associated to the QAbstractListModel class
 /// \return The QMetaObject of the QAbstractListModel class
 /// \note The returned QMetaObject should be freed using dos_qmetaobject_delete().
-DOS_API DosQMetaObject *DOS_CALL dos_qabstractlistmodel_qmetaobject();
+DOS_API DosQMetaObject *DOS_CALL dos_qabstractlistmodel_qmetaobject(void);
 
 /// \brief Create a new QAbstractListModel
 /// \param callbackObject The pointer of QAbstractListModel in the binded language
@@ -412,7 +412,7 @@ DOS_API int DOS_CALL dos_qabstractlistmodel_columnCount(DosQAbstractListModel *v
 /// \brief Return QMetaObject associated to the QAbstractTableModel class
 /// \return The QMetaObject of the QAbstractTableModel class
 /// \note The returned QMetaObject should be freed using dos_qmetaobject_delete().
-DOS_API DosQMetaObject *DOS_CALL dos_qabstracttablemodel_qmetaobject();
+DOS_API DosQMetaObject *DOS_CALL dos_qabstracttablemodel_qmetaobject(void);
 
 /// \brief Create a new QAbstractTableModel
 /// \param callbackObject The pointer of QAbstractTableModel in the binded language
@@ -441,7 +441,7 @@ DOS_API DosQModelIndex *DOS_CALL dos_qabstracttablemodel_parent(DosQAbstractTabl
 /// \brief Return QMetaObject associated to the QAbstractItemModel class
 /// \return The QMetaObject of the QAbstractItemModel class
 /// \note The returned QMetaObject should be freed using dos_qmetaobject_delete().
-DOS_API DosQMetaObject *DOS_CALL dos_qabstractitemmodel_qmetaobject();
+DOS_API DosQMetaObject *DOS_CALL dos_qabstractitemmodel_qmetaobject(void);
 
 /// \brief Create a new QAbstractItemModel
 /// \param callbackObject The pointer of QAbstractItemModel in the binded language
@@ -548,7 +548,7 @@ DOS_API void DOS_CALL dos_qabstractitemmodel_dataChanged(DosQAbstractItemModel *
 
 /// \brief Calls the QAbstractItemModel::createIndex() function
 DOS_API DosQModelIndex *DOS_CALL dos_qabstractitemmodel_createIndex(DosQAbstractItemModel *vptr,
-                                                                    int row, int column, void *data = 0);
+                                                                    int row, int column, void *data);
 
 
 /// \brief Calls the default QAbstractItemModel::setData() function
@@ -576,7 +576,7 @@ DOS_API DosQVariant *DOS_CALL dos_qabstractitemmodel_headerData(DosQAbstractItem
 /// \brief Return QMetaObject associated to the QObject class
 /// \return The QMetaObject of the QObject class
 /// \note The returned QObject should be freed using dos_qmetaobject_delete().
-DOS_API DosQMetaObject *DOS_CALL dos_qobject_qmetaobject();
+DOS_API DosQMetaObject *DOS_CALL dos_qobject_qmetaobject(void);
 
 /// \brief Create a new QObject
 /// \param dObjectPointer The pointer of the QObject in the binded language
@@ -637,7 +637,7 @@ DOS_API void DOS_CALL dos_qobject_delete(DosQObject *vptr);
 
 /// \brief Create a new QModelIndex()
 /// \note The returned QModelIndex should be freed by calling the dos_qmodelindex_delete() function
-DOS_API DosQModelIndex *DOS_CALL dos_qmodelindex_create();
+DOS_API DosQModelIndex *DOS_CALL dos_qmodelindex_create(void);
 
 /// \brief Create a new QModelIndex() copy constructed with given index
 /// \note The returned QModelIndex should be freed by calling the dos_qmodelindex_delete() function
@@ -712,7 +712,7 @@ DOS_API void* DOS_CALL dos_qmodelindex_internalPointer(DosQModelIndex *vptr);
 /// \return A new QHash<int, QByteArray>
 /// \note The retuned QHash<int, QByteArray> should be freed using
 /// the dos_qhash_int_qbytearray_delete(DosQHashIntQByteArray *) function
-DOS_API DosQHashIntQByteArray *DOS_CALL dos_qhash_int_qbytearray_create();
+DOS_API DosQHashIntQByteArray *DOS_CALL dos_qhash_int_qbytearray_create(void);
 
 /// \brief Free the memory allocated for the QHash<int, QByteArray>
 /// \param vptr The QHash<int, QByteArray>
