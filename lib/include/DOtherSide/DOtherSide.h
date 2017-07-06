@@ -548,7 +548,7 @@ DOS_API void DOS_CALL dos_qabstractitemmodel_dataChanged(DosQAbstractItemModel *
 
 /// \brief Calls the QAbstractItemModel::createIndex() function
 DOS_API DosQModelIndex *DOS_CALL dos_qabstractitemmodel_createIndex(DosQAbstractItemModel *vptr,
-                                                                    int row, int column, void *data = 0);
+                                                                    int row, int column, void *data);
 
 
 /// \brief Calls the default QAbstractItemModel::setData() function
