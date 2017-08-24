@@ -53,12 +53,20 @@ add_library(${PROJECT_NAME} SHARED ${SRC_LIST} ${HEADERS_LIST})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 set_property(TARGET ${PROJECT_NAME} PROPERTY SOVERSION "${major}.${minor}")
 set_property(TARGET ${PROJECT_NAME} PROPERTY VERSION "${major}.${minor}.${patch}")
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick Qt5::QuickControls2)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick)
+
+if(${Qt5QuickControls2_FOUND})
+    target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::QuickControls2)
+endif()
 
 # Static version for testing
 add_library("${PROJECT_NAME}Static" STATIC ${SRC_LIST} ${HEADERS_LIST})
 set_property(TARGET "${PROJECT_NAME}Static" PROPERTY CXX_STANDARD 11)
-target_link_libraries("${PROJECT_NAME}Static" PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick Qt5::QuickControls2)
+target_link_libraries("${PROJECT_NAME}Static" PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick)
+
+if(${Qt5QuickControls2_FOUND})
+    target_link_libraries("${PROJECT_NAME}Static" PRIVATE Qt5::QuickControls2)
+endif()
 
 # Install directive for header files
 install(FILES
