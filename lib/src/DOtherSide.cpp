@@ -11,6 +11,7 @@
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlApplicationEngine>
 #include <QtQuick/QQuickView>
+#include <QtQuickControls2/QQuickStyle>
 #include <QtWidgets/QApplication>
 
 #include "DOtherSide/DOtherSideTypesCpp.h"
@@ -900,4 +901,14 @@ int dos_qdeclarative_qmlregistersingletontype(const ::QmlRegisterType *cArgs)
     args.deleteDObject = cArgs->deleteDObject;
 
     return DOS::dosQmlRegisterSingletonType(std::move(args));
+}
+
+void dos_qquickstyle_set_style(const char *style)
+{
+    QQuickStyle::setStyle(QString::fromUtf8(style));
+}
+
+void dos_qquickstyle_set_fallback_style(const char *style)
+{
+    QQuickStyle::setFallbackStyle(QString::fromUtf8(style));
 }

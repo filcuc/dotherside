@@ -117,6 +117,18 @@ DOS_API void DOS_CALL dos_qqmlapplicationengine_delete(DosQQmlApplicationEngine 
 
 /// @}
 
+/// \defgroup QQuickStyle QQuickStyle
+/// \brief Functions related to the QQuickStyle class
+/// @{
+
+/// \brief Set the QtQuickControls2 style
+DOS_API void DOS_CALL dos_qquickstyle_set_style(const char *style);
+
+/// \brief Set the QtQuickControls2 fallback style
+DOS_API void DOS_CALL dos_qquickstyle_set_fallback_style(const char *style);
+
+/// @}
+
 
 /// \defgroup QQuickView QQuickView
 /// \brief Functions related to the QQuickView class
