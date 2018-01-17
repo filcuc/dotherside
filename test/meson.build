@@ -2,7 +2,7 @@ test_dependencies = dependency('qt5', modules : ['Core', 'Gui', 'Widgets', 'Quic
 test_sources = ['test_dotherside.cpp', 'MockQAbstractItemModel.cpp', 'MockQObject.cpp']
 test_resources = 'Resources.qrc'
 test_include_directories = ['../lib/include', '../lib/include/Qt']
-test_pch = '../pch/test_pch.h'
+test_pch = ['../pch/test_pch.h', '../pch/test_pch.cpp']
 
 qt5 = import('qt5')
 test_moc_files = qt5.preprocess(moc_sources : test_sources, qresources : test_resources)

@@ -11,7 +11,7 @@ lib_sources = [
   'src/OnSlotExecutedHandler.cpp',
 ]
 lib_include_directories = ['include', 'include/Qt']
-lib_pch = '../pch/lib_pch.h'
+lib_pch = ['../pch/lib_pch.h', '../pch/lib_pch.cpp']
 
 lib = shared_library('DOtherSide',
   sources : lib_sources,
