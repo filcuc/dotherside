@@ -64,6 +64,7 @@ typedef void DosQObject;
 /// A pointer to a QQuickImageProvider
 typedef void DosQQuickImageProvider;
 
+/// A pointer to a QPixmap
 typedef void DosPixmap;
 
 struct pixmap_request {
@@ -74,7 +75,7 @@ struct pixmap_request {
     int requestedHeight;
 };
 
-typedef DosPixmap* (*pixmap_cb)(pixmap_request request);
+typedef DosPixmap* (*PixmapCallback)(pixmap_request request);
 
 /// Called when a property is readed/written or a slot should be executed
 /// \param self The pointer of QObject in the binded language

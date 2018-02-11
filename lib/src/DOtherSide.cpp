@@ -137,7 +137,7 @@ void dos_qqmlapplicationengine_add_import_path(::DosQQmlApplicationEngine *vptr,
     return engine->rootContext();
 }
 
-void dos_qqmlapplicationengine_addimageprovider(DosQQmlApplicationEngine *vptr, const char* name, DosQQuickImageProvider *vptr_i)
+void dos_qqmlapplicationengine_addImageProvider(DosQQmlApplicationEngine *vptr, const char* name, DosQQuickImageProvider *vptr_i)
 {
   auto engine = static_cast<QQmlApplicationEngine *>(vptr);
   auto provider = static_cast<DosImageProvider *>(vptr_i);
@@ -162,7 +162,7 @@ void dos_qquickimageprovider_delete(::DosQQuickImageProvider *vptr)
     delete provider;
 }
 
-void dos_qquickimageprovider_registerpixmapcallback(::DosQQuickImageProvider *vptr, pixmap_cb callback) {
+void dos_qquickimageprovider_registerPixmapCallback(::DosQQuickImageProvider *vptr, PixmapCallback callback) {
     auto provider = static_cast<DosImageProvider *>(vptr);
     provider->setPixmapCallback(callback);
 }
@@ -184,7 +184,7 @@ void dos_qpixmap_load(DosPixmap *vptr, const char* filepath, const char* format)
     pixmap->load(QString(filepath), format);
 }
 
-void dos_qpixmap_loadfromdata(DosPixmap *vptr, const unsigned char* data, unsigned int len)
+void dos_qpixmap_loadFromData(DosPixmap *vptr, const unsigned char* data, unsigned int len)
 {
     auto pixmap = static_cast<QPixmap *>(vptr);
     pixmap->loadFromData(data, len);

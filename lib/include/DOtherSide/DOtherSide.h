@@ -114,7 +114,7 @@ DOS_API DosQQmlContext *DOS_CALL dos_qqmlapplicationengine_context(DosQQmlApplic
 /// \brief Calls the QQMLApplicationengine::addImageProvider    
 /// \param vptr The QQmlApplicationEngine
 /// \param vptr_i A QQuickImageProvider, the QQmlApplicationEngine takes ownership of this pointer
-DOS_API void DOS_CALL dos_qqmlapplicationengine_addimageprovider(DosQQmlApplicationEngine *vptr, const char* name, DosQQuickImageProvider *vptr_i);
+DOS_API void DOS_CALL dos_qqmlapplicationengine_addImageProvider(DosQQmlApplicationEngine *vptr, const char* name, DosQQuickImageProvider *vptr_i);
 
 /// \brief Free the memory allocated for the given QQmlApplicationEngine
 /// \param vptr The QQmlApplicationEngine
@@ -133,7 +133,7 @@ DOS_API DosQQuickImageProvider *DOS_CALL dos_qquickimageprovider_create();
 /// \breif Frees a QQuickImageProvider
 DOS_API void DOS_CALL dos_qquickimageprovider_delete(DosQQuickImageProvider *vptr);
 /// \brief Register a callback which provides a new pixmap
-DOS_API void DOS_CALL dos_qquickimageprovider_registerpixmapcallback(DosQQuickImageProvider *vptr, pixmap_cb callback);
+DOS_API void DOS_CALL dos_qquickimageprovider_registerPixmapCallback(DosQQuickImageProvider *vptr, PixmapCallback callback);
 /// @}
 
 /// \defgroup QPixmap QPixmap
@@ -147,7 +147,7 @@ DOS_API void DOS_CALL dos_qpixmap_delete(DosPixmap *vptr);
 /// \brief Load image data into a QPixmap from an image file
 DOS_API void DOS_CALL dos_qpixmap_load(DosPixmap *vptr, const char* filepath, const char* format);
 /// \brief Load image data into a QPixmap from a buffer
-DOS_API void DOS_CALL dos_qpixmap_loadfromdata(DosPixmap *vptr, const unsigned char* data, unsigned int len);
+DOS_API void DOS_CALL dos_qpixmap_loadFromData(DosPixmap *vptr, const unsigned char* data, unsigned int len);
 /// \brief Fill a QPixmap with a single color
 DOS_API void DOS_CALL dos_qpixmap_fill(DosPixmap *vptr, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 /// @}

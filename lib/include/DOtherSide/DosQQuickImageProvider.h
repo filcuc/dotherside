@@ -14,8 +14,8 @@ class DosImageProvider : public QQuickImageProvider
 public:
     DosImageProvider();
     QPixmap requestPixmap(const QString &id, QSize *size, const QSize &requestedSize);
-    void setPixmapCallback(pixmap_cb fn);
+    void setPixmapCallback(PixmapCallback fn);
 
 private:
-    pixmap_cb _pixmap_callback;
+    PixmapCallback m_pixmap_callback;
 };
