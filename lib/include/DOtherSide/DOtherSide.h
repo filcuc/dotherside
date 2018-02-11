@@ -111,9 +111,31 @@ DOS_API void DOS_CALL dos_qqmlapplicationengine_add_import_path(DosQQmlApplicati
 /// the engine and so it should die with the engine.
 DOS_API DosQQmlContext *DOS_CALL dos_qqmlapplicationengine_context(DosQQmlApplicationEngine *vptr);
 
+/// \breif Calls the QQMLApplicationengine::addImageProvider
+/// \param vptr The QQmlApplicationEngine
+/// \param vptr_i A QQuickImageProvider, the QQmlApplicationEngine takes ownership of this pointer
+DOS_API void DOS_CALL dos_qqmlapplicationengine_addimageprovider(DosQQmlApplicationEngine *vptr, DosQQuickImageProvider *vptr_i);
+
 /// \brief Free the memory allocated for the given QQmlApplicationEngine
 /// \param vptr The QQmlApplicationEngine
 DOS_API void DOS_CALL dos_qqmlapplicationengine_delete(DosQQmlApplicationEngine *vptr);
+
+/// @}
+
+/// \defgroup QQmlApplicationEngine QQmlApplicationEngine
+/// \brief Functions related to the QQmlApplicationEngine class
+/// @{
+
+/// \brief Create a new QQuickImageProvider
+/// \return A new QQuickImageProvider
+/// \note The returned QQuickImageProvider should be freed by using dos_qquickimageprovider_delete(DosQQuickImageProvider*) unless the QQuickImageProvider has been bound to a QQmlApplicationEngine
+DOS_API DosQQuickImageProvider *DOS_CALL dos_qquickimageprovider_create();
+/// \breif Frees a QQuickImageProvider
+DOS_API void DOS_CALL dos_qquickimageprovider_delete(DosQQuickImageProvider *vptr);
+DOS_API void DOS_CALL dos_qquickimageprovider_registerpixmapcallback(DosQQuickImageProvider *vptr, pixmap_cb callback);
+DOS_API DosPixmap *DOS_CALL dos_qpixmap_create(int width, int height);
+DOS_API void DOS_CALL dos_qpixmap_delete(DosPixmap *vptr);
+DOS_API void DOS_CALL dos_qpixmap_load(DosPixmap *vptr, const char* filepath, const char* format);
 
 /// @}
 
@@ -130,6 +152,7 @@ DOS_API void DOS_CALL dos_qquickstyle_set_fallback_style(const char *style);
 /// @}
 
 
+  
 /// \defgroup QQuickView QQuickView
 /// \brief Functions related to the QQuickView class
 /// @{

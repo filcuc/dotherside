@@ -61,6 +61,21 @@ typedef void DosQMetaObject;
 /// A pointer to a QObject
 typedef void DosQObject;
 
+/// A pointer to a QQuickImageProvider
+typedef void DosQQuickImageProvider;
+
+typedef void DosPixmap;
+
+struct pixmap_request {
+    const char *id;
+    int *width;
+    int *height;
+    int requestedWidth;
+    int requestedHeight;
+};
+
+typedef DosPixmap* (*pixmap_cb)(pixmap_request request);
+
 /// Called when a property is readed/written or a slot should be executed
 /// \param self The pointer of QObject in the binded language
 /// \param slotName The slotName as DosQVariant

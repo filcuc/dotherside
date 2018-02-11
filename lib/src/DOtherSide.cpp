@@ -11,6 +11,7 @@
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlApplicationEngine>
 #include <QtQuick/QQuickView>
+#include <QQuickImageProvider>
 #ifdef QT_QUICKCONTROLS2_LIB
 #include <QtQuickControls2/QQuickStyle>
 #endif
@@ -23,6 +24,7 @@
 #include "DOtherSide/DosQObjectImpl.h"
 #include "DOtherSide/DosQAbstractItemModel.h"
 #include "DOtherSide/DosQDeclarative.h"
+#include "DOtherSide/DosQQuickImageProvider.h"
 
 namespace {
 void register_meta_types()
@@ -135,10 +137,51 @@ void dos_qqmlapplicationengine_add_import_path(::DosQQmlApplicationEngine *vptr,
     return engine->rootContext();
 }
 
+void dos_qqmlapplicationengine_addimageprovider(DosQQmlApplicationEngine *vptr, DosQQuickImageProvider *vptr_i)
+{
+  auto engine = static_cast<QQmlApplicationEngine *>(vptr);
+  auto provider = static_cast<QQuickImageProvider *>(vptr_i);
+  engine->addImageProvider(QString("test"), provider);
+}
+
 void dos_qqmlapplicationengine_delete(::DosQQmlApplicationEngine *vptr)
 {
     auto engine = static_cast<QQmlApplicationEngine *>(vptr);
     delete engine;
+}
+
+
+::DosQQuickImageProvider *dos_qquickimageprovider_create()
+{
+    return new DosImageProvider();
+}
+
+void dos_qquickimageprovider_delete(::DosQQuickImageProvider *vptr)
+{
+    auto provider = static_cast<QQuickImageProvider *>(vptr);
+    delete provider;
+}
+
+void dos_qquickimageprovider_registerpixmapcallback(::DosQQuickImageProvider *vptr, pixmap_cb callback) {
+    auto provider = static_cast<DosImageProvider *>(vptr);
+    provider->setPixmapCallback(callback);
+}
+
+::DosPixmap *dos_qpixmap_create(int width, int height)
+{
+    return new QPixmap(width, height);
+}
+
+void dos_qpixmap_delete(DosPixmap *vptr)
+{
+    auto pixmap = static_cast<QPixmap *>(vptr);
+    delete pixmap;
+}
+
+void dos_qpixmap_load(DosPixmap *vptr, const char* filepath, const char* format)
+{
+    auto pixmap = static_cast<QPixmap *>(vptr);
+    pixmap->load(QString(filepath), format);
 }
 
 ::DosQQuickView *dos_qquickview_create()
