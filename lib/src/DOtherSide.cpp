@@ -137,11 +137,11 @@ void dos_qqmlapplicationengine_add_import_path(::DosQQmlApplicationEngine *vptr,
     return engine->rootContext();
 }
 
-void dos_qqmlapplicationengine_addimageprovider(DosQQmlApplicationEngine *vptr, DosQQuickImageProvider *vptr_i)
+void dos_qqmlapplicationengine_addimageprovider(DosQQmlApplicationEngine *vptr, const char* name, DosQQuickImageProvider *vptr_i)
 {
   auto engine = static_cast<QQmlApplicationEngine *>(vptr);
-  auto provider = static_cast<QQuickImageProvider *>(vptr_i);
-  engine->addImageProvider(QString("test"), provider);
+  auto provider = static_cast<DosImageProvider *>(vptr_i);
+  engine->addImageProvider(QString(name), provider);
 }
 
 void dos_qqmlapplicationengine_delete(::DosQQmlApplicationEngine *vptr)
@@ -158,7 +158,7 @@ void dos_qqmlapplicationengine_delete(::DosQQmlApplicationEngine *vptr)
 
 void dos_qquickimageprovider_delete(::DosQQuickImageProvider *vptr)
 {
-    auto provider = static_cast<QQuickImageProvider *>(vptr);
+    auto provider = static_cast<DosImageProvider *>(vptr);
     delete provider;
 }
 

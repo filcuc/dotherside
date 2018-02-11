@@ -114,7 +114,7 @@ DOS_API DosQQmlContext *DOS_CALL dos_qqmlapplicationengine_context(DosQQmlApplic
 /// \breif Calls the QQMLApplicationengine::addImageProvider
 /// \param vptr The QQmlApplicationEngine
 /// \param vptr_i A QQuickImageProvider, the QQmlApplicationEngine takes ownership of this pointer
-DOS_API void DOS_CALL dos_qqmlapplicationengine_addimageprovider(DosQQmlApplicationEngine *vptr, DosQQuickImageProvider *vptr_i);
+DOS_API void DOS_CALL dos_qqmlapplicationengine_addimageprovider(DosQQmlApplicationEngine *vptr, const char* name, DosQQuickImageProvider *vptr_i);
 
 /// \brief Free the memory allocated for the given QQmlApplicationEngine
 /// \param vptr The QQmlApplicationEngine
@@ -136,7 +136,6 @@ DOS_API void DOS_CALL dos_qquickimageprovider_registerpixmapcallback(DosQQuickIm
 DOS_API DosPixmap *DOS_CALL dos_qpixmap_create(int width, int height);
 DOS_API void DOS_CALL dos_qpixmap_delete(DosPixmap *vptr);
 DOS_API void DOS_CALL dos_qpixmap_load(DosPixmap *vptr, const char* filepath, const char* format);
-
 /// @}
 
 /// \defgroup QQuickStyle QQuickStyle
