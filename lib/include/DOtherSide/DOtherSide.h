@@ -136,6 +136,8 @@ DOS_API void DOS_CALL dos_qquickimageprovider_registerpixmapcallback(DosQQuickIm
 DOS_API DosPixmap *DOS_CALL dos_qpixmap_create(int width, int height);
 DOS_API void DOS_CALL dos_qpixmap_delete(DosPixmap *vptr);
 DOS_API void DOS_CALL dos_qpixmap_load(DosPixmap *vptr, const char* filepath, const char* format);
+DOS_API void DOS_CALL dos_qpixmap_loadfromdata(DosPixmap *vptr, const unsigned char* data, unsigned int len);
+DOS_API void DOS_CALL dos_qpixmap_fill(DosPixmap *vptr, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 /// @}
 
 /// \defgroup QQuickStyle QQuickStyle

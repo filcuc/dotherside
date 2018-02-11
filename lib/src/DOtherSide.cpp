@@ -184,6 +184,18 @@ void dos_qpixmap_load(DosPixmap *vptr, const char* filepath, const char* format)
     pixmap->load(QString(filepath), format);
 }
 
+void dos_qpixmap_loadfromdata(DosPixmap *vptr, const unsigned char* data, unsigned int len)
+{
+    auto pixmap = static_cast<QPixmap *>(vptr);
+    pixmap->loadFromData(data, len);
+}
+
+void dos_qpixmap_fill(DosPixmap *vptr, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+    auto pixmap = static_cast<QPixmap *>(vptr);
+    pixmap->fill(QColor(r, g, b, a));
+}
+
 ::DosQQuickView *dos_qquickview_create()
 {
     return new QQuickView();
