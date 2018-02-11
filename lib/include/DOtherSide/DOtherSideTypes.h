@@ -67,15 +67,15 @@ typedef void DosQQuickImageProvider;
 /// A pointer to a QPixmap
 typedef void DosPixmap;
 
-struct pixmap_request {
-    const char *id;
-    int *width;
-    int *height;
-    int requestedWidth;
-    int requestedHeight;
-};
+/// A pixmap callback to be supplied to an image provider
+/// \param id Image source id
+/// \param width pointer to the width of the image
+/// \param height pointer to the height of the image
+/// \param requestedHeight sourceSize.height attribute
+/// \param requestedWidth sourcesSize.width attribute
+/// \note id is the substring provided after the name in an image source URL for example "image://<provider_id>/<id>
+typedef DosPixmap* (*PixmapCallback)(const char *id, int *width, int *height, int requestedWidth, int requestedHeight);
 
-typedef DosPixmap* (*PixmapCallback)(pixmap_request request);
 
 /// Called when a property is readed/written or a slot should be executed
 /// \param self The pointer of QObject in the binded language
