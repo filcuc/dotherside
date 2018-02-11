@@ -73,7 +73,7 @@ typedef void DosPixmap;
 /// \param height pointer to the height of the image
 /// \param requestedHeight sourceSize.height attribute
 /// \param requestedWidth sourcesSize.width attribute
-/// \note id is the substring provided after the name in an image source URL for example "image://<provider_id>/<id>
+/// \note \p id is the trailing part of an image source url for example "image://<provider_id>/<id>
 typedef DosPixmap* (*PixmapCallback)(const char *id, int *width, int *height, int requestedWidth, int requestedHeight);
 
 
