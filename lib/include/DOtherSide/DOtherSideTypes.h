@@ -87,7 +87,7 @@ typedef DosPixmap* (DOS_CALL *PixmapCallback)(const char *id, int *width, int *h
 /// In other words the length of argv is always 1 + number of arguments of \p slotName.
 /// The return value should be assigned and modified by calling the dos_qvariant_assign()
 /// or other dos_qvariant_set... setters.
-/// \note The \p slotName is owned by the framework thus it \b shouldn't be deleted
+/// \note The \p slotName is owned by the library thus it \b shouldn't be deleted
 /// \note The \p argv array is owned by the library thus it \b shouldn't be deleted
 typedef void (DOS_CALL *DObjectCallback)(void *self, DosQVariant *slotName, int argc, DosQVariant **argv);
 

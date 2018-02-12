@@ -191,6 +191,21 @@ void dos_qpixmap_fill(DosPixmap *vptr, unsigned char r, unsigned char g, unsigne
     pixmap->fill(QColor(r, g, b, a));
 }
 
+void dos_qpixmap_assign(DosPixmap *vptr, const DosPixmap *other)
+{
+    if (vptr) {
+        auto lhs = static_cast<QPixmap *>(vptr);
+        auto rhs = static_cast<QPixmap *>(vptr);
+        *lhs = rhs ? *rhs : QPixmap();
+    }
+}
+
+bool dos_qpixmap_isNull(DosPixmap *vptr)
+{
+    auto pixmap = static_cast<QPixmap *>(vptr);
+    return pixmap->isNull();
+}
+
 ::DosQQuickView *dos_qquickview_create()
 {
     return new QQuickView();

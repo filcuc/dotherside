@@ -148,6 +148,13 @@ DOS_API void DOS_CALL dos_qpixmap_load(DosPixmap *vptr, const char* filepath, co
 DOS_API void DOS_CALL dos_qpixmap_loadFromData(DosPixmap *vptr, const unsigned char* data, unsigned int len);
 /// \brief Fill a QPixmap with a single color
 DOS_API void DOS_CALL dos_qpixmap_fill(DosPixmap *vptr, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+/// \brief Calls the QPixmap::operator=(const QPixmap&) function
+/// \param vptr The left hand side QPixmap
+/// \param other The right hand side QPixmap
+DOS_API void DOS_CALL dos_qpixmap_assign(DosPixmap *vptr, const DosPixmap* other);
+/// \brief Calls the QPixmap::isNull
+/// \return True if the QPixmap is null, false otherwise
+DOS_API bool DOS_CALL dos_qpixmap_isNull(DosPixmap *vptr);
 /// @}
 
 
