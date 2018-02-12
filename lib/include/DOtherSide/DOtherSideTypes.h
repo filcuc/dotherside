@@ -61,6 +61,22 @@ typedef void DosQMetaObject;
 /// A pointer to a QObject
 typedef void DosQObject;
 
+/// A pointer to a QQuickImageProvider
+typedef void DosQQuickImageProvider;
+
+/// A pointer to a QPixmap
+typedef void DosPixmap;
+
+/// A pixmap callback to be supplied to an image provider
+/// \param id Image source id
+/// \param width pointer to the width of the image
+/// \param height pointer to the height of the image
+/// \param requestedHeight sourceSize.height attribute
+/// \param requestedWidth sourcesSize.width attribute
+/// \note \p id is the trailing part of an image source url for example "image://<provider_id>/<id>
+typedef DosPixmap* (*PixmapCallback)(const char *id, int *width, int *height, int requestedWidth, int requestedHeight);
+
+
 /// Called when a property is readed/written or a slot should be executed
 /// \param self The pointer of QObject in the binded language
 /// \param slotName The slotName as DosQVariant

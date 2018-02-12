@@ -11,6 +11,7 @@
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlApplicationEngine>
 #include <QtQuick/QQuickView>
+#include <QQuickImageProvider>
 #ifdef QT_QUICKCONTROLS2_LIB
 #include <QtQuickControls2/QQuickStyle>
 #endif
@@ -23,6 +24,7 @@
 #include "DOtherSide/DosQObjectImpl.h"
 #include "DOtherSide/DosQAbstractItemModel.h"
 #include "DOtherSide/DosQDeclarative.h"
+#include "DOtherSide/DosQQuickImageProvider.h"
 
 namespace {
 void register_meta_types()
@@ -135,10 +137,58 @@ void dos_qqmlapplicationengine_add_import_path(::DosQQmlApplicationEngine *vptr,
     return engine->rootContext();
 }
 
+void dos_qqmlapplicationengine_addImageProvider(DosQQmlApplicationEngine *vptr, const char* name, DosQQuickImageProvider *vptr_i)
+{
+  auto engine = static_cast<QQmlApplicationEngine *>(vptr);
+  auto provider = static_cast<DosImageProvider *>(vptr_i);
+  engine->addImageProvider(QString(name), provider);
+}
+
 void dos_qqmlapplicationengine_delete(::DosQQmlApplicationEngine *vptr)
 {
     auto engine = static_cast<QQmlApplicationEngine *>(vptr);
     delete engine;
+}
+
+
+::DosQQuickImageProvider *dos_qquickimageprovider_create(PixmapCallback callback)
+{
+    return new DosImageProvider(callback);
+}
+
+void dos_qquickimageprovider_delete(::DosQQuickImageProvider *vptr)
+{
+    auto provider = static_cast<DosImageProvider *>(vptr);
+    delete provider;
+}
+
+::DosPixmap *dos_qpixmap_create(int width, int height)
+{
+    return new QPixmap(width, height);
+}
+
+void dos_qpixmap_delete(DosPixmap *vptr)
+{
+    auto pixmap = static_cast<QPixmap *>(vptr);
+    delete pixmap;
+}
+
+void dos_qpixmap_load(DosPixmap *vptr, const char* filepath, const char* format)
+{
+    auto pixmap = static_cast<QPixmap *>(vptr);
+    pixmap->load(QString(filepath), format);
+}
+
+void dos_qpixmap_loadFromData(DosPixmap *vptr, const unsigned char* data, unsigned int len)
+{
+    auto pixmap = static_cast<QPixmap *>(vptr);
+    pixmap->loadFromData(data, len);
+}
+
+void dos_qpixmap_fill(DosPixmap *vptr, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+    auto pixmap = static_cast<QPixmap *>(vptr);
+    pixmap->fill(QColor(r, g, b, a));
 }
 
 ::DosQQuickView *dos_qquickview_create()

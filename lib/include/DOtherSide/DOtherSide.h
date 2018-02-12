@@ -111,11 +111,45 @@ DOS_API void DOS_CALL dos_qqmlapplicationengine_add_import_path(DosQQmlApplicati
 /// the engine and so it should die with the engine.
 DOS_API DosQQmlContext *DOS_CALL dos_qqmlapplicationengine_context(DosQQmlApplicationEngine *vptr);
 
+/// \brief Calls the QQMLApplicationengine::addImageProvider    
+/// \param vptr The QQmlApplicationEngine
+/// \param vptr_i A QQuickImageProvider, the QQmlApplicationEngine takes ownership of this pointer
+DOS_API void DOS_CALL dos_qqmlapplicationengine_addImageProvider(DosQQmlApplicationEngine *vptr, const char* name, DosQQuickImageProvider *vptr_i);
+
 /// \brief Free the memory allocated for the given QQmlApplicationEngine
 /// \param vptr The QQmlApplicationEngine
 DOS_API void DOS_CALL dos_qqmlapplicationengine_delete(DosQQmlApplicationEngine *vptr);
 
 /// @}
+
+/// \defgroup QQuickImageProvider QQuickImageProvider
+/// \brief Functions related to the QQuickImageProvider class
+/// @{
+
+/// \brief Create a new QQuickImageProvider
+/// \return A new QQuickImageProvider
+/// \note The returned QQuickImageProvider should be freed by using dos_qquickimageprovider_delete(DosQQuickImageProvider*) unless the QQuickImageProvider has been bound to a QQmlApplicationEngine
+DOS_API DosQQuickImageProvider *DOS_CALL dos_qquickimageprovider_create(PixmapCallback callback);
+/// \breif Frees a QQuickImageProvider
+DOS_API void DOS_CALL dos_qquickimageprovider_delete(DosQQuickImageProvider *vptr);
+/// @}
+
+/// \defgroup QPixmap QPixmap
+/// \brief Functions related to the QPixmap class
+/// @{
+
+/// \brief Create a new QPixmap
+DOS_API DosPixmap *DOS_CALL dos_qpixmap_create(int width, int height);
+/// \brief Frees a QPixmap
+DOS_API void DOS_CALL dos_qpixmap_delete(DosPixmap *vptr);
+/// \brief Load image data into a QPixmap from an image file
+DOS_API void DOS_CALL dos_qpixmap_load(DosPixmap *vptr, const char* filepath, const char* format);
+/// \brief Load image data into a QPixmap from a buffer
+DOS_API void DOS_CALL dos_qpixmap_loadFromData(DosPixmap *vptr, const unsigned char* data, unsigned int len);
+/// \brief Fill a QPixmap with a single color
+DOS_API void DOS_CALL dos_qpixmap_fill(DosPixmap *vptr, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+/// @}
+
 
 /// \defgroup QQuickStyle QQuickStyle
 /// \brief Functions related to the QQuickStyle class
@@ -130,6 +164,7 @@ DOS_API void DOS_CALL dos_qquickstyle_set_fallback_style(const char *style);
 /// @}
 
 
+  
 /// \defgroup QQuickView QQuickView
 /// \brief Functions related to the QQuickView class
 /// @{

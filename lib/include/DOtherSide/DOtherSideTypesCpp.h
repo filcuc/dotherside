@@ -152,5 +152,4 @@ struct QmlRegisterType {
     DeleteDObject deleteDObject;
 };
 
-
 } // namespace DOS

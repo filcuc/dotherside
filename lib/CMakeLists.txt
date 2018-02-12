@@ -40,6 +40,7 @@ set(SRC_LIST
   src/DOtherSideTypesCpp.cpp
   src/DosQObjectImpl.cpp
   src/DosQAbstractItemModel.cpp
+  src/DosQQuickImageProvider.cpp
   )
 
 include_directories(include include/Qt)
