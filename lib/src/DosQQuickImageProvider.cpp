@@ -1,6 +1,7 @@
 #include "DOtherSide/DosQQuickImageProvider.h"
 
-DosImageProvider::DosImageProvider() : QQuickImageProvider(QQuickImageProvider::Pixmap)
+DosImageProvider::DosImageProvider(PixmapCallback callback) : QQuickImageProvider(QQuickImageProvider::Pixmap),
+                                                              m_pixmap_callback(callback)
 {
 }
 
@@ -10,8 +11,4 @@ QPixmap DosImageProvider::requestPixmap(const QString &id, QSize *size, const QS
     auto pixmap_copy = *(static_cast<QPixmap*>(pixmap));
     delete (static_cast<QPixmap*>(pixmap));
     return pixmap_copy;
-}
-
-void DosImageProvider::setPixmapCallback(PixmapCallback callback) {
-    m_pixmap_callback = callback;
 }

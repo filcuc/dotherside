@@ -151,20 +151,15 @@ void dos_qqmlapplicationengine_delete(::DosQQmlApplicationEngine *vptr)
 }
 
 
-::DosQQuickImageProvider *dos_qquickimageprovider_create()
+::DosQQuickImageProvider *dos_qquickimageprovider_create(PixmapCallback callback)
 {
-    return new DosImageProvider();
+    return new DosImageProvider(callback);
 }
 
 void dos_qquickimageprovider_delete(::DosQQuickImageProvider *vptr)
 {
     auto provider = static_cast<DosImageProvider *>(vptr);
     delete provider;
-}
-
-void dos_qquickimageprovider_registerPixmapCallback(::DosQQuickImageProvider *vptr, PixmapCallback callback) {
-    auto provider = static_cast<DosImageProvider *>(vptr);
-    provider->setPixmapCallback(callback);
 }
 
 ::DosPixmap *dos_qpixmap_create(int width, int height)
