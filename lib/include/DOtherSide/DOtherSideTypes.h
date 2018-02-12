@@ -73,8 +73,9 @@ typedef void DosPixmap;
 /// \param height pointer to the height of the image
 /// \param requestedHeight sourceSize.height attribute
 /// \param requestedWidth sourcesSize.width attribute
+/// \param the returned DosPixmap will be deleted by the library itself
 /// \note \p id is the trailing part of an image source url for example "image://<provider_id>/<id>
-typedef DosPixmap* (*PixmapCallback)(const char *id, int *width, int *height, int requestedWidth, int requestedHeight);
+typedef DosPixmap* (DOS_CALL *PixmapCallback)(const char *id, int *width, int *height, int requestedWidth, int requestedHeight);
 
 
 /// Called when a property is readed/written or a slot should be executed
