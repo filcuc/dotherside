@@ -138,8 +138,12 @@ DOS_API void DOS_CALL dos_qquickimageprovider_delete(DosQQuickImageProvider *vpt
 /// \brief Functions related to the QPixmap class
 /// @{
 
+/// \brief Creates a null QPixmap
+DOS_API DosPixmap *DOS_CALL dos_qpixmap_create();
+/// \brief Creates a QPixmap copied from another
+DOS_API DosPixmap *DOS_CALL dos_qpixmap_create_qpixmap(const DosPixmap* other);
 /// \brief Create a new QPixmap
-DOS_API DosPixmap *DOS_CALL dos_qpixmap_create(int width, int height);
+DOS_API DosPixmap *DOS_CALL dos_qpixmap_create_width_and_height(int width, int height);
 /// \brief Frees a QPixmap
 DOS_API void DOS_CALL dos_qpixmap_delete(DosPixmap *vptr);
 /// \brief Load image data into a QPixmap from an image file

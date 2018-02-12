@@ -162,7 +162,18 @@ void dos_qquickimageprovider_delete(::DosQQuickImageProvider *vptr)
     delete provider;
 }
 
-::DosPixmap *dos_qpixmap_create(int width, int height)
+::DosPixmap *dos_qpixmap_create()
+{
+    return new QPixmap();
+}
+
+::DosPixmap *dos_qpixmap_create_qpixmap(const DosPixmap *other)
+{
+    auto pixmap = static_cast<const QPixmap *>(other);
+    return new QPixmap(pixmap ? *pixmap : QPixmap());
+}
+
+::DosPixmap *dos_qpixmap_create_width_and_height(int width, int height)
 {
     return new QPixmap(width, height);
 }
