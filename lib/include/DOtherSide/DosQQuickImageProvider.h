@@ -12,7 +12,7 @@
 class DosImageProvider : public QQuickImageProvider
 {
 public:
-    DosImageProvider(PixmapCallback);
+    DosImageProvider(PixmapCallback callback);
     QPixmap requestPixmap(const QString &id, QSize *size, const QSize &requestedSize);
 
 private:
