@@ -12,9 +12,10 @@
 class DosImageProvider : public QQuickImageProvider
 {
 public:
-    DosImageProvider(PixmapCallback callback);
-    QPixmap requestPixmap(const QString &id, QSize *size, const QSize &requestedSize);
+    DosImageProvider(RequestPixmapCallback callback);
+
+    QPixmap requestPixmap(const QString &id, QSize *size, const QSize &requestedSize) override;
 
 private:
-    PixmapCallback m_pixmap_callback;
+    RequestPixmapCallback m_pixmap_callback;
 };

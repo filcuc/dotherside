@@ -151,7 +151,7 @@ void dos_qqmlapplicationengine_delete(::DosQQmlApplicationEngine *vptr)
 }
 
 
-::DosQQuickImageProvider *dos_qquickimageprovider_create(PixmapCallback callback)
+::DosQQuickImageProvider *dos_qquickimageprovider_create(RequestPixmapCallback callback)
 {
     return new DosImageProvider(callback);
 }

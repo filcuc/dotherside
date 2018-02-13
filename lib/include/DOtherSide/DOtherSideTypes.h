@@ -73,10 +73,10 @@ typedef void DosPixmap;
 /// \param height pointer to the height of the image
 /// \param requestedHeight sourceSize.height attribute
 /// \param requestedWidth sourcesSize.width attribute
-/// \param the returned DosPixmap will be deleted by the library itself
+/// \param[out] result The result QPixmap. This should be assigned from the binded language
 /// \note \p id is the trailing part of an image source url for example "image://<provider_id>/<id>
-typedef DosPixmap* (DOS_CALL *PixmapCallback)(const char *id, int *width, int *height, int requestedWidth, int requestedHeight);
-
+/// \note The \p result arg is an out parameter so it \b shouldn't be deleted. See the dos_qpixmap_assign
+typedef void (DOS_CALL *RequestPixmapCallback)(const char *id, int *width, int *height, int requestedWidth, int requestedHeight, DosPixmap* result);
 
 /// Called when a property is readed/written or a slot should be executed
 /// \param self The pointer of QObject in the binded language
@@ -96,7 +96,7 @@ typedef void (DOS_CALL *DObjectCallback)(void *self, DosQVariant *slotName, int 
 /// \param index The parent DosQModelIndex
 /// \param[out] result The rowCount result. This must be deferenced and filled from the binded language
 /// \note The \p parent QModelIndex is owned by the DOtherSide library thus it \b shouldn't be deleted
-/// \note The \p result arg is an out parameter so it should be deleted
+/// \note The \p result arg is an out parameter so it \b shouldn't be deleted
 typedef void (DOS_CALL *RowCountCallback)(void *self, const DosQModelIndex *parent, int *result);
 
 /// Called when the QAbstractItemModel::columnCount method must be executed
@@ -104,7 +104,7 @@ typedef void (DOS_CALL *RowCountCallback)(void *self, const DosQModelIndex *pare
 /// \param index The parent DosQModelIndex
 /// \param[out] result The rowCount result. This must be deferenced and filled from the binded language
 /// \note The \p parent QModelIndex is owned by the DOtherSide library thus it \b shouldn't be deleted
-/// \note The \p result arg is an out parameter so it should be deleted
+/// \note The \p result arg is an out parameter so it \b shouldn't be deleted
 typedef void (DOS_CALL *ColumnCountCallback)(void *self, const DosQModelIndex *parent, int *result);
 
 /// Called when the QAbstractItemModel::data method must be executed
@@ -112,7 +112,7 @@ typedef void (DOS_CALL *ColumnCountCallback)(void *self, const DosQModelIndex *p
 /// \param index The DosQModelIndex to which we request the data
 /// \param[out] result The DosQVariant result. This must be deferenced and filled from the binded language.
 /// \note The \p index QModelIndex is owned by the DOtherSide library thus it \b shouldn't be deleted
-/// \note The \p result arg is an out parameter so it should be deleted
+/// \note The \p result arg is an out parameter so it \b shouldn't be deleted
 typedef void (DOS_CALL *DataCallback)(void *self, const DosQModelIndex *index, int role, DosQVariant *result);
 
 /// Called when the QAbstractItemModel::setData method must be executed
