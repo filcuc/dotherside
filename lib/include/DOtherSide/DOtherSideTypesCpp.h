@@ -3,7 +3,7 @@
 // std
 #include <memory>
 // Qt
-#include <QtGlobal>
+#include <QtCore/QtGlobal>
 #include <QtCore/QString>
 #include <QtCore/QMetaType>
 // DOtherSide

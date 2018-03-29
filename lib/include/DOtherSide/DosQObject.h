@@ -1,7 +1,7 @@
 #pragma once
 
 // Qt
-#include <QObject>
+#include <QtCore/QObject>
 #include <functional>
 // DOtherSide
 #include "DOtherSideTypesCpp.h"

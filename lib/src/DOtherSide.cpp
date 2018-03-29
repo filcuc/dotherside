@@ -11,7 +11,7 @@
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlApplicationEngine>
 #include <QtQuick/QQuickView>
-#include <QQuickImageProvider>
+#include <QtQuick/QQuickImageProvider>
 #ifdef QT_QUICKCONTROLS2_LIB
 #include <QtQuickControls2/QQuickStyle>
 #endif

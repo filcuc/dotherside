@@ -5,7 +5,7 @@
 #include <functional>
 #include <type_traits>
 // Qt
-#include <QtGlobal>
+#include <QtCore/QtGlobal>
 
 namespace DOS {
 

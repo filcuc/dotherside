@@ -1,9 +1,9 @@
 #pragma once
 
 // Qt
-#include <QAbstractItemModel>
-#include <QAbstractListModel>
-#include <QAbstractTableModel>
+#include <QtCore/QAbstractItemModel>
+#include <QtCore/QAbstractListModel>
+#include <QtCore/QAbstractTableModel>
 
 // DOtherSide
 #include "DOtherSide/DOtherSideTypes.h"
