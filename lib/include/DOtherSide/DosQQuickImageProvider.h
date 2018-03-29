@@ -4,8 +4,8 @@
 #include <iostream>
 
 // Qt
-#include <QPixmap>
-#include <QQuickImageProvider>
+#include <QtGui/QPixmap>
+#include <QtQuick/QQuickImageProvider>
 
 #include "DOtherSideTypes.h"
 

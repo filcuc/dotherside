@@ -3,7 +3,7 @@
 // std
 #include <vector>
 // Qt
-#include <QMutex>
+#include <QtCore/QMutex>
 #include <QtCore/QString>
 #include <QtCore/QVariant>
 // DOtherSide

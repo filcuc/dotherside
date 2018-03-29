@@ -3,7 +3,7 @@
 // std
 #include <vector>
 // Qt
-#include <QVariant>
+#include <QtCore/QVariant>
 // DOtherSide
 #include "DOtherSide/DOtherSideTypesCpp.h"
 
