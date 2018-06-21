@@ -540,7 +540,7 @@ void dos_qobject_setObjectName(::DosQObject *vptr, const char *name)
 
 }
 
-bool dos_qobject_property_set(::DosQObject *vptr, const char *propertyName, ::DosQVariant *dosValue){
+bool dos_qobject_setProperty(::DosQObject *vptr, const char *propertyName, ::DosQVariant *dosValue){
     auto object = static_cast<QObject *>(vptr);
     auto value = static_cast<QVariant *>(dosValue);
     return object->setProperty(propertyName, *value);
