@@ -691,17 +691,17 @@ DOS_API void DOS_CALL dos_qobject_delete(DosQObject *vptr);
 /// \param propertyName the Name of the property to be read
 /// \returns Value of the given property
 /// \note returns an empty QVariant if the propertyName does not exist
-DOS_API DosQVariant *DOS_CALL dos_qobject_readProperty(DosQObject *vptr,
-                                                       const char *propertyName);
+DOS_API DosQVariant *DOS_CALL dos_qobject_property(DosQObject *vptr,
+                                                   const char *propertyName);
 
 /// \brief Write Value to a property by its name
 /// \param vptr The QObject
 /// \param propertyName The Name of the property to be written
 /// \param value The value to be written
 /// \return Result as bool
-DOS_API bool DOS_CALL dos_qobject_writeProperty(DosQObject  *vptr,
-                                                const char  *propertyName,
-                                                DosQVariant *value);
+DOS_API bool DOS_CALL dos_qobject_setProperty(DosQObject *vptr,
+                                               const char *propertyName,
+                                               DosQVariant *value);
 /// @}
 
 

@@ -414,12 +414,12 @@ private slots:
         auto testobject = new MockQObject;
         QObject *data = static_cast<QObject *>(testobject->data());
         data->setProperty("name", "foo");
-        auto value = *static_cast<QVariant *>(dos_qobject_readProperty(data, "name"));
+        auto value = *static_cast<QVariant *>(dos_qobject_property(data, "name"));
         QVERIFY(value.type() == QVariant::String);
         QVERIFY(value.toString() == "foo");
         QVariant bar("bar");
-        dos_qobject_writeProperty(data, "name", &bar);
-        value = *static_cast<QVariant *>(dos_qobject_readProperty(data, "name"));
+        dos_qobject_setProperty(data, "name", &bar);
+        value = *static_cast<QVariant *>(dos_qobject_property(data, "name"));
         QVERIFY(value.type() == QVariant::String);
         QVERIFY(value.toString() == "bar");
     }
