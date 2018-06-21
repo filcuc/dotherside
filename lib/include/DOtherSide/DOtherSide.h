@@ -699,7 +699,7 @@ DOS_API DosQVariant *DOS_CALL dos_qobject_property(DosQObject *vptr,
 /// \param propertyName The Name of the property to be written
 /// \param value The value to be written
 /// \return Result as bool
-DOS_API bool DOS_CALL dos_qobject_property_set(DosQObject *vptr,
+DOS_API bool DOS_CALL dos_qobject_setProperty(DosQObject *vptr,
                                                const char *propertyName,
                                                DosQVariant *value);
 /// @}
