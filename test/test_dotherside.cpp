@@ -184,6 +184,15 @@ private slots:
         QVERIFY(value == nullptr);
     }
 
+    void testQVariant(){
+        QVariant original("foo");
+        QVERIFY(original.type() == QVariant::String);
+        auto copypointer = dos_qvariant_create_qvariant(&original);
+        QVariant copy = *static_cast<QVariant *>(copypointer);
+        QVERIFY(copy.type() == QVariant::String);
+        QCOMPARE(copy.toString().toStdString(),original.toString().toStdString());
+    }
+
     void testArray()
     {
         std::vector<DosQVariant *> data ({
@@ -399,6 +408,20 @@ private slots:
         QVERIFY(QMetaObject::invokeMethod(testCase, "testPropertyReadAndWrite", Q_RETURN_ARG(QVariant, result)));
         QVERIFY(result.type() == QVariant::Bool);
         QVERIFY(result.toBool());
+    }
+
+    void testPropertyGetSet(){
+        auto testobject = new MockQObject;
+        QObject *data = static_cast<QObject *>(testobject->data());
+        data->setProperty("name", "foo");
+        auto value = *static_cast<QVariant *>(dos_qobject_readProperty(data, "name"));
+        QVERIFY(value.type() == QVariant::String);
+        QVERIFY(value.toString() == "foo");
+        QVariant bar("bar");
+        dos_qobject_writeProperty(data, "name", &bar);
+        value = *static_cast<QVariant *>(dos_qobject_readProperty(data, "name"));
+        QVERIFY(value.type() == QVariant::String);
+        QVERIFY(value.toString() == "bar");
     }
 
     void testSignalEmittion()
