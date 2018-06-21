@@ -533,6 +533,19 @@ void dos_qobject_setObjectName(::DosQObject *vptr, const char *name)
     object->setObjectName(QString::fromUtf8(name));
 }
 
+::DosQVariant *dos_qobject_readProperty(DosQObject *vptr, const char *propertyName) {
+    auto object = static_cast<const QObject *>(vptr);
+    auto result = new QVariant(object->property(propertyName));
+    return static_cast<QVariant *>(result);
+
+}
+
+bool dos_qobject_writeProperty(::DosQObject *vptr, const char *propertyName, ::DosQVariant *dosValue){
+    auto object = static_cast<QObject *>(vptr);
+    auto value = static_cast<QVariant *>(dosValue);
+    return object->setProperty(propertyName, *value);
+}
+
 ::DosQModelIndex *dos_qmodelindex_create()
 {
     return new QModelIndex();
