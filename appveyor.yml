@@ -2,57 +2,68 @@ clone_depth: 5
 
 environment:
   matrix:
-    - CMAKE_GENERATOR: "Visual Studio 12 2013"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+      CMAKE_GENERATOR: "Visual Studio 12 2013"
       QTDIR: "C:/Qt/5.6/msvc2013/bin"
       CMAKE_PREFIX_PATH: "C:/Qt/5.6/msvc2013/lib/cmake"
       CONFIGURATION: Release
       ARTIFACT: libDOtherside-windows-x86-msvc2013-qt-5.6.zip
-    - CMAKE_GENERATOR: "Visual Studio 12 2013 Win64"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+      CMAKE_GENERATOR: "Visual Studio 12 2013 Win64"
       QTDIR: "C:/Qt/5.6/msvc2013_64/bin"
       CMAKE_PREFIX_PATH: "C:/Qt/5.6/msvc2013_64/lib/cmake"
       CONFIGURATION: Release
       ARTIFACT: libDOtherside-windows-x64-msvc2013-qt-5.6.zip
-    - CMAKE_GENERATOR: "Visual Studio 14 2015"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      CMAKE_GENERATOR: "Visual Studio 14 2015"
       QTDIR: "C:/Qt/5.6/msvc2015/bin"
       CMAKE_PREFIX_PATH: "C:/Qt/5.6/msvc2015/lib/cmake"
       CONFIGURATION: Release
       ARTIFACT: libDOtherside-windows-x86-msvc2015-qt-5.6.zip
-    - CMAKE_GENERATOR: "Visual Studio 14 2015 Win64"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      CMAKE_GENERATOR: "Visual Studio 14 2015 Win64"
       QTDIR: "C:/Qt/5.6/msvc2015_64/bin"
       CMAKE_PREFIX_PATH: "C:/Qt/5.6/msvc2015_64/lib/cmake"
       CONFIGURATION: Release
       ARTIFACT: libDOtherside-windows-x64-msvc2015-qt-5.6.zip
-    - CMAKE_GENERATOR: "Visual Studio 14 2015"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      CMAKE_GENERATOR: "Visual Studio 14 2015"
       QTDIR: "C:/Qt/5.9/msvc2015/bin"
       CMAKE_PREFIX_PATH: "C:/Qt/5.9/msvc2015/lib/cmake"
       CONFIGURATION: Release
       ARTIFACT: libDOtherside-windows-x86-msvc2015-qt-5.9.zip
-    - CMAKE_GENERATOR: "Visual Studio 14 2015 Win64"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      CMAKE_GENERATOR: "Visual Studio 14 2015 Win64"
       QTDIR: "C:/Qt/5.9/msvc2015_64/bin"
       CMAKE_PREFIX_PATH: "C:/Qt/5.9/msvc2015_64/lib/cmake"
       CONFIGURATION: Release
       ARTIFACT: libDOtherside-windows-x64-msvc2015-qt-5.9.zip
-    - CMAKE_GENERATOR: "Visual Studio 14 2015"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      CMAKE_GENERATOR: "Visual Studio 14 2015"
       QTDIR: "C:/Qt/5.10/msvc2015/bin"
       CMAKE_PREFIX_PATH: "C:/Qt/5.10/msvc2015/lib/cmake"
       CONFIGURATION: Release
       ARTIFACT: libDOtherside-windows-x86-msvc2015-qt-5.10.zip
-    - CMAKE_GENERATOR: "Visual Studio 14 2015 Win64"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      CMAKE_GENERATOR: "Visual Studio 14 2015 Win64"
       QTDIR: "C:/Qt/5.10/msvc2015_64/bin"
       CMAKE_PREFIX_PATH: "C:/Qt/5.10/msvc2015_64/lib/cmake"
       CONFIGURATION: Release
       ARTIFACT: libDOtherside-windows-x64-msvc2015-qt-5.10.zip
-    - CMAKE_GENERATOR: "Visual Studio 15 2017 Win64"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      CMAKE_GENERATOR: "Visual Studio 15 2017 Win64"
       QTDIR: "C:/Qt/5.10/msvc2017_64/bin"
       CMAKE_PREFIX_PATH: "C:/Qt/5.10/msvc2017_64/lib/cmake"
       CONFIGURATION: Release
       ARTIFACT: libDOtherside-windows-x64-msvc2017-qt-5.10.zip
-    - CMAKE_GENERATOR: "Visual Studio 14 2015"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      CMAKE_GENERATOR: "Visual Studio 14 2015"
       QTDIR: "C:/Qt/5.11/msvc2015/bin"
       CMAKE_PREFIX_PATH: "C:/Qt/5.11/msvc2015/lib/cmake"
       CONFIGURATION: Release
       ARTIFACT: libDOtherside-windows-x86-msvc2015-qt-5.11.zip
-    - CMAKE_GENERATOR: "Visual Studio 15 2017 Win64"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      CMAKE_GENERATOR: "Visual Studio 15 2017 Win64"
       QTDIR: "C:/Qt/5.11/msvc2017_64/bin"
       CMAKE_PREFIX_PATH: "C:/Qt/5.11/msvc2017_64/lib/cmake"
       CONFIGURATION: Release
