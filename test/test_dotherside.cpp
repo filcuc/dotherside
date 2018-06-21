@@ -418,7 +418,7 @@ private slots:
         QVERIFY(value.type() == QVariant::String);
         QVERIFY(value.toString() == "foo");
         QVariant bar("bar");
-        dos_qobject_property_set(data, "name", &bar);
+        dos_qobject_setProperty(data, "name", &bar);
         value = *static_cast<QVariant *>(dos_qobject_property(data, "name"));
         QVERIFY(value.type() == QVariant::String);
         QVERIFY(value.toString() == "bar");
