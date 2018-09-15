@@ -1,13 +1,14 @@
-lib_version = '1.0.0'
+lib_version = '0.6.3'
 lib_dependencies = dependency('qt5', modules : ['Core', 'Gui', 'Widgets', 'Quick', 'Qml'])
 lib_sources = [
+  'src/DOtherSide.cpp',
+  'src/DOtherSideTypesCpp.cpp',
   'src/DosQAbstractItemModel.cpp',
+  'src/DosQDeclarative.cpp',
   'src/DosQMetaObject.cpp',
   'src/DosQObject.cpp',
   'src/DosQObjectImpl.cpp',
-  'src/DosQDeclarative.cpp',
-  'src/DOtherSide.cpp',
-  'src/DOtherSideTypesCpp.cpp',
+  'src/DosQQuickImageProvider.cpp',
   'src/OnSlotExecutedHandler.cpp',
 ]
 lib_include_directories = ['include', 'include/Qt']
