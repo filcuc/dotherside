@@ -686,6 +686,10 @@ DOS_API void DOS_CALL dos_qobject_setObjectName(DosQObject *vptr, const char *na
 /// \param vptr The QObject
 DOS_API void DOS_CALL dos_qobject_delete(DosQObject *vptr);
 
+/// \brief Free the memory allocated for the QObject in the next event loop cycle 
+/// \param vptr The QObject
+DOS_API void DOS_CALL dos_qobject_deleteLater(DosQObject *vptr);
+
 /// \brief Read Value of a property by its name
 /// \param vptr The QObject
 /// \param propertyName the Name of the property to be read

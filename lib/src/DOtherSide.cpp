@@ -490,6 +490,12 @@ void dos_qobject_delete(::DosQObject *vptr)
     delete qobject;
 }
 
+void dos_qobject_deleteLater(::DosQObject *vptr)
+{
+    auto qobject = static_cast<QObject *>(vptr);
+    qobject->deleteLater();
+}
+
 void dos_qobject_signal_emit(::DosQObject *vptr, const char *name, int parametersCount, void **parameters)
 {
     auto qobject = static_cast<QObject *>(vptr);
