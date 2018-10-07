@@ -7,8 +7,8 @@
 
 // DOtherSide
 #include "DOtherSide/DOtherSideTypes.h"
+#include "DOtherSide/DosQMetaObject.h"
 #include "DOtherSide/DosIQAbstractItemModelImpl.h"
-#include "DOtherSide/OnSlotExecutedHandler.h"
 
 namespace DOS {
 
@@ -19,7 +19,7 @@ public:
     /// Constructor
     DosQAbstractGenericModel(void *modelObject,
                              DosIQMetaObjectPtr metaObject,
-                             OnSlotExecuted onSlotExecuted,
+                             DObjectCallback dObjectCallback,
                              DosQAbstractItemModelCallbacks callbacks);
 
     /// @see IDynamicQObject::emitSignal

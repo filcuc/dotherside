@@ -20,10 +20,10 @@ public:
     using ParentMetaCall = std::function<int(QMetaObject::Call, int, void **)>;
 
     /// Constructor
-    DosQObjectImpl(QObject *parent,
-                   ParentMetaCall parentMetaCall,
+    DosQObjectImpl(ParentMetaCall parentMetaCall,
                    std::shared_ptr<const DosIQMetaObject> metaObject,
-                   OnSlotExecuted onSlotExecuted);
+                   void *dObjectPointer,
+                   DObjectCallback dObjectCallback);
 
 
     /// @see IDosQObject::emitSignal
@@ -38,13 +38,15 @@ public:
 private:
     bool executeSlot(const QMetaMethod &method, void **args, int argumentsOffset = 1);
     bool executeSlot(int index, void **args);
+    QVariant executeSlot(const QString &name, const std::vector<QVariant> &args);
+
     bool readProperty(int index, void **args);
     bool writeProperty(int index, void **args);
 
-    QObject *m_parent;
     const ParentMetaCall m_parentMetaCall;
-    const OnSlotExecuted m_onSlotExecuted;
-    mutable std::shared_ptr<const DosIQMetaObject> m_metaObject;
+    const std::shared_ptr<const DosIQMetaObject> m_metaObject;
+    void* const m_dObjectPointer = nullptr;
+    const DObjectCallback m_dObjectCallback;
 };
 
 } // namespace DOS

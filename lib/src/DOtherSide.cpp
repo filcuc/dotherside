@@ -18,7 +18,6 @@
 #include <QtWidgets/QApplication>
 
 #include "DOtherSide/DOtherSideTypesCpp.h"
-#include "DOtherSide/OnSlotExecutedHandler.h"
 #include "DOtherSide/DosQMetaObject.h"
 #include "DOtherSide/DosQObject.h"
 #include "DOtherSide/DosQObjectImpl.h"
@@ -27,10 +26,12 @@
 #include "DOtherSide/DosQQuickImageProvider.h"
 
 namespace {
+
 void register_meta_types()
 {
     qRegisterMetaType<QVector<int>>();
 }
+
 }
 
 char *convert_to_cstring(const QByteArray &array)
@@ -477,8 +478,7 @@ void dos_qvariant_setArray(::DosQVariant *vptr, int size, ::DosQVariant **array)
 ::DosQObject *dos_qobject_create(void *dObjectPointer, ::DosQMetaObject *metaObject, ::DObjectCallback dObjectCallback)
 {
     auto metaObjectHolder = static_cast<DOS::DosIQMetaObjectHolder *>(metaObject);
-    auto dosQObject = new DOS::DosQObject(metaObjectHolder->data(),
-                                          DOS::OnSlotExecutedHandler(dObjectPointer, dObjectCallback));
+    auto dosQObject = new DOS::DosQObject(dObjectPointer, metaObjectHolder->data(), dObjectCallback);
     QQmlEngine::setObjectOwnership(dosQObject, QQmlEngine::CppOwnership);
     return static_cast<QObject *>(dosQObject);
 }
@@ -718,7 +718,7 @@ void dos_qmetaobject_delete(::DosQMetaObject *vptr)
     auto metaObjectHolder = static_cast<DOS::DosIQMetaObjectHolder *>(metaObjectPointer);
     auto model = new DOS::DosQAbstractTableModel(dObjectPointer,
                                                  metaObjectHolder->data(),
-                                                 DOS::OnSlotExecutedHandler(dObjectPointer, dObjectCallback),
+                                                 dObjectCallback,
                                                  *callbacks);
     QQmlEngine::setObjectOwnership(model, QQmlEngine::CppOwnership);
     return static_cast<QObject *>(model);
@@ -755,7 +755,7 @@ DosQModelIndex *dos_qabstracttablemodel_parent(DosQAbstractTableModel *vptr, Dos
     auto metaObjectHolder = static_cast<DOS::DosIQMetaObjectHolder *>(metaObjectPointer);
     auto model = new DOS::DosQAbstractListModel(dObjectPointer,
                                                 metaObjectHolder->data(),
-                                                DOS::OnSlotExecutedHandler(dObjectPointer, dObjectCallback),
+                                                dObjectCallback,
                                                 *callbacks);
     QQmlEngine::setObjectOwnership(model, QQmlEngine::CppOwnership);
     return static_cast<QObject *>(model);
@@ -800,7 +800,7 @@ int dos_qabstractlistmodel_columnCount(DosQAbstractListModel *vptr, DosQModelInd
     auto metaObjectHolder = static_cast<DOS::DosIQMetaObjectHolder *>(metaObjectPointer);
     auto model = new DOS::DosQAbstractItemModel(dObjectPointer,
                                                 metaObjectHolder->data(),
-                                                DOS::OnSlotExecutedHandler(dObjectPointer, dObjectCallback),
+                                                dObjectCallback,
                                                 *callbacks);
     QQmlEngine::setObjectOwnership(model, QQmlEngine::CppOwnership);
     return static_cast<QObject *>(model);
