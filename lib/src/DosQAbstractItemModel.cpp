@@ -274,7 +274,7 @@ bool DosQAbstractListModel::defaultHasChildren(const QModelIndex &parent) const
     return parent.isValid() ? false : (rowCount() > 0);
 }
 
-QModelIndex DosQAbstractListModel::defaultParent(const QModelIndex &child) const
+QModelIndex DosQAbstractListModel::defaultParent(const QModelIndex & /*child*/) const
 {
     return QModelIndex();
 }
@@ -291,7 +291,7 @@ bool DosQAbstractTableModel::defaultHasChildren(const QModelIndex &parent) const
     return false;
 }
 
-QModelIndex DosQAbstractTableModel::defaultParent(const QModelIndex &child) const
+QModelIndex DosQAbstractTableModel::defaultParent(const QModelIndex & /*child*/) const
 {
     return QModelIndex();
 }

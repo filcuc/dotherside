@@ -139,6 +139,7 @@ class DosQAbstractItemModel : public DosQAbstractGenericModel<QAbstractItemModel
 {
 public:
     using DosQAbstractGenericModel::DosQAbstractGenericModel;
+
     bool defaultHasChildren(const QModelIndex &parent) const override;
 };
 
