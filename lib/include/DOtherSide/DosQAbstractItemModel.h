@@ -138,11 +138,6 @@ private:
 class DosQAbstractItemModel : public DosQAbstractGenericModel<QAbstractItemModel>
 {
 public:
-    DosQAbstractItemModel(void *modelObject,
-                          DosIQMetaObjectPtr metaObject,
-                          OnSlotExecuted onSlotExecuted,
-                          DosQAbstractItemModelCallbacks callbacks);
-
     using DosQAbstractGenericModel::DosQAbstractGenericModel;
     bool defaultHasChildren(const QModelIndex &parent) const override;
 };
@@ -150,10 +145,7 @@ public:
 class DosQAbstractTableModel : public DosQAbstractGenericModel<QAbstractTableModel>
 {
 public:
-    DosQAbstractTableModel(void *modelObject,
-                           DosIQMetaObjectPtr metaObject,
-                           OnSlotExecuted onSlotExecuted,
-                           DosQAbstractItemModelCallbacks callbacks);
+    using DosQAbstractGenericModel::DosQAbstractGenericModel;
 
     QModelIndex defaultParent(const QModelIndex &child) const;
     QModelIndex defaultIndex(int row, int column, const QModelIndex &parent = QModelIndex()) const;
@@ -163,10 +155,7 @@ public:
 class DosQAbstractListModel : public DosQAbstractGenericModel<QAbstractListModel>
 {
 public:
-    DosQAbstractListModel(void *modelObject,
-                          DosIQMetaObjectPtr metaObject,
-                          OnSlotExecuted onSlotExecuted,
-                          DosQAbstractItemModelCallbacks callbacks);
+    using DosQAbstractGenericModel::DosQAbstractGenericModel;
 
     QModelIndex defaultParent(const QModelIndex &child) const;
     QModelIndex defaultIndex(int row, int column, const QModelIndex &parent = QModelIndex()) const;
