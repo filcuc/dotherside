@@ -34,7 +34,7 @@ struct SignalDefinition {
         : name(QString::fromUtf8(cType.name))
         , returnType(QMetaType::Void)
     {
-        parameters.reserve(cType.parametersCount);
+        parameters.reserve(static_cast<size_t>(cType.parametersCount));
         for (int i = 0; i < cType.parametersCount; ++i)
             parameters.emplace_back(cType.parameters[i]);
     }
@@ -108,7 +108,6 @@ class DosIQMetaObject;
 using DosIQMetaObjectPtr = std::shared_ptr<const DosIQMetaObject>;
 class DosQMetaObject;
 
-
 using OnMetaObject = std::function<DosIQMetaObjectHolder*()>;
 using OnSlotExecuted = std::function<QVariant(const QString &, const std::vector<QVariant>&)>;
 
@@ -122,20 +121,23 @@ public:
     SafeQMetaObjectPtr(SafeQMetaObjectPtr &&) = delete;
     SafeQMetaObjectPtr(const SafeQMetaObjectPtr &) = delete;
     SafeQMetaObjectPtr &operator=(const SafeQMetaObjectPtr &) = delete;
+    SafeQMetaObjectPtr &operator=(SafeQMetaObjectPtr &&) = delete;
 
-    operator bool() const Q_DECL_NOEXCEPT
-    {
+    operator bool() const noexcept {
         return m_d != nullptr;
     }
-    operator const QMetaObject *() const Q_DECL_NOEXCEPT
-    {
+
+    operator const QMetaObject *() const noexcept {
         return m_d.get();
     }
-    const QMetaObject *operator->() const Q_DECL_NOEXCEPT
-    {
+
+    const QMetaObject *operator->() const noexcept {
         return m_d.get();
     }
-    void reset(QMetaObject *other) Q_DECL_NOEXCEPT { m_d.reset(other); }
+
+    void reset(QMetaObject *other) noexcept {
+        m_d.reset(other);
+    }
 
 private:
     std::unique_ptr<QMetaObject, void(*)(void *)> m_d;
