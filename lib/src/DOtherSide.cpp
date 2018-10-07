@@ -206,7 +206,7 @@ void dos_qpixmap_assign(DosPixmap *vptr, const DosPixmap *other)
 {
     if (vptr) {
         auto lhs = static_cast<QPixmap *>(vptr);
-        auto rhs = static_cast<QPixmap *>(vptr);
+        auto rhs = static_cast<const QPixmap *>(other);
         *lhs = rhs ? *rhs : QPixmap();
     }
 }
@@ -257,7 +257,7 @@ void dos_qquickview_set_source_url(::DosQQuickView *vptr, ::DosQUrl *url)
 void dos_qquickview_set_resize_mode(::DosQQuickView *vptr, int resizeMode)
 {
     auto view = static_cast<QQuickView *>(vptr);
-    view->setResizeMode((QQuickView::ResizeMode) resizeMode);
+    view->setResizeMode(static_cast<QQuickView::ResizeMode>(resizeMode));
 }
 
 ::DosQQmlContext *dos_qquickview_rootContext(::DosQQuickView *vptr)
@@ -514,7 +514,7 @@ bool dos_qobject_signal_connect(::DosQObject *senderVPtr,
 {
     auto sender = static_cast<QObject *>(senderVPtr);
     auto receiver = static_cast<QObject *>(receiverVPtr);
-    return QObject::connect(sender, signal, receiver, method, (Qt::ConnectionType) type);
+    return QObject::connect(sender, signal, receiver, method, static_cast<Qt::ConnectionType>(type));
 }
 
 bool dos_qobject_signal_disconnect(::DosQObject *senderVPtr,
@@ -658,7 +658,7 @@ void dos_qresource_register(const char *filename)
 
 ::DosQUrl *dos_qurl_create(const char *url, int parsingMode)
 {
-    return new QUrl(QString::fromUtf8(url), (QUrl::ParsingMode) parsingMode);
+    return new QUrl(QString::fromUtf8(url), static_cast<QUrl::ParsingMode>(parsingMode));
 }
 
 void dos_qurl_delete(::DosQUrl *vptr)
@@ -925,7 +925,7 @@ int dos_qabstractitemmodel_flags(DosQAbstractItemModel *vptr, DosQModelIndex *do
     auto object = static_cast<QObject *>(vptr);
     auto model = dynamic_cast<DOS::DosIQAbstractItemModelImpl *>(object);
     auto index = static_cast<QModelIndex *>(dosIndex);
-    return model->defaultFlags(*index);
+    return static_cast<int>(model->defaultFlags(*index));
 }
 
 DosQVariant *dos_qabstractitemmodel_headerData(DosQAbstractItemModel *vptr, int section, int orientation, int role)
