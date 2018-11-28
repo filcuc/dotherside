@@ -9,7 +9,6 @@ lib_sources = [
   'src/DosQObject.cpp',
   'src/DosQObjectImpl.cpp',
   'src/DosQQuickImageProvider.cpp',
-  'src/OnSlotExecutedHandler.cpp',
 ]
 lib_include_directories = ['include', 'include/Qt']
 lib_pch = ['../pch/lib_pch.h', '../pch/lib_pch.cpp']
