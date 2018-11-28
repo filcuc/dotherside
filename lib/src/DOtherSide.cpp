@@ -543,7 +543,6 @@ void dos_qobject_setObjectName(::DosQObject *vptr, const char *name)
     auto object = static_cast<const QObject *>(vptr);
     auto result = new QVariant(object->property(propertyName));
     return static_cast<QVariant *>(result);
-
 }
 
 bool dos_qobject_setProperty(::DosQObject *vptr, const char *propertyName, ::DosQVariant *dosValue){

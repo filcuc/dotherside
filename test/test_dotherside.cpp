@@ -184,13 +184,14 @@ private slots:
         QVERIFY(value == nullptr);
     }
 
-    void testQVariant(){
+    void testQVariant()
+    {
         QVariant original("foo");
         QVERIFY(original.type() == QVariant::String);
-        auto copypointer = dos_qvariant_create_qvariant(&original);
-        QVariant copy = *static_cast<QVariant *>(copypointer);
-        QVERIFY(copy.type() == QVariant::String);
-        QCOMPARE(copy.toString().toStdString(),original.toString().toStdString());
+        VoidPointer copyPointer(dos_qvariant_create_qvariant(&original), &dos_qvariant_delete);
+        QVariant* copy = static_cast<QVariant*>(copyPointer.get());
+        QCOMPARE(copy->type(), original.type());
+        QCOMPARE(copy->toString().toStdString(), original.toString().toStdString());
     }
 
     void testArray()
@@ -410,18 +411,25 @@ private slots:
         QVERIFY(result.toBool());
     }
 
-    void testPropertyGetSet(){
-        auto testobject = new MockQObject;
-        QObject *data = static_cast<QObject *>(testobject->data());
+    void testPropertyGetSet() {
+        MockQObject testobject;
+        QObject *data = static_cast<QObject *>(testobject.data());
         data->setProperty("name", "foo");
-        auto value = *static_cast<QVariant *>(dos_qobject_property(data, "name"));
-        QVERIFY(value.type() == QVariant::String);
-        QVERIFY(value.toString() == "foo");
+        {
+            VoidPointer valuePtr(dos_qobject_property(data, "name"), &dos_qvariant_delete);
+            auto value = *static_cast<QVariant *>(valuePtr.get());
+            QVERIFY(value.type() == QVariant::String);
+            QVERIFY(value.toString() == "foo");
+        }
         QVariant bar("bar");
         dos_qobject_setProperty(data, "name", &bar);
-        value = *static_cast<QVariant *>(dos_qobject_property(data, "name"));
-        QVERIFY(value.type() == QVariant::String);
-        QVERIFY(value.toString() == "bar");
+
+        {
+            VoidPointer valuePtr(dos_qobject_property(data, "name"), &dos_qvariant_delete);
+            auto value = *static_cast<QVariant *>(valuePtr.get());
+            QVERIFY(value.type() == QVariant::String);
+            QVERIFY(value.toString() == "bar");
+        }
     }
 
     void testSignalEmittion()

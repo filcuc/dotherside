@@ -13,7 +13,7 @@ std::string toStringFromQVariant(DosQVariant *variant)
 
 VoidPointer initializeMetaObject()
 {
-    void *superClassMetaObject = dos_qobject_qmetaobject();
+    VoidPointer superClassMetaObject(dos_qobject_qmetaobject(), &dos_qmetaobject_delete);
     // Signals
     ::SignalDefinition signalDefinitionArray[2];
 
@@ -88,7 +88,7 @@ VoidPointer initializeMetaObject()
     propertyDefinitions.count = 2;
     propertyDefinitions.definitions = propertyDefinitionArray;
 
-    return VoidPointer(dos_qmetaobject_create(superClassMetaObject, "MockQObject", &signalDefinitions, &slotDefinitions, &propertyDefinitions),
+    return VoidPointer(dos_qmetaobject_create(superClassMetaObject.get(), "MockQObject", &signalDefinitions, &slotDefinitions, &propertyDefinitions),
                        &dos_qmetaobject_delete);
 }
 }
