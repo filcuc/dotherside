@@ -16,7 +16,7 @@ public:
     DosQObjectWrapper(QObject *parent = nullptr);
 
     /// Destructor
-    ~DosQObjectWrapper();
+    ~DosQObjectWrapper() override;
 
     /// @see DosIQObjectImpl::metaObject
     const QMetaObject *metaObject() const override;
@@ -25,7 +25,7 @@ public:
     int qt_metacall(QMetaObject::Call, int, void **) override;
 
     /// @see DosIQObjectImpl::emitSignal
-    bool emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &argumentsValues);
+    bool emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &argumentsValues) override;
 
     static const QmlRegisterType &qmlRegisterType();
     static void setQmlRegisterType(QmlRegisterType data);

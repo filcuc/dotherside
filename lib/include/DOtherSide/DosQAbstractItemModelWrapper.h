@@ -14,7 +14,7 @@ public:
     DosQAbstractItemModelWrapper(QObject *parent = nullptr);
 
     /// Destructor
-    ~DosQAbstractItemModelWrapper();
+    ~DosQAbstractItemModelWrapper() override;
 
     /// @see DosIQObjectImpl::metaObject
     const QMetaObject *metaObject() const override;
@@ -23,7 +23,7 @@ public:
     int qt_metacall(QMetaObject::Call, int, void **) override;
 
     /// @see DosIQObjectImpl::emitSignal
-    bool emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &argumentsValues);
+    bool emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &argumentsValues) override;
 
     /// Return the qml registration type
     static const QmlRegisterType &qmlRegisterType();
