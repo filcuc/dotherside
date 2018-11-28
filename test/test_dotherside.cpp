@@ -54,12 +54,10 @@ private slots:
     {
         bool quit = false;
         dos_qguiapplication_create();
-        QTimer timer;
-        QObject::connect(&timer, &QTimer::timeout, [&quit]() {
+        QTimer::singleShot(100, [&quit]() {
             quit = true;
             dos_qguiapplication_quit();
         });
-        timer.start(100);
         dos_qguiapplication_exec();
         QVERIFY(quit);
         dos_qguiapplication_delete();
@@ -78,12 +76,10 @@ private slots:
     {
         bool quit = false;
         dos_qapplication_create();
-        QTimer timer;
-        QObject::connect(&timer, &QTimer::timeout, [&quit]() {
+        QTimer::singleShot(100, [&quit]() {
             quit = true;
             dos_qapplication_quit();
         });
-        timer.start(100);
         dos_qapplication_exec();
         QVERIFY(quit);
         dos_qapplication_delete();
