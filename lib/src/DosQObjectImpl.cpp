@@ -1,19 +1,21 @@
 #include "DOtherSide/DosQObjectImpl.h"
+
 #include "DOtherSide/DosQMetaObject.h"
+
 #include <QtCore/QMetaObject>
 #include <QtCore/QMetaMethod>
 #include <QtCore/QDebug>
 
 namespace DOS {
 
-DosQObjectImpl::DosQObjectImpl(QObject *parent,
-                               ParentMetaCall parentMetaCall,
+DosQObjectImpl::DosQObjectImpl(ParentMetaCall parentMetaCall,
                                std::shared_ptr<const DosIQMetaObject> metaObject,
-                               OnSlotExecuted onSlotExecuted)
-    : m_parent(std::move(parent))
-    , m_parentMetaCall(std::move(parentMetaCall))
-    , m_onSlotExecuted(std::move(onSlotExecuted))
+                               void *dObjectPointer,
+                               DObjectCallback dObjectCallback)
+    : m_parentMetaCall(std::move(parentMetaCall))
     , m_metaObject(std::move(metaObject))
+    , m_dObjectPointer(dObjectPointer)
+    , m_dObjectCallback(dObjectCallback)
 {
 }
 
@@ -83,13 +85,36 @@ bool DosQObjectImpl::executeSlot(const QMetaMethod &method, void **args, int arg
         arguments.emplace_back(std::move(argument));
     }
 
-    const QVariant result = m_onSlotExecuted(method.name(), arguments); // Execute method
+    const QVariant result = executeSlot(method.name(), arguments); // Execute method
 
     if (hasReturnType && result.isValid()) {
         QMetaType::construct(method.returnType(), args[0], result.constData());
     }
 
     return true;
+}
+
+QVariant DosQObjectImpl::executeSlot(const QString &name, const std::vector<QVariant> &args)
+{
+    QVariant result;
+
+    if (!m_dObjectCallback || !m_dObjectPointer)
+        return result;
+
+    // prepare slot name
+    QVariant slotName(name);
+
+    // prepare void* for the QVariants
+    std::vector<void *> argumentsAsVoidPointers;
+    argumentsAsVoidPointers.reserve(args.size() + 1);
+    argumentsAsVoidPointers.emplace_back(&result);
+    for (size_t i = 0; i < args.size(); ++i)
+        argumentsAsVoidPointers.emplace_back((void *)(&args[i]));
+
+    // send them to the binding handler
+    m_dObjectCallback(m_dObjectPointer, &slotName, argumentsAsVoidPointers.size(), &argumentsAsVoidPointers[0]);
+
+    return result;
 }
 
 bool DosQObjectImpl::readProperty(int index, void **args)

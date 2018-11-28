@@ -14,8 +14,7 @@ class DosQObject : public QObject, public DosIQObjectImpl
 {
 public:
     /// Constructor
-    DosQObject(DosIQMetaObjectPtr metaObject,
-               OnSlotExecuted onSlotExecuted);
+    DosQObject(void *dObjectPointer, DosIQMetaObjectPtr metaObject, DObjectCallback dObjectCallback);
 
     /// Emit a signal
     bool emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &arguments) override;

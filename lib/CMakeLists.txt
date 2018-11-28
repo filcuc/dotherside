@@ -24,7 +24,6 @@ set(HEADERS_LIST
   include/DOtherSide/DosQObject.h
   include/DOtherSide/DosQObjectImpl.h
   include/DOtherSide/DosIQObjectImpl.h
-  include/DOtherSide/OnSlotExecutedHandler.h
   include/DOtherSide/DosQMetaObject.h
   include/DOtherSide/DosIQAbstractItemModelImpl.h
   include/DOtherSide/DosQAbstractItemModel.h
@@ -33,7 +32,6 @@ set(HEADERS_LIST
 
 set(SRC_LIST
   src/DOtherSide.cpp
-  src/OnSlotExecutedHandler.cpp
   src/DosQMetaObject.cpp
   src/DosQDeclarative.cpp
   src/DosQObject.cpp

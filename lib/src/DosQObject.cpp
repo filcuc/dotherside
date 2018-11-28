@@ -13,8 +13,8 @@ DOS::DosQObjectImpl::ParentMetaCall createParentMetaCall(QObject *parent)
 
 namespace DOS {
 
-DosQObject::DosQObject(DosIQMetaObjectPtr metaObject, OnSlotExecuted onSlotExecuted)
-    : m_impl(new DosQObjectImpl(this, ::createParentMetaCall(this), std::move(metaObject), std::move(onSlotExecuted)))
+DosQObject::DosQObject(void *dObjectPointer, DosIQMetaObjectPtr metaObject, DObjectCallback dObjectCallback)
+    : m_impl(new DosQObjectImpl(::createParentMetaCall(this), std::move(metaObject), dObjectPointer, dObjectCallback))
 {}
 
 bool DosQObject::emitSignal(QObject *emitter, const QString &name, const std::vector<QVariant> &args)

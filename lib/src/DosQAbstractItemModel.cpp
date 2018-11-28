@@ -18,10 +18,10 @@ namespace DOS {
 template<class T>
 DosQAbstractGenericModel<T>::DosQAbstractGenericModel(void *modelObject,
                                                       DosIQMetaObjectPtr metaObject,
-                                                      OnSlotExecuted onSlotExecuted,
+                                                      DObjectCallback dObjectCallback,
                                                       DosQAbstractItemModelCallbacks callbacks)
-    : m_impl(new DosQObjectImpl(this, ::createParentMetaCall(this), std::move(metaObject), std::move(onSlotExecuted)))
-    , m_modelObject(std::move(modelObject))
+    : m_impl(new DosQObjectImpl(::createParentMetaCall(this), std::move(metaObject), modelObject, dObjectCallback))
+    , m_modelObject(modelObject)
     , m_callbacks(callbacks)
 {}
 
