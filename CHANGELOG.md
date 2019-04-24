@@ -1,3 +1,7 @@
+# Version 0.6.4
+* CMake: install the static library
+* CMake: install a DOtherSide.pc file for pkg-config
+* CMake: make docs, tests and the static library optional
 
 # Version 0.6.3
 * Added soversion and version to CMake

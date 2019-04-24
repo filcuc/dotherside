@@ -3,6 +3,8 @@ project(DOtherSide)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 
+include(GNUInstallDirs)
+
 if (WIN32)
   add_definitions(-DWIN32)
 endif()
@@ -45,27 +47,42 @@ include_directories(include include/Qt)
 
 set(major 0)
 set(minor 6)
-set(patch 3)
+set(patch 4)
+set(DOTHERSIDE_VERSION "${major}.${minor}.${patch}")
 
-# Shared version for distributing
+# Shared version
 add_library(${PROJECT_NAME} SHARED ${SRC_LIST} ${HEADERS_LIST})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 set_property(TARGET ${PROJECT_NAME} PROPERTY SOVERSION "${major}.${minor}")
 set_property(TARGET ${PROJECT_NAME} PROPERTY VERSION "${major}.${minor}.${patch}")
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick)
 
+# for DOtherSide.pc
+set(PC_REQUIRES "Qt5Core, Qt5Gui, Qt5Widgets, Qt5Qml, Qt5Quick")
 if(${Qt5QuickControls2_FOUND})
     target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::QuickControls2)
+	set(PC_REQUIRES "${PC_REQUIRES}, Qt5QuickControls2")
 endif()
 
-# Static version for testing
-add_library("${PROJECT_NAME}Static" STATIC ${SRC_LIST} ${HEADERS_LIST})
-set_property(TARGET "${PROJECT_NAME}Static" PROPERTY CXX_STANDARD 11)
-target_link_libraries("${PROJECT_NAME}Static" PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick)
+install(TARGETS ${PROJECT_NAME}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
 
-if(${Qt5QuickControls2_FOUND})
-    target_link_libraries("${PROJECT_NAME}Static" PRIVATE Qt5::QuickControls2)
-endif()
+# Static version
+if(ENABLE_STATIC_LIBS)
+  add_library("${PROJECT_NAME}Static" STATIC ${SRC_LIST} ${HEADERS_LIST})
+  set_property(TARGET "${PROJECT_NAME}Static" PROPERTY CXX_STANDARD 11)
+  set_property(TARGET "${PROJECT_NAME}Static" PROPERTY OUTPUT_NAME ${PROJECT_NAME})
+  target_link_libraries("${PROJECT_NAME}Static" PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick)
+
+  if(${Qt5QuickControls2_FOUND})
+	target_link_libraries("${PROJECT_NAME}Static" PRIVATE Qt5::QuickControls2)
+  endif()
+
+  install(TARGETS ${PROJECT_NAME}Static
+	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  )
+endif(ENABLE_STATIC_LIBS)
 
 # Install directive for header files
 install(FILES
@@ -73,8 +90,7 @@ install(FILES
   include/DOtherSide/DOtherSideTypes.h
   DESTINATION include/DOtherSide)
 
-# Install directive for binaries
-install(TARGETS ${PROJECT_NAME}
-  RUNTIME DESTINATION bin
-  LIBRARY DESTINATION lib
-  )
+# pkg-config file
+configure_file(${CMAKE_SOURCE_DIR}/DOtherSide.pc.cmake ${CMAKE_BINARY_DIR}/DOtherSide.pc @ONLY)
+install(FILES ${CMAKE_BINARY_DIR}/DOtherSide.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+
