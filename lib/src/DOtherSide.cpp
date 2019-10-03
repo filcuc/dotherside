@@ -1016,3 +1016,13 @@ void dos_qquickstyle_set_fallback_style(const char *style)
     std::cerr << "Library has no QtQuickControls2 support" << std::endl;
 #endif
 }
+
+void *dos_qcoreapplication_process_events(DosQEventLoopProcessEventFlag flags)
+{
+    qApp->processEvents(static_cast<QEventLoop::ProcessEventsFlag>(flags));
+}
+
+void *dos_qcoreapplication_process_events_timed(DosQEventLoopProcessEventFlag flags, int ms)
+{
+    qApp->processEvents(static_cast<QEventLoop::ProcessEventsFlag>(flags), ms);
+}

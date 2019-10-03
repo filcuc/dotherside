@@ -1,3 +1,9 @@
+# Version 0.6.4
+* Added support for QCoreApplication::processEvents
+* Added support for QObject::deleteLater
+* Added support for QObject::readProperty and QObject::writeProperty
+* Added support for QPixmap::isNull and QPixmap:: assign functions
+* Added optional support for QtQuickControls2 and setting style
 
 # Version 0.6.3
 * Added soversion and version to CMake

@@ -35,6 +35,12 @@ extern "C"
 /// the dos_chararray_delete() function
 DOS_API char *DOS_CALL dos_qcoreapplication_application_dir_path(void);
 
+/// \brief Force the event loop to spin and process the given events
+DOS_API void *DOS_CALL dos_qcoreapplication_process_events(DosQEventLoopProcessEventFlag flags = DosQEventLoopProcessEventFlag::DosQEventLoopProcessEventFlagProcessAllEvents);
+
+/// \brief Force the event loop to spin and process the given events until no more available or timed out
+DOS_API void *DOS_CALL dos_qcoreapplication_process_events_timed(DosQEventLoopProcessEventFlag flags, int ms);
+
 /// \brief Create a QGuiApplication
 /// \note The created QGuiApplication should be freed by calling dos_qguiapplication_delete()
 DOS_API void DOS_CALL dos_qguiapplication_create(void);

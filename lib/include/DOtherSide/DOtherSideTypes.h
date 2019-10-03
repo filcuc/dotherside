@@ -355,6 +355,13 @@ struct DosQAbstractItemModelCallbacks {
 typedef struct DosQAbstractItemModelCallbacks DosQAbstractItemModelCallbacks;
 #endif
 
+enum DosQEventLoopProcessEventFlag {
+    DosQEventLoopProcessEventFlagProcessAllEvents = 0x00,
+    DosQEventLoopProcessEventFlagExcludeUserInputEvents = 0x01,
+    DosQEventLoopProcessEventFlagProcessExcludeSocketNotifiers = 0x02,
+    DosQEventLoopProcessEventFlagProcessAllEventsWaitForMoreEvents = 0x03
+};
+
 #ifdef __cplusplus
 }
 #endif

@@ -45,7 +45,7 @@ include_directories(include include/Qt)
 
 set(major 0)
 set(minor 6)
-set(patch 3)
+set(patch 4)
 
 # Shared version for distributing
 add_library(${PROJECT_NAME} SHARED ${SRC_LIST} ${HEADERS_LIST})
