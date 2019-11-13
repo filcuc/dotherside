@@ -1017,12 +1017,12 @@ void dos_qquickstyle_set_fallback_style(const char *style)
 #endif
 }
 
-void *dos_qcoreapplication_process_events(DosQEventLoopProcessEventFlag flags)
+void dos_qcoreapplication_process_events(DosQEventLoopProcessEventFlag flags)
 {
     qApp->processEvents(static_cast<QEventLoop::ProcessEventsFlag>(flags));
 }
 
-void *dos_qcoreapplication_process_events_timed(DosQEventLoopProcessEventFlag flags, int ms)
+void dos_qcoreapplication_process_events_timed(DosQEventLoopProcessEventFlag flags, int ms)
 {
     qApp->processEvents(static_cast<QEventLoop::ProcessEventsFlag>(flags), ms);
 }
