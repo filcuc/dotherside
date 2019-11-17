@@ -7,12 +7,7 @@ if (WIN32)
   add_definitions(-DWIN32)
 endif()
 
-find_package(Qt5Core)
-find_package(Qt5Qml)
-find_package(Qt5Gui)
-find_package(Qt5Quick)
-find_package(Qt5QuickControls2)
-find_package(Qt5Widgets)
+find_package(Qt5 COMPONENTS Core Qml Gui Quick QuickControls2 Widgets)
 
 set(HEADERS_LIST
   include/DOtherSide/DOtherSideTypes.h
@@ -39,7 +34,7 @@ set(SRC_LIST
   src/DosQObjectImpl.cpp
   src/DosQAbstractItemModel.cpp
   src/DosQQuickImageProvider.cpp
-  )
+)
 
 include_directories(include include/Qt)
 
@@ -49,9 +44,12 @@ set(patch 4)
 
 # Shared version for distributing
 add_library(${PROJECT_NAME} SHARED ${SRC_LIST} ${HEADERS_LIST})
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
-set_property(TARGET ${PROJECT_NAME} PROPERTY SOVERSION "${major}.${minor}")
-set_property(TARGET ${PROJECT_NAME} PROPERTY VERSION "${major}.${minor}.${patch}")
+set_target_properties(${PROJECT_NAME}
+PROPERTIES
+    CXX_STANDARD 11
+    SOVERSION "${major}.${minor}"
+    VERSION "${major}.${minor}.${patch}"
+)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick)
 
 if(${Qt5QuickControls2_FOUND})
