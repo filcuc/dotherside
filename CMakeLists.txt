@@ -1,25 +1,21 @@
 cmake_minimum_required(VERSION 3.0)
 
-# Add Coverage option
-option(ENABLE_COVERAGE "Enable coverage" OFF)
-
 # Add additional source path for cmake
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake/)
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/)
 
 # Add strict warning checking for C++
 if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -pedantic")
-endif()
+    # Add Coverage option
+    option(ENABLE_COVERAGE "Enable coverage" OFF)
 
-if (ENABLE_COVERAGE)
-  message(STATUS "Enabling coverage")
-  set(CMAKE_BUILD_TYPE Debug)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
-endif()
+    add_compile_options(-Wall -Wno-long-long -pedantic)
 
-# Add additional source path for cmake
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake/)
+    if (ENABLE_COVERAGE)
+        message(STATUS "Enabling coverage")
+        set(CMAKE_BUILD_TYPE Debug)
+        add_compile_options(-g -O0 --coverage)
+    endif()
+endif()
 
 add_subdirectory(doc)
 add_subdirectory(lib)
