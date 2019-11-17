@@ -1,5 +1,6 @@
 project(DOtherSide)
 
+# Macro for merging common code between static and shared
 macro(add_target name type)
     find_package(Qt5 COMPONENTS Core Qml Gui Quick QuickControls2 Widgets)
 
@@ -26,13 +27,18 @@ macro(add_target name type)
         src/DosQAbstractItemModel.cpp
         src/DosQQuickImageProvider.cpp
     )
+
     if (WIN32)
         target_compile_definitions(${name} PRIVATE -DWIN32)
     endif()
+
     set_target_properties(${name} PROPERTIES CXX_STANDARD 11 AUTOMOC ON)
+
     target_include_directories(${name} PUBLIC include include/Qt)
+
     target_link_libraries(${name} PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick)
-    if(${Qt5QuickControls2_FOUND})
+
+    if (${Qt5QuickControls2_FOUND})
         target_link_libraries(${name} PRIVATE Qt5::QuickControls2)
     endif()
 endmacro()
@@ -55,10 +61,11 @@ add_target(${PROJECT_NAME}Static STATIC)
 install(FILES
   include/DOtherSide/DOtherSide.h
   include/DOtherSide/DOtherSideTypes.h
-  DESTINATION include/DOtherSide)
+  DESTINATION include/DOtherSide
+)
 
 # Install directive for binaries
 install(TARGETS ${PROJECT_NAME}
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
-  )
+)
