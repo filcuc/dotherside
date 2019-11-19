@@ -14,6 +14,7 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
         message(STATUS "Enabling coverage")
         set(CMAKE_BUILD_TYPE Debug)
         add_compile_options(-g -O0 --coverage)
+	add_link_options(--coverage)
     endif()
 endif()
 
