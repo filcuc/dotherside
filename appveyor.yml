@@ -53,10 +53,10 @@ artifacts:
     type: zip
 
 deploy:
-  description: 'My description'
+  description: 'AppVeyor Artifacts'
   provider: GitHub
   auth_token:
-    secure: Brw9CAHN/fULjHQtbrG8jlFkfQcj7NjEWUvUkRB0vrJP2T9glct2Zsrv0lE3H833
+    secure: mQWOVHGwctWmZ2wGL/Jy1I8DrHYjWYQwgEabF/R+LRruFlwkAUAvm2nTO5fcypNL
   artifact: $(ARTIFACT)
   draft: true
   prerelease: true
