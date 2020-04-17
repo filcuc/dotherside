@@ -14,5 +14,5 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: install qt
-      run: sudo apt-get -y update && sudo apt-get install -y qt5-default qtdeclarative5-dev qtdeclarative5-private-dev qtbase5-dev cmake build-essentials
+      run: sudo apt-get -y update && sudo apt-get install -y qt5-default qtdeclarative5-dev qtdeclarative5-private-dev qtbase5-dev cmake build-essential
     
