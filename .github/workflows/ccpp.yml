@@ -13,10 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: install build dependencies
-      run: sudo apt-get -y update && sudo apt-get install -y qt5-default qtdeclarative5-dev qtquickcontrols2-5-dev qtbase5-dev cmake build-essential 
-    - name: compile
-      run: mkdir build && cd build && cmake -GNinja -DENABLE_COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . 
-    - name: test
-      run: ./test/TestDynamicQObject  
+    - name: Publish Image
+      uses: matootie/github-docker@v2.2.2
+      with:
+        accessToken: ${{ secrets.GITHUB_TOKEN }}  
     
