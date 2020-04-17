@@ -14,8 +14,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Publish Image
-      working-directory: .docker
       uses: matootie/github-docker@v2.2.2
       with:
-        accessToken: ${{ secrets.GITHUB_TOKEN }}  
+        accessToken: ${{ secrets.GITHUB_TOKEN }}
+        context: .docker 
     
