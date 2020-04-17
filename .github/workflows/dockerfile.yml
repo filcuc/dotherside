@@ -4,11 +4,13 @@ on:
   push:
     branches: [ master ]
     paths: 
-      - '**Dockerfile'
+      - '.docker/**'
+      - '.github/**'
   pull_request:
     branches: [ master ]
     paths: 
-      - '**Dockerfile'
+      - '.docker/**'
+      - '.github/**'
 jobs:
   build:
 
