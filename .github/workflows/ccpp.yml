@@ -1,11 +1,14 @@
-name: C/C++ CI
+name: Docker
 
 on:
   push:
     branches: [ master ]
+    paths: 
+      - '**Dockerfile'
   pull_request:
     branches: [ master ]
-
+    paths: 
+      - '**Dockerfile'
 jobs:
   build:
 
