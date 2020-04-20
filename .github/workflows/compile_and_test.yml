@@ -1,0 +1,15 @@
+name: CompileAndTest
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Pull image
+      runs: docker pull docker.pkg.github.com/filcuc/dotherside/dotherside:mr82
+    
