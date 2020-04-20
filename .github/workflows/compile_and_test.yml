@@ -8,8 +8,11 @@ on:
 jobs:
   build:
     runs-on: [ubuntu-latest]
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
     - uses: actions/checkout@v2
-    - name: Pull image
-      uses: docker://docker.pkg.github.com/filcuc/dotherside/dotherside:mr82
-  
+    - name: Docker login
+      run: docker login docker.pkg.github.com --username filcuc
+    - name: Docker pull
+      run: docker pull docker.pkg.github.com/filcuc/dotherside/dotherside
