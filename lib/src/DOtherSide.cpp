@@ -28,6 +28,7 @@
 #include <QtCore/QResource>
 #include <QtGui/QGuiApplication>
 #include <QtQml/QQmlContext>
+#include <QtCore>
 #include <QtQml/QQmlApplicationEngine>
 #include <QtQuick/QQuickView>
 #include <QtQuick/QQuickImageProvider>
@@ -715,6 +716,44 @@ bool dos_qurl_isValid(const ::DosQUrl *vptr)
                                                             DOS::toVector(*slotDefinitions),
                                                             DOS::toVector(*propertyDefinitions));
     return new DOS::DosIQMetaObjectHolder(std::move(metaObject));
+}
+
+class StatusSignalThread : public QThread {
+public:
+    explicit StatusSignalThread(QObject *parent = nullptr) : QThread(parent) {
+        m_slot = "";
+        m_obj = nullptr;
+        m_signal = "";
+    }
+
+    void setSlot(const char *slot){
+         m_slot = slot; 
+    }
+
+    void setQObject(QObject *obj){ m_obj = obj; }
+
+    void setSignal(const char *signal){
+        m_signal = QString::fromUtf8(signal);
+    }
+
+    void run() override {
+        QMetaObject::invokeMethod(m_obj, m_slot, Qt::QueuedConnection, Q_ARG(QString, m_signal));  
+    }
+
+private:
+    const char *m_slot;
+    QString m_signal;
+    QObject *m_obj;
+};
+
+void dos_signal(::DosQObject *vptr, const char *signal, const char *slot) //
+{
+    auto sThread = new StatusSignalThread;
+    auto qobject = static_cast<QObject *>(vptr);
+    sThread->setSlot(slot);
+    sThread->setQObject(qobject);
+    sThread->setSignal(signal);
+    sThread->start();
 }
 
 void dos_qmetaobject_delete(::DosQMetaObject *vptr)
