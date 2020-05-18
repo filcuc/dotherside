@@ -622,7 +622,8 @@ bool dos_qmodelindex_isValid(const ::DosQModelIndex *vptr)
 ::DosQModelIndex *dos_qmodelindex_child(const ::DosQModelIndex *vptr, int row, int column)
 {
     auto index = static_cast<const QModelIndex *>(vptr);
-    auto result = new QModelIndex(index->child(row, column));
+    auto model = index->model();
+    auto result = new QModelIndex(model ? model->index(row, column, *index) : QModelIndex());
     return static_cast<QModelIndex *>(result);
 }
 
@@ -908,7 +909,7 @@ void dos_qabstractitemmodel_dataChanged(::DosQAbstractItemModel *vptr,
     auto model = dynamic_cast<DOS::DosIQAbstractItemModelImpl *>(object);
     auto topLeft = static_cast<const QModelIndex *>(topLeftIndex);
     auto bottomRight = static_cast<const QModelIndex *>(bottomRightIndex);
-    auto roles = QVector<int>::fromStdVector(std::vector<int>(rolesArrayPtr, rolesArrayPtr + rolesArrayLength));
+    auto roles = QVector<int>(rolesArrayPtr, rolesArrayPtr + rolesArrayLength);
     model->publicDataChanged(*topLeft, *bottomRight, roles);
 }
 
