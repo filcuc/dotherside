@@ -1,0 +1,119 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  linux:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y build-essential cmake qt5-default qtbase5-dev qtdeclarative5-dev qtquickcontrols2-5-dev qml-module-qtquick2 qml-module-qtquick-controls2 qml-module-qtquick-window2 xvfb lcov 
+
+    - name: Compile
+      run: |
+        mkdir build
+        cd build
+        cmake -DENABLE_COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug ..
+        cmake --build .
+
+    - name: Test
+      run: |
+        Xvfb :99 -screen 0 1024x768x24 > /dev/null &
+        export DISPLAY=:99.0
+        ./build/test/TestDynamicQObject
+
+    - name: Coverage
+      run: |
+        lcov --directory . --capture --output-file coverage.info
+        lcov --remove coverage.info "/usr/*" -o coverage.info
+        lcov --remove coverage.info "*/build/*" -o coverage.info
+        lcov --remove coverage.info "*/test/*" -o coverage.info
+        bash <(curl -s https://codecov.io/bash)
+
+  windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        include:
+        - qt: 5.12.9
+          arch: win64_msvc2017_64
+          config: Release
+          toolset: v141 
+        - qt: 5.15.0
+          arch: win64_msvc2019_64
+          config: Release
+          toolset: v142
+
+    env:
+      PACKAGE_NAME: libDOtherSide-windows-${{ matrix.arch }}-qt-${{ matrix.qt }}.zip
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Cache Qt
+      id: cache-qt
+      uses: actions/cache@v1
+      with:
+        path: ../Qt
+        key: ${{ runner.os }}-${{ matrix.arch }}-${{ matrix.qt }}-QtCache
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        cached: ${{ steps.cache-qt.outputs.cache-hit }}
+        arch: ${{ matrix.arch }}
+        version: ${{ matrix.qt }}
+
+    - name: Compile
+      shell: cmd
+      run: |
+        mkdir build
+        cd build
+        cmake -T"${{ matrix.toolset }}" -A x64 -DCMAKE_BUILD_TYPE=${{ matrix.config }} ..
+        cmake --build . --config ${{ matrix.config }} -j
+
+    - name: Test
+      shell: cmd
+      run: |
+        set QT_PLUGIN_PATH=%Qt5_DIR%/plugins
+        set QML2_IMPORT_PATH=%Qt5_DIR%/qml
+        "build\test\${{ matrix.config }}\TestDynamicQObject.exe"
+
+    - name: Upload readme
+      uses: actions/upload-artifact@master
+      with:
+        name: ${{ env.PACKAGE_NAME }}
+        path: README.md
+
+    - name: Upload change log
+      uses: actions/upload-artifact@master
+      with:
+        name: ${{ env.PACKAGE_NAME }}
+        path: CHANGELOG.md
+
+    - name: Upload license
+      uses: actions/upload-artifact@master
+      with:
+        name: ${{ env.PACKAGE_NAME }}
+        path: LICENSE
+
+    - name: Upload library binary
+      uses: actions/upload-artifact@master
+      with:
+        name: ${{ env.PACKAGE_NAME }}
+        path: build/lib/${{ matrix.config }}/DOtherSide.dll
+
+      
+        
+    
+    

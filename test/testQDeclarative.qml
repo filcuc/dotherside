@@ -1,4 +1,4 @@
-import QtQuick 2.3
+import QtQuick 2.12
 import MockModule 1.0
 
 Item {

@@ -909,7 +909,9 @@ void dos_qabstractitemmodel_dataChanged(::DosQAbstractItemModel *vptr,
     auto model = dynamic_cast<DOS::DosIQAbstractItemModelImpl *>(object);
     auto topLeft = static_cast<const QModelIndex *>(topLeftIndex);
     auto bottomRight = static_cast<const QModelIndex *>(bottomRightIndex);
-    auto roles = QVector<int>(rolesArrayPtr, rolesArrayPtr + rolesArrayLength);
+    QVector<int> roles;
+    for (auto it = rolesArrayPtr, end = rolesArrayPtr + rolesArrayLength; it != end; ++it)
+      roles.push_back(*it);
     model->publicDataChanged(*topLeft, *bottomRight, roles);
 }
 
