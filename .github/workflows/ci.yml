@@ -28,10 +28,11 @@ jobs:
 
     - name: Test
       run: |
-        Xvfb :99 -screen 0 1024x768x24
-        export QT_DEBUG_PLUGINS
-        export DISPLAY=:99.0
-        ./build/test/TestDynamicQObject
+        export QT_DEBUG_PLUGINS=1
+        xvfb-run -a ./build/test/TestDynamicQObject
+
+    - name: Cleanup xvfb pidx
+      uses: bcomnes/cleanup-xvfb@v1
 
     - name: Coverage
       run: |
