@@ -28,9 +28,11 @@ jobs:
 
     - name: Test
       run: |
-        Xvfb :99 -screen 0 1024x768x24 > /dev/null &
-        export DISPLAY=:99.0
-        ./build/test/TestDynamicQObject
+        export QT_DEBUG_PLUGINS=1
+        xvfb-run -a ./build/test/TestDynamicQObject
+
+    - name: Cleanup xvfb pidx
+      uses: bcomnes/cleanup-xvfb@v1
 
     - name: Coverage
       run: |
@@ -80,7 +82,7 @@ jobs:
         mkdir build
         cd build
         cmake -T"${{ matrix.toolset }}" -A x64 -DCMAKE_BUILD_TYPE=${{ matrix.config }} ..
-        cmake --build . --config ${{ matrix.config }} -j
+        cmake --build . --config ${{ matrix.config }}
 
     - name: Test
       shell: cmd
