@@ -22,14 +22,9 @@ The following features are implementable from a binding language
 * Creating from Singleton QML QObject defined in the binded language
 
 ## Prebuilt binaries
-### Windows
-Currently we provide the prebuilt binaries for windows through the
-github [releases](https://github.com/filcuc/DOtherSide/releases) page
-
-### Linux
-Currently we provide the prebuilt binaries for the following
-Linux distributions through the [OpenSUSE OBS service](https://build.opensuse.org/package/show/home:filcuc/DOtherSide)
-* ```Archlinux``` : [here](http://software.opensuse.org/download.html?project=home%3Afilcuc&package=DOtherSide)
+Currently we provide the prebuilt binaries for Windows through the
+GitHub [releases](https://github.com/filcuc/DOtherSide/releases) page
+or directly as artifacts from Github actions
 
 ## Change log
 The project change log can be read [here](./CHANGELOG.md).
