@@ -1,6 +1,6 @@
 # DOtherSide
 [![License](https://img.shields.io/badge/license-LGPL-green.svg)](https://github.com/filcuc/DOtherSide/blob/master/LICENSE)
-![CI](https://github.com/filcuc/dotherside/workflows/CI/badge.svg)
+![CI](https://github.com/filcuc/dotherside/workflows/CI/badge.svg)(https://github.com/filcuc/dotherside/actions?query=workflow%3ACI+branch%3Amaster)
 [![codecov](https://codecov.io/gh/filcuc/dotherside/branch/master/graph/badge.svg)](https://codecov.io/gh/filcuc/dotherside)
 [![Documentation Status](https://img.shields.io/badge/read-documentation-blue.svg)](https://filcuc.github.io/DOtherSide/)
 
