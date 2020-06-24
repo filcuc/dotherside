@@ -15,11 +15,11 @@ Currently the DOtherSide library is used by the following bindings:
 
 ## Supported features
 The following features are implementable from a binding language
-* Creating custom QObject
-* Creating custom QAbstractListModels
-* Creating custom properties, signals and slots
-* Creating from QML QObject defined in the binded language
-* Creating from Singleton QML QObject defined in the binded language
+* Creation of custom QObject
+* Creation of custom QAbstractListModels
+* Creation of custom properties, signals and slots
+* Registration of QML creatable QObjects defined in the binded language
+* Registration of QML Singletons defined in the binded language
 
 ## Prebuilt binaries
 Currently we provide the prebuilt binaries for Windows through the
