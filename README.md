@@ -20,6 +20,7 @@ The following features are implementable from a binding language
 * Creation of custom properties, signals and slots
 * Creation of QObjects from QML
 * Registration of singletons in QML
+* Creation of custom image providers
 
 ## Prebuilt binaries
 Currently we provide the prebuilt binaries for Windows through the
