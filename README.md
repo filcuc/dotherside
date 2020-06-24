@@ -18,8 +18,8 @@ The following features are implementable from a binding language
 * Creation of custom QObject
 * Creation of custom QAbstractListModels
 * Creation of custom properties, signals and slots
-* Registration of QML creatable QObjects defined in the binded language
-* Registration of QML Singletons defined in the binded language
+* Creation of QObjects from QML
+* Registration of singletons in QML
 
 ## Prebuilt binaries
 Currently we provide the prebuilt binaries for Windows through the
