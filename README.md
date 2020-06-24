@@ -16,7 +16,7 @@ Currently the DOtherSide library is used by the following bindings:
 ## Supported features
 The following features are implementable from a binding language
 * Creation of custom QObject
-* Creation of custom QAbstractListModels
+* Creation of custom QAbstractItemModels (Lists, Tables and Trees)
 * Creation of custom properties, signals and slots
 * Creation of QObjects from QML
 * Registration of singletons in QML
