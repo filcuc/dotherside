@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2019 Filippo Cucchetto.
+    Copyright (C) 2020 Filippo Cucchetto.
     Contact: https://github.com/filcuc/dotherside
 
     This file is part of the DOtherSide library.

@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2019 Filippo Cucchetto.
+    Copyright (C) 2020 Filippo Cucchetto.
     Contact: https://github.com/filcuc/dotherside
 
     This file is part of the DOtherSide library.
@@ -759,9 +759,7 @@ DOS_API void DOS_CALL dos_qobject_connect_static(DosQObject* sender, const char*
 /// \note Use the dos_signal_macro o dos_slot_macro for property format the string arguments
 DOS_API void DOS_CALL dos_qobject_disconnect_static(DosQObject* sender, const char* signal,
                                                     DosQObject* receiver, const char* slot);
-
 /// @}
-
 
 /// \defgroup QModelIndex QModelIndex
 /// \brief Functions related to the QModelIndex class
@@ -918,6 +916,9 @@ DOS_API int DOS_CALL dos_qdeclarative_qmlregistertype(const QmlRegisterType *qml
 DOS_API int DOS_CALL dos_qdeclarative_qmlregistersingletontype(const QmlRegisterType *qmlRegisterType);
 
 /// @}
+
+DOS_API DosQObject
+
 
 #ifdef __cplusplus
 }
