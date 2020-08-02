@@ -448,6 +448,30 @@ private slots:
         QVERIFY(result.toBool());
     }
 
+    void testConnection() {
+        MockQObject m1;
+        MockQObject m2;
+
+        auto signal_name = dos_signal_macro("nameChanged(QString)");
+        auto slot_name = dos_slot_macro("setName(QString)");
+
+        dos_qobject_connect_static(m1.data(), signal_name, m2.data(), slot_name, DosQtConnectionTypeAutoConnection);
+
+        m1.setName("Foo");
+        QCOMPARE(m1.name(), m2.name());
+        QCOMPARE(m2.name(), "Foo");
+
+        dos_qobject_disconnect_static(m1.data(), nullptr, m2.data(), nullptr);
+        m1.setName("Bar");
+        QVERIFY(m1.name() != m2.name());
+        QCOMPARE(m2.name(), "Foo");
+        QCOMPARE(m1.name(), "Bar");
+
+        // Cleanup
+        dos_chararray_delete(signal_name);
+        dos_chararray_delete(slot_name);
+    }
+
 private:
     QString value;
     unique_ptr<MockQObject> testObject;

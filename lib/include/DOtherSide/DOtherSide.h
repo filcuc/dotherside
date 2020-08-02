@@ -740,6 +740,20 @@ DOS_API DosQVariant *DOS_CALL dos_qobject_property(DosQObject *vptr,
 DOS_API bool DOS_CALL dos_qobject_setProperty(DosQObject *vptr,
                                                const char *propertyName,
                                                DosQVariant *value);
+
+/// \brief Return the equivalent of SLOT(str) macro invokation
+DOS_API char* DOS_CALL dos_slot_macro(const char* str);
+
+/// \brief Return the equivalent of SIGNAL(str) macro invokation
+DOS_API char* DOS_CALL dos_signal_macro(const char* str);
+
+DOS_API void DOS_CALL dos_qobject_connect_static(DosQObject* sender, const char* signal,
+                                                 DosQObject* receiver, const char* slot,
+                                                 DosQtConnectionType connection_type);
+
+DOS_API void DOS_CALL dos_qobject_disconnect_static(DosQObject* sender, const char* signal,
+                                                    DosQObject* receiver, const char* slot);
+
 /// @}
 
 

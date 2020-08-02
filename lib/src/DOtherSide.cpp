@@ -1055,3 +1055,23 @@ void dos_qcoreapplication_process_events_timed(DosQEventLoopProcessEventFlag fla
 {
     qApp->processEvents(static_cast<QEventLoop::ProcessEventsFlag>(flags), ms);
 }
+
+void dos_qobject_connect_static(DosQObject *sender, const char *signal, DosQObject *receiver, const char *slot, DosQtConnectionType connection_type)
+{
+    QObject::connect(static_cast<QObject*>(sender), signal, static_cast<QObject*>(receiver), slot, static_cast<Qt::ConnectionType>(connection_type));
+}
+
+void dos_qobject_disconnect_static(DosQObject *sender, const char *signal, DosQObject *receiver, const char *slot)
+{
+    QObject::disconnect(static_cast<QObject*>(sender), signal, static_cast<QObject*>(receiver), slot);
+}
+
+char *dos_slot_macro(const char *str)
+{
+    return ::strdup((std::string("1") + str).c_str());
+}
+
+char *dos_signal_macro(const char *str)
+{
+    return ::strdup((std::string("2") + str).c_str());
+}
