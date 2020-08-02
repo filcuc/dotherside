@@ -1,3 +1,8 @@
+# Version 0.7.0
+* Added support for QPointer
+* Added basic support for QObject::connect and disconnect
+* Added functions for mangling SLOT and SIGNAL macros
+
 # Version 0.6.4
 * Added support for QCoreApplication::processEvents
 * Added support for QObject::deleteLater
