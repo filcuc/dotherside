@@ -742,15 +742,21 @@ DOS_API bool DOS_CALL dos_qobject_setProperty(DosQObject *vptr,
                                                DosQVariant *value);
 
 /// \brief Return the equivalent of SLOT(str) macro invokation
+/// \note The returned string should be free with dos_chararray_delete
 DOS_API char* DOS_CALL dos_slot_macro(const char* str);
 
 /// \brief Return the equivalent of SIGNAL(str) macro invokation
+/// \note The returned string should be freed by calling the dos_chararray_delete() function
 DOS_API char* DOS_CALL dos_signal_macro(const char* str);
 
+/// \brief Connect an object signal to another object signal or slot
+/// \note Use the dos_signal_macro o dos_slot_macro for property format the string arguments
 DOS_API void DOS_CALL dos_qobject_connect_static(DosQObject* sender, const char* signal,
                                                  DosQObject* receiver, const char* slot,
                                                  DosQtConnectionType connection_type);
 
+/// \brief Disconnect an object slot or signal from an object signal
+/// \note Use the dos_signal_macro o dos_slot_macro for property format the string arguments
 DOS_API void DOS_CALL dos_qobject_disconnect_static(DosQObject* sender, const char* signal,
                                                     DosQObject* receiver, const char* slot);
 

@@ -724,7 +724,7 @@ void dos_qmetaobject_delete(::DosQMetaObject *vptr)
     delete factory;
 }
 
-bool dos_qmetaobject_invoke_method(DosQObject *context, void (*callback)(DosQObject *, void *), void *data, DosQtConnectionType connection_type) DOS_CALL
+bool dos_qmetaobject_invoke_method(DosQObject *context, void (*callback)(DosQObject *, void *), void *data, DosQtConnectionType connection_type)
 {
     return QMetaObject::invokeMethod(static_cast<QObject*>(context), [context, callback, data] {
         callback(context, data);
