@@ -731,6 +731,30 @@ private slots:
     }
 };
 
+class TestQMetaObject : public QObject
+{
+    Q_OBJECT
+
+private slots:
+    void testInvokeMethod() {
+        int data = 20;
+        auto mockQObject = new MockQObject();
+        called = false;
+        QVERIFY(!called);
+        QVERIFY(dos_qmetaobject_invoke_method(mockQObject->data(), &TestQMetaObject::callback, &data, DosQtConnectionTypeAutoConnection));
+        QVERIFY(called);
+        called = false;
+    }
+
+private:
+    static bool called;
+    static void callback(::DosQObject* context, void* data) {
+        called = true;
+    }
+};
+
+bool TestQMetaObject::called = false;
+
 int main(int argc, char *argv[])
 {
     using namespace DOS;
@@ -747,6 +771,7 @@ int main(int argc, char *argv[])
     success &= ExecuteGuiTest<TestQAbstractItemModel>(argc, argv);
     success &= ExecuteGuiTest<TestQDeclarativeIntegration>(argc, argv);
     success &= ExecuteGuiTest<TestQQuickView>(argc, argv);
+    success &= ExecuteGuiTest<TestQMetaObject>(argc, argv);
     return success ? 0 : 1;
 }
 

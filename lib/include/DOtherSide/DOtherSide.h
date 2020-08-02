@@ -453,6 +453,15 @@ DOS_API DosQMetaObject *DOS_CALL dos_qmetaobject_create(DosQMetaObject *superCla
 /// \param vptr The QMetaObject
 DOS_API void DOS_CALL dos_qmetaobject_delete(DosQMetaObject *vptr);
 
+/// \brief Invoke a function with the given data
+/// \param callback The callback that will be called
+/// \param data The data passed to the callback
+/// \param connection_type The connection type
+DOS_API bool DOS_CALL dos_qmetaobject_invoke_method(DosQObject* context,
+                                                    void(*callback)(DosQObject* context, void* data),
+                                                    void* data,
+                                                    DosQtConnectionType connection_type);
+
 /// @}
 
 /// \defgroup QAbstractListModel QAbstractItemModel

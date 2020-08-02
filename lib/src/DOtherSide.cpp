@@ -724,6 +724,13 @@ void dos_qmetaobject_delete(::DosQMetaObject *vptr)
     delete factory;
 }
 
+bool dos_qmetaobject_invoke_method(DosQObject *context, void (*callback)(DosQObject *, void *), void *data, DosQtConnectionType connection_type) DOS_CALL
+{
+    return QMetaObject::invokeMethod(static_cast<QObject*>(context), [context, callback, data] {
+        callback(context, data);
+    }, static_cast<Qt::ConnectionType>(connection_type));
+}
+
 ::DosQMetaObject *dos_qabstracttablemodel_qmetaobject()
 {
     return new DOS::DosIQMetaObjectHolder(std::make_shared<DOS::DosQAbstractTableModelMetaObject>());
