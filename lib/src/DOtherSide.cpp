@@ -25,6 +25,7 @@
 #include <QtCore/QDebug>
 #include <QtCore/QModelIndex>
 #include <QtCore/QHash>
+#include <QtCore/QPointer>
 #include <QtCore/QResource>
 #include <QtGui/QGuiApplication>
 #include <QtQml/QQmlContext>
@@ -1075,3 +1076,29 @@ char *dos_signal_macro(const char *str)
 {
     return ::strdup((std::string("2") + str).c_str());
 }
+
+DosQPointer *dos_qpointer_create(DosQObject *object)
+{
+    return new QPointer<QObject>(static_cast<QObject*>(object));
+}
+
+void dos_qpointer_delete(DosQPointer *self)
+{
+    delete static_cast<QPointer<QObject>*>(self);
+}
+
+bool dos_qpointer_is_null(DosQPointer *self)
+{
+    return static_cast<QPointer<QObject>*>(self)->isNull();
+}
+
+void dos_qpointer_clear(DosQPointer *self)
+{
+    static_cast<QPointer<QObject>*>(self)->clear();
+}
+
+DosQObject* dos_qpointer_data(DosQPointer *self)
+{
+    return static_cast<QPointer<QObject>*>(self)->data();
+}
+

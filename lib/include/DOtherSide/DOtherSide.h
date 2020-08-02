@@ -917,8 +917,27 @@ DOS_API int DOS_CALL dos_qdeclarative_qmlregistersingletontype(const QmlRegister
 
 /// @}
 
-DOS_API DosQObject
 
+/// \defgroup QPointer QPointer
+/// @{
+
+/// \brief Create a new QPointer with the given DosQObject
+DOS_API DosQPointer* DOS_CALL dos_qpointer_create(DosQObject* object);
+
+/// \brief Free the memory allocated for the given QPointer
+DOS_API void DOS_CALL dos_qpointer_delete(DosQPointer* self);
+
+/// \brief Test the QPointer for nullness
+DOS_API bool DOS_CALL dos_qpointer_is_null(DosQPointer* self);
+
+/// \brief Clear the QPointer
+DOS_API void DOS_CALL dos_qpointer_clear(DosQPointer* self);
+
+/// \brief Return a pointer to the tracked DosQObject
+/// \note The return DosQObject is a reference and should not be fred unless you know what you're doing
+DOS_API DosQObject* DOS_CALL dos_qpointer_data(DosQPointer* self);
+
+/// @}
 
 #ifdef __cplusplus
 }

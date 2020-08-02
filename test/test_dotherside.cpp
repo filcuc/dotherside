@@ -777,6 +777,22 @@ private:
     }
 };
 
+class TestQPointer : public QObject
+{
+    Q_OBJECT
+
+private slots:
+    void testQPointer() {
+        MockQObject m;
+        auto e = dos_qpointer_create(m.data());
+        QVERIFY(!dos_qpointer_is_null(e));
+        QCOMPARE(dos_qpointer_data(e), m.data());
+        dos_qpointer_clear(e);
+        QVERIFY(dos_qpointer_is_null(e));
+        dos_qpointer_delete(e);
+    }
+};
+
 bool TestQMetaObject::called = false;
 
 int main(int argc, char *argv[])
@@ -795,7 +811,8 @@ int main(int argc, char *argv[])
     success &= ExecuteGuiTest<TestQAbstractItemModel>(argc, argv);
     success &= ExecuteGuiTest<TestQDeclarativeIntegration>(argc, argv);
     success &= ExecuteGuiTest<TestQQuickView>(argc, argv);
-    success &= ExecuteGuiTest<TestQMetaObject>(argc, argv);
+    success &= ExecuteTest<TestQMetaObject>(argc, argv);
+    success &= ExecuteTest<TestQPointer>(argc, argv);
     return success ? 0 : 1;
 }
 
