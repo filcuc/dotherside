@@ -42,10 +42,13 @@ You need the following software:
 * Windows: Visual Studio 2013|2015 Community Edition (Windows) or higher
 
 ## Build instructions:
-1. Open a shell terminal inside the cloned repo
-2. mkdir build && cd build
-3. cmake ..
-4. make
+```
+cd /path/to/cloned/repo
+mkdir build
+cd build
+cmake ..
+cmake --build .
+```
 
 ## Install Instructions
 Once you built the package just type
