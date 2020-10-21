@@ -6,7 +6,7 @@
 
 C language library for creating bindings for the Qt QML language.
 
-Documentation: https://filcuc.github.io/DOtherSide/index.html
+Documentation: https://filcuc.github.io/dotherside/index.html
 
 Currently the DOtherSide library is used by the following bindings:
 * [nimqml](https://github.com/filcuc/nimqml), QML bindings for the Nim programming language
