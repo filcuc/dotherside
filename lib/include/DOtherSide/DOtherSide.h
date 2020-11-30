@@ -111,6 +111,8 @@ DOS_API void DOS_CALL dos_qncm_delete(DosQNetworkConfigurationManager *vptr);
 
 DOS_API char * DOS_CALL dos_image_resizer(char* imagePath, int maxSize, char* tmpDirPath);
 
+DOS_API char * DOS_CALL dos_get_image_file_size(char* imagePath);
+
 DOS_API char * DOS_CALL dos_qurl_fromUserInput(char* input);
 
 DOS_API char * DOS_CALL dos_qurl_host(char* host);

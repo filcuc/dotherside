@@ -1194,6 +1194,20 @@ char *dos_image_resizer(char* imagePath, int maxSize, char* tmpDirPath)
     return convert_to_cstring(newFilePath.toUtf8());
 }
 
+char *dos_get_image_file_size(char* imagePath)
+{
+    QImage img(imagePath);
+    qsizetype size = img.sizeInBytes();
+    int size2 = img.byteCount();
+    int w = img.width();
+    int h = img.height();
+    printf("SIZE_____ %llu\n", size);
+    printf("SIZE2_____ %i\n", size2);
+    printf("WIDTH %i\n", w);
+    printf("HEIGHT %i\n", h);
+    return "Allo";
+}
+
 char *dos_qurl_fromUserInput(char* input)
 {
     return convert_to_cstring(QUrl::fromUserInput(QString(input)).toString());
