@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>DOtherSide: QResource</title>
+<title>DOtherSide: QQuickImageProvider</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -67,22 +67,48 @@ $(function() {
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">QResource</div>  </div>
+<div class="title">QQuickImageProvider</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Functions related to the QResource class.  
+<p>Functions related to the QQuickImageProvider class.  
 <a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga2e84ba62bc39d864f18cf48be82e1f3f"><td class="memItemLeft" align="right" valign="top"><a id="ga2e84ba62bc39d864f18cf48be82e1f3f"></a>
-DOS_API void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___q_resource.html#ga2e84ba62bc39d864f18cf48be82e1f3f">dos_qresource_register</a> (const char *filename)</td></tr>
-<tr class="memdesc:ga2e84ba62bc39d864f18cf48be82e1f3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register the given .rcc (compiled) file in the resource system. <br /></td></tr>
-<tr class="separator:ga2e84ba62bc39d864f18cf48be82e1f3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2cd054cf6229ee20a3af1018c6c1bddf"><td class="memItemLeft" align="right" valign="top">DOS_API <a class="el" href="_d_other_side_types_8h.html#a2e4a54b92595522603d7db6747284470">DosQQuickImageProvider</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___q_quick_image_provider.html#ga2cd054cf6229ee20a3af1018c6c1bddf">dos_qquickimageprovider_create</a> (<a class="el" href="_d_other_side_types_8h.html#a03bf353addc50f36184db8d2c4875f97">RequestPixmapCallback</a> callback)</td></tr>
+<tr class="memdesc:ga2cd054cf6229ee20a3af1018c6c1bddf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new QQuickImageProvider.  <a href="group___q_quick_image_provider.html#ga2cd054cf6229ee20a3af1018c6c1bddf">More...</a><br /></td></tr>
+<tr class="separator:ga2cd054cf6229ee20a3af1018c6c1bddf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga14d099903385de60e6081c9d85f6da7c"><td class="memItemLeft" align="right" valign="top"><a id="ga14d099903385de60e6081c9d85f6da7c"></a>
+DOS_API void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___q_quick_image_provider.html#ga14d099903385de60e6081c9d85f6da7c">dos_qquickimageprovider_delete</a> (<a class="el" href="_d_other_side_types_8h.html#a2e4a54b92595522603d7db6747284470">DosQQuickImageProvider</a> *vptr)</td></tr>
+<tr class="memdesc:ga14d099903385de60e6081c9d85f6da7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">\breif Frees a QQuickImageProvider <br /></td></tr>
+<tr class="separator:ga14d099903385de60e6081c9d85f6da7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<p>Functions related to the QResource class. </p>
+<p>Functions related to the QQuickImageProvider class. </p>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="ga2cd054cf6229ee20a3af1018c6c1bddf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2cd054cf6229ee20a3af1018c6c1bddf">&#9670;&nbsp;</a></span>dos_qquickimageprovider_create()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">DOS_API <a class="el" href="_d_other_side_types_8h.html#a2e4a54b92595522603d7db6747284470">DosQQuickImageProvider</a>* dos_qquickimageprovider_create </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_d_other_side_types_8h.html#a03bf353addc50f36184db8d2c4875f97">RequestPixmapCallback</a>&#160;</td>
+          <td class="paramname"><em>callback</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Create a new QQuickImageProvider. </p>
+<dl class="section return"><dt>Returns</dt><dd>A new QQuickImageProvider </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>The returned QQuickImageProvider should be freed by using <a class="el" href="group___q_quick_image_provider.html#ga14d099903385de60e6081c9d85f6da7c" title="\breif Frees a QQuickImageProvider">dos_qquickimageprovider_delete(DosQQuickImageProvider*)</a> unless the QQuickImageProvider has been bound to a QQmlApplicationEngine </dd></dl>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
