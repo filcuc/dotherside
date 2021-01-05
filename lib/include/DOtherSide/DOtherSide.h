@@ -693,17 +693,6 @@ DOS_API void DOS_CALL dos_qobject_signal_emit(DosQObject *vptr,
                                               int parametersCount,
                                               void **parameters);
 
-DOS_API bool DOS_CALL dos_qobject_signal_connect(DosQObject *senderVPtr,
-                                                 const char *signal,
-                                                 DosQObject *receiverVPtr,
-                                                 const char *method,
-                                                 int type);
-
-DOS_API bool DOS_CALL dos_qobject_signal_disconnect(DosQObject *senderVPtr,
-                                                    const char *signal,
-                                                    DosQObject *receiverVPtr,
-                                                    const char *method);
-
 /// \brief Return the DosQObject objectName
 /// \param vptr The DosQObject pointer
 /// \return A string in UTF8 format

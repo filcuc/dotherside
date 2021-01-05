@@ -47,7 +47,7 @@ endmacro()
 add_target(${PROJECT_NAME} SHARED)
 set(major 0)
 set(minor 7)
-set(patch 0)
+set(patch 1)
 set_target_properties(${PROJECT_NAME}
 PROPERTIES
     SOVERSION "${major}.${minor}"

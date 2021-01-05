@@ -526,27 +526,6 @@ void dos_qobject_signal_emit(::DosQObject *vptr, const char *name, int parameter
     dynamicQObject->emitSignal(qobject, QString::fromStdString(name), variants);
 }
 
-bool dos_qobject_signal_connect(::DosQObject *senderVPtr,
-                                const char *signal,
-                                ::DosQObject *receiverVPtr,
-                                const char *method,
-                                int type)
-{
-    auto sender = static_cast<QObject *>(senderVPtr);
-    auto receiver = static_cast<QObject *>(receiverVPtr);
-    return QObject::connect(sender, signal, receiver, method, static_cast<Qt::ConnectionType>(type));
-}
-
-bool dos_qobject_signal_disconnect(::DosQObject *senderVPtr,
-                                   const char *signal,
-                                   ::DosQObject *receiverVPtr,
-                                   const char *method)
-{
-    auto sender = static_cast<QObject *>(senderVPtr);
-    auto receiver = static_cast<QObject *>(receiverVPtr);
-    return QObject::disconnect(sender, signal, receiver, method);
-}
-
 char *dos_qobject_objectName(const ::DosQObject *vptr)
 {
     auto object = static_cast<const QObject *>(vptr);
