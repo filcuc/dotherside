@@ -55,7 +55,7 @@ extern "C"
 DOS_API char *DOS_CALL dos_qcoreapplication_application_dir_path(void);
 
 /// \brief Force the event loop to spin and process the given events
-DOS_API void DOS_CALL dos_qcoreapplication_process_events(DosQEventLoopProcessEventFlag flags = DosQEventLoopProcessEventFlag::DosQEventLoopProcessEventFlagProcessAllEvents);
+DOS_API void DOS_CALL dos_qcoreapplication_process_events(DosQEventLoopProcessEventFlag flags);
 
 /// \brief Force the event loop to spin and process the given events until no more available or timed out
 DOS_API void DOS_CALL dos_qcoreapplication_process_events_timed(DosQEventLoopProcessEventFlag flags, int ms);

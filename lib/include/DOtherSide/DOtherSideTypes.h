@@ -384,6 +384,10 @@ enum DosQEventLoopProcessEventFlag {
     DosQEventLoopProcessEventFlagProcessAllEventsWaitForMoreEvents = 0x03
 };
 
+#ifndef __cplusplus
+typedef enum DosQEventLoopProcessEventFlag DosQEventLoopProcessEventFlag;
+#endif
+
 enum DosQtConnectionType {
     DosQtConnectionTypeAutoConnection = 0,
     DosQtConnectionTypeDirectConnection = 1,
@@ -392,8 +396,12 @@ enum DosQtConnectionType {
     DosQtCOnnectionTypeUniqueConnection = 0x80,
 };
 
+#ifndef __cplusplus
+typedef enum DosQtConnectionType DosQtConnectionType;
+#endif
+
 #ifdef __cplusplus
-}
+} // extern C
 #endif
 
 #endif
