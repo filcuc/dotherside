@@ -37,7 +37,7 @@ Currently we support the following platforms/compilers:
 
 ## Build requirements
 You need the following software:
-* Qt 5.4 or higher
+* Qt 5.12 or higher
 * Linux: gcc 4.8 or later with c++11 support or higher
 * Windows: Visual Studio 2013|2015 Community Edition (Windows) or higher
 
