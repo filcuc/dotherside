@@ -10,3 +10,4 @@ nimcache
 .idea
 *.orig
 doc
+cmake-build-*
