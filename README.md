@@ -12,6 +12,7 @@ Currently the DOtherSide library is used by the following bindings:
 * [nimqml](https://github.com/filcuc/nimqml), QML bindings for the Nim programming language
 * [dqml](https://github.com/filcuc/dqml), QML bindings for the D programming language
 * [qml-rust](https://github.com/White-Oak/qml-rust), QML bindings for the Rust programming language
+* [qml_zig](https://github.com/kassane/qml_zig), QML bindings for the Zig programming language
 
 ## Supported features
 The following features are implementable from a binding language
