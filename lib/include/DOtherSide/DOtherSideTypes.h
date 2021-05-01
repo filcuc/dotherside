@@ -89,6 +89,9 @@ typedef void DosPixmap;
 /// A pointer to a QPointer
 typedef void DosQPointer;
 
+/// A pointer to a Lambda invoker
+typedef void DosQMetaObjectConnection;
+
 /// A pixmap callback to be supplied to an image provider
 /// \param id Image source id
 /// \param width pointer to the width of the image
@@ -215,6 +218,12 @@ typedef void (DOS_CALL *CreateDObject)(int id, void *wrapper, void **bindedQObje
  * for obtaining the QObject in your binded language. This allows you to unpin/unref it or delete it.
  */
 typedef void (DOS_CALL *DeleteDObject)(int id, void *bindedQObject);
+
+/// Callback invoked after an emit of a signal
+typedef void (DOS_CALL *DosQObjectConnectLambdaCallback)(void* callbackData, int argc, DosQVariant **argv);
+
+/// Callback invoked after a QMetaObject invoke method
+typedef void (DOS_CALL *DosQMetaObjectInvokeMethodCallback)(void* callbackData);
 
 /// \brief Store an array of QVariant
 /// \note This struct should be freed by calling dos_qvariantarray_delete(DosQVariantArray *ptr). This in turn

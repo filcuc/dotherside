@@ -19,8 +19,6 @@
 
 #include "DOtherSide/DOtherSide.h"
 
-#include <iostream>
-
 #include <QtCore/QDir>
 #include <QtCore/QDebug>
 #include <QtCore/QModelIndex>
@@ -44,6 +42,7 @@
 #include "DOtherSide/DosQAbstractItemModel.h"
 #include "DOtherSide/DosQDeclarative.h"
 #include "DOtherSide/DosQQuickImageProvider.h"
+#include "DOtherSide/DosLambdaInvoker.h"
 
 namespace {
 
@@ -160,9 +159,9 @@ void dos_qqmlapplicationengine_add_import_path(::DosQQmlApplicationEngine *vptr,
 
 void dos_qqmlapplicationengine_addImageProvider(DosQQmlApplicationEngine *vptr, const char* name, DosQQuickImageProvider *vptr_i)
 {
-  auto engine = static_cast<QQmlApplicationEngine *>(vptr);
-  auto provider = static_cast<DosImageProvider *>(vptr_i);
-  engine->addImageProvider(QString(name), provider);
+    auto engine = static_cast<QQmlApplicationEngine *>(vptr);
+    auto provider = static_cast<DosImageProvider *>(vptr_i);
+    engine->addImageProvider(QString(name), provider);
 }
 
 void dos_qqmlapplicationengine_delete(::DosQQmlApplicationEngine *vptr)
@@ -584,6 +583,41 @@ bool dos_qobject_setProperty(::DosQObject *vptr, const char *propertyName, ::Dos
     return object->setProperty(propertyName, *value);
 }
 
+DosQMetaObjectConnection* dos_qobject_connect_static(DosQObject *sender, const char *signal, DosQObject *receiver, const char *slot, DosQtConnectionType connection_type)
+{
+    auto connection = QObject::connect(static_cast<QObject*>(sender), signal, static_cast<QObject*>(receiver), slot, static_cast<Qt::ConnectionType>(connection_type));
+    return static_cast<DosQMetaObjectConnection*>(new QMetaObject::Connection(connection));
+}
+
+DosQMetaObjectConnection* dos_qobject_connect_lambda_static(DosQObject *sender, const char *signal, DosQObjectConnectLambdaCallback callback, void *callbackData, DosQtConnectionType connection_type)
+{
+    auto connection = DOS::LambdaInvokerRegistry::instance().add(sender, signal, callback, callbackData, connection_type);
+    return static_cast<DosQMetaObjectConnection*>(connection.release());
+}
+
+DosQMetaObjectConnection *dos_qobject_connect_lambda_with_context_static(DosQObject *sender, const char *signal, DosQObject *context, DosQObjectConnectLambdaCallback callback, void *callbackData, DosQtConnectionType connection_type)
+{
+    auto connection = DOS::LambdaInvokerRegistry::instance().add(sender, signal, context, callback, callbackData, connection_type);
+    return static_cast<DosQMetaObjectConnection*>(connection.release());
+}
+
+void dos_qobject_disconnect_static(DosQObject *sender, const char *signal, DosQObject *receiver, const char *slot)
+{
+    QObject::disconnect(static_cast<QObject*>(sender), signal, static_cast<QObject*>(receiver), slot);
+}
+
+void dos_qobject_disconnect_with_connection_static(DosQMetaObjectConnection *vptr)
+{
+    auto connection = static_cast<QMetaObject::Connection*>(vptr);
+    DOS::LambdaInvokerRegistry::instance().remove(connection);
+    QObject::disconnect(*connection);
+}
+
+void dos_qmetaobject_connection_delete(DosQMetaObjectConnection *self)
+{
+    delete static_cast<QMetaObject::Connection*>(self);
+}
+
 ::DosQModelIndex *dos_qmodelindex_create()
 {
     return new QModelIndex();
@@ -738,10 +772,10 @@ void dos_qmetaobject_delete(::DosQMetaObject *vptr)
     delete factory;
 }
 
-bool dos_qmetaobject_invoke_method(DosQObject *context, void (*callback)(DosQObject *, void *), void *data, DosQtConnectionType connection_type)
+bool dos_qmetaobject_invoke_method(DosQObject *context, DosQMetaObjectInvokeMethodCallback callback, void *callbackData, DosQtConnectionType connection_type)
 {
-    return QMetaObject::invokeMethod(static_cast<QObject*>(context), [context, callback, data] {
-        callback(context, data);
+    return QMetaObject::invokeMethod(static_cast<QObject*>(context), [context, callback, callbackData] {
+        callback(callbackData);
     }, static_cast<Qt::ConnectionType>(connection_type));
 }
 
@@ -932,7 +966,7 @@ void dos_qabstractitemmodel_dataChanged(::DosQAbstractItemModel *vptr,
     auto bottomRight = static_cast<const QModelIndex *>(bottomRightIndex);
     QVector<int> roles;
     for (auto it = rolesArrayPtr, end = rolesArrayPtr + rolesArrayLength; it != end; ++it)
-      roles.push_back(*it);
+        roles.push_back(*it);
     model->publicDataChanged(*topLeft, *bottomRight, roles);
 }
 
@@ -1068,16 +1102,6 @@ void dos_qcoreapplication_process_events(DosQEventLoopProcessEventFlag flags)
 void dos_qcoreapplication_process_events_timed(DosQEventLoopProcessEventFlag flags, int ms)
 {
     qApp->processEvents(static_cast<QEventLoop::ProcessEventsFlag>(flags), ms);
-}
-
-void dos_qobject_connect_static(DosQObject *sender, const char *signal, DosQObject *receiver, const char *slot, DosQtConnectionType connection_type)
-{
-    QObject::connect(static_cast<QObject*>(sender), signal, static_cast<QObject*>(receiver), slot, static_cast<Qt::ConnectionType>(connection_type));
-}
-
-void dos_qobject_disconnect_static(DosQObject *sender, const char *signal, DosQObject *receiver, const char *slot)
-{
-    QObject::disconnect(static_cast<QObject*>(sender), signal, static_cast<QObject*>(receiver), slot);
 }
 
 char *dos_slot_macro(const char *str)

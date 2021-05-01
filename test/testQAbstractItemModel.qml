@@ -39,16 +39,16 @@ QtObject {
     }
 
     function testData() {
-        return testObject && testObject.data(testObject.index(0,0, null)) === "John"
-                          && testObject.data(testObject.index(1,0, null)) === "Mary"
-                          && testObject.data(testObject.index(2,0, null)) === "Andy"
-                          && testObject.data(testObject.index(3,0, null)) === "Anna"
+        return testObject && testObject.data(testObject.index(0,0)) === "John"
+                          && testObject.data(testObject.index(1,0)) === "Mary"
+                          && testObject.data(testObject.index(2,0)) === "Andy"
+                          && testObject.data(testObject.index(3,0)) === "Anna"
     }
 
     function testSetData() {
         if (!testObject)
             return false
-        var index = testObject.index(0,0, null)
+        var index = testObject.index(0,0)
         if (!index.valid)
             return false;
         if (testObject.data(index) !== "John")

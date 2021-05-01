@@ -200,7 +200,6 @@ DOS_API void DOS_CALL dos_qquickstyle_set_fallback_style(const char *style);
 /// @}
 
 
-  
 /// \defgroup QQuickView QQuickView
 /// \brief Functions related to the QQuickView class
 /// @{
@@ -490,8 +489,8 @@ DOS_API void DOS_CALL dos_qmetaobject_delete(DosQMetaObject *vptr);
 /// \param data The data passed to the callback
 /// \param connection_type The connection type
 DOS_API bool DOS_CALL dos_qmetaobject_invoke_method(DosQObject* context,
-                                                    void(*callback)(DosQObject* context, void* data),
-                                                    void* data,
+                                                    DosQMetaObjectInvokeMethodCallback callback,
+                                                    void* callbackData,
                                                     DosQtConnectionType connection_type);
 
 /// @}
@@ -759,8 +758,8 @@ DOS_API DosQVariant *DOS_CALL dos_qobject_property(DosQObject *vptr,
 /// \param value The value to be written
 /// \return Result as bool
 DOS_API bool DOS_CALL dos_qobject_setProperty(DosQObject *vptr,
-                                               const char *propertyName,
-                                               DosQVariant *value);
+                                              const char *propertyName,
+                                              DosQVariant *value);
 
 /// \brief Return the equivalent of SLOT(str) macro invokation
 /// \note The returned string should be free with dos_chararray_delete
@@ -770,16 +769,39 @@ DOS_API char* DOS_CALL dos_slot_macro(const char* str);
 /// \note The returned string should be freed by calling the dos_chararray_delete() function
 DOS_API char* DOS_CALL dos_signal_macro(const char* str);
 
+/// \brief Connect an object signal to a lambda/callback
+DOS_API DosQMetaObjectConnection* DOS_CALL dos_qobject_connect_lambda_static(DosQObject *sender, const char *signal,
+                                                                             DosQObjectConnectLambdaCallback callback, void* callbackData,
+                                                                             DosQtConnectionType connection_type);
+
+/// \brief Connect an object signal to a lambda/callback
+DOS_API DosQMetaObjectConnection* DOS_CALL dos_qobject_connect_lambda_with_context_static(DosQObject *sender, const char *signal, DosQObject *context,
+                                                                                          DosQObjectConnectLambdaCallback callback, void* callbackData,
+                                                                                          DosQtConnectionType connection_type);
+
 /// \brief Connect an object signal to another object signal or slot
 /// \note Use the dos_signal_macro o dos_slot_macro for property format the string arguments
-DOS_API void DOS_CALL dos_qobject_connect_static(DosQObject* sender, const char* signal,
-                                                 DosQObject* receiver, const char* slot,
-                                                 DosQtConnectionType connection_type);
+DOS_API DosQMetaObjectConnection* DOS_CALL dos_qobject_connect_static(DosQObject *sender, const char *signal,
+                                                                      DosQObject *receiver, const char *slot,
+                                                                      DosQtConnectionType connection_type);
 
 /// \brief Disconnect an object slot or signal from an object signal
 /// \note Use the dos_signal_macro o dos_slot_macro for property format the string arguments
-DOS_API void DOS_CALL dos_qobject_disconnect_static(DosQObject* sender, const char* signal,
-                                                    DosQObject* receiver, const char* slot);
+DOS_API void DOS_CALL dos_qobject_disconnect_static(DosQObject *sender, const char *signal,
+                                                    DosQObject *receiver, const char *slot);
+
+/// \brief Disconnect through a DosQMetaObjectConnection
+DOS_API void DOS_CALL dos_qobject_disconnect_with_connection_static(DosQMetaObjectConnection* connection);
+
+/// @}
+
+
+/// \defgroup QMetaObject::Connection QMetaObject::Connection
+/// \brief Functions related to the QMetaObject::Connection class
+/// @{
+
+void dos_qmetaobject_connection_delete(DosQMetaObjectConnection* self);
+
 /// @}
 
 /// \defgroup QModelIndex QModelIndex
@@ -917,7 +939,7 @@ DOS_API char *DOS_CALL dos_qurl_to_string(const DosQUrl *vptr);
 /// \brief Class the QUrl::isValid() function
 /// \param vptr The QUrl
 /// \return True if the QUrl is valid, false otherwise
-DOS_API bool dos_qurl_isValid(const DosQUrl *vptr);
+DOS_API bool DOS_CALL dos_qurl_isValid(const DosQUrl *vptr);
 
 /// @}
 

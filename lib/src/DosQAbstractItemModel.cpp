@@ -39,7 +39,7 @@ DosQAbstractGenericModel<T>::DosQAbstractGenericModel(void *modelObject,
                                                       DosIQMetaObjectPtr metaObject,
                                                       DObjectCallback dObjectCallback,
                                                       DosQAbstractItemModelCallbacks callbacks)
-    : m_impl(new DosQObjectImpl(::createParentMetaCall(this), std::move(metaObject), modelObject, dObjectCallback))
+    : m_impl(new DosQObjectImpl(::createParentMetaCall<T>(this), std::move(metaObject), modelObject, dObjectCallback))
     , m_modelObject(modelObject)
     , m_callbacks(callbacks)
 {}

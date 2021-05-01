@@ -144,7 +144,7 @@ bool DosQObjectImpl::readProperty(int index, void **args)
         return false;
     const QMetaMethod method = m_metaObject->readSlot(property.name());
     if (!method.isValid()) {
-        qDebug() << "C++: readProperty: invalid read method for property " << property.name();
+        qWarning() << "C++: readProperty: invalid read method for property " << property.name();
         return false;
     }
     return executeSlot(method, args);
@@ -158,7 +158,7 @@ bool DosQObjectImpl::writeProperty(int index, void **args)
         return false;
     const QMetaMethod method = m_metaObject->writeSlot(property.name());
     if (!method.isValid()) {
-        qDebug() << "C++: writeProperty: invalid write method for property " << property.name();
+        qWarning() << "C++: writeProperty: invalid write method for property " << property.name();
         return false;
     }
     return executeSlot(method, args, 0);
