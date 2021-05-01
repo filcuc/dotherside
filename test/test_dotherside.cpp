@@ -35,6 +35,14 @@ bool ExecuteTest(int argc, char *argv[])
 }
 
 template<typename Test>
+bool ExecuteCoreTest(int argc, char *argv[])
+{
+    QCoreApplication app(argc, argv);
+    Test test;
+    return QTest::qExec(&test, argc, argv) == 0;
+}
+
+template<typename Test>
 bool ExecuteGuiTest(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -472,11 +480,32 @@ private slots:
         dos_chararray_delete(slot_name);
     }
 
+    static void lambda_callback(void* callbackData, int argc, DosQVariant **argv) {
+        if (argc == 1) {
+            char* buffer = dos_qvariant_toString(argv[0]);
+            std::string name(buffer);
+            dos_chararray_delete(buffer);
+            callbackCalled = name == "Foo";
+        }
+    }
+
+
+    void testConnectToLambda() {
+        callbackCalled = false;
+        dos_qobject_connect_lambda_static(testObject->data(), SIGNAL(nameChanged(QString)), &lambda_callback, nullptr, DosQtConnectionTypeAutoConnection);
+        testObject->setName("Foo");
+        QVERIFY(QTest::qWaitFor([]{ return callbackCalled; }));
+    }
+
 private:
     QString value;
     unique_ptr<MockQObject> testObject;
     unique_ptr<QQmlApplicationEngine> engine;
+
+    static bool callbackCalled;
 };
+
+bool TestQObject::callbackCalled = false;
 
 /*
  * Test QAbstractItemModel
@@ -772,7 +801,7 @@ private slots:
 
 private:
     static bool called;
-    static void callback(::DosQObject* context, void* data) {
+    static void callback(void* data) {
         called = true;
     }
 };

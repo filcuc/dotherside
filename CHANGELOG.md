@@ -1,3 +1,6 @@
+# Version 0.8.0
+* Added support for QObject connections
+
 # Version 0.7.0
 * Added support for QPointer
 * Added basic support for QObject::connect and disconnect

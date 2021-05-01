@@ -16,6 +16,7 @@ macro(add_target name type)
         include/DOtherSide/DosIQAbstractItemModelImpl.h
         include/DOtherSide/DosQAbstractItemModel.h
         include/DOtherSide/Utils.h
+        include/DOtherSide/DosLambdaInvoker.h
         src/DOtherSide.cpp
         src/DosQMetaObject.cpp
         src/DosQDeclarative.cpp
@@ -24,6 +25,7 @@ macro(add_target name type)
         src/DosQObjectImpl.cpp
         src/DosQAbstractItemModel.cpp
         src/DosQQuickImageProvider.cpp
+        src/DosLambdaInvoker.cpp
     )
 
     if (WIN32)
@@ -44,8 +46,8 @@ endmacro()
 # Add shared version
 add_target(${PROJECT_NAME} SHARED)
 set(major 0)
-set(minor 7)
-set(patch 1)
+set(minor 8)
+set(patch 0)
 set_target_properties(${PROJECT_NAME}
 PROPERTIES
     SOVERSION "${major}.${minor}"

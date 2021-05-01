@@ -72,9 +72,7 @@ VoidPointer initializeMetaObject()
 
 MockQAbstractItemModel::MockQAbstractItemModel()
     : m_vptr(nullptr, &dos_qobject_delete)
-    , m_names(
-{"John", "Mary", "Andy", "Anna"
-})
+    , m_names({"John", "Mary", "Andy", "Anna"})
 {
     DosQAbstractItemModelCallbacks callbacks;
     callbacks.rowCount = &onRowCountCalled;
