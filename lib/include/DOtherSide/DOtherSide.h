@@ -136,7 +136,7 @@ DOS_API void DOS_CALL dos_qqmlapplicationengine_add_import_path(DosQQmlApplicati
 /// the engine and so it should die with the engine.
 DOS_API DosQQmlContext *DOS_CALL dos_qqmlapplicationengine_context(DosQQmlApplicationEngine *vptr);
 
-/// \brief Calls the QQMLApplicationengine::addImageProvider    
+/// \brief Calls the QQMLApplicationengine::addImageProvider
 /// \param vptr The QQmlApplicationEngine
 /// \param vptr_i A QQuickImageProvider, the QQmlApplicationEngine takes ownership of this pointer
 DOS_API void DOS_CALL dos_qqmlapplicationengine_addImageProvider(DosQQmlApplicationEngine *vptr, const char* name, DosQQuickImageProvider *vptr_i);
@@ -164,7 +164,7 @@ DOS_API void DOS_CALL dos_qquickimageprovider_delete(DosQQuickImageProvider *vpt
 /// @{
 
 /// \brief Creates a null QPixmap
-DOS_API DosPixmap *DOS_CALL dos_qpixmap_create();
+DOS_API DosPixmap *DOS_CALL dos_qpixmap_create(void);
 /// \brief Creates a QPixmap copied from another
 DOS_API DosPixmap *DOS_CALL dos_qpixmap_create_qpixmap(const DosPixmap* other);
 /// \brief Create a new QPixmap
@@ -740,7 +740,7 @@ DOS_API void DOS_CALL dos_qobject_setObjectName(DosQObject *vptr, const char *na
 /// \param vptr The QObject
 DOS_API void DOS_CALL dos_qobject_delete(DosQObject *vptr);
 
-/// \brief Free the memory allocated for the QObject in the next event loop cycle 
+/// \brief Free the memory allocated for the QObject in the next event loop cycle
 /// \param vptr The QObject
 DOS_API void DOS_CALL dos_qobject_deleteLater(DosQObject *vptr);
 

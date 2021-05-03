@@ -402,7 +402,7 @@ enum DosQtConnectionType {
     DosQtConnectionTypeDirectConnection = 1,
     DosQtConnectionTypeQueuedConnection = 2,
     DosQtConnectionTypeBlockingConnection = 3,
-    DosQtCOnnectionTypeUniqueConnection = 0x80,
+    DosQtCOnnectionTypeUniqueConnection = 0x80
 };
 
 #ifndef __cplusplus
