@@ -20,6 +20,7 @@ macro(add_target name type)
         include/DOtherSide/DosIQAbstractItemModelImpl.h
         include/DOtherSide/DosQAbstractItemModel.h
         include/DOtherSide/Utils.h
+        include/DOtherSide/DOtherSideStatusWindow.h
         src/DOtherSide.cpp
         src/DosQMetaObject.cpp
         src/DosQDeclarative.cpp
@@ -28,7 +29,14 @@ macro(add_target name type)
         src/DosQObjectImpl.cpp
         src/DosQAbstractItemModel.cpp
         src/DosQQuickImageProvider.cpp
+        src/DOtherSideStatusWindow.cpp
     )
+
+    if (APPLE)
+        target_sources(${name} PUBLIC src/DOtherSideStatusWindow_osx.mm)
+    else()
+        target_sources(${name} PUBLIC src/DOtherSideStatusWindow_other.cpp)
+    endif()
 
     if (WIN32)
         target_compile_definitions(${name} PRIVATE -DWIN32)
