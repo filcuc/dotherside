@@ -70,9 +70,6 @@ void register_meta_types()
 
 }
 
-// jrainville: I'm not sure where to put this, but it works like so
-QTranslator *m_translator = new QTranslator();
-
 class QMLNetworkAccessFactory : public QQmlNetworkAccessManagerFactory
 {
     public:
@@ -261,14 +258,23 @@ void dos_qqmlapplicationengine_load_data(::DosQQmlApplicationEngine *vptr, const
 
 void dos_qapplication_load_translation(::DosQQmlApplicationEngine *vptr, const char* translationPackage)
 {
-    if (!m_translator->isEmpty()) {
-        QCoreApplication::removeTranslator(m_translator);
+    static QTranslator translator;
+
+    if (!translator.isEmpty()) 
+    {
+        QCoreApplication::removeTranslator(&translator);
     }
-    if (m_translator->load(translationPackage)) {
-        bool success = QCoreApplication::installTranslator(m_translator);
-        auto engine = static_cast<QQmlApplicationEngine *>(vptr);
-        engine->retranslate();
-    } else {
+
+    if (translator.load(translationPackage)) 
+    {
+        QCoreApplication::installTranslator(&translator);
+        
+        auto engine = static_cast<QQmlApplicationEngine*>(vptr);
+        if(engine)
+            engine->retranslate();
+    } 
+    else 
+    {
         printf("Failed to load translation file %s\n", translationPackage);
     }
 }
