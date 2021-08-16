@@ -86,6 +86,10 @@ DOS_API void dos_qguiapplication_installEventFilter(DosQQmlApplicationEngine *vp
 
 DOS_API void dos_qapplication_clipboard_setText(const char* text);
 
+DOS_API void dos_qapplication_clipboard_setImage(const char *text);
+
+DOS_API void dos_qapplication_download_image(const char *imageSource, const char* filePath);
+
 DOS_API void dos_qapplication_installEventFilter(DosQQmlApplicationEngine *vptr);
 
 /// @}

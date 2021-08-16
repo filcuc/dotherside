@@ -143,6 +143,24 @@ void dos_qapplication_clipboard_setText(const char* text)
     QApplication::clipboard()->setText(text);
 }
 
+void dos_qapplication_clipboard_setImage(const char* text)
+{
+    QByteArray btArray =  QString(text).split("base64,")[1].toUtf8();
+    QImage image;
+    image.loadFromData(QByteArray::fromBase64(btArray));
+    Q_ASSERT(!image.isNull());
+    QApplication::clipboard()->setImage(image);
+}
+
+void dos_qapplication_download_image(const char *imageSource, const char *filePath)
+{
+    QByteArray btArray =  QString(imageSource).split("base64,")[1].toUtf8();
+    QImage image;
+    QString fileL = QString(filePath).replace(QRegExp("^(file:/{2})|(qrc:/{2})|(http:/{2})"), "");
+    image.loadFromData(QByteArray::fromBase64(btArray));
+    image.save(QString(fileL) + "/unknown.png");
+}
+
 void dos_qguiapplication_delete()
 {
     delete qGuiApp;
