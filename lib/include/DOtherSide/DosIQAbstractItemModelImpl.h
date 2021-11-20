@@ -37,18 +37,6 @@ public:
     /// Destructor
     virtual ~DosIQAbstractItemModelImpl() = default;
 
-    /// @see QAbstractItemModel::setData
-    virtual bool defaultSetData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) = 0;
-
-    /// @see QAbstractItemModel::flags
-    virtual Qt::ItemFlags defaultFlags(const QModelIndex &index) const = 0;
-
-    /// @see QAbstractItemModel::headerData
-    virtual QVariant defaultHeaderData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const = 0;
-
-    /// @see QAbstractItemModel::roleNames
-    virtual QHash<int, QByteArray> defaultRoleNames() const = 0;
-
     /// @see QAbstractItemModel::beginInsertRows
     virtual void publicBeginInsertRows(const QModelIndex &index, int first, int last) = 0;
 
@@ -84,15 +72,6 @@ public:
 
     /// @see QAbstractItemModel::createIndex
     virtual QModelIndex publicCreateIndex(int row, int column, void *data = nullptr) const = 0;
-
-    /// @see QAbstractItemModel::hasChildren
-    virtual bool defaultHasChildren(const QModelIndex &parent) const = 0;
-
-    /// @see QAbstractItemModel::canFetchMore
-    virtual bool defaultCanFetchMore(const QModelIndex &parent) const = 0;
-
-    /// @see QAbstractItemModel::fetchMore
-    virtual void defaultFetchMore(const QModelIndex &parent) = 0;
 
     ///  @see QAbstractItemModel::hasIndex
     virtual bool hasIndex(int row, int column, const QModelIndex &parent = QModelIndex()) const = 0;

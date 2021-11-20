@@ -24,7 +24,7 @@ DosImageProvider::DosImageProvider(RequestPixmapCallback callback) : QQuickImage
 {
 }
 
-QPixmap DosImageProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize)
+QPixmap DosImageProvider::requestPixmap(const QString &id, QSize *size, const QSize &/*requestedSize*/)
 {
     QPixmap result;
     m_pixmap_callback(id.toLatin1().data(), &size->rwidth(), &size->rheight(), size->width(), size->height(), &result);
