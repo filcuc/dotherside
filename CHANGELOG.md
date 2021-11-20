@@ -1,3 +1,6 @@
+# Version 0.8.1
+* Fixed crashes when istantiating QAIMs from QML
+
 # Version 0.8.0
 * Added support for QObject connections
 * Added support for ULongLong and LongLong in QVariant

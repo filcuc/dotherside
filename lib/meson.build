@@ -1,4 +1,4 @@
-lib_version = '0.8.0'
+lib_version = '0.8.1'
 lib_dependencies = dependency('qt5', modules : ['Core', 'Gui', 'Widgets', 'Quick', 'Qml'])
 lib_sources = [
   'src/DOtherSide.cpp',
