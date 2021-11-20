@@ -32,6 +32,10 @@ macro(add_target name type)
         target_compile_definitions(${name} PRIVATE -DWIN32)
     endif()
 
+    if(NOT MSVC)
+      target_compile_options(${name} PRIVATE -Wall -Wextra -Wpedantic -Werror)
+    endif()
+
     set_target_properties(${name} PROPERTIES CXX_STANDARD 11 AUTOMOC ON)
 
     target_include_directories(${name} PUBLIC include include/Qt)
