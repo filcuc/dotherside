@@ -1069,7 +1069,7 @@ void dos_qquickstyle_set_style(const char *style)
 #ifdef QT_QUICKCONTROLS2_LIB
     QQuickStyle::setStyle(QString::fromUtf8(style));
 #else
-    std::cerr << "Library has not QtQuickControls2 support" << std::endl;
+    std::cerr << "Failed to set QQC2 style " << style << " because DOtherSide lib has been build without QQC2 support" << std::endl;
 #endif
 }
 
@@ -1078,7 +1078,7 @@ void dos_qquickstyle_set_fallback_style(const char *style)
 #ifdef QT_QUICKCONTROLS2_LIB
     QQuickStyle::setFallbackStyle(QString::fromUtf8(style));
 #else
-    std::cerr << "Library has no QtQuickControls2 support" << std::endl;
+    std::cerr << "Failed to set QQC2 fallback style " << style << " because DOtherSide lib has been build without QQC2 support" << std::endl;
 #endif
 }
 
