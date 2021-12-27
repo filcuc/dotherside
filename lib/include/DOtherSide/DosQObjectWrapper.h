@@ -104,7 +104,7 @@ int DosQObjectWrapper<N, M>::qt_metacall(QMetaObject::Call call, int index, void
 }
 
 template<int N, int M>
-bool DosQObjectWrapper<N, M>::emitSignal(QObject */*emitter*/, const QString &name, const std::vector<QVariant> &argumentsValues)
+bool DosQObjectWrapper<N, M>::emitSignal(QObject *, const QString &name, const std::vector<QVariant> &argumentsValues)
 {
     Q_ASSERT(m_impl);
     return m_impl->emitSignal(this, name, argumentsValues);
@@ -175,7 +175,7 @@ template<int N>
 using RegisterSingletonTypeQObject = DosQObjectWrapper<N, 1>;
 
 template<int N>
-QObject *singletontype_provider(QQmlEngine */*engine*/, QJSEngine */*scriptEngine*/)
+QObject *singletontype_provider(QQmlEngine *, QJSEngine *)
 {
     return new RegisterSingletonTypeQObject<N>();
 }
