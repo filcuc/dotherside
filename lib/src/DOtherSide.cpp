@@ -807,7 +807,7 @@ DosQModelIndex *dos_qabstracttablemodel_index(DosQAbstractTableModel *vptr, int 
     return static_cast<DosQModelIndex *>(result);
 }
 
-DosQModelIndex *dos_qabstracttablemodel_parent(DosQAbstractTableModel */*vptr*/, DosQModelIndex */*dosChild*/)
+DosQModelIndex *dos_qabstracttablemodel_parent(DosQAbstractTableModel *, DosQModelIndex *)
 {
     return static_cast<DosQModelIndex *>(new QModelIndex());
 }
@@ -840,12 +840,12 @@ DosQModelIndex *dos_qabstractlistmodel_index(DosQAbstractListModel *vptr, int ro
     return static_cast<DosQModelIndex *>(result);
 }
 
-DosQModelIndex *dos_qabstractlistmodel_parent(DosQAbstractListModel */*vptr*/, DosQModelIndex */*dosChild*/)
+DosQModelIndex *dos_qabstractlistmodel_parent(DosQAbstractListModel *, DosQModelIndex *)
 {
     return static_cast<DosQModelIndex *>(new QModelIndex());
 }
 
-int dos_qabstractlistmodel_columnCount(DosQAbstractListModel */*vptr*/, DosQModelIndex *dosParent)
+int dos_qabstractlistmodel_columnCount(DosQAbstractListModel *, DosQModelIndex *dosParent)
 {
     auto parent = static_cast<QModelIndex *>(dosParent);
     return parent->isValid() ? 0 : 1;
@@ -1094,12 +1094,12 @@ void dos_qcoreapplication_process_events_timed(DosQEventLoopProcessEventFlag fla
 
 char *dos_slot_macro(const char *str)
 {
-    return ::strdup((std::string("1") + str).c_str());
+    return qstrdup((std::string("1") + str).c_str());
 }
 
 char *dos_signal_macro(const char *str)
 {
-    return ::strdup((std::string("2") + str).c_str());
+    return qstrdup((std::string("2") + str).c_str());
 }
 
 DosQPointer *dos_qpointer_create(DosQObject *object)
