@@ -26,7 +26,7 @@
 
 namespace DOS {
 template <typename T, int, int>
-class DosQAbstractItemModelWrapper : public T, public DosIQObjectImpl
+class DosQAbstractItemModelWrapper : public T, public DosIQAbstractItemModelImpl
 {
 public:
     static const QMetaObject staticMetaObject;
@@ -85,9 +85,24 @@ public:
     /// @see QAbstractItemModel::parent
     QModelIndex parent(const QModelIndex &child) const override;
 
+    void publicBeginInsertRows(const QModelIndex &index, int first, int last) final;
+    void publicEndInsertRows() final;
+    void publicBeginRemoveRows(const QModelIndex &index, int first, int last) final;
+    void publicEndRemoveRows() final;
+    void publicBeginInsertColumns(const QModelIndex &index, int first, int last) final;
+    void publicEndInsertColumns() final;
+    void publicBeginRemoveColumns(const QModelIndex &index, int first, int last) final;
+    void publicEndRemoveColumns() final;
+    void publicBeginResetModel() final;
+    void publicEndResetModel() final;
+    void publicDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles) final;
+    QModelIndex publicCreateIndex(int row, int column, void *data) const final;
+    bool hasIndex(int row, int column, const QModelIndex &parent) const final;
+
 private:
-    void *m_dObject;
-    QAbstractItemModel *m_impl;
+    void *m_dObject = nullptr;
+    QAbstractItemModel *m_impl = nullptr;
+    DosIQAbstractItemModelImpl * m_dosImpl = nullptr;
     static int m_id;
     static QmlRegisterType m_data;
 };
@@ -104,12 +119,11 @@ int DosQAbstractItemModelWrapper<T, N, M>::m_id = -1;
 template<typename T, int N, int M>
 DosQAbstractItemModelWrapper<T, N, M>::DosQAbstractItemModelWrapper(QObject *parent)
     : T(parent)
-    , m_dObject(nullptr)
-    , m_impl(nullptr)
 {
     void *impl = nullptr;
     m_data.createDObject(m_id, static_cast<QObject *>(this), &m_dObject, &impl);
     m_impl = dynamic_cast<QAbstractItemModel *>(static_cast<QObject *>(impl));
+    m_dosImpl = dynamic_cast<DosIQAbstractItemModelImpl *>(static_cast<QObject *>(impl));
     QObject::connect(m_impl, &T::rowsAboutToBeInserted, this, &DosQAbstractItemModelWrapper<T, N, M>::beginInsertRows);
     QObject::connect(m_impl, &T::rowsInserted, this, &DosQAbstractItemModelWrapper<T, N, M>::endInsertRows);
     QObject::connect(m_impl, &T::rowsAboutToBeRemoved, this, &DosQAbstractItemModelWrapper<T, N, M>::beginRemoveRows);
@@ -158,7 +172,7 @@ template<typename T, int N, int M>
 bool DosQAbstractItemModelWrapper<T, N, M>::emitSignal(QObject */*emitter*/, const QString &name, const std::vector<QVariant> &argumentsValues)
 {
     Q_ASSERT(m_impl);
-    return dynamic_cast<DosIQObjectImpl *>(this)->emitSignal(this, name, argumentsValues);
+    return m_dosImpl->emitSignal(this, name, argumentsValues);
 }
 
 template<typename T, int N, int M>
@@ -240,6 +254,84 @@ QModelIndex DosQAbstractItemModelWrapper<T, N, M>::parent(const QModelIndex &chi
 {
     Q_ASSERT(m_impl);
     return m_impl->parent(child);
+}
+
+template<typename T, int N, int M>
+void DosQAbstractItemModelWrapper<T, N, M>::publicBeginInsertRows(const QModelIndex &index, int first, int last)
+{
+    m_dosImpl->publicBeginInsertRows(index, first, last);
+}
+
+template<typename T, int N, int M>
+void DosQAbstractItemModelWrapper<T, N, M>::publicEndInsertRows()
+{
+    m_dosImpl->publicEndInsertRows();
+}
+
+template<typename T, int N, int M>
+void DosQAbstractItemModelWrapper<T, N, M>::publicBeginRemoveRows(const QModelIndex &index, int first, int last)
+{
+    m_dosImpl->publicBeginRemoveRows(index, first, last);
+}
+
+template<typename T, int N, int M>
+void DosQAbstractItemModelWrapper<T, N, M>::publicEndRemoveRows()
+{
+    m_dosImpl->publicEndRemoveRows();
+}
+
+template<typename T, int N, int M>
+void DosQAbstractItemModelWrapper<T, N, M>::publicBeginInsertColumns(const QModelIndex &index, int first, int last)
+{
+    m_dosImpl->publicBeginInsertColumns(index, first, last);
+}
+
+template<typename T, int N, int M>
+void DosQAbstractItemModelWrapper<T, N, M>::publicEndInsertColumns()
+{
+    m_dosImpl->publicEndInsertColumns();
+}
+
+template<typename T, int N, int M>
+void DosQAbstractItemModelWrapper<T, N, M>::publicBeginRemoveColumns(const QModelIndex &index, int first, int last)
+{
+    m_dosImpl->publicBeginRemoveColumns(index, first, last);
+}
+
+template<typename T, int N, int M>
+void DosQAbstractItemModelWrapper<T, N, M>::publicEndRemoveColumns()
+{
+    m_dosImpl->publicEndRemoveColumns();
+}
+
+template<typename T, int N, int M>
+void DosQAbstractItemModelWrapper<T, N, M>::publicBeginResetModel()
+{
+    m_dosImpl->publicBeginResetModel();
+}
+
+template<typename T, int N, int M>
+void DosQAbstractItemModelWrapper<T, N, M>::publicEndResetModel()
+{
+    m_dosImpl->publicEndResetModel();
+}
+
+template<typename T, int N, int M>
+void DosQAbstractItemModelWrapper<T, N, M>::publicDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
+{
+    m_dosImpl->publicDataChanged(topLeft, bottomRight, roles);
+}
+
+template<typename T, int N, int M>
+QModelIndex DosQAbstractItemModelWrapper<T, N, M>::publicCreateIndex(int row, int column, void *data) const
+{
+    return m_dosImpl->publicCreateIndex(row, column, data);
+}
+
+template<typename T, int N, int M>
+bool DosQAbstractItemModelWrapper<T, N, M>::hasIndex(int row, int column, const QModelIndex &parent) const
+{
+    return m_dosImpl->hasIndex(row, column, parent);
 }
 
 template<typename T, int N, int M>
