@@ -47,7 +47,7 @@ jobs:
     strategy:
       matrix:
         include:
-        - qt: 5.12.11
+        - qt: 5.12.12
           arch: win64_msvc2017_64
           config: Release
           toolset: v141 
