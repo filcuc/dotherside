@@ -10,7 +10,7 @@ lib_sources = [
   'src/DosQObjectImpl.cpp',
   'src/DosQQuickImageProvider.cpp',
 ]
-lib_include_directories = ['include', 'include/Qt']
+lib_include_directories = ['include', 'include/Qt5']
 lib_pch = ['../pch/lib_pch.h', '../pch/lib_pch.cpp']
 
 lib = shared_library('DOtherSide',
