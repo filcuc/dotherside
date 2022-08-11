@@ -40,9 +40,14 @@ Currently we support the following platforms/compilers:
 
 ## Build requirements
 You need the following software:
-* Qt 5.12 or higher
+* Qt 5.12 or higher or Qt 6.2 or higher
 * Linux: gcc 4.8 or later with c++11 support or higher
 * Windows: Visual Studio 2013|2015 Community Edition (Windows) or higher
+
+## Qt5 and Qt6 Notes
+We support both Qt5 and Qt6 builds but we don't support coesisteance of the DOtherSide library 
+compiled in both ways. In other words the DOtherSide so name is the same compiled with Qt5 or Qt6.
+This is a current limitation but we could change this in future.
 
 ## Build instructions:
 ```
