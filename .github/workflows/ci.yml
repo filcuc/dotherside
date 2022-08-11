@@ -8,9 +8,9 @@ on:
 
 jobs:
 
-  linux:
+  linux-ubuntu-2004:
     runs-on: ubuntu-20.04
-
+    
     steps:
     - uses: actions/checkout@v2
 
@@ -42,6 +42,32 @@ jobs:
         lcov --remove coverage.info "*/test/*" -o coverage.info
         bash <(curl -s https://codecov.io/bash)
 
+  linux-ubuntu-2204:
+    runs-on: ubuntu-22.04
+    
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y build-essential cmake qtbase5-dev qtbase5-private-dev qtdeclarative5-dev qtquickcontrols2-5-dev qml-module-qtquick2 qml-module-qtquick-controls2 qml-module-qtquick-window2 xvfb lcov 
+
+    - name: Compile
+      run: |
+        mkdir build
+        cd build
+        cmake -DENABLE_COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug ..
+        cmake --build .
+
+    - name: Test
+      run: |
+        export QT_DEBUG_PLUGINS=1
+        xvfb-run -a ./build/test/TestDynamicQObject
+
+    - name: Cleanup xvfb pidx
+      uses: bcomnes/cleanup-xvfb@v1
+
   windows:
     runs-on: windows-latest
     strategy:
@@ -50,12 +76,19 @@ jobs:
         - qt: 5.12.12
           arch: win64_msvc2017_64
           config: Release
-          toolset: v141 
+          toolset: v141
+          qtdirenvname: Qt5_DIR
         - qt: 5.15.2
           arch: win64_msvc2019_64
           config: Release
           toolset: v142
-
+          qtdirenvname: Qt5_DIR
+        # Testing on Qt6 is disabled until https://bugreports.qt.io/browse/QTBUG-103611 is resolved
+        #- qt: 6.2.4
+        #  arch: win64_msvc2019_64
+        #  config: Debug
+        #  toolset: v142
+        #  qtdirenvname: Qt6_DIR
     env:
       PACKAGE_NAME: libDOtherSide-windows-${{ matrix.arch }}-qt-${{ matrix.qt }}.zip
 
@@ -87,8 +120,8 @@ jobs:
     - name: Test
       shell: cmd
       run: |
-        set QT_PLUGIN_PATH=%Qt5_DIR%/plugins
-        set QML2_IMPORT_PATH=%Qt5_DIR%/qml
+        set QT_PLUGIN_PATH=%${{ matrix.qtdirenvname }}%/plugins
+        set QML2_IMPORT_PATH=%${{ matrix.qtdirenvname }}%/qml
         "build\test\${{ matrix.config }}\TestDynamicQObject.exe"
 
     - name: Upload readme

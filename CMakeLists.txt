@@ -17,6 +17,10 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     endif()
 endif()
 
+if (MSVC)
+  add_compile_options(/bigobj)
+endif()
+
 add_subdirectory(lib)
 add_subdirectory(doc)
 add_subdirectory(test)
