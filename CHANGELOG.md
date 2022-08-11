@@ -1,3 +1,6 @@
+# Future release
+* Added Qt6 support
+
 # Version 0.8.1
 * Fixed crashes when istantiating QAIMs from QML
 
