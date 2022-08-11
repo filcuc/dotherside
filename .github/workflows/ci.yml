@@ -17,7 +17,7 @@ jobs:
     - name: Install
       run: |
         sudo apt-get update -y
-        sudo apt-get install -y build-essential cmake qt5-default qtbase5-dev qtdeclarative5-dev qtquickcontrols2-5-dev qml-module-qtquick2 qml-module-qtquick-controls2 qml-module-qtquick-window2 xvfb lcov 
+        sudo apt-get install -y build-essential cmake qt5-default qtbase5-dev qtbase5-private-dev qtdeclarative5-dev qtquickcontrols2-5-dev qml-module-qtquick2 qml-module-qtquick-controls2 qml-module-qtquick-window2 xvfb lcov 
 
     - name: Compile
       run: |
