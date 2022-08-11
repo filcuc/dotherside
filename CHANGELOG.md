@@ -1,4 +1,4 @@
-# Future release
+# Version 0.9.0
 * Added Qt6 support
 
 # Version 0.8.1
