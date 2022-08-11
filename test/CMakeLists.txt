@@ -1,7 +1,10 @@
 project(TestDynamicQObject)
 
+set(QTPREFIX "Qt")
+
 find_package(Qt6 COMPONENTS Core Qml Gui Quick QuickControls2 Widgets Test)
 if (NOT Qt6_FOUND)
+    set(QTPREFIX "Qt5")
     find_package(Qt5 COMPONENTS Core Qml Gui Quick QuickControls2 Widgets Test)
 endif()
 
@@ -22,4 +25,4 @@ add_executable(${PROJECT_NAME} Resources.qrc
     testQDeclarative.qml
 )
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 14)
-target_link_libraries(${PROJECT_NAME} DOtherSideStatic Qt::Quick Qt::Widgets Qt::Test Qt::Core)
+target_link_libraries(${PROJECT_NAME} DOtherSideStatic ${QTPREFIX}::Quick ${QTPREFIX}::Widgets ${QTPREFIX}::Test ${QTPREFIX}::Core)

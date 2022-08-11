@@ -1,5 +1,8 @@
+set(QTPREFIX "Qt")
+
 find_package(Qt6 COMPONENTS Core Qml Gui Quick QuickControls2 Widgets)
 if (NOT Qt6_FOUND)
+    set(QTPREFIX "Qt5")
     find_package(Qt5 COMPONENTS Core Qml Gui Quick QuickControls2 Widgets)
 endif()
 
@@ -44,10 +47,10 @@ macro(add_target name type)
 
     target_include_directories(${name} PUBLIC include)
 
-    target_link_libraries(${name} PRIVATE Qt::Core Qt::CorePrivate Qt::Gui Qt::Widgets Qt::Qml Qt::Quick)
+    target_link_libraries(${name} PRIVATE ${QTPREFIX}::Core ${QTPREFIX}::CorePrivate ${QTPREFIX}::Gui ${QTPREFIX}::Widgets ${QTPREFIX}::Qml ${QTPREFIX}::Quick)
 
     if (${Qt5QuickControls2_FOUND})
-        target_link_libraries(${name} PRIVATE Qt5::QuickControls2)
+        target_link_libraries(${name} PRIVATE ${QTPREFIX}::QuickControls2)
     endif()
 endmacro()
 
