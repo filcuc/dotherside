@@ -1,7 +1,10 @@
+find_package(Qt6 COMPONENTS Core Qml Gui Quick QuickControls2 Widgets)
+if (NOT Qt6_FOUND)
+    find_package(Qt5 COMPONENTS Core Qml Gui Quick QuickControls2 Widgets)
+endif()
+
 # Macro for merging common code between static and shared
 macro(add_target name type)
-    find_package(Qt5 COMPONENTS Core Qml Gui Quick QuickControls2 Widgets)
-
     add_library(${name} ${type}
         include/DOtherSide/DOtherSideTypes.h
         include/DOtherSide/DOtherSideTypesCpp.h
@@ -16,6 +19,7 @@ macro(add_target name type)
         include/DOtherSide/DosIQAbstractItemModelImpl.h
         include/DOtherSide/DosQAbstractItemModel.h
         include/DOtherSide/Utils.h
+        include/DOtherSide/DosQtCompatUtils.h
         include/DOtherSide/DosLambdaInvoker.h
         src/DOtherSide.cpp
         src/DosQMetaObject.cpp
@@ -38,9 +42,9 @@ macro(add_target name type)
 
     set_target_properties(${name} PROPERTIES CXX_STANDARD 11 AUTOMOC ON)
 
-    target_include_directories(${name} PUBLIC include include/Qt5)
+    target_include_directories(${name} PUBLIC include)
 
-    target_link_libraries(${name} PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick)
+    target_link_libraries(${name} PRIVATE Qt::Core Qt::CorePrivate Qt::Gui Qt::Widgets Qt::Qml Qt::Quick)
 
     if (${Qt5QuickControls2_FOUND})
         target_link_libraries(${name} PRIVATE Qt5::QuickControls2)

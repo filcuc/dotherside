@@ -20,6 +20,7 @@
 #include "DOtherSide/DosQObjectImpl.h"
 
 #include "DOtherSide/DosQMetaObject.h"
+#include "DOtherSide/DosQtCompatUtils.h"
 
 #include <QtCore/QMetaObject>
 #include <QtCore/QMetaMethod>
@@ -100,14 +101,14 @@ bool DosQObjectImpl::executeSlot(const QMetaMethod &method, void **args, int arg
     std::vector<QVariant> arguments;
     arguments.reserve(method.parameterCount());
     for (int i = 0, j = argumentsOffset; i < method.parameterCount(); ++i, ++j) {
-        QVariant argument(method.parameterType(i), args[j]);
+        QVariant argument(DOS::parameterMetaType(method, i), args[j]);
         arguments.emplace_back(std::move(argument));
     }
 
     const QVariant result = executeSlot(method.name(), arguments); // Execute method
 
     if (hasReturnType && result.isValid()) {
-        QMetaType::construct(method.returnType(), args[0], result.constData());
+        QMetaType(DOS::returnMetaType(method)).construct(args[0], result.constData());
     }
 
     return true;

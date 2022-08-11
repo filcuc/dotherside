@@ -20,6 +20,7 @@
 #include <DOtherSide/DosQMetaObject.h>
 #include <DOtherSide/DosQObject.h>
 #include <DOtherSide/DosQAbstractItemModel.h>
+#include <DOtherSide/DosQtCompatUtils.h>
 
 #include "MockQObject.h"
 #include "MockQAbstractItemModel.h"
@@ -191,10 +192,10 @@ private slots:
     void testQVariant()
     {
         QVariant original("foo");
-        QVERIFY(original.type() == QVariant::String);
+        QVERIFY(DOS::isString(original));
         VoidPointer copyPointer(dos_qvariant_create_qvariant(&original), &dos_qvariant_delete);
         QVariant* copy = static_cast<QVariant*>(copyPointer.get());
-        QCOMPARE(copy->type(), original.type());
+        QVERIFY(DOS::haveSameType(*copy, original));
         QCOMPARE(copy->toString().toStdString(), original.toString().toStdString());
     }
 
@@ -401,7 +402,7 @@ private slots:
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testObjectName", Q_RETURN_ARG(QVariant, result)));
-        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(DOS::isBool(result));
         QVERIFY(result.toBool());
     }
 
@@ -411,7 +412,7 @@ private slots:
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testPropertyReadAndWrite", Q_RETURN_ARG(QVariant, result)));
-        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(DOS::isBool(result));
         QVERIFY(result.toBool());
     }
 
@@ -422,7 +423,7 @@ private slots:
         {
             VoidPointer valuePtr(dos_qobject_property(data, "name"), &dos_qvariant_delete);
             auto value = *static_cast<QVariant *>(valuePtr.get());
-            QVERIFY(value.type() == QVariant::String);
+            QVERIFY(DOS::isString(value));
             QVERIFY(value.toString() == "foo");
         }
         QVariant bar("bar");
@@ -431,7 +432,7 @@ private slots:
         {
             VoidPointer valuePtr(dos_qobject_property(data, "name"), &dos_qvariant_delete);
             auto value = *static_cast<QVariant *>(valuePtr.get());
-            QVERIFY(value.type() == QVariant::String);
+            QVERIFY(DOS::isString(value));
             QVERIFY(value.toString() == "bar");
         }
     }
@@ -442,7 +443,7 @@ private slots:
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testSignalEmittion", Q_RETURN_ARG(QVariant, result)));
-        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(DOS::isBool(result));
         QVERIFY(result.toBool());
     }
 
@@ -452,7 +453,7 @@ private slots:
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testArrayProperty", Q_RETURN_ARG(QVariant, result)));
-        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(DOS::isBool(result));
         QVERIFY(result.toBool());
     }
 
@@ -480,7 +481,7 @@ private slots:
         dos_chararray_delete(slot_name);
     }
 
-    static void lambda_callback(void* callbackData, int argc, DosQVariant **argv) {
+    static void lambda_callback(void* /*callbackData*/, int argc, DosQVariant **argv) {
         if (argc == 1) {
             char* buffer = dos_qvariant_toString(argv[0]);
             std::string name(buffer);
@@ -538,7 +539,7 @@ private slots:
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testObjectName", Q_RETURN_ARG(QVariant, result)));
-        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(DOS::isBool(result));
         QVERIFY(result.toBool());
     }
 
@@ -548,7 +549,7 @@ private slots:
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testPropertyReadAndWrite", Q_RETURN_ARG(QVariant, result)));
-        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(DOS::isBool(result));
         QVERIFY(result.toBool());
     }
 
@@ -558,7 +559,7 @@ private slots:
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testSignalEmittion", Q_RETURN_ARG(QVariant, result)));
-        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(DOS::isBool(result));
         QVERIFY(result.toBool());
     }
 
@@ -568,7 +569,7 @@ private slots:
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testRowCount", Q_RETURN_ARG(QVariant, result)));
-        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(DOS::isBool(result));
         QVERIFY(result.toBool());
     }
 
@@ -578,7 +579,7 @@ private slots:
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testColumnCount", Q_RETURN_ARG(QVariant, result)));
-        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(DOS::isBool(result));
         QVERIFY(result.toBool());
     }
 
@@ -588,7 +589,7 @@ private slots:
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testData", Q_RETURN_ARG(QVariant, result)));
-        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(DOS::isBool(result));
         QVERIFY(result.toBool());
     }
 
@@ -598,7 +599,7 @@ private slots:
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testSetData", Q_RETURN_ARG(QVariant, result)));
-        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(DOS::isBool(result));
         QVERIFY(result.toBool());
     }
 
@@ -636,7 +637,7 @@ private slots:
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testQmlRegisterType", Q_RETURN_ARG(QVariant, result)));
-        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(DOS::isBool(result));
         QVERIFY(result.toBool());
     }
 
@@ -659,12 +660,12 @@ private slots:
         QVERIFY(testCase);
         QVariant result;
         QVERIFY(QMetaObject::invokeMethod(testCase, "testQmlRegisterSingletonType", Q_RETURN_ARG(QVariant, result)));
-        QVERIFY(result.type() == QVariant::Bool);
+        QVERIFY(DOS::isBool(result));
         QVERIFY(result.toBool());
     }
 
 private:
-    static void mockQObjectCreator(int typeId, void *wrapper, void **mockQObjectPtr, void **dosQObject)
+    static void mockQObjectCreator(int /*typeId*/, void *wrapper, void **mockQObjectPtr, void **dosQObject)
     {
         VoidPointer data(wrapper, &emptyVoidDeleter);
         auto mockQObject = new MockQObject();
@@ -673,7 +674,7 @@ private:
         *mockQObjectPtr = mockQObject;
     }
 
-    static void mockQObjectDeleter(int typeId, void *mockQObject)
+    static void mockQObjectDeleter(int /*typeId*/, void *mockQObject)
     {
         auto temp = static_cast<MockQObject *>(mockQObject);
         delete temp;
@@ -801,7 +802,7 @@ private slots:
 
 private:
     static bool called;
-    static void callback(void* data) {
+    static void callback(void* /*data*/) {
         called = true;
     }
 };
