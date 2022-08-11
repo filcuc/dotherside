@@ -2,9 +2,6 @@ cmake_minimum_required(VERSION 3.2)
 
 project(DOtherSide)
 
-# Add additional source path for cmake
-list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/)
-
 # Add strict warning checking for C++
 if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     # Add Coverage option
@@ -18,6 +15,10 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
         add_compile_options(-g -O0 --coverage)
 	add_link_options(--coverage)
     endif()
+endif()
+
+if (MSVC)
+  add_compile_options(/bigobj)
 endif()
 
 add_subdirectory(lib)

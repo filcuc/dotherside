@@ -38,7 +38,6 @@
 #include "DOtherSide/DOtherSideTypesCpp.h"
 #include "DOtherSide/DosQMetaObject.h"
 #include "DOtherSide/DosQObject.h"
-#include "DOtherSide/DosQObjectImpl.h"
 #include "DOtherSide/DosQAbstractItemModel.h"
 #include "DOtherSide/DosQDeclarative.h"
 #include "DOtherSide/DosQQuickImageProvider.h"
@@ -362,7 +361,7 @@ void dos_qqmlcontext_setcontextproperty(::DosQQmlContext *vptr, const char *name
 {
     auto qobject = static_cast<QObject *>(value);
     auto result = new QVariant();
-    result->setValue<QObject *>(qobject);
+    *result = QVariant::fromValue(qobject);
     return result;
 }
 
@@ -510,7 +509,7 @@ void dos_qvariant_setQObject(::DosQVariant *vptr, ::DosQObject *value)
 {
     auto variant = static_cast<QVariant *>(vptr);
     auto qobject = static_cast<QObject *>(value);
-    variant->setValue<QObject *>(qobject);
+    *variant = QVariant::fromValue(qobject);
 }
 
 void dos_qvariant_setArray(::DosQVariant *vptr, int size, ::DosQVariant **array)
@@ -774,7 +773,7 @@ void dos_qmetaobject_delete(::DosQMetaObject *vptr)
 
 bool dos_qmetaobject_invoke_method(DosQObject *context, DosQMetaObjectInvokeMethodCallback callback, void *callbackData, DosQtConnectionType connection_type)
 {
-    return QMetaObject::invokeMethod(static_cast<QObject*>(context), [context, callback, callbackData] {
+    return QMetaObject::invokeMethod(static_cast<QObject*>(context), [callback, callbackData] {
         callback(callbackData);
     }, static_cast<Qt::ConnectionType>(connection_type));
 }

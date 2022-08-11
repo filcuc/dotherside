@@ -18,10 +18,10 @@
 */
 
 #include "DOtherSide/DosQMetaObject.h"
-#include "DOtherSide/DosQObject.h"
-#include "private/qmetaobjectbuilder_p.h"
-#include "private/qmetaobject_p.h"
-#include "private/qobject_p.h"
+#include "DOtherSide/DosQtCompatUtils.h"
+#include <QtCore/private/qmetaobjectbuilder_p.h>
+#include <QtCore/private/qmetaobject_p.h>
+#include <QtCore/private/qobject_p.h>
 #include <QtCore/QAbstractItemModel>
 
 namespace {
@@ -47,7 +47,7 @@ QByteArray createSignature(const T &functionDefinition)
     for (size_t i = 0; i < parameters.size(); ++i) {
         if (i != 0)
             arguments += ",";
-        arguments += QMetaType::typeName(parameters[i].metaType);
+        arguments += DOS::metaTypeName(parameters[i].metaType);
     }
 
     return signature.arg(functionDefinition.name, arguments).toUtf8();
@@ -161,7 +161,7 @@ QMetaObject *DosQMetaObject::createMetaObject(const QString &className,
 
     for (const SignalDefinition &signal : signalDefinitions) {
         QMetaMethodBuilder signalBuilder = builder.addSignal(::createSignature(signal));
-        signalBuilder.setReturnType(QMetaType::typeName(QMetaType::Void));
+        signalBuilder.setReturnType(DOS::metaTypeName(QMetaType::Void));
         signalBuilder.setAccess(QMetaMethod::Public);
         signalBuilder.setParameterNames(createParameterNames(signal));
         m_signalIndexByName[signal.name] = signalBuilder.index();
@@ -170,7 +170,7 @@ QMetaObject *DosQMetaObject::createMetaObject(const QString &className,
     QHash<QString, int> methodIndexByName;
     for (const SlotDefinition &slot : slotDefinitions) {
         QMetaMethodBuilder methodBuilder = builder.addSlot(::createSignature(slot));
-        methodBuilder.setReturnType(QMetaType::typeName(slot.returnType));
+        methodBuilder.setReturnType(DOS::metaTypeName(slot.returnType));
         methodBuilder.setAttributes(QMetaMethod::Scriptable);
         methodIndexByName[slot.name] = methodBuilder.index();
     }
@@ -179,7 +179,7 @@ QMetaObject *DosQMetaObject::createMetaObject(const QString &className,
         const int writer = methodIndexByName.value(property.writeSlot, -1);
         const int notifier = m_signalIndexByName.value(property.notifySignal, -1);
         const QByteArray name = property.name.toUtf8();
-        const QByteArray typeName = QMetaObject::normalizedType(QMetaType::typeName(property.type));
+        const QByteArray typeName = QMetaObject::normalizedType(DOS::metaTypeName(property.type));
         QMetaPropertyBuilder propertyBuilder = builder.addProperty(name, typeName, notifier);
         if (writer == -1)
             propertyBuilder.setWritable(false);

@@ -18,11 +18,11 @@
 */
 
 #include "DOtherSide/DosLambdaInvoker.h"
-
-#include <private/qmetaobjectbuilder_p.h>
+#include "DOtherSide/DosQtCompatUtils.h"
 
 #include <memory>
 
+#include <QtCore/private/qmetaobjectbuilder_p.h>
 #include <QtCore/QThread>
 #include <QtCore/QDebug>
 
@@ -47,7 +47,7 @@ DOS::LambdaInvoker* MakeInvoker(DosQObjectConnectLambdaCallback callback, void *
     builder.setClassName("LambdaInvoker");
     builder.setSuperClass(&QObject::staticMetaObject);
     auto slot = builder.addSlot(slotSignature);
-    slot.setReturnType(QMetaType::typeName(QMetaType::Void));
+    slot.setReturnType(DOS::metaTypeName(QMetaType::Void));
     slot.setAttributes(QMetaMethod::Scriptable);
 
     const auto metaObject = builder.toMetaObject();
@@ -98,7 +98,7 @@ int DOS::LambdaInvoker::qt_metacall(QMetaObject::Call call, int index, void **ar
 void DOS::LambdaInvoker::invoke(void **args) {
     std::vector<QVariant> arguments(m_method.parameterCount());
     for (int i = 0, j = 1; i < m_method.parameterCount(); ++i, ++j)
-        arguments[i] = QVariant(m_method.parameterType(i), args[j]);
+        arguments[i] = QVariant(DOS::parameterMetaType(m_method, i), args[j]);
 
     invoke(arguments);
 }
