@@ -50,6 +50,11 @@ inline bool haveSameType(const QVariant& lhs, const QVariant& rhs)
     return lhs.typeId() == rhs.typeId();
 }
 
+inline const char* metaTypeName(QMetaType::Type type)
+{
+    return QMetaType(type).name();
+}
+
 #else
 
 inline int parameterMetaType(const QMetaMethod& method, int index)
@@ -75,6 +80,11 @@ inline bool isBool(const QVariant& v)
 inline bool haveSameType(const QVariant& lhs, const QVariant& rhs)
 {
     return lhs.type() == rhs.type();
+}
+
+inline const char* metaTypeName(QMetaType::Type type)
+{
+    return QMetaType::typeName(type);
 }
 
 #endif

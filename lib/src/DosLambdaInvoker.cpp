@@ -47,7 +47,7 @@ DOS::LambdaInvoker* MakeInvoker(DosQObjectConnectLambdaCallback callback, void *
     builder.setClassName("LambdaInvoker");
     builder.setSuperClass(&QObject::staticMetaObject);
     auto slot = builder.addSlot(slotSignature);
-    slot.setReturnType(QMetaType(QMetaType::Void).name());
+    slot.setReturnType(DOS::metaTypeName(QMetaType::Void));
     slot.setAttributes(QMetaMethod::Scriptable);
 
     const auto metaObject = builder.toMetaObject();
