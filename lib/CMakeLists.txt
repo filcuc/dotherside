@@ -56,13 +56,13 @@ endmacro()
 
 # Add shared version
 add_target(${PROJECT_NAME} SHARED)
-set(major 0)
-set(minor 9)
-set(patch 0)
+
+set(soversion "${CMAKE_PROJECT_VERSION_MAJOR}.${CMAKE_PROJECT_VERSION_MINOR}")
+
 set_target_properties(${PROJECT_NAME}
 PROPERTIES
-    SOVERSION "${major}.${minor}"
-    VERSION "${major}.${minor}.${patch}"
+    SOVERSION "${soversion}"
+    VERSION "${CMAKE_PROJECT_VERSION}"
 )
 
 # Add static version
