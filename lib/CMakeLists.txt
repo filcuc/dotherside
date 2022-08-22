@@ -1,3 +1,5 @@
+include(GNUInstallDirs)
+
 set(QTPREFIX "Qt")
 
 find_package(Qt6 COMPONENTS Core Qml Gui Quick QuickControls2 Widgets)
@@ -77,6 +79,6 @@ install(FILES
 
 # Install directive for binaries
 install(TARGETS ${PROJECT_NAME}
-  RUNTIME DESTINATION bin
-  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
