@@ -82,3 +82,9 @@ install(TARGETS ${PROJECT_NAME}
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
+
+# Install Pkg-Config definition
+configure_file(DOtherSide.pc.in DOtherSide.pc @ONLY)
+install(FILES
+  DOtherSide.pc
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
