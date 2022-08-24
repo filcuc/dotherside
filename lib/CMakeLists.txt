@@ -1,3 +1,5 @@
+include(GNUInstallDirs)
+
 set(QTPREFIX "Qt")
 
 find_package(Qt6 COMPONENTS Core Qml Gui Quick QuickControls2 Widgets)
@@ -56,13 +58,13 @@ endmacro()
 
 # Add shared version
 add_target(${PROJECT_NAME} SHARED)
-set(major 0)
-set(minor 9)
-set(patch 0)
+
+set(soversion "${CMAKE_PROJECT_VERSION_MAJOR}.${CMAKE_PROJECT_VERSION_MINOR}")
+
 set_target_properties(${PROJECT_NAME}
 PROPERTIES
-    SOVERSION "${major}.${minor}"
-    VERSION "${major}.${minor}.${patch}"
+    SOVERSION "${soversion}"
+    VERSION "${CMAKE_PROJECT_VERSION}"
 )
 
 # Add static version
@@ -77,6 +79,12 @@ install(FILES
 
 # Install directive for binaries
 install(TARGETS ${PROJECT_NAME}
-  RUNTIME DESTINATION bin
-  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
+
+# Install Pkg-Config definition
+configure_file(DOtherSide.pc.in DOtherSide.pc @ONLY)
+install(FILES
+  DOtherSide.pc
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)

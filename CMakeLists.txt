@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.2)
 
-project(DOtherSide)
+
+project(DOtherSide
+  VERSION 0.9.0
+  DESCRIPTION "C language library for creating binding for the Qt QML language"
+)
 
 # Add strict warning checking for C++
 if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
