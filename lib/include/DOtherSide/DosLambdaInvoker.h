@@ -58,7 +58,6 @@ private:
     void invoke(std::vector<QVariant> const& args);
 
     QMetaObject* const m_metaObject = nullptr;
-    const int m_slotIndex;
     const QMetaMethod m_method;
     DosQObjectConnectLambdaCallback m_callback = nullptr;
     void* m_callbackData = nullptr;
