@@ -94,6 +94,11 @@ jobs:
         cmake -DENABLE_COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug ..
         cmake --build .
 
+    - name: Test
+      run: |
+        export QT_DEBUG_PLUGINS=1
+        ./build/test/TestDynamicQObject
+
   windows:
     runs-on: windows-latest
     strategy:
