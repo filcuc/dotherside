@@ -77,6 +77,13 @@ jobs:
           config: Release
     steps:
     - uses: actions/checkout@v2
+
+    - name: Cache Qt
+      id: cache-qt
+      uses: actions/cache@v1
+      with:
+        path: ../Qt
+        key: ${{ runner.os }}-${{ matrix.qt }}-QtCache
     
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
