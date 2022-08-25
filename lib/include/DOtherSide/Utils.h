@@ -84,7 +84,15 @@ std::vector<T> toVector(G *first, std::ptrdiff_t size) Q_DECL_NOEXCEPT {
     return result;
 }
 
-template <typename T, typename K, typename R = typename std::result_of<K(T)>::type>
+#if __cplusplus >= 201703L
+template<typename K, typename T>
+using FuncResult = typename std::invoke_result<K, T>::type;
+#else
+template<typename K, typename T>
+using FuncResult = typename std::result_of<K(T)>::type;
+#endif
+
+template <typename T, typename K, typename R = FuncResult<K, T>>
 std::vector<R> toVector(T *first, std::ptrdiff_t size, K f) Q_DECL_NOEXCEPT {
     wrapped_array<T> array = wrap_array<T>(first, size);
     std::vector<R> result;
