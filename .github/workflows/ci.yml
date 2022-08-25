@@ -67,6 +67,32 @@ jobs:
 
     - name: Cleanup xvfb pidx
       uses: bcomnes/cleanup-xvfb@v1
+      
+  macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        include:
+        - qt: 5.15.2
+          config: Release
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        cached: ${{ steps.cache-qt.outputs.cache-hit }}
+        version: ${{ matrix.qt }}
+        
+    - name: Install cmake
+      run: brew install cmake
+    
+    - name: Compile
+      run: |
+        mkdir build
+        cd build
+        cmake -DENABLE_COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug ..
+        cmake --build .
 
   windows:
     runs-on: windows-latest
