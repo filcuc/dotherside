@@ -184,7 +184,7 @@ void MockQObject::arrayPropertyChanged(const std::tuple<int, double, bool> &valu
     std::for_each(valueAsDosQVariant.begin(), valueAsDosQVariant.end(), &dos_qvariant_delete);
 }
 
-void MockQObject::onSlotCalled(void *selfVPtr, DosQVariant *dosSlotNameVariant, int dosSlotArgc, DosQVariant **dosSlotArgv)
+void MockQObject::onSlotCalled(void *selfVPtr, DosQVariant *dosSlotNameVariant, int /*dosSlotArgc*/, DosQVariant **dosSlotArgv)
 {
     MockQObject *self = static_cast<MockQObject *>(selfVPtr);
 

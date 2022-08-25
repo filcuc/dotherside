@@ -58,7 +58,6 @@ DOS::LambdaInvoker* MakeInvoker(DosQObjectConnectLambdaCallback callback, void *
 
 DOS::LambdaInvoker::LambdaInvoker(DosQObjectConnectLambdaCallback callback, void *callbackData, QObject *context, QMetaObject* metaObject, int slotIndex)
     : m_metaObject(metaObject)
-    , m_slotIndex(slotIndex)
     , m_method(metaObject->method(slotIndex))
     , m_callback(callback)
     , m_callbackData(callbackData)
