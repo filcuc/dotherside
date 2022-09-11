@@ -86,5 +86,5 @@ install(TARGETS ${PROJECT_NAME}
 # Install Pkg-Config definition
 configure_file(DOtherSide.pc.in DOtherSide.pc @ONLY)
 install(FILES
-  DOtherSide.pc
+  ${CMAKE_CURRENT_BINARY_DIR}/DOtherSide.pc
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
