@@ -127,7 +127,8 @@ void dos_qapplication_quit()
 void dos_qqmlapplicationengine_load(::DosQQmlApplicationEngine *vptr, const char *filename)
 {
     auto engine = static_cast<QQmlApplicationEngine *>(vptr);
-    engine->load(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + QDir::separator() + QString(filename)));
+    QDir dir(QCoreApplication::applicationDirPath());
+    engine->load(QUrl::fromLocalFile(dir.relativeFilePath(QString(filename))));
 }
 
 void dos_qqmlapplicationengine_load_url(::DosQQmlApplicationEngine *vptr, ::DosQUrl *url)
