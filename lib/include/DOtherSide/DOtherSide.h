@@ -800,7 +800,7 @@ DOS_API void DOS_CALL dos_qobject_disconnect_with_connection_static(DosQMetaObje
 /// \brief Functions related to the QMetaObject::Connection class
 /// @{
 
-void dos_qmetaobject_connection_delete(DosQMetaObjectConnection* self);
+DOS_API void dos_qmetaobject_connection_delete(DosQMetaObjectConnection* self);
 
 /// @}
 
